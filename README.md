@@ -9,6 +9,7 @@ Example Videos
 
 The game differs from Stargate in these ways:
 - Each level is its own campaign mission and not a repeat wave  
+- After destroying all mission-critical targets, the stargate must be entered to jump to the next mission  
 - Entering the stargate while carrying humans does not warp ahead any levels  
 - Game can be made to start at any level  
 - Sprite textures remastered for 4K displays  
