@@ -1,0 +1,8 @@
+Licence for Defcon project materials
+
+All materials provided in this project are for educational purposes only.
+Any copying, particularly for commercial use, must constitute a unique work 
+not directly based on the original, or permission must be obtained from 
+Daylon Graphics Ltd.
+
+Defcon project materials copyright 2003-2023 Daylon Graphics Ltd.

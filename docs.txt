@@ -1,0 +1,142 @@
+Documentation for Defense Condition game project
+
+Author(s): Ray Gardener (support@daylongraphics.com)
+Repository: https://github.com/RayOfDaylon/Defcon
+July 27, 2023
+
+Chapters:
+
+Introduction
+Project Structure
+Setting Up
+How the Game is Played
+Keyboard Issues
+How the Game Works
+Code Architecture
+Future Work
+
+
+
+Introduction
+-------------------------------------------------------------------------------------
+Defence Condition is a remake of the 1981 Williams' Electronics Stargate arcade game 
+which tries to match its look and feel, but coded using Unreal Engine (UE 5.1, specifically).
+It was previously implemented as a 32-bit Windows program with its own engine that 
+used DIBsection framebuffers and GDI, with the source code hosted on SourceForge.
+
+The goal is to provide an educational reference for people interested in how 
+this type of game works and how it can be made in UE. Another benefit (fwiw) is 
+helping preserve the legacy of a classic arcade game.
+
+Much of the project is influenced by Stellar Mayhem, an earlier UE project 
+that implemented Atari Asteroids using Slate UI widgets.
+
+While I've endeavoured to make the source code readable, the rest of this document 
+may provide more clarification.
+
+
+How the Game is Played
+-------------------------------------------------------------------------------------
+The original arcade game had an explicit "reverse" button. Defcon instead 
+uses the K and L keys to thrust left and right, respectively, automatically 
+reorienting the ship as needed. Different input controllers may offer an 
+exclusive reverse button, however.
+
+A            Thrust up
+Z            Thrust down
+K            Thrust (and point) left
+L            Thrust (and point) right
+Space        Fire laser cannon
+Ctrl         Detonate smartbomb
+Backspace    Reserved for hyperspace
+
+The game gets harder over time. Specifically, landers will move faster, and 
+enemies will fire bullets more accurately. Firebombers will shoot more fireballs.
+
+Collide with the stargate at any time to randomly teleport elsewhere above 
+the planet. If a human is being abducted, your ship will be teleported so 
+that firing a laser beam will destroy the abducting lander.
+
+After killing all the mission-critical enemies, collide with the stargate 
+to jump to the next mission.
+
+Enemies arrive in waves. Some enemies are created within a wave, like swarmers, 
+which pods release when destroyed. Ditto for spacehums released by dynamos.
+Others, like baiters, arrive after a long time to get you to "hurry up". 
+These enemies are considered secondary and not necessary to kill to 
+jump to the next mission.
+
+Some debugging controls are available at runtime. They are:
+
+0 - Toggle frame rate display
+1 - Toggle player ship etc. stats
+2 - Reserved for bullet time toggle (helps see animations better)
+4 - Toggle planet origin axis line
+3 - Toggle bounding boxes
+9 - Spawn enemy near the player ship (cycles through all enemy types)
+G - Toggle god mode
+
+
+How the Game Works
+-------------------------------------------------------------------------------------
+Smart bomb explosions are drawn using a material that renders a circle within the full UV 
+space of its quad, with a parameter to change its opacity. A texture could have 
+been used but it would've had to be quite large to look sharp since the 
+explosion covers almost the entire arena display.
+
+The background stars are drawn with their own loop in MainPlayArea::NativePaint.
+The original game used CStar objects but that would have been less efficient.
+
+The terrain is drawn as a set of connected lines. The wraparound back to the 
+origin is handled in a simplistic way that can cause the "join" to use a slope
+quite different than 45 degrees.
+
+Game objects use a planetary (or arena) coordinate space which is as wide 
+as the visible section's Slate units multiplied by some preference constant (normally 6.0), 
+and as tall as the visible section. As objects move, they check if they've 
+crossed the horizontal origin and wrap around accordingly.
+
+The main visible area and the radar display have their own coordinate mappers 
+which map arena coordinates to their respective local Slate coordinates.
+
+Rendering is handled by a few different means. Most game objects have a sprite 
+so their Draw method is moot, but some will emit explicit Box or Line calls.
+Some objects are not derived from IGameObject (like FStar) and are drawn 
+by the main visible area. Some UI elements (like the introductory collapsing 
+title and the animated starfield) are custom Slate or UMG widgets.
+
+
+Code Architecture
+-------------------------------------------------------------------------------------
+The DaylonGraphicsLibrary plugin is the same one used in Stellar Mayhem.
+
+Because the code was originally written in 2003 for the Win32 API, 
+it's not necessarily up-to-date with modern C++ style and especially not with UE.
+Some API translation "shims" may still exist e.g. COLORREF_ is a compatability 
+typedef for FLinearColor. CGameObjectCollection is a linked list (as opposed 
+to using a TArray). As time goes by, these things will be addressed.
+
+The arenas from the Win32 game are now full-screen UUserWidgets (views) which are 
+managed by the game instance. As the player navigates the UI and starts/completes 
+missions, the current view is removed from the viewport and a different view is 
+added to it. The OnActivate, OnFinishActivating, and OnDeactivate methods are 
+called on a view to let it know when that happens. This is in stark contrast 
+to Stellar Mayhem which only has one view and uses its state machine to 
+show/hide UI elements to simulate multiple views.
+
+Since many classes are not derived from UObject and the dynamic_cast operator 
+is unavailable, some classes have their own type information and when used 
+to determine that an object is of a particular class, static_cast is used 
+to safely up- or downcast.
+
+IGameObject (the base of all game object classes) has three type info members:
+
+- A type
+- A parent type (e.g. round and thin bullets are subclasses of bullet)
+- A creator type (e.g. PLAYER is usually the creator of LASERBEAM)
+
+Defcon::ObjType is the enum of all possible object types.
+
+
+
+

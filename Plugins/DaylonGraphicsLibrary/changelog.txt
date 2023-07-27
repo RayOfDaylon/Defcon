@@ -1,0 +1,34 @@
+Changelog for DaylonGraphicsLibrary UE plugin
+
+Last updated: July 8, 2023
+
+Added bReversible property to FDaylonSpriteAtlas, to 
+support texture animations that can be looped in a 
+forward-then-backwards-then-forwards-etc. manner, 
+simplifying texture creation and reducing texture size.
+The scavenger atlas, e.g. is reversible.
+
+Added IsStatic member to SDaylonSprite, to let calls 
+to Update be ignored so that upstream code can still 
+have Update being called but manage the current cel explicitly.
+
+Added FlipHorizontal and FlipVertical members to SDaylonSprite, 
+which swap the UV region of OnPaint's quad box accordingly.
+This is useful when e.g. a change in game object direction 
+need only flip its texture.
+
+Added ClearSlot method to PlayObject2D and made Uninstall() 
+call it to ensure that uninstalled widgets had no slot pointer.
+
+Renamed Daylon::PlayObject2D::Spawn to Daylon::PlayObject2D::Start.
+"Start" means to just start using an already created and spawned widget.
+
+Renamed Daylon::CreateXxxPlayObject2D to Daylon::SpawnXxxPlayObject2D.
+"Spawn" now has a specific meaning: to create a widget _and_ install it into the widget tree.
+
+Moved functions from UDaylonUtils class to the Daylon namespace, since they 
+weren't using any BlueprintCallable tags. The class name is reserved 
+in case we want to add BP-callable functions later.
+
+Renamed DoesTriangleIntersectTriangle to DoTrianglesIntersect.
+

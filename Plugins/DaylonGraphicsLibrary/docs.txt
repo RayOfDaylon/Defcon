@@ -1,0 +1,162 @@
+Documentation for DaylonGraphicsLibrary plug-in for Unreal Engine
+
+Author(s): Ray Gardener (support@daylongraphics.com)
+Repository: https://github.com/RayOfDaylon/SpaceRox (inside Plugins folder)
+June 17, 2023
+
+
+
+Introduction
+-------------------------------------------------------------------------------------
+The DaylonGraphicsLibrary provides common routines and data types (classes)
+useful for 2D Unreal Engine games. It's used e.g. by the SpaceRox game, 
+an Atari Asteroids clone.
+
+
+UDaylonUtils
+-------------------------------------------------------------------------------------
+This is a blueprint function library (although no functions are blueprint callable)
+reserved for any functions that need to be BlueprintCallable.
+
+
+Daylon namespace
+-------------------------------------------------------------------------------------
+This namespace contains data types (other than UObject-based classes which cannot reside 
+within a namespace).
+
+SetWidgetTree    Call this early to establish the WidgetTree to use when 
+                 constructing widgets.
+
+SetRootCanvas    Call this early to establish which UCanvasPanel widget
+                 to use when adding a widget to your scene. Normally, this 
+                 will be the top-level widget immediately below the 
+                 UUserWidget that was added to the UE viewport.
+
+MakeWidget       Call this to construct a UWidget of the desired type. 
+
+Show/Hide        Shows or hides the specified UWidget/SWidget.
+
+UpdateRoundedReadout  Efficiently updates a text widget with an integer value
+                      derived from a rounded floating-point number.
+
+AngleToVector2D  Converts an angle (in degrees) to a unit vector. 
+                 Angle zero corresponds to a vector of [0, -1] and 
+                 increasing angles proceed clockwise.
+
+RandVector2D     Returns a random unit 2D vector.
+
+Rotate           Rotates a 2D point around a given angle (in degrees).
+                 The pivot point is the origin (0, 0).
+
+DeviateVector    Randomly perturbs a vector by an angular range.
+
+Vector2DToAngle  Converts a 2D vector to an angle, in degrees.
+                 A vector of [0, -y] corresponds to zero degrees, 
+                 a vector of [+x, 0] corresponds to ninety degrees, etc.
+
+WrapAngle        Modulates a degree value to be within the 0-360 range.
+
+GetWidgetPosition       Returns a UWidget's position in Slate units (not screen space pixels).
+                        This is handy if you need to position something else related to a widget and need 
+                        to use Slate units (because on different displays the pixel units will differ).
+                        Note: widgets in motion may report values off by a frame.
+
+GetWidgetSize           Returns a UWidget's size in Slate units.
+
+ComputeFiringSolution   Given a launch point, a projectile speed, a target point
+                        and a target inertia, returns the projectile inertia that will 
+                        make it intersect the target.
+
+RandomPtWithinBox       Given an FBox2d, returns an FVector2D that is a random 
+                        point within it.
+
+GetWidgetDirectionVector    Returns the unit direction vector for a widget's rotation.
+                            The rotation is encoded in the widget's render transform.
+
+DoesLineSegmentIntersectCircle      Returns true if a line intersects a circle.
+
+DoesLineSegmentIntersectTriangle    Returns true if a line intersects a triangle.
+
+DoTrianglesIntersect                Returns true if two triangles intersect.
+
+DoCirclesIntersect                  Returns true if two circles overlap.
+
+EListNavigationDirection      Enum constants for list navigation.
+
+TBindableValue                Template class that binds a delegate to a variable.
+                              When the variable changes, the delegate is called.
+
+FLoopedSound                  A simple class that plays a sound over and over 
+                              as long as its Tick method is called.
+
+FScheduledTask                A class that executes a function at some specified 
+                              number of seconds into the future.
+
+FDurationTask                 A class that executes a function every time 
+                              Tick is called for a finite number of seconds, 
+                              and then calls an optional completion function.
+
+FHighScore                    A single entry in a high score table.
+
+FHighScoreTable               A simple high score table.
+
+PlayObject2D                  Template class implementing most 2D game object functionality.
+                              You should use a specific subclass such as ImagePlayObject2D though.
+
+ImagePlayObject2D             A PlayObject2D that uses an SImage widget. Suitable
+                              for game objects that have a static appearance.
+
+SpritePlayObject2D            A PlayObject2D that uses an SDaylonSpriteWidget.
+                              Good for game objects that have a dynamic appearance.
+                              The Steller Mayhem powerups e.g. use this class.
+
+PlayObjectsIntersectBox       Returns true if an array of PlayObject2D widgets
+                              intersects a given 2D rectangle.
+
+FRand                         Returns a random real number inclusively between 0.0 and 1.0.
+
+RandBool                      Returns a random true/false value.
+
+RandRange                     Returns a random integer inclusively between two integers.
+
+FRandRange                    Returns a random real number inclusively between two reals.
+
+UMG widgets have been retired to an #if 0 ... #endif block. 
+The code is retained there for reference.
+
+
+SDaylonSpriteWidget
+-------------------------------------------------------------------------------------
+This SWidget renders a picture that can change over time. It contains an 
+FDaylonSpriteAtlas member that defines a texture atlas and frame rate.
+It's assumed that the cels (tiles) inside the atlas fill it out with an 
+equal number of pixels per cel.
+
+Call the Update() method to animate the picture.
+
+If you are using the atlas to occasionally change the appearance of 
+the widget, call the SetCurrentCel() method instead.
+
+
+FAnimSpriteCel
+-------------------------------------------------------------------------------------
+A gameplay object that holds a static brush but can animate its quad from one 
+size and position to another. Used by the intro to make the game title 
+letters emerge one-by-one from the center of the screen.
+
+
+SDaylonParticlesWidget
+-------------------------------------------------------------------------------------
+This SWidget draws particles moving away randomly from the widget's center.
+Steller Mayhem e.g. uses it for all of its explosions.
+
+Call the Update() method to advance the animation. If it returns false, 
+the animation has ended and the widget can be disposed or hidden.
+
+Call the Reset method to set the animation for another replay.
+
+
+SDaylonLineParticlesWidget
+-------------------------------------------------------------------------------------
+Similar to SDaylonParticlesWidget, but uses a provided array of line segments.
+Used by the miniboss explosion to show the shield segments blowing apart.
