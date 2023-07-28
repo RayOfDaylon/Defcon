@@ -6,10 +6,6 @@
 /* 
 	util_color.h
 	Color-related types and routines. 
-
-	Copyright 2000 Daylon Graphics Ltd.
-
-	rcg		Sep  5/02	Cleaned up abstract COLORREFs.
 */
 
 #include "Runtime/Core/Public/Math/Color.h"

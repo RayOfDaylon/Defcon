@@ -1,15 +1,13 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	stargate.cpp
-	Stargate object for Defcon game, which implements
-	the hyperspatial jump portal.
-	Copyright 2005 Daylon Graphics Ltd.
+	Stargate object for Defcon game, which implements the hyperspatial jump portal.
 */
 
 
 #include "stargate.h"
-
-//
-//
 
 #include "Globals/prefs.h"
 #include "Globals/GameColors.h"

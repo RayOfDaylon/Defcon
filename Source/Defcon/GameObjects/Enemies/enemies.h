@@ -43,24 +43,13 @@ namespace Defcon
 
 			virtual bool	Fireballs				() const { return true; }
 
-			//virtual bool	IsMaterializing			() const;
-			//virtual void    UpdateMaterialization   (float DeltaTime) override;
-			//virtual void    DrawMaterialization     (FPaintArguments&, const I2DCoordMapper&) const override;
-
 
 		protected:
 
 			IGameObject*	m_pTarget = nullptr;
 
-			//CFPoint			m_birthDebrisLocs[50];
-			//CFPoint			m_birthDebrisLocsOrg[50];
-			//float			m_debrisPow[50];
 			float			m_fBrightness;
 			float			m_ctlStartTime[Super::numCtls];
-			//bool			m_bBirthsoundPlayed;
-
-			static FSlateColorBrush ParticleBrush;// = FSlateColorBrush(C_WHITE);
-
 	};
 }
 

@@ -44,4 +44,3 @@ namespace Defcon
 			float					m_amp;
 	};
 }
-

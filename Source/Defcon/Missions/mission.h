@@ -1,3 +1,6 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 #pragma once 
 
 /*
@@ -5,8 +8,6 @@
 	IMission interface class
 	Defines base mission class in Defence Condition.
 	For military missions, please see MilitaryMissions.h
-
-	Copyright 2004-2021 Daylon Graphics Ltd.
 */
 
 

@@ -1,19 +1,16 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mission_weapons_training.cpp
 	Defines weapons training mission in Defence Condition.
-
-	Copyright 2004 Daylon Graphics Ltd.
 */
-
-
 
 
 #include "mission.h"
 
 #include "Common/util_color.h"
 #include "Common/util_geom.h"
-
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/player.h"
 #include "GameObjects/beacon.h"
@@ -23,7 +20,6 @@
 
 constexpr int32 NumTargets = 15;
 
-// ----------------------------------------------------------
 
 
 void Defcon::CWeaponsTrainingMission::Init(UDefconPlayViewBase* pA)
@@ -54,7 +50,6 @@ bool Defcon::CWeaponsTrainingMission::Update(float fElapsed)
 	else if(this->AreAllTargetsHit(fElapsed))
 	{
 		// We're done.
-		//m_pArena->AllStopPlayerShip();
 		return false;
 	}
 

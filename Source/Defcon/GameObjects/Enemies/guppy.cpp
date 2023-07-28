@@ -1,7 +1,9 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	guppy.cpp
 	Yllabian Guppy type for Defcon game.
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 #include "guppy.h"
@@ -14,11 +16,9 @@
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
 #include "Arenas/DefconPlayViewBase.h"
 #include "DefconGameInstance.h"
 
-// -------------------------------------------------
 
 
 Defcon::CGuppy::CGuppy()
@@ -286,5 +286,3 @@ void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
 		debris.Add(pFlak);
 	}
 }
-
-

@@ -1,3 +1,6 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mission_swarm.cpp
 	"Swarm" mission in Defence Condition.
@@ -7,22 +10,6 @@
 
 
 #include "MilitaryMission.h"
-
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
-
-
-#include "Common/util_color.h"
-#include "Common/util_geom.h"
-
-
-#include "Globals/prefs.h"
-
-#include "GameObjects/player.h"
-#include "GameObjects/obj_types.h"
-
-#include "Arenas/DefconPlayViewBase.h"
-
-
 
 
 // ----------------------------------------------------------
@@ -107,7 +94,7 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 				CCreateEnemyEvent* p = new CCreateEnemyEvent;
 				p->Init(m_pArena);
 				p->m_objtype = waves[i].type;
-				p->m_when = UKismetSystemLibrary::GetGameTimeInSeconds(m_pArena) + FRAND * 0.1f * j;
+				p->m_when = GameTime() + FRAND * 0.1f * j;
 				float wp = m_pArena->GetWidth();
 				float x = (FRAND - 0.5f) * 0.2f * m_pArena->GetDisplayWidth() + wp/2;
 				x = (float)fmod(x, wp);

@@ -1,9 +1,9 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	_sound.cpp
-	Sound stuff.
-	Copyright 2004 Daylon Graphics Ltd.
 */
-
 
 
 #include "_sound.h"
@@ -58,7 +58,6 @@ void Defcon::CAudioManager::OutputSound(EAudioTrack e, float VolumeScale)
 		UGameplayStatics::PlaySound2D(WorldContextObject, TrackPtr, VolumeScale);
 	}
 }
-
 
 
 bool Defcon::CAudioManager::CreateSoundObjects()

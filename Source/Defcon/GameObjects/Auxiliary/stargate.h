@@ -5,10 +5,8 @@
 
 
 
-
 #include "Common/PaintArguments.h"
 #include "Common/util_geom.h"
-
 #include "GameObjects/gameobjlive.h"
 #include "GameObjects/obj_types.h"
 
@@ -37,7 +35,6 @@ namespace Defcon
 		private:
 
 			void DrawSmallPart(FPaintArguments& framebuf, const I2DCoordMapper& mapper, FSlateBrush& Brush, const CFPoint& TopLeft, const CFPoint& BottomRight, const CFPoint&);
-
 	};
 }
 

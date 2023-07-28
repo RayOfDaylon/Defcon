@@ -31,7 +31,6 @@ namespace Defcon
 
 			virtual void Move          (float);
 			virtual void Draw          (FPaintArguments&, const I2DCoordMapper&);
-			virtual void DrawSmall     (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
 			IGameObject* GetCarrier    () const { return m_pCarrier; }
 			bool         IsBeingCarried() const { return (this->GetCarrier() != nullptr); }
 			bool         IsFalling     () const;

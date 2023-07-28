@@ -1,3 +1,6 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 #pragma once
 
 #include "obj_types.h"
@@ -7,7 +10,7 @@
 namespace Defcon
 {
 	class IGameObject;
-	class GameObjectProcess;
+	class GameObjectProcessingParams;
 
 	class CGameObjectCollection
 	{
@@ -33,7 +36,7 @@ namespace Defcon
 			IGameObject* GetFirst	  () const { return m_pFirst; }
 			IGameObject* Find		  (ObjType Kind, IGameObject* SearchAfter = nullptr) const;
 									  
-			virtual bool Process	  (GameObjectProcess&);
+			virtual bool Process	  (GameObjectProcessingParams&);
 			virtual void Notify       (Message Msg, IGameObject* Sender);
 
 		private:

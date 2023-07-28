@@ -1,34 +1,15 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mission_firebomber_pack.cpp
 	A small, dense group of firebombers on the opposite 
 	side of the planet.
-
-	Copyright 2004 Daylon Graphics Ltd.
 */
-
 
 
 #include "MilitaryMission.h"
 
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
-
-
-#include "Common/util_color.h"
-#include "Common/util_geom.h"
-
-
-#include "Globals/prefs.h"
-
-#include "GameObjects/player.h"
-#include "GameObjects/obj_types.h"
-
-
-#include "Arenas/DefconPlayViewBase.h"
-
-
-
-
-// ----------------------------------------------------------
 
 
 void Defcon::CFirebomberPack::Init(UDefconPlayViewBase* pA)

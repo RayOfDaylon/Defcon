@@ -1,7 +1,9 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	gameobj.cpp
 	Base game entity class
-	Copyright 2003-2004 Daylon Graphics Ltd.
 */
 
 
@@ -9,14 +11,10 @@
 
 #include "Globals/prefs.h"
 #include "Globals/GameColors.h"
-
 #include "Globals/GameObjectResources.h"
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/flak.h"
-
 #include "Main/mapper.h"
-
 #include "Arenas/DefconPlayViewBase.h"
 
 #include "DefconUtils.h"
@@ -25,32 +23,13 @@
 
 #pragma optimize("", off)
 
+
 Defcon::IGameObject::IGameObject()
 	:
-	m_pMapper(nullptr),
-	m_fLifespan(1.0f),
-	m_bDrawSmall(true),
-	m_bMortal(false),
-	m_bExternallyOwned(false),
-	m_fAge(0.0f),
-	m_fMass(1.0f),
-	m_fDrag(0.0f),
-	m_pPrev(nullptr),
-	m_pNext(nullptr),
-	m_bInjurious(false),
-	m_bCanBeInjured(false),
-	m_bIsCollisionInjurious(false),
-	m_parentType(ObjType::UNKNOWN),
-	m_type(ObjType::UNKNOWN),
-	m_creatorType(ObjType::UNKNOWN),
-	m_smallColor(MakeColorFromComponents(255,255,255)),
-	m_pointValue(0),
-	m_fAnimSpeed(1.0f),
-	m_bMissionTarget(false)
+	m_smallColor(MakeColorFromComponents(255,255,255))
 {
 	m_orient.up.set(0.0f, 1.0f);
 	m_orient.fwd.set(1.0f, 0.0f);
-	//m_fNow = UKismetSystemLibrary::GetGameTimeInSeconds(gpArena);
 	m_bboxrad.set(10, 10);
 }
 
@@ -69,29 +48,23 @@ Defcon::IGameObject::~IGameObject()
 }
 
 
-void Defcon::IGameObject::OnAboutToDie()
+void Defcon::IGameObject::CreateSprite(ObjType Kind)
 {
+	const auto& AtlasInfo = GameObjectResources.Get(Kind);
+
+	Sprite = SNew(Daylon::SpritePlayObject2D);
+
+	Sprite->SetAtlas(AtlasInfo.Atlas->Atlas);
+	Sprite->SetSize(AtlasInfo.Size);
+	Sprite->UpdateWidgetSize();
 }
 
 
-void Defcon::IGameObject::Notify(Message, void*)
+bool Defcon::IGameObject::ReduceLifespanBy(float f)
 {
-}
+	m_fLifespan = FMath::Max(0.0f, m_fLifespan - f);
 
-
-void Defcon::IGameObject::GetInjurePt(CFPoint&) const
-{
-}
-
-
-bool Defcon::IGameObject::TestInjury(const CFRect&) const
-{
-	return false;
-}
-
-
-void Defcon::IGameObject::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
+	return (m_fLifespan <= 0.0f);
 }
 
 
@@ -167,270 +140,9 @@ Defcon::IGameObject* Defcon::IGameObject::CreateFireblast(CGameObjectCollection&
 }
 
 
-void Defcon::IGameObject::InstallSprite() 
-{
-	if(Sprite) 
-	{
-		UE_LOG(LogGame, Log, TEXT("Installing sprite for object class %s"), *ObjectTypeManager.GetName(m_type));
-		Daylon::Install<SDaylonSprite>(Sprite, 0.5f); 
-	} 
-}
-
-
-void Defcon::IGameObject::UninstallSprite() 
-{
-	if(Sprite) 
-	{
-		UE_LOG(LogGame, Log, TEXT("Uninstalling sprite for object class %s"), *ObjectTypeManager.GetName(m_type));
-		Daylon::Uninstall(Sprite); 
-	} 
-}
-
-
-// -----------------------------------------------------
-
-Defcon::CGameObjectCollection::CGameObjectCollection()
-	:
-	m_pFirst(nullptr),
-	m_pLast(nullptr),
-	m_count(0)
-{
-}
-
-
-Defcon::CGameObjectCollection::~CGameObjectCollection()
-{
-	this->DeleteAll();
-}
-
-
-void Defcon::CGameObjectCollection::DeleteAll(bool IncludingSprites)
-{
-	while(m_pFirst != nullptr)
-	{
-		if(IncludingSprites)
-		{
-			m_pFirst->UninstallSprite();
-		}
-			
-		this->Delete(m_pFirst);
-	}
-}
-
-
-void Defcon::CGameObjectCollection::ForEach(TFunction<void(IGameObject*)> Function) const
-{
-	auto p = m_pFirst;
-
-	while(p != nullptr)
-	{
-		Function(p);
-			
-		p = p->GetNext();
-	}
-}
-
-
-void Defcon::CGameObjectCollection::ForEachUntil(TFunction<bool(IGameObject*)> Function) const
-{
-	auto p = m_pFirst;
-
-	while(p != nullptr && Function(p))
-	{
-		p = p->GetNext();
-	}
-}
-
-
-void Defcon::CGameObjectCollection::Add(IGameObject* p)
-{
-	check(p);
-	check(p->GetType() != ObjType::UNKNOWN);
-
-	if(m_pFirst != nullptr)
-	{
-		m_pFirst->SetPrev(p);
-		p->SetNext(m_pFirst);
-		p->SetPrev(nullptr);
-	}
-	else
-	{
-		check(p->GetNext() == nullptr && p->GetPrev() == nullptr);
-	}
-
-	m_pFirst = p;
-	check(m_pFirst->GetNext() != m_pFirst);
-
-	m_count++;
-}
-
-
-void Defcon::CGameObjectCollection::Add(CGameObjectCollection& set)
-{
-	IGameObject* p;
-
-	while((p = set.GetFirst()) != nullptr)
-	{
-		set.Detach(p);
-		this->Add(p);
-	}
-}
-
-
-void Defcon::CGameObjectCollection::Delete(IGameObject* p)
-{
-	this->Detach(p);
-	if(!p->ExternallyOwned())
-	{
-		delete p;
-	}
-}
-
-
-void Defcon::CGameObjectCollection::Detach(IGameObject* p)
-{
-	if(p->GetPrev() != nullptr)
-		p->GetPrev()->SetNext(p->GetNext());
-	else
-		m_pFirst = p->GetNext();
-
-	if(p->GetNext() != nullptr)
-		p->GetNext()->SetPrev(p->GetPrev());
-
-	p->SetNext(nullptr);
-	p->SetPrev(nullptr);
-	m_count--;
-}
-
-
-void Defcon::CGameObjectCollection::DetachAll()
-{
-	while(m_pFirst != nullptr)
-		this->Detach(m_pFirst);
-}
-
-
-size_t Defcon::CGameObjectCollection::Count() const
-{
-	return m_count;
-}
-
-
-size_t Defcon::CGameObjectCollection::CountOf(ObjType Kind) const
-{
-	size_t Result = 0;
-
-	ForEach([&](IGameObject* p) { if(p->GetType() == Kind) { Result++; } });
-
-	return Result;
-}
-
-
-
-Defcon::IGameObject* Defcon::CGameObjectCollection::Find(ObjType Kind, Defcon::IGameObject* p) const
-{
-	if(p == nullptr)
-		p = this->GetFirst();
-	else
-		p = p->GetNext();
-
-	while(p != nullptr)
-	{
-		if(p->GetType() == Kind)
-			break;
-
-		p = p->GetNext();
-	}
-	
-	return p;
-}
-
-
-void Defcon::CGameObjectCollection::Notify(Message Msg, IGameObject* Sender)
-{
-	ForEach([&](IGameObject* pObj) { pObj->Notify(Msg, Sender); });
-}
-
-
-bool Defcon::CGameObjectCollection::Process(GameObjectProcess& params)
-{
-	// Perform a standard processing run on all the objects.
-	// Return true if any objects were in the collection.
-
-	check(params.pMapper);
-
-	IGameObject* pObj = this->GetFirst();
-	bool b = false;
-
-	while(pObj != nullptr)
-	{
-		b = true;
-
-		if(params.fnOnEvery)
-		{
-			params.fnOnEvery(pObj, params.pvUser);
-		}
-
-		if(pObj->IsMortal() && pObj->ReduceLifespanBy(params.fElapsedTime))
-		{
-			IGameObject* pObj2 = pObj->GetNext();
-#ifdef _DEBUG
-			if(!pObj->OccursFrequently())
-			{
-				char sz[100];
-				MySprintf(sz, "Mortal object of class %s deleted\n", pObj->GetClassname());
-				OutputDebugString(sz);
-			}
-#endif
-			if(params.fnOnDeath != nullptr)
-			{
-				params.fnOnDeath(pObj, params.pvUser);
-			}
-
-			if(params.UninstallSpriteIfObjectDeleted)
-			{
-				pObj->UninstallSprite();
-			}
-			this->Delete(pObj);
-			pObj = pObj2;
-			continue;
-		}
-		
-		pObj->Move(params.fElapsedTime);
-
-		// Handle wraparound onto planet.
-		pObj->m_pos.x = gpArena->WrapX(pObj->m_pos.x);
-
-
-		// Lots of objects temporarily exist outside arena's vertical bounds.
-		//check(pObj->m_pos.y >= 0 && pObj->m_pos.y <= params.fArenaHeight);
-
-		// If the object has a visual, sync its position and update its animation.
-
-		if(pObj->Sprite)
-		{
-			CFPoint pt;
-			params.pMapper->To(pObj->m_pos, pt);
-			pObj->Sprite->SetPosition(FVector2D(pt.x, pt.y));
-			pObj->Sprite->Update(params.fElapsedTime);
-		}
-
-		pObj = pObj->GetNext();
-	}
-	return b;
-}
-
-
-int Defcon::IGameObject::GetExplosionColorBase() const
-{
-	return CGameColors::gray;
-}
-
-
 void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 {
 	// Default way an object explodes.
-
 
 	check(this != nullptr);
 
@@ -681,6 +393,70 @@ Defcon::IGameObject* Defcon::IGameObject::CreateFireball(CGameObjectCollection& 
 	return nullptr;
 #endif
 }
+
+
+void Defcon::IGameObject::InstallSprite() 
+{
+	if(Sprite) 
+	{
+		//UE_LOG(LogGame, Log, TEXT("Installing sprite for object class %s"), *ObjectTypeManager.GetName(m_type));
+		Daylon::Install<SDaylonSprite>(Sprite, 0.5f); 
+	} 
+}
+
+
+void Defcon::IGameObject::UninstallSprite() 
+{
+	if(Sprite) 
+	{
+		//UE_LOG(LogGame, Log, TEXT("Uninstalling sprite for object class %s"), *ObjectTypeManager.GetName(m_type));
+		Daylon::Uninstall(Sprite); 
+	} 
+}
+
+
+void                 Defcon::IGameObject::Init(const CFPoint& ArenaSize, const CFPoint& ScreenSize)     { m_arenasize = ArenaSize; m_screensize = ScreenSize; }
+void                 Defcon::IGameObject::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper) {}
+
+void                 Defcon::IGameObject::OnFinishedCreating()                 {}
+void                 Defcon::IGameObject::OnAboutToDie()                       {}
+void                 Defcon::IGameObject::Notify(Message, void*)               {}
+void                 Defcon::IGameObject::GetInjurePt(CFPoint&) const          {}
+bool                 Defcon::IGameObject::TestInjury(const CFRect&) const      { return false; }
+Defcon::IGameObject* Defcon::IGameObject::GetNext()                            { return m_pNext; }
+Defcon::IGameObject* Defcon::IGameObject::GetPrev()                            { return m_pPrev; }
+void                 Defcon::IGameObject::SetNext(IGameObject* p)              { m_pNext = p; }
+void                 Defcon::IGameObject::SetPrev(IGameObject* p)              { m_pPrev = p; }
+Defcon::ObjType      Defcon::IGameObject::GetParentType() const                { return m_parentType; }
+Defcon::ObjType      Defcon::IGameObject::GetCreatorType() const               { return m_creatorType; }
+void                 Defcon::IGameObject::SetCreatorType(ObjType n)            { m_creatorType = n; }
+Defcon::ObjType      Defcon::IGameObject::GetType() const                      { return m_type; }
+void                 Defcon::IGameObject::SetType(ObjType n)                   { m_type = n; }
+bool                 Defcon::IGameObject::OccursFrequently() const             { return false; }
+bool                 Defcon::IGameObject::Fireballs() const                    { return false; }
+float                Defcon::IGameObject::GetExplosionMass() const             { return 1.0f; }
+bool                 Defcon::IGameObject::Fireblasts() const                   { return false; }
+void                 Defcon::IGameObject::ZeroVelocity()                       { m_velocity.set(0,0); }
+const CFPoint&       Defcon::IGameObject::GetVelocity() const                  { return m_velocity; }
+void                 Defcon::IGameObject::MakeHurtable(bool b)                 { m_bCanBeInjured = b; }
+bool                 Defcon::IGameObject::IsMortal() const                     { return m_bMortal; }
+void                 Defcon::IGameObject::MarkAsDead()                         { m_fLifespan = 0.0001f; m_bMortal = true; }
+bool                 Defcon::IGameObject::MarkedForDeath() const               { return (m_bMortal && m_fLifespan <= 0.0001f); }
+float                Defcon::IGameObject::GetCollisionForce() const            { return 0.01f * COLLISION_DAMAGE; } // todo: s/b a per-class value and multiply by the object's velocity.
+bool                 Defcon::IGameObject::IsCollisionInjurious() const         { return m_bIsCollisionInjurious; }
+void                 Defcon::IGameObject::SetCollisionInjurious(bool b)        { m_bIsCollisionInjurious = b; }
+bool                 Defcon::IGameObject::IsInjurious() const                  { return m_bInjurious; }
+bool                 Defcon::IGameObject::CanBeInjured() const                 { return m_bCanBeInjured; }
+size_t               Defcon::IGameObject::GetPointValue() const                { return m_pointValue; }
+bool                 Defcon::IGameObject::ExternallyOwned() const              { return m_bExternallyOwned; }
+void                 Defcon::IGameObject::SetExternalOwnership(bool b)         { m_bExternallyOwned = b; }
+bool                 Defcon::IGameObject::IsMissionTarget() const              { return m_bMissionTarget; }
+void                 Defcon::IGameObject::SetAsMissionTarget(bool b)           { m_bMissionTarget = b; }
+const FLinearColor&  Defcon::IGameObject::GetRadarColor() const                { return m_smallColor; }
+int                  Defcon::IGameObject::GetExplosionColorBase() const        { return CGameColors::gray; }
+
+
+
 
 
 #pragma optimize("", on)

@@ -1,36 +1,26 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	ghost.cpp
 	Ghost enemy type for Defcon game.
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 
 #include "ghost.h"
 
-
-
-
-
 #include "Common/util_color.h"
-
-
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
 #include "Globals/GameColors.h"
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
-
-#include "Arenas/DefconPlayViewBase.h"
 #include "Globals/GameObjectResources.h"
-
+#include "Arenas/DefconPlayViewBase.h"
 #include "DefconUtils.h"
 
-// -------------------------------------------------
+
 
 Defcon::CGhost::CGhost()
 {
@@ -72,108 +62,47 @@ void Defcon::CGhost::Move(float fTime)
 {
 	// Just float around drifting horizontally.
 
-	if(DispersalCountdown <= 0.0f)
+	if(DispersalCountdown > 0.0f)
 	{
-		// We are in normal form (not dispersed).
-
-		CEnemy::Move(fTime);
-		m_inertia = m_pos;
-
-		m_orient.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + m_fAge)); 
-
-
-		//float diff = (float)UDefconUtils::GetGameInstance(gpArena)->GetScore() / 50000;
-		float diff = (float)gDefconGameInstance->GetScore() / 50000;
-
-		if(m_bWaits)
-			diff *= (float)(ABS(sin(m_fAge * PI)));
-
-		diff = FMath::Min(diff, 1.5f);
-
-		if(true/*m_bFiresBullets*/)
-		{
-			if(FRAND <= 0.05f * diff
-				&& this->CanBeInjured()
-				&& gpArena->GetPlayerShip().IsAlive()
-				&& gpArena->IsPointVisible(m_pos))
-				{
-					gpArena->FireBullet(*this, m_pos, 1, 1);
-				}
-		}
-
-		m_fSpinVel = 1.0f;//sin(m_fAge * PI * m_fSpinVelMax);
-		m_fSpinAngle += (m_fSpinVel * fTime);
-
-		m_pos.muladd(m_orient.fwd, fTime * 50.0f);
-		m_inertia = m_pos - m_inertia;
-
-		// See if we need to disperse (player ship got too close).
-
-		CPlayer* pTarget = &gpArena->GetPlayerShip();
-
-		if(pTarget->IsAlive() && !this->MarkedForDeath())
-		{
-			CFPoint dir;
-			const float dist = gpArena->Direction(m_pos, pTarget->m_pos, dir);
-
-			if(dist < GHOST_PLAYER_DIST_MIN) // todo: use pref value instead of constant 200
-			{
-				const float flighttime = FRAND * 1.0f + 0.5f;
-
-				DispersalCountdown = flighttime;
-
-				// We don't have a sprite to hide, and our Draw method takes care of "hiding" us by
-				// not rendering if we're dispersed (since the parts will render).
-				//Sprite->Hide();
-
-				// While hidden, move us to our reformation spot.
-				CFPoint newloc;
-
-				// Choose somewhere else on the screen.
-				newloc.x = m_pos.x + SFRAND * gpArena->GetDisplayWidth() / 1.5f;
-				newloc.y = (FRAND * 0.75f + 0.125f) * gpArena->GetHeight();
-
-				// Don't modulate newloc; it will cause wrong path animation if path cross x-origin.
-				// Modulation must happen in ghostpart::move.
-
-				for(int32 i = 1; i < m_numParts; i++)
-				{
-					CGhostPart* p = (CGhostPart*)gpArena->CreateEnemyNow(ObjType::GHOSTPART, m_partLocs[i], false, false);
-
-					p->SetCollisionInjurious(false);
-					p->SetFlightDuration(flighttime);
-					p->SetFlightPath(m_pos, newloc);
-				}
-
-				// Now move ourselves. Do this last because we use our original m_pos as the 
-				// source position of the dispersal in the above loop.
-
-				m_pos = newloc;
-				m_pos.x = gpArena->WrapX(m_pos.x);
-		
-				gpAudio->OutputSound(snd_ghostflight);
-			}
-		}
-	}
-	else
-	{
-		// We're dispersed, eventually to reform.
-
 		DispersalCountdown -= fTime;
-/*
-		if(DispersalCountdown <= 0.0f)
-		{
-			// We've finished reforming, the parts will destroy themselves.
-			//Sprite->Show();
-		}
-		else
-		{
-			// Still dispersed, so keep waiting.
-		}
-*/
+		return;
 	}
 
-#if 0
+	// We are in normal form (not dispersed).
+
+	CEnemy::Move(fTime);
+	m_inertia = m_pos;
+
+	m_orient.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + m_fAge)); 
+
+
+	//float diff = (float)UDefconUtils::GetGameInstance(gpArena)->GetScore() / 50000;
+	float diff = (float)gDefconGameInstance->GetScore() / 50000;
+
+	if(m_bWaits)
+		diff *= (float)(ABS(sin(m_fAge * PI)));
+
+	diff = FMath::Min(diff, 1.5f);
+
+	if(true/*m_bFiresBullets*/)
+	{
+		if(FRAND <= 0.05f * diff
+			&& this->CanBeInjured()
+			&& gpArena->GetPlayerShip().IsAlive()
+			&& gpArena->IsPointVisible(m_pos))
+		{
+			gpArena->FireBullet(*this, m_pos, 1, 1);
+		}
+	}
+
+	m_fSpinVel = 1.0f;//sin(m_fAge * PI * m_fSpinVelMax);
+	m_fSpinAngle += (m_fSpinVel * fTime);
+
+	m_pos.muladd(m_orient.fwd, fTime * 50.0f);
+	m_inertia = m_pos - m_inertia;
+
+	// See if we need to disperse (player ship got too close).
+
 	CPlayer* pTarget = &gpArena->GetPlayerShip();
 
 	if(pTarget->IsAlive() && !this->MarkedForDeath())
@@ -183,18 +112,15 @@ void Defcon::CGhost::Move(float fTime)
 
 		if(dist < GHOST_PLAYER_DIST_MIN) // todo: use pref value instead of constant 200
 		{
-			// Fragment into parts that will converge to reform us later
-
 			const float flighttime = FRAND * 1.0f + 0.5f;
 
 			DispersalCountdown = flighttime;
 
-			Sprite->Hide();
+			// We don't have a sprite to hide, and our Draw method takes care of "hiding" us by
+			// not rendering if we're dispersed (since the parts will render).
+			//Sprite->Hide();
 
-			// todo: use IsDispersed member instead of dying and birthing a CGhostPrimaryPart
-
-			CGhostPrimaryPart* pE = (CGhostPrimaryPart*)gpArena->CreateEnemyNow(ObjType::GHOSTPARTPRIMARY, m_partLocs[0], false, false);
-
+			// While hidden, move us to our reformation spot.
 			CFPoint newloc;
 
 			// Choose somewhere else on the screen.
@@ -203,13 +129,8 @@ void Defcon::CGhost::Move(float fTime)
 
 			// Don't modulate newloc; it will cause wrong path animation if path cross x-origin.
 			// Modulation must happen in ghostpart::move.
-			
-			pE->SetCollisionInjurious(false);
-			pE->SetNewLocation(newloc);
-			pE->SetFlightDuration(flighttime);
-			pE->SetFlightPath(m_pos, newloc);
 
-			for(size_t i = 1; i < m_numParts; i++)
+			for(int32 i = 1; i < m_numParts; i++)
 			{
 				CGhostPart* p = (CGhostPart*)gpArena->CreateEnemyNow(ObjType::GHOSTPART, m_partLocs[i], false, false);
 
@@ -217,13 +138,16 @@ void Defcon::CGhost::Move(float fTime)
 				p->SetFlightDuration(flighttime);
 				p->SetFlightPath(m_pos, newloc);
 			}
-		
-			this->MarkAsDead();
 
+			// Now move ourselves. Do this last because we use our original m_pos as the 
+			// source position of the dispersal in the above loop.
+
+			m_pos = newloc;
+			m_pos.x = gpArena->WrapX(m_pos.x);
+		
 			gpAudio->OutputSound(snd_ghostflight);
 		}
 	}
-#endif
 }
 
 
@@ -326,8 +250,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 	float maxsize = FRAND * 5 + 3;
 
 /*
-	// Don't use huge particles ever; it 
-	// just looks silly in the end.
+	// Don't use huge particles ever; it just looks silly in the end.
 	if(FRAND < .08)
 		maxsize = 14;
 */
@@ -530,41 +453,3 @@ void Defcon::CGhostPart::Explode(CGameObjectCollection& debris)
 {
 	// Ghost parts don't explode.
 }
-
-#if 0
-// ------------------------------------------------------------
-
-Defcon::CGhostPrimaryPart::CGhostPrimaryPart()
-{
-	m_parentType = m_type;
-	m_type = ObjType::GHOSTPARTPRIMARY;
-}
-
-
-#ifdef _DEBUG
-const char* Defcon::CGhostPrimaryPart::GetClassname() const
-{
-	static char* psz = "Ghost_primary_part";
-	return psz;
-};
-#endif
-
-
-void Defcon::CGhostPrimaryPart::SetNewLocation(const CFPoint& pt) 
-{
-	m_newPos = pt; 
-	m_newPos.x = gpArena->WrapX(pt.x);
-}
-
-
-void Defcon::CGhostPrimaryPart::Move(float fTime)
-{
-	CGhostPart::Move(fTime);
-
-	if(m_fAge >= m_fMaxAge)
-	{
-		// Our time has wound up, so recreate the ghost that spawned us.
-		gpArena->CreateEnemy(ObjType::GHOST, m_newPos, false, false);
-	}
-}
-#endif // 0

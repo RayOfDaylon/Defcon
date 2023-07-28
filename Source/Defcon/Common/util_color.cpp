@@ -1,9 +1,9 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /* 
 	util_color.cpp
 	Color-related types and routines. 
-
-	Copyright 2004 Daylon Graphics Ltd.
-
 */
 
 #include "util_color.h"

@@ -1,34 +1,16 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mission_apex_offensive_lite.cpp
 	"Apex Offensive" mission in Defence Condition.
 	The landers are given a medium escort. This wave 
 	marks the style of most military missions.
-
-	Copyright 2004 Daylon Graphics Ltd.
 */
-
 
 
 #include "MilitaryMission.h"
 
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
-
-#include "Common/util_color.h"
-#include "Common/util_geom.h"
-
-
-#include "Globals/prefs.h"
-
-#include "GameObjects/player.h"
-#include "GameObjects/obj_types.h"
-
-
-#include "Arenas/DefconPlayViewBase.h"
-
-
-
-
-// ----------------------------------------------------------
 
 
 void Defcon::CApexOffensiveLite::Init(UDefconPlayViewBase* pA)
@@ -118,26 +100,7 @@ void Defcon::CApexOffensiveLite::MakeTargets(float fElapsed, const CFPoint& wher
 			{ ObjType::BOMBER, { 2, 2, 1, 0 } }
 		};
 
-
 		STANDARD_ENEMY_SPAWNING(0.5f)
-
-		/*size_t i, j;
-		for(i = 0; i < array_size(waves); i++)
-		{
-			for(j = 0; j < waves[i].count[m_nAttackWave] && this->HostilesRemaining() > 0; j++)
-			{
-				//CCreateEnemyEvent* p = new CCreateEnemyEvent;
-				p->Init(m_pArena);
-				p->m_objtype = waves[i].type;
-				p->m_when = UKismetSystemLibrary::GetGameTimeInSeconds(m_pArena) + (FRAND * 0.5f * j);
-				float wp = m_pArena->GetWidth();
-				float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + where.x;
-				x = (float)fmod(x, wp);
-				float y = (FRAND * .15f + .85f) * m_pArena->GetHeight();
-				p->m_where.set(x, y);
-				this->AddEvent(p);
-			}
-		}*/
 
 		m_nAttackWave++;
 	}

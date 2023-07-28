@@ -1,13 +1,13 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	event.cpp
 	Defcon event system
-
-	Copyright 2010 Daylon Graphics Ltd.
 */
 
 #include "event.h"
 
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "DefconUtils.h"
 
 #include "Arenas/DefconPlayViewBase.h"
@@ -54,7 +54,7 @@ void Defcon::CEventQueue::Add(CEvent* pE)
 
 void Defcon::CEventQueue::Process()
 {
-	const float now = UKismetSystemLibrary::GetGameTimeInSeconds(gpArena);
+	const float now = GameTime();
 
 	for(int32 Index = m_events.Num() - 1; Index >= 0; Index--)
 	{

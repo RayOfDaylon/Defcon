@@ -1,15 +1,15 @@
-/*
-	gameobj.cpp
-	Copyright 2003-2004 Daylon Graphics Ltd.
-*/
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
 
+/*
+	gameobjlive.cpp
+*/
 
 
 #include "gameobjlive.h"
 #include "Common/util_core.h"
 
 #include "DefconLogging.h"
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 
 #pragma optimize("", off)
 
@@ -75,17 +75,6 @@ void Defcon::ILiveGameObject::Move(float fElapsedTime)
 }
 
 
-#if 0
-void Defcon::ILiveGameObject::DrawSmall(FPaintArguments& PaintArguments, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush)
-{
-	if(!IsMaterializing())
-	{
-		Super::DrawSmall(PaintArguments, CoordMapper, Brush);
-	}
-}
-#endif
-
-
 void Defcon::ILiveGameObject::ChangeThrust(const CFPoint& f)
 {
 }
@@ -105,7 +94,7 @@ float Defcon::ILiveGameObject::NavControl_Duration(int i) const
 		return 0.0f;
 	}
 
-	const float f = (float)(UKismetSystemLibrary::GetGameTimeInSeconds(WorldContextObject) - m_navCtls[i].fTimeDown);
+	const float f = (float)(GameTime() - m_navCtls[i].fTimeDown);
 	return FMath::Max(0.0f, f);
 }
 

@@ -1,3 +1,6 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 #pragma once
 
 #include "enemies.h"
@@ -35,9 +38,5 @@ namespace Defcon
 			CFPoint	m_posOrg;
 			float	m_freq;
 			float	m_fTimeTargetWithinRange;
-			//float	m_yoff;
-			//float	m_xFreq;
-			//float	m_amp;
-			//float	m_halfwayAltitude;
 	};
 }

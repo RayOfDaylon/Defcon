@@ -1,16 +1,15 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /* 
 	util_str.cpp
 	String-releated routines. 
-
-	Copyright 2000-2004 Daylon Graphics Ltd.
 */
 
 
 #include "util_str.h"
 
-
 #include <string.h>
-
 #include <cctype>
 
 #include "util_core.h"

@@ -1,34 +1,18 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mission_firstcontact.cpp
 	"First Contact" mission in Defence Condition.
-	The easiest actual military engagement;
-	just a few landers.
-
-	Copyright 2004 Daylon Graphics Ltd.
+	The easiest military engagement;	just a few landers.
 */
-
 
 
 #include "MilitaryMission.h"
 
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
-
-
-#include "Common/util_color.h"
-#include "Common/util_geom.h"
-
-
-#include "Globals/prefs.h"
-
-#include "GameObjects/player.h"
-#include "GameObjects/obj_types.h"
-
-#include "Arenas/DefconPlayViewBase.h"
 
 #pragma optimize("", off)
 
-
-// ----------------------------------------------------------
 
 
 void Defcon::CFirstContactMission::Init(UDefconPlayViewBase* pA)

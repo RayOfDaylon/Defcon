@@ -1,32 +1,15 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mission_yllabian_escort.cpp
 	"Yllabian Dogfight 2" but in orbit.
-
-	Copyright 2010 Daylon Graphics Ltd.
 */
 
 
 
 #include "MilitaryMission.h"
 
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
-
-
-#include "Common/util_color.h"
-#include "Common/util_geom.h"
-
-
-#include "Globals/prefs.h"
-
-#include "GameObjects/player.h"
-#include "GameObjects/obj_types.h"
-
-#include "Arenas/DefconPlayViewBase.h"
-
-
-
-
-// ----------------------------------------------------------
 
 
 void Defcon::CYllabianEscort::Init(UDefconPlayViewBase* pA)

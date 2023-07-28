@@ -1,32 +1,23 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	hunter.cpp
 	Hunter type for Defcon game.
-	Copyright 2003-2004 Daylon Graphics Ltd.
 */
 
 
 #include "hunter.h"
 
-
-
-
-
 #include "Common/util_color.h"
-
-
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
 #include "Globals/GameColors.h"
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
 #include "Arenas/DefconPlayViewBase.h"
 
-// -------------------------------------------------
 
 
 Defcon::CHunter::CHunter()
@@ -60,9 +51,11 @@ Defcon::CHunter::~CHunter()
 {
 }
 
+
 void Defcon::CHunter::OnAboutToDie()
 {
 }
+
 
 #ifdef _DEBUG
 const char* Defcon::CHunter::GetClassname() const
@@ -71,6 +64,7 @@ const char* Defcon::CHunter::GetClassname() const
 	return psz;
 };
 #endif
+
 
 void Defcon::CHunter::Notify(Defcon::Message msg, void* pObj)
 {
@@ -101,10 +95,7 @@ void Defcon::CHunter::Move(float fTime)
 	}*/
 
 
-
-
 	// Move towards target.
-
 
 	m_inertia = m_pos;
 	
@@ -140,8 +131,6 @@ void Defcon::CHunter::Move(float fTime)
 			}
 		}
 	}
-
-
 
 
 	switch(m_eState)
@@ -245,33 +234,6 @@ void Defcon::CHunter::Move(float fTime)
 
 void Defcon::CHunter::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-#if 0
-	CEnemy::Draw(framebuf, mapper);
-	if(this->IsMaterializing())
-		return;
-
-	CFPoint pt;
-	mapper.To(m_pos, pt);
-	
-	float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
-
-	f = (float)cos(f * PI); //+ 0.0f;
-	f = ABS(f);
-	f *= 4;
-
-		
-	CTrueBitmap& bmp = gBitmaps.GetBitmap((m_orient.fwd.x < 0 ? CBitmaps::hunterL0 : CBitmaps::hunterR0) + ROUND(f));
-	int w = bmp.GetWidth();
-
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
-	{
-		pt.sub(CFPoint((float)w/2, (float)bmp.GetHeight()/2));
-		bmp.BlitAlphaBrighten(
-			framebuf, ROUND(pt.x), ROUND(pt.y), 
-			w, bmp.GetHeight(), 
-			0, 0, m_fBrightness * (FRAND * .15f + 0.85f));
-	}
-#endif
 }
 
 

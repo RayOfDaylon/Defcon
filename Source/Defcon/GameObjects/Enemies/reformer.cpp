@@ -1,34 +1,25 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	reformer.cpp
 	Reformer enemy type for Defcon game.
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 
 #include "reformer.h"
 
-
-
-
-
 #include "Common/util_color.h"
-
-
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
 #include "Globals/GameColors.h"
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
 #include "Arenas/DefconPlayViewBase.h"
 #include "DefconUtils.h"
 
 
-// -------------------------------------------------
 
 Defcon::CReformer::CReformer()
 	:
@@ -41,7 +32,6 @@ Defcon::CReformer::CReformer()
 	m_pointValue = REFORMER_VALUE;
 	m_orient.fwd.set(1.0f, 0.0f);
 	m_smallColor = MakeColorFromComponents(191, 33, 33);
-	//CTrueBitmap& bmp = gBitmaps.GetBitmap(CBitmaps::pod0);
 	m_bboxrad.set(10, 10); // todo: why so explicit?//(float)bmp.GetWidth()/2, (float)bmp.GetHeight()/2);
 	m_fAnimSpeed = FRAND * 0.35f + 0.65f;
 	m_xFreq = FRAND * 0.5f + 1.0f;
@@ -56,6 +46,7 @@ Defcon::CReformer::CReformer()
 Defcon::CReformer::~CReformer()
 {
 }
+
 
 #ifdef _DEBUG
 const char* Defcon::CReformer::GetClassname() const
@@ -75,8 +66,6 @@ void Defcon::CReformer::Move(float fTime)
 
 	m_orient.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + m_fAge)); 
 
-
-	//float diff = (float)UDefconUtils::GetGameInstance(gpArena)->GetScore() / 50000;
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 
 	if(m_bWaits)
@@ -137,24 +126,6 @@ void Defcon::CReformer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& ma
 
 void Defcon::CReformer::DrawPart(FPaintArguments& framebuf, const CFPoint& where)
 {
-#if 0 
-
-	CFPoint pt = where;
-	float f = 3.0f * PSIN(PI * fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed);
-
-	CTrueBitmap& bmp = gBitmaps.GetBitmap(CBitmaps::reformerpart0 + ROUND(f));
-	int w = bmp.GetWidth();
-
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
-	{
-		pt.sub(CFPoint((float)w/2, (float)bmp.GetHeight()/2));
-		bmp.BlitAlphaBrighten(
-			framebuf, ROUND(pt.x), ROUND(pt.y), 
-			w, bmp.GetHeight(), 
-			0, 0, m_fBrightness * (FRAND * .15f + 0.85f));
-	}
-#endif
-
 	auto& Info = GameObjectResources.Get(ObjType::REFORMERPART);
 
 	CFPoint pt = where;
@@ -258,12 +229,10 @@ Defcon::CReformerPart::CReformerPart()
 	m_pointValue = REFORMERPART_VALUE;
 	m_orient.fwd.set(1.0f, 0.0f);
 	m_smallColor = C_RED;
-	//CTrueBitmap& bmp = gBitmaps.GetBitmap(CBitmaps::reformerpart0);
 	m_fAnimSpeed = FRAND * 0.35f + 0.15f;
 	m_xFreq = 2.0f * FRANDRANGE(0.5f, 1.5f);
 	m_bCanBeInjured = true;
 	m_bIsCollisionInjurious = true;
-	//m_bMaterializes = false;
 	m_yoff = (float)(FRAND * PI);
 	m_fTimeTargetWithinRange = 0.0f;
 	m_fMergeTime = 0.0f;
@@ -391,7 +360,6 @@ void Defcon::CReformerPart::Move(float fTime)
 			}
 		}
 
-
 		m_amp = LERP(0.33f, 1.0f, PSIN(m_yoff+m_fAge)) * 0.5f * m_screensize.y;
 		m_halfwayAltitude = (float)(sin((m_yoff+m_fAge)*0.6f) * 50 + (0.5f * m_screensize.y));
 
@@ -434,30 +402,6 @@ void Defcon::CReformerPart::Move(float fTime)
 
 void Defcon::CReformerPart::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-#if 0
-	//CEnemy::Draw(framebuf, mapper);
-	//if(!m_bCanBeInjured)
-	//	return;
-
-	CFPoint pt;
-	mapper.To(m_pos, pt);
-
-
-	float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
-	//f = (float)cos(f * PI) + 1.0f;
-	f *= 3;
-	
-	CTrueBitmap& bmp = gBitmaps.GetBitmap(CBitmaps::reformerpart0 + ROUND(f));
-	int w = bmp.GetWidth();
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
-	{
-		pt.sub(CFPoint((float)w/2, (float)bmp.GetHeight()/2));
-		bmp.BlitAlphaBrighten(
-			framebuf, ROUND(pt.x), ROUND(pt.y), 
-			w, bmp.GetHeight(), 
-			0, 0, /*m_fBrightness * */ (FRAND * 0.1f + 0.9f));
-	}
-#endif
 }
 
 
@@ -500,5 +444,3 @@ void Defcon::CReformerPart::Explode(CGameObjectCollection& debris)
 		debris.Add(pFlak);
 	}
 }
-
-

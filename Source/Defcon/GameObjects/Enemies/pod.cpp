@@ -1,33 +1,26 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	pod.cpp
 	Pod enemy type for Defcon game.
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 #include "pod.h"
 
 
-
-
-
 #include "Common/util_color.h"
-
-
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
 #include "Globals/GameColors.h"
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
 #include "Arenas/DefconPlayViewBase.h"
 #include "DefconUtils.h"
 #include "DefconLogging.h"
 
-// -------------------------------------------------
+
 
 Defcon::CPod::CPod()
 	:
@@ -48,9 +41,11 @@ Defcon::CPod::CPod()
 	m_bboxrad.set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
+
 Defcon::CPod::~CPod()
 {
 }
+
 
 #ifdef _DEBUG
 const char* Defcon::CPod::GetClassname() const
@@ -203,4 +198,3 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 		}
 	}
 }
-

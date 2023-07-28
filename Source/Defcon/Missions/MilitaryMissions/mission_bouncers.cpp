@@ -1,31 +1,15 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mission_bouncers.cpp
 	Bouncers, landers, firebombers, and bombers.
-
-	Copyright 2009-2010 Daylon Graphics Ltd.
 */
 
 
 #include "MilitaryMission.h"
 
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 
-
-#include "Common/util_color.h"
-#include "Common/util_geom.h"
-
-
-#include "Globals/prefs.h"
-
-#include "GameObjects/player.h"
-#include "GameObjects/obj_types.h"
-
-
-#include "Arenas/DefconPlayViewBase.h"
-
-
-
-// ----------------------------------------------------------
 
 
 void Defcon::CBouncersMission::Init(UDefconPlayViewBase* pA)
@@ -104,25 +88,6 @@ void Defcon::CBouncersMission::MakeTargets(float fElapsed, const CFPoint& where)
 
 		STANDARD_ENEMY_SPAWNING(0.1f)
 
-#if 0
-		size_t i, j;
-		for(i = 0; i < array_size(waves); i++)
-		{
-			for(j = 0; j < waves[i].count[m_nAttackWave]; j++)
-			{
-				//CCreateEnemyEvent* p = new CCreateEnemyEvent;
-				p->Init(m_pArena);
-				p->m_objtype = waves[i].type;
-				p->m_when = UKismetSystemLibrary::GetGameTimeInSeconds(m_pArena) + (FRAND * 0.1f * j);
-				float wp = m_pArena->GetWidth();
-				float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + where.x;
-				x = (float)fmod(x, wp);
-				float y = (FRAND * .15f + .85f) * m_pArena->GetHeight();
-				p->m_where.set(x, y);
-				this->AddEvent(p);
-			}
-		}
-#endif
 		m_nAttackWave++;
 	}
 }

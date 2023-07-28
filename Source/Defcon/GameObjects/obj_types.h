@@ -90,6 +90,4 @@ namespace Defcon
 	};
 
 	extern FObjectTypeManager ObjectTypeManager;
-
 }
-

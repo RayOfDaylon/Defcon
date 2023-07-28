@@ -1,3 +1,6 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 // bmpdisp.cpp
 // Implements CBitmapDisplayer game object
 
@@ -57,39 +60,11 @@ void Defcon::CBitmapDisplayer::InitBitmapDisplayer
 	m_fLifespan = m_fOrgLifespan = lifetime;
 	m_fAlphaScale = fAlphaScale;
 	m_fAlphaMin = fAlphaMin;
-	//CTrueBitmap& bmp = gBitmaps.GetBitmap(m_nBaseID);
-	//m_bboxrad.set((float)bmp.GetWidth()/2, (float)bmp.GetHeight()/2);
 }
 
 
 void Defcon::CBitmapDisplayer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& map)
 {
-#if 0
-	if(m_nFrame >= m_nFrameCount)
-	{
-		m_fLifespan = 0.0f;
-		return;
-	}
-
-	m_nFrame = (int)(m_fAge / m_fOrgLifespan * (m_nFrameCount-1) + 0.5f);
-	CTrueBitmap& bmp = gBitmaps.GetBitmap(m_nBaseID + m_nFrame);
-
-	CFPoint pt;
-	map.To(m_pos, pt);
-
-	if(bmp.m_bHasAlpha)
-	{
-		bmp.BlitAlphaBrighten(framebuf, 
-			(int)pt.x, (int)pt.y, 
-			bmp.GetWidth(), bmp.GetHeight(),
-			0, 0, FRAND * m_fAlphaScale + m_fAlphaMin);
-	}
-	else
-		bmp.Blit(framebuf, 
-			(int)pt.x, (int)pt.y, 
-			bmp.GetWidth(), bmp.GetHeight(),
-			0, 0);
-#endif
 }
 
 

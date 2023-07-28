@@ -6,8 +6,6 @@
 /* 
 	util_str.h
 	String-releated routines. 
-
-	Copyright 2000-2004 Daylon Graphics Ltd.
 */
 
 #include "CoreMinimal.h"

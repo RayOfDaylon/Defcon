@@ -1,33 +1,25 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	dynamo.cpp
 	Dynamo enemy type for Defcon game.
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 
 #include "dynamo.h"
 
-
-
-
 #include "DefconUtils.h"
-
 #include "Common/util_color.h"
-
-
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
 #include "Globals/GameColors.h"
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
 #include "Arenas/DefconPlayViewBase.h"
 
-// -------------------------------------------------
+
 
 Defcon::CDynamo::CDynamo()
 {
@@ -101,6 +93,3 @@ void Defcon::CDynamo::Move(float fTime)
 void Defcon::CDynamo::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
 }
-
-
-

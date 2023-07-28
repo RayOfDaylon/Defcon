@@ -9,7 +9,6 @@
 #include "GameObjects/human.h"
 #include "Main/event.h"
 #include "DefconLogging.h"
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "Runtime/UMG/Public/Blueprint/UserWidget.h"
 #include "UMG/Public/Blueprint/WidgetBlueprintLibrary.h"
 #include "Globals/prefs.h"

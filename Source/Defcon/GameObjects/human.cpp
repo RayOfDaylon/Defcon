@@ -1,33 +1,23 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /* 
 	human.cpp
 	Implements human entities in Defcon game.
-	Copyright 2003-2004 Daylon Graphics Ltd.
 */
 
 
 #include "human.h"
 
-
-
-
-
-
 #include "Globals/GameColors.h"
-
 #include "Globals/prefs.h"
 #include "Globals/GameObjectResources.h"
-
 #include "GameObjects/Enemies/enemies.h"
 #include "GameObjects/player.h"
-
 #include "Arenas/DefconPlayViewBase.h"
-
-
 #include "DefconLogging.h"
 
 
-
-// -----------------------------------------------------
 
 Defcon::CHuman::CHuman()
 {
@@ -82,6 +72,7 @@ const char* Defcon::CHuman::GetClassname() const
 }
 #endif
 
+
 void Defcon::CHuman::Notify(Defcon::Message msg, void* pObj)
 {
 	switch(msg)
@@ -107,7 +98,6 @@ void Defcon::CHuman::Notify(Defcon::Message msg, void* pObj)
 
 	ILiveGameObject::Notify(msg, pObj);
 }
-
 
 
 void Defcon::CHuman::Move(float fElapsedTime)
@@ -186,29 +176,6 @@ void Defcon::CHuman::Move(float fElapsedTime)
 
 void Defcon::CHuman::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-}
-
-
-void Defcon::CHuman::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper& mapper, FSlateBrush& Brush)
-{
-#if 0
-	// Adjust our vertical position slightly up so that 
-	// we draw flush with our carrier on the radar.
-	// todo: are we trying to overlap the ship or draw right underneath it?
-
-	float oy = m_pos.y;
-
-	if(this->IsBeingCarried())
-	{
-		m_pos.y += 12;
-	}
-#endif	
-
-	ILiveGameObject::DrawSmall(framebuf, mapper, Brush);
-
-#if 0	
-	m_pos.y = oy;
-#endif
 }
 
 

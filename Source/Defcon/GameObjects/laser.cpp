@@ -1,27 +1,19 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	laser.cpp
 	Laserbeam weapon routines for Defcon game.
-	Copyright 2003-2004 Daylon Graphics Ltd.
 */
 
 
 #include "laser.h"
-
-
-
-
-
-
-
 
 #include "Globals/prefs.h"
 #include "Arenas/DefconPlayViewBase.h"
 
 
 #define MAX_LASERAGE	0.5f
-
-// ------------------------------------------------------
-
 
 
 void Defcon::CLaserWeapon::Fire(CGameObjectCollection& goc)
@@ -42,10 +34,7 @@ void Defcon::CLaserWeapon::Fire(CGameObjectCollection& goc)
 	goc.Add(pBeam);
 }
 
-
-
 // -------------------------------------------------------
-
 
 Defcon::CLaserbeam::CLaserbeam()
 	:
@@ -110,7 +99,6 @@ void Defcon::CLaserbeam::Move(float fTime)
 }
 
 
-
 void Defcon::CLaserbeam::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
 	// todo: make laserbeam draw using a random pick 
@@ -168,13 +156,6 @@ void Defcon::CLaserbeam::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 		framebuf.BrightenStraightLine((int)p1.x, (int)p1.y, (int)p2.x, (int)p2.y);
 		framebuf.BrightenStraightLine((int)p1.x, (int)p1.y+1, (int)p2.x, (int)p2.y+1);
 	}
-
-	#if 0
-	// Texture way.
-
-	
-	gBitmaps.GetBitmap(CBitmaps::beam0).StretchBlt(framebuf, (size_t)p1.x, (size_t)p1.y, (size_t) dist, 1);
-	#endif
 #endif
 }
 
@@ -219,5 +200,3 @@ bool Defcon::CLaserbeam::TestInjury(const CFRect& r) const
 	}
 	return false;
 }
-
-

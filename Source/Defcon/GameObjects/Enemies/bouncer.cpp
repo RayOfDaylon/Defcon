@@ -1,3 +1,6 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	bouncer.cpp
 	Bouncer enemy type for Defcon game.
@@ -9,24 +12,15 @@
 
 #include "bouncer.h"
 
-
-
-
-
 #include "Common/util_color.h"
-
-
 #include "Globals/_sound.h"
 #include "Globals/prefs.h"
 #include "Globals/GameColors.h"
-
+#include "Globals/GameObjectResources.h"
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
-#include "Globals/GameObjectResources.h"
 #include "Arenas/DefconPlayViewBase.h"
-
 #include "DefconUtils.h"
 
 // -------------------------------------------------

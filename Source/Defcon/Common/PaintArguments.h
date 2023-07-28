@@ -4,9 +4,6 @@
 #pragma once
 
 
-// FPaintArguments name is retained for API compatability, but we don't use an actual framebuffer anymore.
-
-
 #include "Runtime/SlateCore/Public/Layout/SlateRect.h"
 #include "Runtime/SlateCore/Public/Types/PaintArgs.h"
 #include "Runtime/SlateCore/Public/Rendering/DrawElements.h"
@@ -14,9 +11,10 @@
 
 #include "util_color.h"
 
+
 struct FPaintArguments
 {
-	// For Unreal Engine, our "frame buffer" is now just the args passed to OnPaint.
+	// Anything that issues draw calls directly takes a reference to this structure e.g. GameObject::Draw
 
 	const FPaintArgs*        Args;
 	const FGeometry*         AllottedGeometry;
@@ -24,7 +22,7 @@ struct FPaintArguments
 	const FSlateRect*        MyCullingRect;
 	FSlateWindowElementList* OutDrawElements;
 	int32                    LayerId;
-	const FWidgetStyle*      InWidgetStyle;
+	const FWidgetStyle*      InWidgetStyle; // todo: drop this, fold it's alpha into RenderOpacity
 	bool                     bParentEnabled;
 	float                    RenderOpacity;
 
@@ -38,4 +36,3 @@ struct FPaintArguments
 	void BrightenStraightLine  (int32 X, int32 Y, int32, int32) {}
 	//void DarkenRect            (int32 Left, int32 Top, int32 Right, int32 Bottom, float Amount) {}
 };
-

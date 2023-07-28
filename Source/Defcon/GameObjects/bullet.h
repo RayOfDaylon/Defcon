@@ -4,11 +4,8 @@
 #pragma once
 
 
-
-
 #include "Common/PaintArguments.h"
 #include "Common/util_geom.h"
-
 #include "GameObjects/gameobjlive.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/weapon.h"
@@ -30,11 +27,11 @@ namespace Defcon
 
 
 		protected:
-			FLinearColor	m_color;
-			float		m_fSpeed;
-			float		m_fRadius;
-			float		m_fOrgLifespan;
-			int32       NumSpriteCels = 0;
+			FLinearColor    m_color;
+			float		    m_fSpeed;
+			float		    m_fRadius;
+			float		    m_fOrgLifespan;
+			int32           NumSpriteCels = 0;
 	};
 
 

@@ -1,40 +1,30 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	firebomber.cpp
 	Firebomber enemy type for Defcon game.
-	Copyright 2004 Daylon Graphics Ltd.
+
+	Firebomber movement is composed of travel for a short period
+	along a straight line (a diagonal one), after which the travel 
+	direction is reversed horizontally but may or may not reverse
+	vertically. The distance is always random.
 */
 
 
 #include "firebomber.h"
 
-
-
-
 #include "DefconUtils.h"
-
 #include "Common/util_color.h"
-
-
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
 #include "Globals/GameColors.h"
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
-#include "Arenas/DefconPlayViewBase.h"
 #include "Globals/GameObjectResources.h"
+#include "Arenas/DefconPlayViewBase.h"
 
-/*
-	Firebomber movement is composed of travel for a short period
-	along a straight line (a diagonal one), after which the travel 
-	direction is reversed horizontally but may or may not reverse
-	vertically. The distance is always random.
-
-*/
 
 
 // -------------------------------------------------
@@ -116,37 +106,7 @@ void Defcon::IFirebomber::Move(float fTime)
 
 void Defcon::IFirebomber::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-#if 0
-	CEnemy::Draw(framebuf, mapper);
-	if(this->IsMaterializing())
-		return;
-
-	CFPoint pt;
-	mapper.To(m_pos, pt);
-
-
-	float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
-	//f = (float)cos(f * PI) + 1.0f;
-	f *= 3;
-	
-	CTrueBitmap& bmp = gBitmaps.GetBitmap(
-		(m_bFiresBullets 
-		? CBitmaps::firebomber0
-		: CBitmaps::firebomber_true0)
-		+ ROUND(f));
-	int w = bmp.GetWidth();
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
-	{
-		pt.sub(CFPoint((float)w/2,
-					(float)bmp.GetHeight()/2));
-		bmp.BlitAlphaBrighten(
-			framebuf, ROUND(pt.x), ROUND(pt.y), 
-			w, bmp.GetHeight(), 
-			0, 0, m_fBrightness * (FRAND * .10f + 0.9f));
-	}
-#endif
 }
-
 
 
 void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
@@ -279,7 +239,6 @@ void Defcon::CWeakFirebomber::Move(float fTime)
 {
 	Super::Move(fTime);
 
-	//float diff = (float)UDefconUtils::GetGameInstance(gpArena)->GetScore() / 50000;
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 	if(m_bWaits)
 		diff *= (float)(ABS(sin(m_fAge * PI)));

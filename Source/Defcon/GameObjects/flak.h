@@ -5,20 +5,13 @@
 
 // flak.h
 
-
-
-#include <vector>
-
-
 #include "Common/PaintArguments.h"
 #include "Common/util_geom.h"
 #include "Common/util_color.h"
-
 #include "GameObjects/gameobj.h"
 #include "GameObjects/gameobjlive.h"
 
 #include "Runtime/SlateCore/Public/Brushes/SlateColorBrush.h"
-
 
 
 namespace Defcon
@@ -50,11 +43,9 @@ namespace Defcon
 			bool	m_bCold;
 
 		protected:
-			float            m_maxAge;
-			//FSlateColorBrush Brush = FSlateColorBrush(C_WHITE);
-			FSlateBrush* BrushPtr = nullptr;
-			// todo: add brush that uses round bullet texture
-	}; // CFlak
+			float          m_maxAge;
+			FSlateBrush*   BrushPtr = nullptr;
+	};
 
 
 	class CGlowingFlak : public CFlak
@@ -74,7 +65,7 @@ namespace Defcon
 			//virtual bool OccursFrequently() const { return true; }
 
 
-	}; // CGlowingFlak
+	};
 
 
 #if 0

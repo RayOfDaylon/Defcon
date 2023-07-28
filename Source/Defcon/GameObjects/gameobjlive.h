@@ -1,3 +1,6 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 #pragma once
 
 // gameobjlive.h
@@ -13,20 +16,16 @@
 typedef float (*TerrainElevFunc)(float, void*);
 typedef Defcon::IGameObject* (*HumanFinderFunc)(float, void*);
 
+
 typedef struct
 {
 	float	fTimeDown;
 	bool	bActive;
 } NavControl;
 
+
 // Return the shortest position delta from p1 to p2 given a modulus range aw.
-inline void pos_delta
-(
-	CFPoint& result, 
-	const CFPoint& p1, 
-	const CFPoint& p2, 
-	float aw
-)
+inline void pos_delta(CFPoint& result, const CFPoint& p1, const CFPoint& p2, float aw)
 {
 	result = p2;
 	result.sub(p1);
@@ -44,7 +43,6 @@ inline void pos_delta
 		if(p2.x > p1.x)
 			result.x *= -1;
 	}
-				
 }
 
 
@@ -69,8 +67,6 @@ namespace Defcon
 			virtual void Notify	   (Message, void*);
 			virtual void Move	   (float);
 			virtual void Draw	   (FPaintArguments&, const I2DCoordMapper&) = 0;
-			//virtual void DrawSmall (FPaintArguments& FrameBuffer, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush) override;
-
 
 			virtual bool  Fireballs	() const { return true; }
 
@@ -81,15 +77,9 @@ namespace Defcon
 			virtual void SetIsAlive     (bool b) { m_bAlive = b; }
 
 
-			void ZeroThrust()				{ m_thrustVector.set(0,0); }
-			void ZeroMotion()				{ this->ZeroVelocity(); this->ZeroThrust();	}
-			void ZeroInput()
-			{
-				for(auto& Ctl : m_navCtls)
-				{
-					Ctl.bActive = false;
-				}
-			}
+			void ZeroThrust()	{ m_thrustVector.set(0,0); }
+			void ZeroMotion()	{ this->ZeroVelocity(); this->ZeroThrust();	}
+			void ZeroInput()	{ for(auto& Ctl : m_navCtls) { Ctl.bActive = false; } }
 
 			virtual void ComputeThrustTimings	(float);
 			virtual void ComputeForces			(float);
@@ -110,8 +100,6 @@ namespace Defcon
 			void          BindToShieldValue (TFunction<void(const float& Val)> Delegate) { m_fShields.Bind(Delegate); }
 
 
-
-
 		protected:
 
 			bool		m_bCanMove;
@@ -127,9 +115,7 @@ namespace Defcon
 			NavControl	m_navCtls[numCtls];
 
 		private:
-			//float		m_fShields; // 0...1 or possibly more (supershields)
 			Daylon::TBindableValue<float> m_fShields; // 0..1 value
 			bool                          m_bAlive = true;
-
 	};
 }

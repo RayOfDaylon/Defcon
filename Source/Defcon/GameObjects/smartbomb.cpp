@@ -1,11 +1,10 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 // smartbomb.cpp
 
 
 #include "smartbomb.h"
-
-//
-//
-
 
 #include "Common/util_core.h"
 #include "Globals/GameColors.h"
@@ -15,8 +14,6 @@
 
 #include "Runtime/Engine/Classes/Materials/MaterialInstanceDynamic.h"
 
-
-// ------------------------------------------------------
 
 #pragma optimize("", off)
 

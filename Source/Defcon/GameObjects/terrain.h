@@ -6,10 +6,6 @@
 // terrain.h
 
 
-
-#include <vector>
-
-
 #include "Common/PaintArguments.h"
 #include "Common/util_geom.h"
 
@@ -23,10 +19,10 @@ namespace Defcon
 {
 	class CTerrain : public IGameObject
 	{
-		// The mountain range appears on the bottom of the 
-		// arena and provides a strong frame of reference 
-		// for moving about. It also has a volcano that 
-		// continuously emits particles.
+		// The mountain range appears on the bottom of the arena and 
+		// provides a strong frame of reference for moving about. 
+		// todo: add volcano that continuously emits particles.
+
 		public:
 			CTerrain();
 			virtual ~CTerrain();
@@ -39,11 +35,9 @@ namespace Defcon
 			virtual void Move        (float);
 			virtual void Draw        (FPaintArguments&, const I2DCoordMapper&) override;
 			virtual void DrawSmall   (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
-			//virtual void DrawBbox  (FPaintArguments&, const I2DCoordMapper&) override;
 			float	     GetElev     (float) const;
 
 		private:
-			//CFPoint				m_vertices[100];
 			TArray<FVector2D>   Vertices;
 			int					m_width;
 			int					m_maxheight;
@@ -52,9 +46,4 @@ namespace Defcon
 			bool				m_firsttime;
 
 	}; // CTerrain
-
-
 }
-
-
-

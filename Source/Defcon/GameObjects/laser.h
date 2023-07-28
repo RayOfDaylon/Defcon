@@ -49,7 +49,6 @@ namespace Defcon
 			virtual void  Move              (float) override;
 			virtual void  Draw              (FPaintArguments&, const I2DCoordMapper&) override;
 			virtual void  DrawSmall         (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
-			//virtual void  DrawBbox          (FPaintArguments&, const I2DCoordMapper&) override;
 
 			virtual void  GetInjurePt       (CFPoint&) const override;
 			virtual bool  TestInjury        (const CFRect&) const override;

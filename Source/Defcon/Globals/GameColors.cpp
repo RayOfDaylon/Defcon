@@ -1,11 +1,12 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
-	gdi_objs.cpp
-	Copyright 2003-2004 Daylon Graphics Ltd.
+	GameColors.cpp
 */
 
 
 #include "GameColors.h"
-
 
 #include "Common/util_core.h"
 #include "Common/util_geom.h"
@@ -13,13 +14,10 @@
 #include "Common/gamma.h"
 #include "Common/compat.h"
 
-// -----------------------------------------------------
 
 
 Defcon::CGameColors::CGameColors()
 {
-	//ZEROFILL(m_c);
-
 	CFVector cbase[numbases];
 	
 	cbase[gray].		set(1.0f, 1.0f, 1.0f);

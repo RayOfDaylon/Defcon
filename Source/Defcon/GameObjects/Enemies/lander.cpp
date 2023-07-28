@@ -1,7 +1,9 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	lander.cpp
 	Lander game object for Defcon game.
-	Copyright 2003-2004 Daylon Graphics Ltd.
 
 	rcg		jun 20/04	Fixed bug where ascended lander
 						was able to keep itself and its
@@ -11,35 +13,19 @@
 
 #include "lander.h"
 
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
-
-
-
-
 #include "DefconUtils.h"
 #include "DefconLogging.h"
-
-
 #include "Common/util_color.h"
-
-
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
 #include "Globals/GameColors.h"
-
+#include "Globals/GameObjectResources.h"
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
 #include "GameObjects/human.h"
-#include "Globals/GameObjectResources.h"
-
-
 #include "Arenas/DefconPlayViewBase.h"
 
-
-// --------------------------------------------------------
 
 
 Defcon::CLander::CLander()
@@ -114,6 +100,7 @@ const char* Defcon::CLander::GetClassname() const
 };
 #endif
 
+
 void Defcon::CLander::Notify(Defcon::Message msg, void* pObj)
 {
 	switch(msg)
@@ -154,7 +141,6 @@ void Defcon::CLander::Notify(Defcon::Message msg, void* pObj)
 
 	CEnemy::Notify(msg, pObj);
 }
-
 
 
 void Defcon::CLander::Move(float fTime)
@@ -434,7 +420,7 @@ void Defcon::CLander::Move(float fTime)
 
 	m_inertia = m_pos - m_inertia;
 
-	//m_fNow = UKismetSystemLibrary::GetGameTimeInSeconds(m_pArena);
+	//m_fNow = GameTime();
 }
 
 

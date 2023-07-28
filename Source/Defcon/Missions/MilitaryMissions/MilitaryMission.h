@@ -1,12 +1,25 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 #pragma once
 
 #include "Missions/mission.h"
+
+// Headers commonly needed by military missions
+#include "Common/util_color.h"
+#include "Common/util_geom.h"
+#include "Globals/prefs.h"
+#include "GameObjects/player.h"
+#include "GameObjects/obj_types.h"
+#include "Arenas/DefconPlayViewBase.h"
+
 
 
 namespace Defcon
 {
 	// todo: might be a better way to define missions than as classes. We're repeating a lot of class defs here.
 
+	// todo: this macro s/b a function.
 #define SPAWN_ENEMIES(JFactor, MinAlt, MaxAlt)	\
 	{	\
 	size_t i, j;	\

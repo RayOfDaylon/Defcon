@@ -1,7 +1,9 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mapper.cpp
 	Coordinate mapping support for Defcon game.
-	Copyright 2003-2004 Daylon Graphics Ltd.
 */
 
 

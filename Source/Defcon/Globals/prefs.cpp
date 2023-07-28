@@ -1,3 +1,6 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 #include "prefs.h"
 
 #include "Common/util_core.h"
@@ -121,19 +124,19 @@ void Defcon::CPrefs::Construct()
 
 
 	static CChoiceNames memcpy_choices;
-	memcpy_choices.m_strings.push_back("stdlib memcpy");
-	memcpy_choices.m_strings.push_back("FP registers");
-	memcpy_choices.m_strings.push_back("MMX/SSE");
-	memcpy_choices.m_strings.push_back("AMD");
+	memcpy_choices.m_strings.Add("stdlib memcpy");
+	memcpy_choices.m_strings.Add("FP registers");
+	memcpy_choices.m_strings.Add("MMX/SSE");
+	memcpy_choices.m_strings.Add("AMD");
 	INITPREF2(memcopy_method, 
 		0,
 		"", type_choice, 0, 0,
 		"Memory copy method", &memcpy_choices, nullptr, nullptr);
 
 	static CChoiceNames blur_choices;
-	blur_choices.m_strings.push_back("Repeated two-sample");
-	blur_choices.m_strings.push_back("One-time four-sample");
-	blur_choices.m_strings.push_back("One-time eight-sample");
+	blur_choices.m_strings.Add("Repeated two-sample");
+	blur_choices.m_strings.Add("One-time four-sample");
+	blur_choices.m_strings.Add("One-time eight-sample");
 	INITPREF2(display_blur_method, 
 		0,
 		"", type_choice, 0, 0,
@@ -284,7 +287,9 @@ CPrefVar& Defcon::CPrefs::Translate(const FString& psz) const
 	for(size_t i = 0; i < Pref::count; i++)
 	{
 		if(m_pref[i].Is(psz))
+		{
 			return (CPrefVar&)(m_pref[i]);
+		}
 	}
 	check(false);
 	throw 0;

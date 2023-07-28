@@ -5,20 +5,8 @@
 
 
 
-
-#include <vector>
-
 #include "Common/PaintArguments.h"
-#include "Common/util_geom.h"
-
-
-#include "GameObjects/gameobj.h"
 #include "GameObjects/gameobjlive.h"
-//#include "GameObjects/textobj.h"
-#include "GameObjects/obj_types.h"
-
-
-//void ArenaFastTextOut(const CFPoint&, FPaintArguments&, const char*);
 
 
 namespace Defcon

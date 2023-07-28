@@ -36,6 +36,11 @@
 UDefconPlayViewBase* gpArena = nullptr;
 
 
+
+float GameTime() { check(gpArena != nullptr); return UKismetSystemLibrary::GetGameTimeInSeconds(gpArena); }
+
+
+
 void UDefconPlayViewBase::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -491,7 +496,7 @@ void UDefconPlayViewBase::ConcludeMission()
 		auto pEvt = new Defcon::CEndMissionEvent;
 		pEvt->Init(this);
 		//pEvt->m_what = CEvent::Type::endmission;
-		pEvt->m_when = UKismetSystemLibrary::GetGameTimeInSeconds(this) + FADE_DURATION_NORMAL;
+		pEvt->m_when = GameTime() + FADE_DURATION_NORMAL;
 		m_events.Add(pEvt);
 
 		m_fFadeAge = FADE_DURATION_NORMAL;
@@ -978,7 +983,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	const bool bDrawRadar = (n++ % 5 == 0);
 
 	// Note: update only model data, not visual.
-	Defcon::GameObjectProcess gop;
+	Defcon::GameObjectProcessingParams gop;
 
 	gop.UninstallSpriteIfObjectDeleted = true;
 	gop.fElapsedTime	= DeltaTime;
@@ -1063,7 +1068,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	//const int32 hr = m_virtualRadarScreen.GetHeight();
 	const int32 wp = (int32)ArenaWidth;// this->GetWidth();
 
-	const float now = UKismetSystemLibrary::GetGameTimeInSeconds(this);
+	const float now = GameTime();
 
 	auto& PlayerShip = GetPlayerShip();
 
@@ -1281,7 +1286,7 @@ void UDefconPlayViewBase::OnPawnNavEvent(EDefconPawnNavigationEvent Event, bool 
 	
 	if(EventBecameActive) 
 	{
-		InputStatePtr->fTimeDown = UKismetSystemLibrary::GetGameTimeInSeconds(this); 
+		InputStatePtr->fTimeDown = GameTime(); 
 	}
 }
 
@@ -1790,7 +1795,7 @@ void UDefconPlayViewBase::OnPlayerShipDestroyed()
 		auto pEvt = new Defcon::CRestartMissionEvent;
 		pEvt->Init(this);
 
-		pEvt->m_when = UKismetSystemLibrary::GetGameTimeInSeconds(this) + DESTROYED_PLAYER_LIFETIME * 2;
+		pEvt->m_when = GameTime() + DESTROYED_PLAYER_LIFETIME * 2;
 		m_events.Add(pEvt);
 
 		m_fFadeAge = DESTROYED_PLAYER_LIFETIME * 2;
@@ -2051,7 +2056,7 @@ void UDefconPlayViewBase::SpecializeMaterialization(Defcon::FMaterializationPara
 
 void UDefconPlayViewBase::CreateEnemy(Defcon::ObjType EnemyType, const CFPoint& where, float RelativeWhen, bool bMaterializes, bool bTarget)
 {
-	auto TimeToDeploy = UKismetSystemLibrary::GetGameTimeInSeconds(this) + RelativeWhen;
+	auto TimeToDeploy = GameTime() + RelativeWhen;
 
 	const auto MaterializationLifetime = ENEMY_BIRTHDURATION;
 

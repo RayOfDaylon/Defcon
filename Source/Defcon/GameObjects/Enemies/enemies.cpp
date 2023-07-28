@@ -1,12 +1,9 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	enemies.cpp
 	Enemy base types for Defcon game.
-	Copyright 2003-2004 Daylon Graphics Ltd.
-
-	rcg		jun 20/04	Fixed bug where ascended lander
-						was able to keep itself and its
-						human alive by resettng their
-						lifespan to 0.1 every frame.
 */
 
 
@@ -25,12 +22,11 @@
 
 #include "DefconLogging.h"
 
+
 #pragma optimize("", off)
 
-// -------------------------------------------------
 
-// todo: use a round bullet brush
-FSlateColorBrush Defcon::CEnemy::ParticleBrush = FSlateColorBrush(C_WHITE);
+
 
 
 Defcon::CEnemy::CEnemy()

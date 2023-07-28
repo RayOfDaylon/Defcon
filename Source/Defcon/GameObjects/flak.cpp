@@ -1,33 +1,24 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /* 
 	flak.cpp
 	Implements debris entities in Defcon game.
-	Copyright 2003-2004 Daylon Graphics Ltd.
 */
 
 
 #include "flak.h"
 
-
-
-
-
-
 #include "Common/util_color.h"
-
-
 #include "Globals/GameObjectResources.h"
 #include "Globals/_sound.h"
 #include "Globals/prefs.h"
 #include "Globals/GameColors.h"
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
 #include "Arenas/DefconPlayViewBase.h"
 
-
-// ------------------------------------------------------
 
 
 Defcon::CFlak::CFlak()
@@ -41,7 +32,6 @@ Defcon::CFlak::CFlak()
 	m_bMortal = true;
 	m_bInjurious = false;
 	m_bCanBeInjured = false;
-	//m_smallColor = MakeColorFromComponents(192, 192, 0);
 
 	m_maxAge = m_fLifespan = Daylon::FRandRange(0.5f, 2.0f);
 
@@ -63,6 +53,7 @@ const char* Defcon::CFlak::GetClassname() const
 	return psz;
 }
 #endif
+
 
 void Defcon::CFlak::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {

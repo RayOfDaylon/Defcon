@@ -1,12 +1,9 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	bomber.cpp
 	Bomber type for Defcon game.
-	Copyright 2003-2004 Daylon Graphics Ltd.
-
-	rcg		jun 20/04	Fixed bug where ascended lander
-						was able to keep itself and its
-						human alive by resettng their
-						lifespan to 0.1 every frame.
 */
 
 
@@ -28,7 +25,7 @@
 #define SECONDS_PER_PATH_MIN   1.0f
 #define SECONDS_PER_PATH_MAX   1.5f
 
-// -------------------------------------------------
+
 
 Defcon::CBomber::CBomber()
 	:

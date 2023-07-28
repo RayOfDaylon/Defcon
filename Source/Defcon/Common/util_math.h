@@ -5,15 +5,12 @@
 
 /* 
 	util_math.h
-
 	Math-related utility routines
-	Copyright 2000-2004 Daylon Graphics Ltd.
 */
 
 #include "CoreMinimal.h"
 #include "DaylonUtils.h"
 
-//#include <stdlib.h>
 #include <math.h>
 
 

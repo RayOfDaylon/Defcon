@@ -1,3 +1,6 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mission_random.cpp
 	"Party Mix" mission in Defence Condition.
@@ -9,18 +12,7 @@
 
 #include "MilitaryMission.h"
 
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 
-#include "Common/util_color.h"
-#include "Common/util_geom.h"
-#include "Globals/prefs.h"
-#include "GameObjects/player.h"
-#include "GameObjects/obj_types.h"
-
-#include "Arenas/DefconPlayViewBase.h"
-
-
-// ----------------------------------------------------------
 
 
 void Defcon::CPartyMixMission::Init(UDefconPlayViewBase* pA)

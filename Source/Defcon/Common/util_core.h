@@ -5,12 +5,11 @@
 
 /* 
 	util_core.h
-	Core General-purpose utility header file; 
-	simply includes all utility headers.
-
-	Copyright 2000 Daylon Graphics Ltd.
+	Core General-purpose utility header file.
 */
 
+
+float GameTime();
 
 #ifdef __cplusplus
 extern "C"

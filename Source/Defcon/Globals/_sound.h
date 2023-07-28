@@ -21,9 +21,9 @@ namespace Defcon
 		snd_ship_exploding,
 		snd_ship_exploding_small,
 		snd_ship_exploding_medium,
-		snd_ship_exploding2,			// not used
-		snd_ship_exploding2a,			// not used
-		snd_ship_exploding2b,			// not used
+		snd_ship_exploding2,			
+		snd_ship_exploding2a,			
+		snd_ship_exploding2b,			
 		snd_ship_exploding_small2,		// not used
 		snd_smartbomb,
 		snd_laserfire, 
@@ -44,7 +44,6 @@ namespace Defcon
 		snd_phred, //munchie,
 		snd_munchie, // munchie2
 		snd_bigred, // munchie3
-		//song_main,
 		snd_warp,
 		snd_playership_thrust,
 		snd_gulp,
@@ -82,13 +81,11 @@ namespace Defcon
 				return *p;
 			}
 
-		    bool CreateSoundObjects();
-			void DestroySoundObjects();
-
-
-			virtual void OutputSound(EAudioTrack Track, float VolumeScale = 1.0f);
-			virtual void StopPlayingSound();
-			Daylon::FLoopedSound CreateLoopedSound(EAudioTrack Track, float VolumeScale = 1.0f);
+		    bool                 CreateSoundObjects   ();
+			void                 DestroySoundObjects  ();
+			virtual void         OutputSound          (EAudioTrack Track, float VolumeScale = 1.0f);
+			virtual void         StopPlayingSound     ();
+			Daylon::FLoopedSound CreateLoopedSound    (EAudioTrack Track, float VolumeScale = 1.0f);
 
 
 		private:
@@ -101,4 +98,3 @@ namespace Defcon
 }
 
 extern Defcon::CAudioManager*	gpAudio;
-

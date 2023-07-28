@@ -1,7 +1,9 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	baiter.cpp
 	Baiter type for Defcon game.
-	Copyright 2003-2004 Daylon Graphics Ltd.
 
 	The baiter is an enemy ship that normally 
 	appears late in a wave, flies very fast 
@@ -12,28 +14,15 @@
 
 #include "baiter.h"
 
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
-
-
-
-
-
-
-
 #include "Globals/GameColors.h"
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
-
-#include "GameObjects/obj_types.h"
-
-#include "Arenas/DefconPlayViewBase.h"
 #include "Globals/GameObjectResources.h"
+#include "GameObjects/obj_types.h"
+#include "Arenas/DefconPlayViewBase.h"
 #include "DefconLogging.h"
 
 
-// -------------------------------------------------
 
 Defcon::CBaiter::CBaiter()
 {
@@ -128,7 +117,7 @@ void Defcon::CBaiter::Move(float fTime)
 						: ILiveGameObject::ctlBack;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = UKismetSystemLibrary::GetGameTimeInSeconds(gpArena);
+					m_ctlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
 					m_ctlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
@@ -155,7 +144,7 @@ void Defcon::CBaiter::Move(float fTime)
 						: ILiveGameObject::ctlDown;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = UKismetSystemLibrary::GetGameTimeInSeconds(gpArena);
+					m_ctlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
 					m_ctlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);

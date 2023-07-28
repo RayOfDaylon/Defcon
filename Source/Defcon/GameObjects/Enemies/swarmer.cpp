@@ -1,30 +1,23 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	swarmer.cpp
 	Swarmer type for Defcon game.
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 
 #include "swarmer.h"
 
-
-
-
-
 #include "Common/util_color.h"
-
-
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
 #include "Globals/GameColors.h"
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
 #include "Arenas/DefconPlayViewBase.h"
+
 
 constexpr float SWARMER_SOUND_COUNTDOWN_MIN = 0.75f;
 constexpr float SWARMER_SOUND_COUNTDOWN_MAX = 1.50f;
@@ -166,34 +159,7 @@ void Defcon::CSwarmer::Move(float fTime)
 
 void Defcon::CSwarmer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-#if 0
-	CEnemy::Draw(framebuf, mapper);
-	if(this->IsMaterializing())
-		return;
-
-	CFPoint pt;
-	mapper.To(m_pos, pt);
-
-
-	float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
-	//f = (float)cos(f * PI) + 1.0f;
-	f *= 0;
-	
-	CTrueBitmap& bmp = gBitmaps.GetBitmap(
-		CBitmaps::swarmer0 + ROUND(f));
-	int w = bmp.GetWidth();
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
-	{
-		pt.sub(CFPoint((float)w/2,
-					(float)bmp.GetHeight()/2));
-		bmp.BlitAlphaBrighten(
-			framebuf, ROUND(pt.x), ROUND(pt.y), 
-			w, bmp.GetHeight(), 
-			0, 0, /*m_fBrightness * */ (FRAND * 0.1f + 0.9f));
-	}
-#endif
 }
-
 
 
 void Defcon::CSwarmer::Explode(CGameObjectCollection& debris)
@@ -235,5 +201,3 @@ void Defcon::CSwarmer::Explode(CGameObjectCollection& debris)
 		debris.Add(pFlak);
 	}
 }
-
-

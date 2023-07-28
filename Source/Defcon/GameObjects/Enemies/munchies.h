@@ -8,6 +8,8 @@
 
 namespace Defcon
 {
+	// todo: use a base class to consolidate common members and code
+
 	class CPhred : public CEnemy
 	{
 		public:
@@ -26,7 +28,6 @@ namespace Defcon
 			bool	m_bPreferTargetUnderside;
 			bool	m_bFacingLeft;
 			float	m_fSquakTime;
-
 	};
 
 	class CBigRed : public CEnemy
@@ -47,7 +48,6 @@ namespace Defcon
 			bool	m_bPreferTargetUnderside;
 			bool	m_bFacingLeft;
 			float	m_fSquakTime;
-
 	};
 
 	class CMunchie : public CEnemy
@@ -69,6 +69,5 @@ namespace Defcon
 			bool	m_bPreferTargetUnderside;
 			bool	m_bFacingLeft;
 			float	m_fSquakTime;
-
 	};
 }

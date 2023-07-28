@@ -6,7 +6,6 @@
 #include "Missions/MilitaryMissions/MilitaryMission.h"
 #include "Common/util_color.h"
 #include "DefconLogging.h"
-//#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "UMG/Public/Components/CanvasPanelSlot.h"
 
 

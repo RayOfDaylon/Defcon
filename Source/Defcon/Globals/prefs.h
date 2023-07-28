@@ -6,7 +6,6 @@
 
 /*
 	Preference variables for Defcon game.
-	Copyright 2003-2004 Daylon Graphics Ltd.
 
 	Most of these prefs are for tuning game
 	behavior during development; most end users 

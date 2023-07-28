@@ -4,8 +4,6 @@
 #pragma once
 
 
-
-
 #include "Common/PaintArguments.h"
 #include "Common/util_geom.h"
 
@@ -19,14 +17,15 @@ namespace Defcon
 {
 	class CMine : public IGameObject
 	{
-		// The harmful particles fired by enemies.
+		// Laid by bombers.
+
 		public:
 			CMine();
 
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			void Create(const CFPoint&, const Orient2D&);
+			//void Create(const CFPoint&, const Orient2D&);
 			virtual void Move(float);
 			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
 			virtual void DrawSmall(FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override {}
@@ -42,13 +41,8 @@ namespace Defcon
 
 
 		private:
-			//float	m_fRadius;
-			float	m_maxAge;
+			float	     m_maxAge;
 			FLinearColor m_color;
-			//float	m_fSpeed;
 
 	}; // CMine
-
 }
-
-

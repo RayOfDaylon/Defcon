@@ -36,27 +36,6 @@ namespace Defcon
 
 	};
 
-#if 0
-	class CGhostPrimaryPart : public CGhostPart
-	{
-		// A primary ghost part is given the task of
-		// reforming the ghost.
-		// todo: drop this when we refactor CGhost
-
-		public:
-			CGhostPrimaryPart();
-			//virtual ~CGhostPrimaryPart();
-
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void	Move			(float);
-			void			SetNewLocation	(const CFPoint&); // pt should be in unmodulated space
-
-		private:
-			CFPoint			m_newPos;
-	};
-#endif
 
 	class CGhost : public CEnemy
 	{
@@ -95,7 +74,5 @@ namespace Defcon
 			CFPoint	m_partLocs[10];
 
 			float    DispersalCountdown = 0.0f;
-
 	};
 }
-

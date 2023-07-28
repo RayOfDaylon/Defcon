@@ -1,3 +1,6 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 #pragma once
 
 // weapon.h
@@ -13,6 +16,7 @@ namespace Defcon
 		// A weapon is something that gives an entity 
 		// some offensive firepower. This base class 
 		// needs to be subclassed for specific weapons.
+
 		public:
 			CWeapon()
 				:
@@ -44,8 +48,8 @@ namespace Defcon
 			// Where the weapon is mounted on the object, 
 			// relative to the object.
 			CFPoint	m_mountPt;
-			// Where the weapon emits its fire,
-			// relative to the object.
+
+			// Where the weapon emits its fire, relative to the object.
 			CFPoint m_emissionPt;
 
 			// If m_numShotsAlive equals m_maxWeaponBursts, 
@@ -60,6 +64,4 @@ namespace Defcon
 			// query the object for its size and location.
 			IGameObject*	m_pObject;
 	};  // CWeapon
-
 }
-

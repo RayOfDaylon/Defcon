@@ -31,9 +31,7 @@ namespace Defcon
 
 			// Hover mode stuff.
 			float					m_fHoverAltitude; // Distance above ground, not absolute Y value.
-			//TerrainElevFunc			m_fnTerrainEval;
 			void*					m_pvUserTerrainEval;
-			//HumanFinderFunc			m_fnHumanFinder;
 
 			virtual void OnAboutToDie();
 
@@ -45,11 +43,7 @@ namespace Defcon
 			float					m_fSpeed;
 			IGameObject*			m_pHuman;
 			IGameObject*			m_pTrackedHuman;
-			//float					m_fProbChaseHuman;
 			bool					m_bChaseNearestHuman;
 			bool					m_bAscendStraight;
-
 	};
-
 }
-

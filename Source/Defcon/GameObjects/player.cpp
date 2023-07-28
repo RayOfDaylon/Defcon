@@ -1,64 +1,51 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 // player.cpp
 
 
 #include "player.h"
 
-
-
-
-
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
+#include "Runtime/SlateCore/Public/Rendering/DrawElements.h"
 
 #include "Common/util_core.h"
-
 #include "Common/util_str.h"
-//#include "Common/sprite.h"
-
 #include "Globals/GameColors.h"
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
 #include "Common/gamma.h"
-
 #include "GameObjects/Enemies/enemies.h"
 #include "flak.h"
 #include "bmpdisp.h"
 #include "human.h"
-
 #include "Arenas/DefconPlayViewBase.h"
-
 #include "DefconLogging.h"
 
-
-#include "Runtime/SlateCore/Public/Rendering/DrawElements.h"
 
 
 #pragma optimize("", off)
 
-// ------------------------------------------------------
 
 
 Defcon::CPlayer::CPlayer()
-	:
-	m_bBirthsoundPlayed(false)
 {
 	m_type = ObjType::PLAYER;
 
 	// Start off invincible, switch after birth finished.
 	m_bMortal = false;
 	m_bCanBeInjured = false;//true;
+	//m_bBirthsoundPlayed = false;
 
 	m_laserWeapon.MountOnto(*this, CFPoint(0,0));
-	m_laserWeapon.SetEmissionPt(CFPoint(0, -8));
+	m_laserWeapon.SetEmissionPt(CFPoint(0, -8)); // todo: could improve this
 
 	this->SetShieldStrength(1.0f);
 
 	CreateSprite(m_type);
 
-
 	const auto& Info = GameObjectResources.Get(m_type);
 	m_bboxrad.set(Info.Size.X * 0.25f, Info.Size.Y * 0.25f);
+
 	// Make our "pickup human" bboxrad more generous than hitbox.
 	m_bboxradPickup.set(Info.Size.X * 0.4f, Info.Size.Y * 0.4f);
 }
@@ -75,6 +62,8 @@ void Defcon::CPlayer::InitPlayer(float fw)
 	// Arrange the birth debris in a circle.
 	// Don't do this in ctor since we don't 
 	// know where player is yet.
+
+#if 0
 	const int n = array_size(m_birthDebrisLocs);
 
 	for(int i = 0; i < n; i++)
@@ -97,6 +86,7 @@ void Defcon::CPlayer::InitPlayer(float fw)
 			m_birthDebrisLocsOrg[i].x -= fw;
 		}
 	}
+#endif
 }
 
 
@@ -348,8 +338,6 @@ void Defcon::CPlayer::FireLaserWeapon(CGameObjectCollection& goc)
 }
 
 
-
-
 void Defcon::CPlayer::ImpartForces(float frameTime)
 {
 	if(!CONTROLLER_EXPLICIT_REVERSE)
@@ -372,16 +360,15 @@ void Defcon::CPlayer::ImpartForces(float frameTime)
 
 	if(m_navCtls[ctlUp].bActive)
 	{
-		const float timeHeld = UKismetSystemLibrary::GetGameTimeInSeconds(WorldContextObject) - m_navCtls[ctlUp].fTimeDown;
+		const float timeHeld = GameTime() - m_navCtls[ctlUp].fTimeDown;
 		m_pos.muladd({ 0.0f, FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
 	}
 	else if(m_navCtls[ctlDown].bActive)
 	{
-		const float timeHeld = UKismetSystemLibrary::GetGameTimeInSeconds(WorldContextObject) - m_navCtls[ctlDown].fTimeDown;
+		const float timeHeld = GameTime() - m_navCtls[ctlDown].fTimeDown;
 		m_pos.muladd({ 0.0f, -FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
 	}
 }
-
 
 
 void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
@@ -491,7 +478,6 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 
 		debris.Add(pFlak);
 	}
-
 }
 
 #pragma optimize("", on)

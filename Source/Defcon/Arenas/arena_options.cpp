@@ -467,7 +467,7 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 
 	m_items[itemid].DrawWithHalo(m_virtualScreen, m_coordMapper);
 
-	GameObjectProcess gop;
+	GameObjectProcessingParams gop;
 
 	gop.fArenaWidth		= m_virtualScreen.GetWidth();
 	gop.fElapsedTime	= fElapsedTime;

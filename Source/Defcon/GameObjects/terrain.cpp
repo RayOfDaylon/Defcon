@@ -1,23 +1,20 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	terrain.cpp
 	Terrain for Defcon game.
-	Copyright 2003-2004 Daylon Graphics Ltd.
 */
 
 
 #include "terrain.h"
 
-
-
-
 #include "Common/util_core.h"
 #include "Globals/GameColors.h"
 #include "Globals/prefs.h"
 #include "Main/mapper.h"
-
 #include "DaylonUtils.h"
 #include "DefconLogging.h"
-
 #include "Runtime/SlateCore/Public/Rendering/DrawElements.h"
 
 
@@ -29,9 +26,6 @@
 
 const float MinTerrainLineLength =  40.0f;
 const float MaxTerrainLineLength = 120.0f;
-
-
-// ------------------------------------------------------
 
 
 Defcon::CTerrain::CTerrain()
@@ -350,7 +344,6 @@ void Defcon::CTerrain::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper
 
 	FSlateDrawElement::MakeLines(*framebuf.OutDrawElements, framebuf.LayerId, *framebuf.PaintGeometry, LinePts, ESlateDrawEffect::None, C_RED, true, 2.0f);
 }
-
 
 
 #pragma optimize("", on)

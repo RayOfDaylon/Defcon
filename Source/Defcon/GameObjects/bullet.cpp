@@ -1,24 +1,17 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	bullet.cpp
 	Bullet weaponsfire routines for Defcon game.
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 
 #include "bullet.h"
 
-
-
-
-
-
-
 #include "Globals/prefs.h"
-
 #include "Arenas/DefconPlayViewBase.h"
 
-
-// --------------------------------------------------------
 
 #define MIN_BULLETAGE	2.5f
 #define MAX_BULLETAGE	3.5f
@@ -88,7 +81,6 @@ Defcon::CBullet::CBullet()
 {
 	m_parentType = m_type;
 	m_type = ObjType::BULLET_ROUND;
-	//m_eStyle = regular;
 
 	CreateSprite(m_type);
 	Sprite->IsStatic = true;
@@ -105,44 +97,6 @@ const char* Defcon::CBullet::GetClassname() const
 }
 #endif
 
-#if 0
-void Defcon::CBullet::DrawBbox(FPaintArguments&, const I2DCoordMapper&)
-{
-}
-
-
-void Defcon::CBullet::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
-#if 0
-	int h = framebuf.GetHeight();
-
-	CFPoint pt;
-	mapper.To(m_pos, pt);
-
-	float t = m_fLifespan / m_fOrgLifespan;
-	if(t > 0.25f)
-		t = 1.0f;
-	else
-		t *= 4;
-
-
-	CTrueBitmap& bmp = gBitmaps.GetBitmap(
-		m_eStyle == regular
-		? CBitmaps::bullet5x5 + IRAND(6)
-		: CBitmaps::bulletthin + BRAND);
-	int w = bmp.GetWidth();
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
-	{
-		pt.sub(CFPoint((float)w/2,
-					(float)bmp.GetHeight()/2));
-		bmp.BlitAlphaBrighten(
-			framebuf, ROUND(pt.x), ROUND(pt.y), 
-			w, bmp.GetHeight(), 
-			0, 0, t);
-	}
-#endif
-}
-#endif
 
 // -------------------------------------------------------------------------
 
@@ -165,5 +119,4 @@ const char* Defcon::CBullet::GetClassname() const
 	return psz;
 }
 #endif
-
 

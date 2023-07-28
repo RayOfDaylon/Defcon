@@ -68,10 +68,10 @@ namespace Defcon
 
 		private:
 			CLaserWeapon	m_laserWeapon;
-			CFPoint			m_birthDebrisLocs[400];
-			CFPoint			m_birthDebrisLocsOrg[400];
-			float			m_debrisPow[400];
-			bool			m_bBirthsoundPlayed;
+			//CFPoint			m_birthDebrisLocs[400];
+			//CFPoint			m_birthDebrisLocsOrg[400];
+			//float			m_debrisPow[400];
+			//bool			m_bBirthsoundPlayed;
 			CFPoint         m_bboxradPickup;
 
 	}; // CPlayer

@@ -1,7 +1,9 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	munchies.cpp
 	Phred, Big Red, and Munchie enemies for Defcon game.
-	Copyright 2004 Daylon Graphics Ltd.
 
 	These guys look like squarish PacMen and mimic
 	baiters in arrival and movement, except they don't fire;
@@ -10,28 +12,16 @@
 
 #include "munchies.h"
 
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
-
-
-
-
-
 #include "Common/util_color.h"
-
-
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
 #include "Globals/GameColors.h"
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
 #include "Arenas/DefconPlayViewBase.h"
 
-// -------------------------------------------------
+
 
 Defcon::CPhred::CPhred()
 {
@@ -60,6 +50,7 @@ Defcon::CPhred::~CPhred()
 {
 }
 
+
 #ifdef _DEBUG
 const char* Defcon::CPhred::GetClassname() const
 {
@@ -67,8 +58,6 @@ const char* Defcon::CPhred::GetClassname() const
 	return psz;
 };
 #endif
-
-
 
 
 void Defcon::CPhred::Move(float fTime)
@@ -129,7 +118,7 @@ void Defcon::CPhred::Move(float fTime)
 						: ILiveGameObject::ctlBack;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = UKismetSystemLibrary::GetGameTimeInSeconds(gpArena);
+					m_ctlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
 					m_ctlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
@@ -156,7 +145,7 @@ void Defcon::CPhred::Move(float fTime)
 						: ILiveGameObject::ctlDown;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = UKismetSystemLibrary::GetGameTimeInSeconds(gpArena);
+					m_ctlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
 					m_ctlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
@@ -190,48 +179,11 @@ void Defcon::CPhred::Move(float fTime)
 
 		}
 	}
-
 }
 
 
 void Defcon::CPhred::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-#if 0
-	CEnemy::Draw(framebuf, mapper);
-	if(this->IsMaterializing())
-		return;
-
-	CFPoint pt;
-	mapper.To(m_pos, pt);
-
-
-	//float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
-	float f = (float)fabs(cos(m_fAge * TWO_PI));
-	f *= (CBitmaps::phread_last - CBitmaps::phread0);
-	
-	CTrueBitmap& bmp = gBitmaps.GetBitmap(
-		(m_bFacingLeft ? CBitmaps::phread_left0 : CBitmaps::phread0)
-		 + ROUND(f));
-
-
-	int w = bmp.GetWidth();
-	int h = bmp.GetHeight();
-	float fBright = m_fBrightness;
-	if(m_fSquakTime != 0.0f)
-	{
-		fBright += (float)fabs(sin(m_fSquakTime * PI)) * (1.0f - m_fBrightness);
-		fBright = FMath::Min(fBright, 1.0f);
-	}
-
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
-	{
-		pt.sub(CFPoint((float)w/2, (float)h/2));
-		bmp.BlitAlphaBrighten(
-			framebuf, ROUND(pt.x), ROUND(pt.y), 
-			w, h, 
-			0, 0, fBright);
-	}
-#endif
 }
 
 
@@ -270,6 +222,7 @@ Defcon::CMunchie::~CMunchie()
 {
 }
 
+
 #ifdef _DEBUG
 const char* Defcon::CMunchie::GetClassname() const
 {
@@ -277,8 +230,6 @@ const char* Defcon::CMunchie::GetClassname() const
 	return psz;
 };
 #endif
-
-
 
 
 void Defcon::CMunchie::Move(float fTime)
@@ -339,7 +290,7 @@ void Defcon::CMunchie::Move(float fTime)
 						: ILiveGameObject::ctlBack;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = UKismetSystemLibrary::GetGameTimeInSeconds(gpArena);
+					m_ctlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
 					m_ctlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
@@ -366,7 +317,7 @@ void Defcon::CMunchie::Move(float fTime)
 						: ILiveGameObject::ctlDown;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = UKismetSystemLibrary::GetGameTimeInSeconds(gpArena);
+					m_ctlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
 					m_ctlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
@@ -404,41 +355,6 @@ void Defcon::CMunchie::Move(float fTime)
 
 void Defcon::CMunchie::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-#if 0
-	CEnemy::Draw(framebuf, mapper);
-	if(this->IsMaterializing())
-		return;
-
-	CFPoint pt;
-	mapper.To(m_pos, pt);
-
-
-	//float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
-	float f = (float)fabs(cos(m_fAge * TWO_PI));
-	f *= (CBitmaps::munchie_last - CBitmaps::munchie0);
-	
-	CTrueBitmap& bmp = gBitmaps.GetBitmap(
-		(m_bFacingLeft ? CBitmaps::munchie_left0 : CBitmaps::munchie0)
-		 + ROUND(f));
-
-
-	int w = bmp.GetWidth();
-	int h = bmp.GetHeight();
-	float fBright = m_fBrightness;
-	if(m_fSquakTime != 0.0f)
-	{
-		fBright += (float)fabs(sin(m_fSquakTime * PI)) * (1.0f - m_fBrightness);
-		fBright = FMath::Min(fBright, 1.0f);
-	}
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
-	{
-		pt.sub(CFPoint((float)w/2, (float)h/2));
-		bmp.BlitAlphaBrighten(
-			framebuf, ROUND(pt.x), ROUND(pt.y), 
-			w, h, 
-			0, 0, fBright);
-	}
-#endif
 }
 
 
@@ -477,6 +393,7 @@ Defcon::CBigRed::~CBigRed()
 {
 }
 
+
 #ifdef _DEBUG
 const char* Defcon::CBigRed::GetClassname() const
 {
@@ -484,8 +401,6 @@ const char* Defcon::CBigRed::GetClassname() const
 	return psz;
 };
 #endif
-
-
 
 
 void Defcon::CBigRed::Move(float fTime)
@@ -546,7 +461,7 @@ void Defcon::CBigRed::Move(float fTime)
 						: ILiveGameObject::ctlBack;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = UKismetSystemLibrary::GetGameTimeInSeconds(gpArena);
+					m_ctlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
 					m_ctlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
@@ -573,7 +488,7 @@ void Defcon::CBigRed::Move(float fTime)
 						: ILiveGameObject::ctlDown;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = UKismetSystemLibrary::GetGameTimeInSeconds(gpArena);
+					m_ctlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
 					m_ctlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
@@ -611,41 +526,6 @@ void Defcon::CBigRed::Move(float fTime)
 
 void Defcon::CBigRed::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-#if 0
-	CEnemy::Draw(framebuf, mapper);
-	if(this->IsMaterializing())
-		return;
-
-	CFPoint pt;
-	mapper.To(m_pos, pt);
-
-
-	//float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
-	float f = (float)fabs(cos(m_fAge * TWO_PI));
-	f *= (CBitmaps::bigred_last - CBitmaps::bigred0);
-	
-	CTrueBitmap& bmp = gBitmaps.GetBitmap(
-		(m_bFacingLeft ? CBitmaps::bigred_left0 : CBitmaps::bigred0)
-		 + ROUND(f));
-
-
-	int w = bmp.GetWidth();
-	int h = bmp.GetHeight();
-	float fBright = m_fBrightness;
-	if(m_fSquakTime != 0.0f)
-	{
-		fBright += (float)fabs(sin(m_fSquakTime * PI)) * (1.0f - m_fBrightness);
-		fBright = FMath::Min(fBright, 1.0f);
-	}
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
-	{
-		pt.sub(CFPoint((float)w/2, (float)h/2));
-		bmp.BlitAlphaBrighten(
-			framebuf, ROUND(pt.x), ROUND(pt.y), 
-			w, h, 
-			0, 0, fBright);
-	}
-#endif
 }
 
 

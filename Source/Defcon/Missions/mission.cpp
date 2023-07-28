@@ -1,30 +1,23 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mission.cpp
 	IMission base class
 	Defines commonalities of missions in Defence Condition.
-
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 
 #include "mission.h"
 
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "DefconUtils.h"
-
 
 #include "Common/util_color.h"
 #include "Common/util_geom.h"
-
-
-
-//#include "GameObjects/textobj.h"
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/player.h"
 #include "GameObjects/human.h"
-
 #include "GameObjects/Auxiliary/stargate.h"
-
 #include "GameObjects/Enemies/lander.h"
 #include "GameObjects/Enemies/guppy.h"
 #include "GameObjects/Enemies/hunter.h"
@@ -121,7 +114,7 @@ void Defcon::CMilitaryMission::Init(UDefconPlayViewBase* p)
 			//auto pEvt = new CCreateEnemyEvent;
 			pEvt->Init(p);
 			pEvt->m_objtype = ObjType::TURRET;
-			pEvt->m_when = UKismetSystemLibrary::GetGameTimeInSeconds(m_pArena);
+			pEvt->m_when = GameTime();
 			float wp = m_pArena->GetWidth();
 			float x = FRAND * wp;
 			x = (float)fmod(x, wp);
@@ -283,7 +276,7 @@ void Defcon::CMilitaryMission::AddNonMissionTarget(ObjType objType, const CFPoin
 	//CCreateEnemyEvent* p = new CCreateEnemyEvent;
 	//p->Init(m_pArena);
 	//p->m_objtype = objType;
-	//p->m_when = UKismetSystemLibrary::GetGameTimeInSeconds(m_pArena);
+	//p->m_when = GameTime();
 	//p->m_bMaterializes = true;
 	//p->m_bMissionTarget = false;
 	float wp = m_pArena->GetWidth();
@@ -303,7 +296,7 @@ void Defcon::CMilitaryMission::AddBaiter(const CFPoint& where)
 	//CCreateEnemyEvent* p = new CCreateEnemyEvent;
 	//p->Init(m_pArena);
 	//p->m_objtype = ObjType::BAITER;
-	//p->m_when = UKismetSystemLibrary::GetGameTimeInSeconds(m_pArena);
+	//p->m_when = GameTime();
 	//p->m_bMaterializes = true;
 	//p->m_bMissionTarget = false;
 	float wp = m_pArena->GetWidth();

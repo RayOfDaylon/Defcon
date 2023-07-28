@@ -1,8 +1,9 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mission_flighttraining.cpp
 	Defines flight training mission in Defence Condition.
-
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 
@@ -47,11 +48,6 @@ bool Defcon::CFlightTrainingMission::Update(float fElapsed)
 	if(this->AreAllTargetsHit(fElapsed))
 	{
 		// We're done.
-
-		//m_pArena->AllStopPlayerShip();
-		//auto& Player = m_pArena->GetPlayerShip();
-		//Player.EnableInput(false);
- 
 		return false;
 	}
 
@@ -131,9 +127,9 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float fElapsed)
 		
 			if(rPlayer.intersect(rBeacon))
 			{
-				BeaconPtr->IncrementCollisionCount();
+				//BeaconPtr->IncrementCollisionCount();
 
-				if(BeaconPtr->CollisionCount() == 1)
+				//if(BeaconPtr->CollisionCount() == 1)
 				{
 					gpAudio->OutputSound(Defcon::snd_gulp);
 					ObjPtr->UninstallSprite();

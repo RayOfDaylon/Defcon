@@ -1,34 +1,15 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	mission_bring_it_on.cpp.cpp
 	"Bring it On" mission in Defence Condition.
 	This calls for destroying several dynamos 
 	and a few reformers while baiters arrive early.
-
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 
-
 #include "MilitaryMission.h"
-
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
-
-
-#include "Common/util_color.h"
-#include "Common/util_geom.h"
-
-
-#include "Globals/prefs.h"
-
-#include "GameObjects/player.h"
-#include "GameObjects/obj_types.h"
-
-
-#include "Arenas/DefconPlayViewBase.h"
-
-
-
-// ----------------------------------------------------------
 
 
 void Defcon::CBringItOn::Init(UDefconPlayViewBase* pA)
@@ -104,36 +85,7 @@ void Defcon::CBringItOn::MakeTargets(float fElapsed, const CFPoint& where)
 							};
 		
 		STANDARD_ENEMY_SPAWNING(0.5f)
-#if 0
-		size_t i;
-		for(i = 0; i < numDynamos[m_nAttackWave] && this->HostilesRemaining() > 0; i++)
-		{
-			//CCreateEnemyEvent* p = new CCreateEnemyEvent;
-			p->Init(m_pArena);
-			p->m_objtype = ObjType::DYNAMO;
-			p->m_when = UKismetSystemLibrary::GetGameTimeInSeconds(m_pArena) + (FRAND * 0.5f * i);
-			float wp = m_pArena->GetWidth();
-			float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + where.x;
-			x = (float)fmod(x, wp);
-			float y = (FRAND * .75f + .15f) * m_pArena->GetHeight();
-			p->m_where.set(x, y);
-			this->AddEvent(p);
-		}
 
-		for(i = 0; i < numReformers[m_nAttackWave] && this->HostilesRemaining() > 0; i++)
-		{
-			//CCreateEnemyEvent* p = new CCreateEnemyEvent;
-			p->Init(m_pArena);
-			p->m_objtype = ObjType::REFORMER;
-			p->m_when = UKismetSystemLibrary::GetGameTimeInSeconds(m_pArena) + (FRAND * 0.5f * i);
-			float wp = m_pArena->GetWidth();
-			float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + where.x;
-			x = (float)fmod(x, wp);
-			float y = (FRAND * .75f + .15f) * m_pArena->GetHeight();
-			p->m_where.set(x, y);
-			this->AddEvent(p);
-		}
-#endif
 		m_nAttackWave++;
 	}
 }

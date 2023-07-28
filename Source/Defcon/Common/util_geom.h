@@ -5,9 +5,7 @@
 
 /* 
 	util_geom.h
-
 	Geometry-related utility routines
-	Copyright 2000-2004 Daylon Graphics Ltd.
 */
 
 #include "CoreMinimal.h"

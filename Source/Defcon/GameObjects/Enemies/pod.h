@@ -32,4 +32,3 @@ namespace Defcon
 			float m_yOrg;
 	};
 }
-

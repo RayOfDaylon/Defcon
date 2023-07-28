@@ -1,34 +1,25 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 /*
 	spacehum.cpp
 	Space Hum enemy type for Defcon game.
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 
 #include "spacehum.h"
 
-
-
-
 #include "DefconUtils.h"
-
 #include "Common/util_color.h"
-
-
 #include "Globals/_sound.h"
-
 #include "Globals/prefs.h"
-
 #include "Globals/GameColors.h"
-
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
-
 #include "Arenas/DefconPlayViewBase.h"
 
 
-// -------------------------------------------------
 
 Defcon::CSpacehum::CSpacehum()
 {
@@ -40,19 +31,16 @@ Defcon::CSpacehum::CSpacehum()
 
 	m_fAnimSpeed = FRAND * 0.05f + 0.15f;
 	m_bCanBeInjured = true;
-	//m_bMaterializes = false;
 	m_bIsCollisionInjurious = true;
 	m_fBrightness = FRANDRANGE(0.9f, 1.0f);
 
 	m_fSpeed = (float)gDefconGameInstance->GetScore() / 250;
 	m_fSpeed *= FRANDRANGE(0.9f, 1.33f);
-	//m_fSpeed = CLAMP(m_fSpeed, 50, 870);
 
 	CreateSprite(m_type);
 	const auto& SpriteInfo = GameObjectResources.Get(m_type);
 	m_bboxrad.set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
-
 
 
 #ifdef _DEBUG
@@ -95,29 +83,7 @@ void Defcon::CSpacehum::Move(float fTime)
 
 void Defcon::CSpacehum::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-#if 0
-	CFPoint pt;
-	mapper.To(m_pos, pt);
-
-
-	float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
-	//f = (float)cos(f * PI) + 1.0f;
-	f *= 3;
-	
-	CTrueBitmap& bmp = gBitmaps.GetBitmap(CBitmaps::spacehum0 + ROUND(f));
-	int w = bmp.GetWidth();
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
-	{
-		pt.sub(CFPoint((float)w/2,
-					(float)bmp.GetHeight()/2));
-		bmp.BlitAlphaBrighten(
-			framebuf, ROUND(pt.x), ROUND(pt.y), 
-			w, bmp.GetHeight(), 
-			0, 0, (PSIN(m_fAge*PI*2)/8+0.875f) * m_fBrightness);
-	}
-#endif
 }
-
 
 
 void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
@@ -157,5 +123,3 @@ void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 		debris.Add(pFlak);
 	}
 }
-
-

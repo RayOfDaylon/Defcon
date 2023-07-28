@@ -31,4 +31,3 @@ namespace Defcon
 			float	m_fSpeed;
 	};
 }
-
