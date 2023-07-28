@@ -23,7 +23,11 @@
 #include "DefconLogging.h"
 
 
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
 
 
 
@@ -143,4 +147,9 @@ void Defcon::CEnemy::DrawMaterialization(FPaintArguments& framebuf, const I2DCoo
 }
 #endif
 
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

@@ -18,7 +18,12 @@
 
 #include "Arenas/DefconPlayViewBase.h"
 
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
 
 #define SPLINE_WIDTH_MIN   1000.0f
 #define SPLINE_WIDTH_MAX   1500.0f
@@ -203,4 +208,8 @@ float Defcon::CBomber::GetExplosionMass() const
 #undef SECONDS_PER_PATH_MIN
 #undef SECONDS_PER_PATH_MAX
 
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

@@ -7,7 +7,14 @@
 #include "DaylonUtils.h"
 
 
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
+
+
 
 void UDefconPlayRadarWidgetBase::NativeOnInitialized()
 {
@@ -210,4 +217,9 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 	return LayerId;
 }
 
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

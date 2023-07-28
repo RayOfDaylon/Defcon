@@ -12,7 +12,12 @@
 #include "UMG/Public/Components/Border.h"
 
 
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
 
 const int32 CellsAcross      = 8;
 const int32 CellsDown        = 5;
@@ -318,4 +323,8 @@ void UDefconMissionPickerViewBase::OnEscPressed()
 }
 
 
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

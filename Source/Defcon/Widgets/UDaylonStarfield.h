@@ -1,3 +1,5 @@
+// Copyright 2023 Daylon Graphics Ltd. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"

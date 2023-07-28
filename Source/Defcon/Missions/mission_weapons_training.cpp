@@ -16,7 +16,14 @@
 #include "GameObjects/beacon.h"
 #include "Arenas/DefconPlayViewBase.h"
 
+
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
+
 
 constexpr int32 NumTargets = 15;
 
@@ -141,4 +148,9 @@ bool Defcon::CWeaponsTrainingMission::AreAllTargetsHit(float fElapsed)
 	return (m_pArena->GetObjects().Find(ObjType::BEACON, nullptr) == nullptr);
 }
 
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

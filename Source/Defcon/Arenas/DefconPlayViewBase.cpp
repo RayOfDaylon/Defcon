@@ -21,7 +21,12 @@
 #include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 //#include "UMG/Public/Components/CanvasPanelSlot.h"
 
+
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
 
 
 // -----------------------------------------------------------------------------------------
@@ -2158,4 +2163,8 @@ void UDefconPlayViewBase::OnSpawnEnemy()
 #undef DURATION_IMPORTANT_MESSAGE
 
 
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

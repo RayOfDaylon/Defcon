@@ -36,7 +36,12 @@
 
 
 
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
 
 
 
@@ -310,4 +315,8 @@ void Defcon::CMilitaryMission::AddBaiter(const CFPoint& where)
 }
 
 
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

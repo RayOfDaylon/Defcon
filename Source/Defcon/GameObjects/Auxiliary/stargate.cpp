@@ -15,7 +15,11 @@
 #include "Main/mapper.h"
 
 
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
 
 
 
@@ -126,4 +130,9 @@ void Defcon::CStargate::DrawSmall(FPaintArguments& framebuf, const I2DCoordMappe
 	DrawSmallPart(framebuf, mapper, Brush, TopLeft, BottomRight, box);
 }
 
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

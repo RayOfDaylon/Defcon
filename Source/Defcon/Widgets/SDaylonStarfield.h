@@ -1,4 +1,4 @@
-// Copyright 2023 Daylon Graphics Ltd.
+// Copyright 2003-2023 Daylon Graphics Ltd.
 
 #pragma once
 
@@ -8,7 +8,6 @@
 #pragma once
 
 #include "SlateCore/Public/Widgets/SLeafWidget.h"
-//#include "DaCommon/pseudorandom.h"
 
 
 

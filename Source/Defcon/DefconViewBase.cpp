@@ -1,3 +1,6 @@
+// Defcon - a Defender Stargate clone developed with Unreal Engine.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
+
 #include "DefconViewBase.h"
 #include "DefconUtils.h"
 #include "DefconLogging.h"

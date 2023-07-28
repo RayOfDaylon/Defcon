@@ -28,7 +28,14 @@
 #include "GameObjects/Enemies/ghost.h"
 #include "GameObjects/Enemies/turret.h"
 
+
+
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
 
 
 Defcon::CEventQueue::~CEventQueue()
@@ -396,4 +403,9 @@ void Defcon::CCreateEnemyEvent::SpecializeForReformer(Defcon::CEnemy* pE, const 
 	SET_RANDOM_FWD_ORIENT
 }
 
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

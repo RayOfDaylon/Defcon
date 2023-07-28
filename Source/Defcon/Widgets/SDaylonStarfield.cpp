@@ -1,4 +1,4 @@
-// Copyright 2023 Daylon Graphics Ltd. All Rights Reserved.
+// Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
 
 #include "SDaylonStarfield.h"
 #include "Common/util_color.h"
@@ -7,7 +7,14 @@
 #include "DaylonUtils.h"
 
 
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
+
+
 
 constexpr float kBackplaneMax_ = 10.0f;
 constexpr float kBackplaneMin_ = 3.0f;
@@ -233,4 +240,9 @@ int32 SDaylonStarfield::OnPaint
 	return LayerId;
 }
 
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

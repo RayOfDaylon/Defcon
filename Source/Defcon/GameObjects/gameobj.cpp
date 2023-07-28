@@ -21,7 +21,12 @@
 #include "DefconLogging.h"
 
 
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
 
 
 Defcon::IGameObject::IGameObject()
@@ -457,6 +462,8 @@ int                  Defcon::IGameObject::GetExplosionColorBase() const        {
 
 
 
-
-
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

@@ -15,7 +15,12 @@
 #include "Runtime/Engine/Classes/Materials/MaterialInstanceDynamic.h"
 
 
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
 
 
 
@@ -166,4 +171,8 @@ void Defcon::CSmartbomb::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 }
 
 
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

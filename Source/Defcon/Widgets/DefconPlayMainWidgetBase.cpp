@@ -10,7 +10,15 @@
 #include "DefconLogging.h"
 #include "Runtime/UMG/Public/Components/TextBlock.h"
 
+
+
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
+
 
 //const float StargateExpanderLifetime = 2.5f; // Same as FADE_DURATION_NORMAL in playviewbase.h
 
@@ -500,4 +508,9 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 	}
 }
 
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

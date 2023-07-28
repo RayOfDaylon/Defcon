@@ -4,7 +4,15 @@
 
 #include "DefconPlayMessagesWidgetBase.h"
 
+
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
+
+
 
 constexpr float MessageLifetime = 1.5f;
 
@@ -105,4 +113,9 @@ void UDefconPlayMessagesWidgetBase::Clear()
 	Messages->SetText(FText::FromString(TEXT("")));
 }
 
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

@@ -23,7 +23,12 @@
 
 
 
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
 
 
 
@@ -480,4 +485,9 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 	}
 }
 
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

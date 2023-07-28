@@ -13,7 +13,7 @@
 #include "DefconLogging.h"
 #include "MainViewBase.generated.h"
 
-
+// Test module, not used in actual game
 
 
 struct FSprite2D
@@ -66,7 +66,6 @@ class DEFCON_API UMainViewBase : public UUserWidget
 		const FWidgetStyle& InWidgetStyle,
 		bool bParentEnabled) const override;
 
-	// ---------------------------------------------------------------------------------
 
 	UFUNCTION(BlueprintCallable, Category = SpaceRox)
 	void OnFireButtonPressed();
@@ -74,12 +73,10 @@ class DEFCON_API UMainViewBase : public UUserWidget
 	UFUNCTION(BlueprintCallable, Category = SpaceRox)
 	void OnMoveVertically(float Value);
 
-	// ---------------------------------------------------------------------------------
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Objects)
 	UDaylonSpriteWidgetAtlas* ExplosionAtlas;
 
 
-	// ---------------------------------------------------------------------------------
 	FSprite2D TestSprite;
 };

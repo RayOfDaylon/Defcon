@@ -7,7 +7,11 @@
 #include "Runtime/Core/Public/Misc/FileHelper.h"
 
 
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
 
 
 const float TITLE_START    = 2.0f; // Show the title forming after this many seconds from game launch.
@@ -284,4 +288,9 @@ void UDefconIntroViewBase::OnEnterPressed()
 	TransitionToArena(EDefconArena::MainMenu);
 }
 
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

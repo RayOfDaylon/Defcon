@@ -18,7 +18,14 @@
 #include "Runtime/SlateCore/Public/Rendering/DrawElements.h"
 
 
+
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
+
 
 #ifdef SHOW_STATS
 	extern bool gbShowStats;
@@ -346,4 +353,8 @@ void Defcon::CTerrain::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper
 }
 
 
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

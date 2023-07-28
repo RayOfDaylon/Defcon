@@ -22,18 +22,18 @@ class DEFCON_API UDefconViewBase : public UUserWidget
 
 	const UDefconGameInstance* GetConstDefconGameInstance() const;
 
-	virtual void OnActivate         () { Age = 0.0f; bDoneActivating = false; bFirstTime = true;  }
-	virtual void OnFinishActivating () {}
-	virtual void OnDeactivate       () {}
-	virtual void OnEscPressed       () {}
-	virtual void OnEnterPressed     () {}
-	virtual void OnSkipPressed      () {}
-	virtual void OnNavEvent         (ENavigationKey Key) {}
-	virtual void OnPawnNavEvent     (EDefconPawnNavigationEvent Event, bool Active) {}
-	virtual void OnPawnWeaponEvent  (EDefconPawnWeaponEvent Event, bool Active) {}
-	virtual void OnToggleDebugStats () {}
-	virtual void OnToggleShowBoundingBoxes() {}
-	virtual void OnToggleShowOrigin() {}
+	virtual void OnActivate                 () { Age = 0.0f; bDoneActivating = false; bFirstTime = true;  }
+	virtual void OnFinishActivating         () {}
+	virtual void OnDeactivate               () {}
+	virtual void OnEscPressed               () {}
+	virtual void OnEnterPressed             () {}
+	virtual void OnSkipPressed              () {}
+	virtual void OnNavEvent                 (ENavigationKey Key) {}
+	virtual void OnPawnNavEvent             (EDefconPawnNavigationEvent Event, bool Active) {}
+	virtual void OnPawnWeaponEvent          (EDefconPawnWeaponEvent Event, bool Active) {}
+	virtual void OnToggleDebugStats         () {}
+	virtual void OnToggleShowBoundingBoxes  () {}
+	virtual void OnToggleShowOrigin         () {}
 
 	protected:
 

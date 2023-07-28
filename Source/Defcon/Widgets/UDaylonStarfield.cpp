@@ -1,3 +1,5 @@
+// Copyright 2023 Daylon Graphics Ltd. All Rights Reserved.
+
 #include "UDaylonStarfield.h"
 
 

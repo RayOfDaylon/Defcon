@@ -11,7 +11,13 @@
 
 #include "DefconLogging.h"
 
+
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
+
 
 
 Defcon::ILiveGameObject::ILiveGameObject()
@@ -198,4 +204,9 @@ void Defcon::ILiveGameObject::ImpartForces(float frametime)
 	m_pos.muladd(m_velocity, frametime);
 }
 
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

@@ -15,7 +15,12 @@
 #include "Globals/_sound.h"
 #include "Globals/GameObjectResources.h"
 
+
+#define DEBUG_MODULE      0
+
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
+#endif
 
 
 UDefconGameInstance* gDefconGameInstance = nullptr;
@@ -532,4 +537,8 @@ void UDefconGameInstance::SetCurrentMission(Defcon::MissionID InMissionID)
 }
 
 
+#if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE
