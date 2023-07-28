@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-July 27, 2023
+July 28, 2023
 
 Chapters:
 
@@ -116,6 +116,10 @@ Some API translation "shims" may still exist e.g. COLORREF_ is a compatability
 typedef for FLinearColor. CGameObjectCollection is a linked list (as opposed 
 to using a TArray). As time goes by, these things will be addressed.
 
+Memory usage: the original code uses operator new/delete. Someday we 
+might have all dynamic objects derive from UObject to use UE's garbage collector, 
+but new/delete is actually very fast.
+
 The arenas from the Win32 game are now full-screen UUserWidgets (views) which are 
 managed by the game instance. As the player navigates the UI and starts/completes 
 missions, the current view is removed from the viewport and a different view is 
@@ -123,6 +127,9 @@ added to it. The OnActivate, OnFinishActivating, and OnDeactivate methods are
 called on a view to let it know when that happens. This is in stark contrast 
 to Stellar Mayhem which only has one view and uses its state machine to 
 show/hide UI elements to simulate multiple views.
+
+Parts of views are termed "widgets". A widget may derive from UUserWidget 
+or some other UMG class, or from a Slate widget.
 
 Since many classes are not derived from UObject and the dynamic_cast operator 
 is unavailable, some classes have their own type information and when used 
@@ -136,6 +143,39 @@ IGameObject (the base of all game object classes) has three type info members:
 - A creator type (e.g. PLAYER is usually the creator of LASERBEAM)
 
 Defcon::ObjType is the enum of all possible object types.
+
+Game objects are normally stored in a GameObjectCollection. The game instance 
+holds humans in a Humans collection, and the play arena holds collections 
+for enemies, debris, and misc. objects like laser beams/bullets/etc.
+GameObjectCollection::Process() is the basic object processor that 
+ticks each object by calling its Move method, wraps its arena position, 
+deletes mortal objects if their lifespan has reached zero, etc.
+
+Global variables are:
+
+gpArena              The play arena where a mission is played out.
+gpAudio              The collection of available audio tracks (sounds).
+gDefconGameInstance  The singular game instance (has player, humans, missions).
+GameObjectResources  Maps object types to their sprite atlases.
+
+The global function GameTime() abstracts UKismetLibrary::GetGameTimeInSeconds.
+It's declared in util_core.h but implemented in UDefconPlayViewBase.
+
+DefconGameInstance::IsLive is used to tell if the game is actually 
+running or not. Some UUserWidget functions get called as part of the 
+editor's design time behavior, but playtime-related code in a view shouldn't 
+necessarily run at design time.
+
+Object explosions create lots of debris objects that are each rendered with 
+their own Draw method, instead of (like in Stellar Mayhem) using a 
+particles widget that holds all the debris in a more efficient TArray 
+and renders them in a tighter loop inside one Paint call. This will 
+probably not change because smartbomb explosions also push debris 
+away from the shockwave, and that's easier to do if each debris piece 
+is its own game object.
+
+
+
 
 
 
