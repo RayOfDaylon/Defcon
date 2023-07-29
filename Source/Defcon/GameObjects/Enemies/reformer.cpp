@@ -86,8 +86,8 @@ void Defcon::CReformer::Move(float fTime)
 	m_fSpinAngle += (m_fSpinVel * fTime);
 
 	m_pos.muladd(m_orient.fwd, fTime * 50.0f);
-	m_inertia -= m_pos;
-	m_inertia *= -1;
+
+	m_inertia = m_pos - m_inertia;
 }
 
 
@@ -395,8 +395,7 @@ void Defcon::CReformerPart::Move(float fTime)
 		}
 	}
 
-	m_inertia -= m_pos;
-	m_inertia *= -1;
+	m_inertia = m_pos - m_inertia;
 }
 
 

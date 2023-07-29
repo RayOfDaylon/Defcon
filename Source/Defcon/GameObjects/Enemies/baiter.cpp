@@ -166,8 +166,7 @@ void Defcon::CBaiter::Move(float fTime)
 		}
 	}
 
-	m_inertia -= m_pos;
-	m_inertia *= -1;
+	m_inertia = m_pos - m_inertia;
 }
 
 

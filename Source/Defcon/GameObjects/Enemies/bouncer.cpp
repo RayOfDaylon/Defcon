@@ -83,8 +83,7 @@ void Defcon::IBouncer::Move(float fElapsedTime)
 	//	diff *= ABS(sin(m_fAge*PI));
 	diff = FMath::Min(diff, 1.5f);
 
-	m_inertia -= m_pos;
-	m_inertia *= -1;
+	m_inertia = m_pos - m_inertia;
 }
 
 

@@ -528,7 +528,7 @@ struct Particle
 		P += Inertia * DeltaTime;
 	}
 
-	void Draw(FPaintArguments& FrameBuffer, const I2DCoordMapper& CoordMapper)
+	void Draw(FPaintArguments& FrameBuffer, const Defcon::I2DCoordMapper& CoordMapper)
 	{
 		CFPoint pt;
 		CoordMapper.To(P, pt);
@@ -593,7 +593,7 @@ struct ParticleGroup
 	}
 
 
-	void Draw(FPaintArguments& FrameBuffer, const I2DCoordMapper& CoordMapper)
+	void Draw(FPaintArguments& FrameBuffer, const Defcon::I2DCoordMapper& CoordMapper)
 	{
 		for(int32 y = 0; y < 2; y++)
 		{
@@ -673,7 +673,7 @@ class CDestroyedPlayerShip : public Defcon::ILiveGameObject
 		}
 
 
-		virtual void Draw(FPaintArguments& FrameBuffer, const I2DCoordMapper& CoordMapper)  override
+		virtual void Draw(FPaintArguments& FrameBuffer, const Defcon::I2DCoordMapper& CoordMapper)  override
 		{
 			// Our sprite will autodraw for the first 0.5 seconds, after that
 			// we need to draw explosion debris.

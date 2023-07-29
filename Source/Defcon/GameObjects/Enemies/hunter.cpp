@@ -227,8 +227,7 @@ void Defcon::CHunter::Move(float fTime)
 	// Constrain vertically.
 	m_pos.y = CLAMP(m_pos.y, 0, gpArena->GetHeight());
 
-	m_inertia -= m_pos;
-	m_inertia *= -1;
+	m_inertia = m_pos - m_inertia;
 }
 
 

@@ -150,8 +150,7 @@ void Defcon::CTurret::Move(float fTime)
 	if(m_fAge < 0.7f)
 		m_pos.y = LERP(m_posOrg.y, pos.y, m_fAge / 0.7f);
 
-	m_inertia -= m_pos;
-	m_inertia *= -1;
+	m_inertia = m_pos - m_inertia;
 #endif
 }
 

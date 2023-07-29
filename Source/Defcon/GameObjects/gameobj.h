@@ -17,11 +17,10 @@
 
 
 
-class I2DCoordMapper;
-
-
 namespace Defcon
 {
+	class I2DCoordMapper;
+
 	enum class Message : uint8
 	{
 		takenaboard,

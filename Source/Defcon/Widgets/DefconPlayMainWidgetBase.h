@@ -276,8 +276,8 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	void AddMessage    (const FString& Str, float Duration = 0.0f);
 	void ClearMessages ();
 
-	I2DCoordMapper*                  CoordMapperPtr      = nullptr;
-	I2DCoordMapper*                  CoordMapperRadarPtr = nullptr;
+	Defcon::I2DCoordMapper*                  CoordMapperPtr      = nullptr;
+	Defcon::I2DCoordMapper*                  CoordMapperRadarPtr = nullptr;
 	Defcon::CTerrain*                TerrainPtr          = nullptr;
 	Defcon::CPlayer*                 PlayerShipPtr       = nullptr;
 	Defcon::CGameObjectCollection*   Objects             = nullptr;

@@ -9,7 +9,7 @@
 
 #include "mapper.h"
 #include "Common/util_core.h"
-#include "GameObjects/player.h"
+#include "GameObjects/gameobj.h"
 
 #include "Arenas/DefconPlayViewBase.h"
 

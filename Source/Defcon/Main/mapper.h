@@ -12,26 +12,26 @@
 	shrunk (like in the radar view).
 */
 
-class I2DCoordMapper
-{
-	public:
-		virtual void To		(const CFPoint&, CFPoint&) const = 0;
-		virtual void From	(const CFPoint&, CFPoint&) const = 0;
-
-};
-
-
-class CNull2DCoordMapper : public I2DCoordMapper
-{
-	public:
-		virtual void To		(const CFPoint& from, CFPoint& to) const override { to = from; }
-		virtual void From	(const CFPoint& from, CFPoint& to) const override { to = from; }
-};
-
-
 namespace Defcon
 {
-	class CPlayer;
+	class I2DCoordMapper
+	{
+		public:
+			virtual void To		(const CFPoint&, CFPoint&) const = 0;
+			virtual void From	(const CFPoint&, CFPoint&) const = 0;
+
+	};
+
+
+	class CNull2DCoordMapper : public I2DCoordMapper
+	{
+		public:
+			virtual void To		(const CFPoint& from, CFPoint& to) const override { to = from; }
+			virtual void From	(const CFPoint& from, CFPoint& to) const override { to = from; }
+	};
+
+
+	class IGameObject;
 
 
 	class CArenaCoordMapper : public I2DCoordMapper
@@ -75,8 +75,8 @@ namespace Defcon
 
 			float	    m_planetCircumference;
 
-			CFPoint     m_radarSize;
-			CPlayer*    m_pPlayer;
+			CFPoint         m_radarSize;
+			IGameObject*    m_pPlayer;
 
 		private:
 			mutable CFPoint	m_offset;

@@ -161,8 +161,8 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 	public:
 
-	I2DCoordMapper&                       GetMainAreaMapper       () { return MainAreaMapper; }
-	const I2DCoordMapper&                 GetConstMainAreaMapper  () const { return MainAreaMapper; }
+	Defcon::I2DCoordMapper&               GetMainAreaMapper       () { return MainAreaMapper; }
+	const Defcon::I2DCoordMapper&         GetConstMainAreaMapper  () const { return MainAreaMapper; }
 	
 	Defcon::CPlayer&                      GetPlayerShip           ();
 	const Defcon::CGameObjectCollection&  GetConstHumans          () const;
