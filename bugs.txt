@@ -1,0 +1,11 @@
+Bug list for Defense Condition game project
+
+Author(s): Ray Gardener (support@daylongraphics.com)
+Repository: https://github.com/RayOfDaylon/Defcon
+July 28, 2023
+
+
+View widgets do not activate/deactivate correctly, causing check assertions to fail. 
+
+Firebombers shoot too frequently as XP increases.
+
