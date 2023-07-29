@@ -4,6 +4,9 @@ Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
 July 29, 2023
 
+FIXED: Firebomber Showdown mission had dynamos spawning only at the 
+top of the arena.
+
 Some update (tick) handlers (e.g. CEnemy::Move variants) may still process 
 things by frame count instead of by time, causing incorrect timing 
 on frame rates other than 60 fps.
