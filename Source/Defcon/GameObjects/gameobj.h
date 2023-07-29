@@ -168,20 +168,4 @@ namespace Defcon
 
 	}; // IGameObject 
 
-
-	typedef std::function<void(IGameObject*, void*)> GameObjectProcessDelegate;
-
-	class GameObjectProcessingParams
-	{
-		public:
-			GameObjectProcessDelegate   fnOnDeath                      = nullptr;
-			GameObjectProcessDelegate   fnOnEvery                      = nullptr;
-			I2DCoordMapper*             pMapper                        = nullptr;  
-			void*                       pvUser                         = nullptr;
-			float                       fElapsedTime                   = 0.0f;
-			float                       fArenaWidth                    = 0.0f;
-			float                       fArenaHeight                   = 0.0f;
-			bool                        UninstallSpriteIfObjectDeleted = false;
-	};
-
 } // namespace Defcon
