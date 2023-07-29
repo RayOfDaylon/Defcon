@@ -80,7 +80,7 @@ void Defcon::CHaunted::MakeTargets(float fElapsed, const CFPoint& where)
 			{ ObjType::GHOST,  { 10, 15, 15 } }
 		};
 
-		size_t i, j;
+		int32 i, j;
 		for(i = 0; i < array_size(waves); i++)
 		{
 			for(j = 0; j < waves[i].count[m_nAttackWave]; j++)

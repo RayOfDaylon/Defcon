@@ -30,8 +30,8 @@ namespace Defcon
 			virtual void ForEach      (TFunction<void(IGameObject*)> Function) const;
 			virtual void ForEachUntil (TFunction<bool(IGameObject*)> Function) const;
 
-			virtual size_t Count      () const;
-			virtual size_t CountOf    (ObjType Kind) const;
+			virtual int32 Count      () const;
+			virtual int32 CountOf    (ObjType Kind) const;
 									  
 			IGameObject* GetFirst     () const { return m_pFirst; }
 			IGameObject* Find         (ObjType Kind, IGameObject* SearchAfter = nullptr) const;
@@ -42,7 +42,7 @@ namespace Defcon
 		private:
 			IGameObject*    m_pFirst    = nullptr;
 			IGameObject*    m_pLast     = nullptr;
-			size_t          m_count     = 0;
+			int32          m_count     = 0;
 
 	}; // CGameObjectCollection
 

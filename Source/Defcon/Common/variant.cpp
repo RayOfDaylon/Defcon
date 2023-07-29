@@ -34,7 +34,7 @@ char* CPrefVar::GetValueText(char* psz) const
 
 		case type_choice:
 		{
-			size_t i = (size_t)m_fValue;
+			int32 i = (int32)m_fValue;
 			check(i < m_metadata.m_pChoiceNames->m_strings.Num());
 			MyStrcpy(psz, m_metadata.m_pChoiceNames->m_strings[i]);
 		}

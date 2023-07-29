@@ -188,7 +188,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	Defcon::IBullet*     FireBullet           (Defcon::IGameObject&, const CFPoint& From, int SoundID, int);
 	bool                 IsEnding             () const { return m_bArenaDying; }
 	void                 ExplodeObject        (Defcon::IGameObject* pObj);
-	void                 IncreaseScore        (size_t Points, bool bVis, const CFPoint* pPos);
+	void                 IncreaseScore        (int32 Points, bool bVis, const CFPoint* pPos);
 	void                 CreateEnemy          (Defcon::ObjType kind, const CFPoint& where, float When, bool bMaterializes, bool bTarget);
 	Defcon::CEnemy*      CreateEnemyNow       (Defcon::ObjType kind, const CFPoint& where, bool bMaterializes, bool bTarget);
 	Defcon::IGameObject* FindHuman            (float x) const;

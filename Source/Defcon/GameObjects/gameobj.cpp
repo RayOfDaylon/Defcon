@@ -128,8 +128,8 @@ Defcon::IGameObject* Defcon::IGameObject::CreateFireblast(CGameObjectCollection&
 			fBrightRange= FRAND * 0.25f;
 			fBrightBase = FRAND * 0.1f + 0.65f;
 		}
-		const size_t frames_per_blast = 12;
-		size_t ex = rand() % 3 * frames_per_blast;
+		const int32 frames_per_blast = 12;
+		int32 ex = rand() % 3 * frames_per_blast;
 		pFireblast->Init(CBitmaps::explo0 + ex,
 			frames_per_blast, FRAND * 0.5f + 0.7f,
 			fBrightRange, fBrightBase);
@@ -384,8 +384,8 @@ Defcon::IGameObject* Defcon::IGameObject::CreateFireball(CGameObjectCollection& 
 			fBrightBase = FRAND * 0.1f + 0.65f;
 		}
 
-		const size_t frames_per_blast = 12;
-		size_t ex = rand() % 3 * frames_per_blast;
+		const int32 frames_per_blast = 12;
+		int32 ex = rand() % 3 * frames_per_blast;
 		pFireball->Init(CBitmaps::explo0 + ex,
 			frames_per_blast, FRAND * 0.5f + 0.7f, fBrightRange, fBrightBase);
 		pFireball->m_pos = m_pos;
@@ -452,7 +452,7 @@ bool                 Defcon::IGameObject::IsCollisionInjurious() const         {
 void                 Defcon::IGameObject::SetCollisionInjurious(bool b)        { m_bIsCollisionInjurious = b; }
 bool                 Defcon::IGameObject::IsInjurious() const                  { return m_bInjurious; }
 bool                 Defcon::IGameObject::CanBeInjured() const                 { return m_bCanBeInjured; }
-size_t               Defcon::IGameObject::GetPointValue() const                { return m_pointValue; }
+int32               Defcon::IGameObject::GetPointValue() const                { return m_pointValue; }
 bool                 Defcon::IGameObject::ExternallyOwned() const              { return m_bExternallyOwned; }
 void                 Defcon::IGameObject::SetExternalOwnership(bool b)         { m_bExternallyOwned = b; }
 bool                 Defcon::IGameObject::IsMissionTarget() const              { return m_bMissionTarget; }

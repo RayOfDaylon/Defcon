@@ -64,33 +64,21 @@ void Defcon::CFirebomberShowdown::MakeTargets(float fElapsed, const CFPoint& whe
 	{
 
 		m_fRepopCounter = 0.0f;
-		const size_t numBombers[] = { 6, 6 }; 
-		const size_t numEscorts[] = { 3, 3 }; 
+		const int32 numBombers[] = { 6, 6 }; 
+		const int32 numEscorts[] = { 3, 3 }; 
 
 		if(m_nAttackWave >= array_size(numBombers))
 			return;
 
-		size_t i;
-		for(i = 0; i < numBombers[m_nAttackWave] && this->HostilesRemaining() > 0; i++)
+		const Wave waves[] =
 		{
-			float wp = m_pArena->GetWidth();
-			float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + where.x;
-			x = (float)fmod(x, wp);
-			float y = (FRAND * .15f + .85f) * m_pArena->GetHeight();
+			{ ObjType::FIREBOMBER_TRUE, { 3, 3, 0, 0 } },
+			{ ObjType::FIREBOMBER_WEAK, { 3, 3, 0, 0 } },
+			{ ObjType::DYNAMO,          { 3, 3, 0, 0 } }
+		};
 
-			m_pArena->CreateEnemy((i & 1) == 1 ? ObjType::FIREBOMBER_TRUE : ObjType::FIREBOMBER_WEAK, 
-				CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), true, true);
-		}
+		STANDARD_ENEMY_SPAWNING(0.5f);
 
-		for(i = 0; i < numEscorts[m_nAttackWave] && this->HostilesRemaining() > 0; i++)
-		{
-			float wp = m_pArena->GetWidth();
-			float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + where.x;
-			x = (float)fmod(x, wp);
-			float y = (FRAND * .15f + .85f) * m_pArena->GetHeight();
-
-			m_pArena->CreateEnemy(ObjType::DYNAMO, CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), true, true);
-		}
 		m_nAttackWave++;
 	}
 }

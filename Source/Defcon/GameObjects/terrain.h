@@ -5,18 +5,18 @@
 
 // terrain.h
 
-
-#include "Common/PaintArguments.h"
-#include "Common/util_geom.h"
+#include "CoreMinimal.h"
 
 #include "gameobj.h"
-#include "gameobjlive.h"
-#include "obj_types.h"
 
+
+struct FPaintArguments;
 
 
 namespace Defcon
 {
+	class I2DCoordMapper;
+
 	class CTerrain : public IGameObject
 	{
 		// The mountain range appears on the bottom of the arena and 
@@ -31,18 +31,18 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 
-			void         InitTerrain (int, int, int, int);
-			virtual void Move        (float);
-			virtual void Draw        (FPaintArguments&, const I2DCoordMapper&) override;
-			virtual void DrawSmall   (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
-			float	     GetElev     (float) const;
+			void          InitTerrain (int32 seed, int32 w, int32 h, int32 diff);
+			virtual void  Move        (float);
+			virtual void  Draw        (FPaintArguments&, const I2DCoordMapper&) override;
+			virtual void  DrawSmall   (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
+			float	      GetElev     (float) const;
 
 		private:
 			TArray<FVector2D>   Vertices;
-			int					m_width;
-			int					m_maxheight;
-			std::vector<int>	m_elevs;
+			TArray<int32>       m_elevs;
 			bool*				m_deltas;
+			int                 m_width;
+			int                 m_maxheight;
 			bool				m_firsttime;
 
 	}; // CTerrain

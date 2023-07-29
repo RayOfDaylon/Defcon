@@ -91,7 +91,7 @@ void Defcon::CPod::OnAboutToDie()
 {
 	// Release swarmers.
 
-	for(size_t i = 0; i < SWARMERS_PER_POD; i++)
+	for(int32 i = 0; i < SWARMERS_PER_POD; i++)
 	{
 		gpArena->CreateEnemy(ObjType::SWARMER, m_pos, 0.0f, false, false);
 	}

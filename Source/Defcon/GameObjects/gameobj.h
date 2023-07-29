@@ -5,16 +5,16 @@
 
 #include "CoreMinimal.h"
 #include "DaylonUtils.h"
-#include "Common/PaintArguments.h"
 #include "GameObjects/obj_types.h"
 #include "Globals/prefs.h"
 #include "Common/util_geom.h"
 #include "Common/util_color.h"
-
 #include "Globals/GameObjectResources.h"
 
 //#define LIFESPAN_DEAD 0.0001f
 
+
+struct FPaintArguments;
 
 
 namespace Defcon
@@ -99,7 +99,7 @@ namespace Defcon
 			virtual void          GetInjurePt           (CFPoint&) const;
 			virtual bool          TestInjury            (const CFRect&) const;
 
-			virtual size_t        GetPointValue         () const;
+			virtual int32        GetPointValue         () const;
 
 			bool                  ExternallyOwned       () const; // todo: smart pointers would be better for this
 			void                  SetExternalOwnership  (bool b);
@@ -160,7 +160,7 @@ namespace Defcon
 			ObjType         m_creatorType           = ObjType::UNKNOWN;
 
 			FLinearColor    m_smallColor;
-			size_t          m_pointValue            = 0;
+			int32          m_pointValue            = 0;
 			float           m_fAnimSpeed            = 1.0f; // todo: will likely be dropped
 			bool            m_bMissionTarget        = false;
 			bool            m_grounded              = false;

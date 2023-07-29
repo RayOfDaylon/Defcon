@@ -48,8 +48,8 @@ const char* Defcon::CBitmapDisplayer::GetClassname() const
 
 void Defcon::CBitmapDisplayer::InitBitmapDisplayer
 (
-	size_t base, 
-	size_t count, 
+	int32 base, 
+	int32 count, 
 	float  lifetime,
 	float  fAlphaScale,
 	float  fAlphaMin

@@ -109,11 +109,11 @@ void Defcon::CPhred::Move(float fTime)
 			bool bMoveTowards = (xd > 150 || SGN(m_orient.fwd.x) != SGN(pTarget->m_orient.fwd.x));
 			if(bMoveTowards)
 			{
-				size_t ctl = (delta.x < 0)	
+				int32 ctl = (delta.x < 0)	
 						? ILiveGameObject::ctlBack
 						: ILiveGameObject::ctlFwd;
 
-				size_t ctl2 = (ctl ==  ILiveGameObject::ctlBack)
+				int32 ctl2 = (ctl ==  ILiveGameObject::ctlBack)
 						? ILiveGameObject::ctlFwd
 						: ILiveGameObject::ctlBack;
 
@@ -136,11 +136,11 @@ void Defcon::CPhred::Move(float fTime)
 			bMoveTowards = (xd > 50/* && SGN(m_orient.fwd.y) != SGN(pTarget->m_orient.fwd.y)*/);
 			if(bMoveTowards)
 			{
-				size_t ctl = (delta.y < 0)	
+				int32 ctl = (delta.y < 0)	
 						? ILiveGameObject::ctlDown
 						: ILiveGameObject::ctlUp;
 
-				size_t ctl2 = (ctl ==  ILiveGameObject::ctlDown)
+				int32 ctl2 = (ctl ==  ILiveGameObject::ctlDown)
 						? ILiveGameObject::ctlUp
 						: ILiveGameObject::ctlDown;
 
@@ -281,11 +281,11 @@ void Defcon::CMunchie::Move(float fTime)
 			bool bMoveTowards = (xd > 150 || SGN(m_orient.fwd.x) != SGN(pTarget->m_orient.fwd.x));
 			if(bMoveTowards)
 			{
-				size_t ctl = (delta.x < 0)	
+				int32 ctl = (delta.x < 0)	
 						? ILiveGameObject::ctlBack
 						: ILiveGameObject::ctlFwd;
 
-				size_t ctl2 = (ctl ==  ILiveGameObject::ctlBack)
+				int32 ctl2 = (ctl ==  ILiveGameObject::ctlBack)
 						? ILiveGameObject::ctlFwd
 						: ILiveGameObject::ctlBack;
 
@@ -308,11 +308,11 @@ void Defcon::CMunchie::Move(float fTime)
 			bMoveTowards = (xd > 50/* && SGN(m_orient.fwd.y) != SGN(pTarget->m_orient.fwd.y)*/);
 			if(bMoveTowards)
 			{
-				size_t ctl = (delta.y < 0)	
+				int32 ctl = (delta.y < 0)	
 						? ILiveGameObject::ctlDown
 						: ILiveGameObject::ctlUp;
 
-				size_t ctl2 = (ctl ==  ILiveGameObject::ctlDown)
+				int32 ctl2 = (ctl ==  ILiveGameObject::ctlDown)
 						? ILiveGameObject::ctlUp
 						: ILiveGameObject::ctlDown;
 
@@ -452,11 +452,11 @@ void Defcon::CBigRed::Move(float fTime)
 			bool bMoveTowards = (xd > 150 || SGN(m_orient.fwd.x) != SGN(pTarget->m_orient.fwd.x));
 			if(bMoveTowards)
 			{
-				size_t ctl = (delta.x < 0)	
+				int32 ctl = (delta.x < 0)	
 						? ILiveGameObject::ctlBack
 						: ILiveGameObject::ctlFwd;
 
-				size_t ctl2 = (ctl ==  ILiveGameObject::ctlBack)
+				int32 ctl2 = (ctl ==  ILiveGameObject::ctlBack)
 						? ILiveGameObject::ctlFwd
 						: ILiveGameObject::ctlBack;
 
@@ -479,11 +479,11 @@ void Defcon::CBigRed::Move(float fTime)
 			bMoveTowards = (xd > 50/* && SGN(m_orient.fwd.y) != SGN(pTarget->m_orient.fwd.y)*/);
 			if(bMoveTowards)
 			{
-				size_t ctl = (delta.y < 0)	
+				int32 ctl = (delta.y < 0)	
 						? ILiveGameObject::ctlDown
 						: ILiveGameObject::ctlUp;
 
-				size_t ctl2 = (ctl ==  ILiveGameObject::ctlDown)
+				int32 ctl2 = (ctl ==  ILiveGameObject::ctlDown)
 						? ILiveGameObject::ctlUp
 						: ILiveGameObject::ctlDown;
 

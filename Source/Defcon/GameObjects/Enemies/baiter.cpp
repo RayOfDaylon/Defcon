@@ -108,11 +108,11 @@ void Defcon::CBaiter::Move(float fTime)
 
 			if(bMoveTowards)
 			{
-				size_t ctl = (delta.x < 0)	
+				int32 ctl = (delta.x < 0)	
 						? ILiveGameObject::ctlBack
 						: ILiveGameObject::ctlFwd;
 
-				size_t ctl2 = (ctl ==  ILiveGameObject::ctlBack)
+				int32 ctl2 = (ctl ==  ILiveGameObject::ctlBack)
 						? ILiveGameObject::ctlFwd
 						: ILiveGameObject::ctlBack;
 
@@ -135,11 +135,11 @@ void Defcon::CBaiter::Move(float fTime)
 			bMoveTowards = (xd > 50/* && SGN(m_orient.fwd.y) != SGN(pTarget->m_orient.fwd.y)*/);
 			if(bMoveTowards)
 			{
-				size_t ctl = (delta.y < 0)	
+				int32 ctl = (delta.y < 0)	
 						? ILiveGameObject::ctlDown
 						: ILiveGameObject::ctlUp;
 
-				size_t ctl2 = (ctl ==  ILiveGameObject::ctlDown)
+				int32 ctl2 = (ctl ==  ILiveGameObject::ctlDown)
 						? ILiveGameObject::ctlUp
 						: ILiveGameObject::ctlDown;
 

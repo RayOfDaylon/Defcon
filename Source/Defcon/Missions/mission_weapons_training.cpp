@@ -104,7 +104,7 @@ void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 
 	m_bTargetsMade = true;
 
-	for(size_t i = 0; i < NumTargets; i++)
+	for(int32 i = 0; i < NumTargets; i++)
 	{
 		CBeacon* p = new CBeacon;
 		p->InstallSprite();

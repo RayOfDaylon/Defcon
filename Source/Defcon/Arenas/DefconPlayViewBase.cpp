@@ -455,7 +455,7 @@ void UDefconPlayViewBase::AllStopPlayerShip()
 }
 
 
-void UDefconPlayViewBase::IncreaseScore(size_t Points, bool bVis, const CFPoint* pPos)
+void UDefconPlayViewBase::IncreaseScore(int32 Points, bool bVis, const CFPoint* pPos)
 {
 	gDefconGameInstance->AdvanceScore((int32)Points);
 
@@ -978,7 +978,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	// ------------------------------------------------------
 	// Process objects (move, draw, delete).
 
-	static size_t n = 0;
+	static int32 n = 0;
 	const bool bDrawRadar = (n++ % 5 == 0);
 
 	// Note: update only model data, not visual.
@@ -1105,7 +1105,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 			{
 				if(PlayerShip.DebarkOnePassenger(this->GetHumans()))
 				{
-					this->IncreaseScore((size_t)HUMAN_VALUE_DEBARKED, true, &PlayerShip.m_pos);
+					this->IncreaseScore((int32)HUMAN_VALUE_DEBARKED, true, &PlayerShip.m_pos);
 				}
 			}
 			else
@@ -1135,7 +1135,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 							{
 								if(PlayerShip.EmbarkPassenger(pObj, this->GetHumans()))
 								{
-									this->IncreaseScore((size_t)HUMAN_VALUE_EMBARKED, true, &PlayerShip.m_pos);
+									this->IncreaseScore((int32)HUMAN_VALUE_EMBARKED, true, &PlayerShip.m_pos);
 								}
 								return false;
 							}
@@ -1468,10 +1468,10 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 	pBullet->InstallSprite();
 
 	// Scores at which to switch firing style.
-	const size_t FIRE_AT   = 10000;
-	const size_t FIRE_LEAD = 100000;
+	const int32 FIRE_AT   = 10000;
+	const int32 FIRE_LEAD = 100000;
 
-	const size_t score = gDefconGameInstance->GetScore();
+	const int32 score = gDefconGameInstance->GetScore();
 
 	FiringAccuracy eAccuracy = fa_lead;
 
@@ -1810,7 +1810,7 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 
 	const int cby = Defcon::CGameColors::gray;
 
-	for(size_t i = 0; i < 10; i++)
+	for(int32 i = 0; i < 10; i++)
 	{
 		auto pFlak = new Defcon::CFlak;
 		pFlak->m_eColorbaseYoung = cby;

@@ -101,7 +101,7 @@ class CPrefVar
 		float   GetValue        () const { return m_fValue; }
 		void    SetValue        (float val) { float f = m_fValue; m_fValue = val; this->InvokeCallback(f); }
 		char*   GetValueText    (char*) const;
-		size_t  GetChoiceCount  () const { return m_metadata.m_pChoiceNames->m_strings.Num(); }
+		int32  GetChoiceCount  () const { return m_metadata.m_pChoiceNames->m_strings.Num(); }
 		bool    Is              (const FString& psz) const	{ return (0 == psz.Compare(m_metadata.m_pszName, ESearchCase::IgnoreCase)); }
 		bool    HasCallback     () const { return (m_fnCB != nullptr); }
 		void    InvokeCallback  (float f) { if(this->HasCallback()) { m_fnCB(*this, f, m_pvUser); } }

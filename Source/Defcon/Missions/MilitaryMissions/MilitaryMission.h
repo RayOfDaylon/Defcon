@@ -22,7 +22,7 @@ namespace Defcon
 	// todo: this macro s/b a function.
 #define SPAWN_ENEMIES(JFactor, MinAlt, MaxAlt)	\
 	{	\
-	size_t i, j;	\
+	int32 i, j;	\
 	for(i = 0; i < array_size(waves); i++)	\
 	{	\
 		for(j = 0; j < waves[i].count[m_nAttackWave] && this->HostilesRemaining() > 0; j++)	\

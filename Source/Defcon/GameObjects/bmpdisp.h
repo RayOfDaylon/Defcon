@@ -20,7 +20,7 @@ namespace Defcon
 			CBitmapDisplayer();
 			virtual ~CBitmapDisplayer();
 
-			virtual void InitBitmapDisplayer(size_t, size_t, float, float, float);
+			virtual void InitBitmapDisplayer(int32, int32, float, float, float);
 
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
@@ -31,7 +31,7 @@ namespace Defcon
 			virtual void DrawSmall(FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
 
 		protected:
-			size_t		m_nFrame, m_nBaseID, m_nFrameCount;
+			int32		m_nFrame, m_nBaseID, m_nFrameCount;
 
 		private:
 			float		m_fOrgLifespan;

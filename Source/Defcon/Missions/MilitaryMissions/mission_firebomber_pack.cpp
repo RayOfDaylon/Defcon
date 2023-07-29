@@ -65,8 +65,8 @@ void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 
 		m_fRepopCounter = 0.0f;
 
-		const size_t numBombers[] = { 20, 5 }; 
-		const size_t numEscorts[] = { 10, 5 }; 
+		const int32 numBombers[] = { 20, 5 }; 
+		const int32 numEscorts[] = { 10, 5 }; 
 
 		if(m_nAttackWave >= array_size(numBombers))
 		{
@@ -81,7 +81,7 @@ void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 		};*/
 
 
-		size_t i;
+		int32 i;
 
 		for(i = 0; i < numBombers[m_nAttackWave] && this->HostilesRemaining() > 0; i++)
 		{

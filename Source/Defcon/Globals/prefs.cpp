@@ -260,7 +260,7 @@ void Defcon::CPrefs::Init(const FString& psz)
 	while(f.ReadLine(buf))
 	{
 		trimwhitespace(buf);
-		size_t n = strlen(buf);
+		int32 n = strlen(buf);
 		if(n == 0)
 			continue;
 
@@ -284,7 +284,7 @@ void Defcon::CPrefs::Init(const FString& psz)
 
 CPrefVar& Defcon::CPrefs::Translate(const FString& psz) const
 {
-	for(size_t i = 0; i < Pref::count; i++)
+	for(int32 i = 0; i < Pref::count; i++)
 	{
 		if(m_pref[i].Is(psz))
 		{

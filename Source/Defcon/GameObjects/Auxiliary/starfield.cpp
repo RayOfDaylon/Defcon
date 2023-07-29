@@ -40,7 +40,7 @@ Defcon::CStarfield::CStarfield()
 }
 
 
-void Defcon::CStarfield::InitStarfield(size_t w, size_t h, float fRange, bool bMorphColor, FLinearColor nearColor)
+void Defcon::CStarfield::InitStarfield(int32 w, int32 h, float fRange, bool bMorphColor, FLinearColor nearColor)
 {
 	// Initialize a starfield to pixel dimensions w x h.
 	m_w = w;
@@ -51,7 +51,7 @@ void Defcon::CStarfield::InitStarfield(size_t w, size_t h, float fRange, bool bM
 	// As the update process brings them nearer, 
 	// they will cycle to the background again.
 		
-	const size_t n = array_size(m_stars);
+	const int32 n = array_size(m_stars);
 	const FLinearColor colors[] = 
 		{
 			C_WHITE, C_WHITE, C_WHITE, C_WHITE,
@@ -60,7 +60,7 @@ void Defcon::CStarfield::InitStarfield(size_t w, size_t h, float fRange, bool bM
 			C_ORANGE, C_CYAN 
 		};
 
-	for(size_t i = 0; i < n; i++)
+	for(int32 i = 0; i < n; i++)
 	{
 		m_stars[i].m_pos.set(SFRAND * 4000, SFRAND * 4000, kBackplane - FRAND * fRange);
 		m_stars[i].m_colorFar = colors[IRAND(array_size(colors))];
@@ -76,9 +76,9 @@ void Defcon::CStarfield::Move(float f)
 	m_fAge += f;
 
 	// Bring the stars closer.
-	const size_t n = array_size(m_stars);
+	const int32 n = array_size(m_stars);
 
-	for(size_t i = 0; i < n; i++)
+	for(int32 i = 0; i < n; i++)
 	{
 		m_stars[i].m_pos.z -= (f * kSpeed * m_fSpeedMul);
 		// If too close, wrap it back.
@@ -100,7 +100,7 @@ void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 	CFPoint pt;
 	mapper.To(m_pos, pt);
 
-	const size_t n = this->GetNumStars();
+	const int32 n = this->GetNumStars();
 
 	const CFPoint halfsize(0.5f * m_w, 0.5f * m_h);
 	CFRect rect(pt);
@@ -112,7 +112,7 @@ void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 	//offset += CFPoint(-0.5f* m_w, -0.5f * m_h);
 	CFPoint inc(1,1);
 
-	for(size_t i = 0; i < n; i++)
+	for(int32 i = 0; i < n; i++)
 	{
 		// Project 3D star location to 2D.
 		CFPoint starproj;

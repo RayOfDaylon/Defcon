@@ -32,7 +32,7 @@ Defcon::ILiveGameObject::ILiveGameObject()
 
 	SetShieldStrength(1.0f);
 
-	for(size_t i = 0; i < array_size(m_navCtls); i++)
+	for(int32 i = 0; i < array_size(m_navCtls); i++)
 	{
 		m_navCtls[i].bActive = false;
 	}

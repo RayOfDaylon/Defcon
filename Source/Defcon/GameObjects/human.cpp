@@ -142,7 +142,7 @@ void Defcon::CHuman::Move(float fElapsedTime)
 				else
 				{
 					// We landed okay. Give the player 250.
-					gpArena->IncreaseScore((size_t)HUMAN_VALUE_LIBERATED, true, &m_pos);
+					gpArena->IncreaseScore((int32)HUMAN_VALUE_LIBERATED, true, &m_pos);
 				}
 			}
 		}

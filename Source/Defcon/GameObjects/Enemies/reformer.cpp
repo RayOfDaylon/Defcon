@@ -102,8 +102,8 @@ void Defcon::CReformer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& ma
 
 
 	// Draw the parts in a circle around a central part.
-	size_t n = m_numParts - 1;
-	size_t i;
+	int32 n = m_numParts - 1;
+	int32 i;
 	for(i = 0; i < n; i++)
 	{
 		const float t = (float)(TWO_PI * i / n + (m_fSpinAngle * TWO_PI));
@@ -161,7 +161,7 @@ void Defcon::CReformer::OnAboutToDie()
 {
 	// Release parts.
 
-	for(size_t i = 0; i < m_numParts; i++)
+	for(int32 i = 0; i < m_numParts; i++)
 	{
 		gpArena->CreateEnemy(ObjType::REFORMERPART, m_partLocs[i], 0.0f, false, false);
 	}
@@ -183,7 +183,7 @@ void Defcon::CReformer::Explode(CGameObjectCollection& debris)
 	const int cby = CGameColors::gray;
 
 
-	for(size_t i = 0; i < 20; i++)
+	for(int32 i = 0; i < 20; i++)
 	{
 		CFlak* pFlak = new CFlak;
 		pFlak->m_eColorbaseYoung = cby;
@@ -412,7 +412,7 @@ void Defcon::CReformerPart::Explode(CGameObjectCollection& debris)
 	m_fLifespan = 0.0f;
 	this->OnAboutToDie();
 
-	for(size_t i = 0; i < 20; i++)
+	for(int32 i = 0; i < 20; i++)
 	{
 		CFlak* pFlak = new CFlak;
 		pFlak->m_eColorbaseYoung = cby;

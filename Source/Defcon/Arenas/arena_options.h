@@ -41,7 +41,7 @@ namespace Defcon
 			}
 #endif
 
-			virtual void OnDisplaySizeChanged(size_t, size_t);
+			virtual void OnDisplaySizeChanged(int32, int32);
 			virtual void Init(const ArenaParams&);
 			virtual void Destroy();
 			virtual void Update(float);
@@ -68,11 +68,11 @@ namespace Defcon
 			void StopEditing();
 			void CancelEditing();
 
-			void UpdateValueText(size_t);
+			void UpdateValueText(int32);
 
 			void Scroll();
 
-			//void OnKeyboardEvent(size_t);
+			//void OnKeyboardEvent(int32);
 
 			//void navigate(EventType);
 
@@ -99,7 +99,7 @@ namespace Defcon
 
 			//KybdKey					m_keys[Keys::count];
 
-			size_t					m_topItem;
+			int32					m_topItem;
 
 			//CGameObjectCollection	m_objects;
 #if 0
@@ -122,7 +122,7 @@ namespace Defcon
 			bool					m_bLaunching;
 			float					m_fLaunchAge;
 
-			void FocusItem(size_t);
+			void FocusItem(int32);
 	}; 
 }
 

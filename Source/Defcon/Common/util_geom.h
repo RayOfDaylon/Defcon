@@ -75,36 +75,41 @@ class CFPoint
 	public:
 		CFPoint() : x(0.0f), y(0.0f) {}
 		CFPoint(float x2, float y2) : x(x2), y(y2) {}
-		CFPoint(int x2, int y2) : x((float)x2), y((float)y2) {}
-		CFPoint(size_t x2, size_t y2) : x((float)x2), y((float)y2) {}
+		CFPoint(int32 x2, int32 y2) : x((float)x2), y((float)y2) {}
 		
-		void set(float a, float b) { x = a; y = b; }
+		void  set  (float a, float b) { x = a; y = b; }
 
-		void add(const CFPoint& pt) { x += pt.x; y += pt.y; }
-		void sub(const CFPoint& pt) { x -= pt.x; y -= pt.y; }
-		void mul(float f) { x *= f; y *= f; }
-		void div(float f) { x /= f; y /= f; }
-		void mul(const CFPoint& pt) { x *= pt.x; y *= pt.y; }
-		void div(const CFPoint& pt) { x /= pt.x; y /= pt.y; }
+		void  add  (const CFPoint& pt) { x += pt.x; y += pt.y; }
+		void  sub  (const CFPoint& pt) { x -= pt.x; y -= pt.y; }
+		void  mul  (float f)           { x *= f; y *= f; }
+		void  div  (float f)           { x /= f; y /= f; }
+		void  mul  (const CFPoint& pt) { x *= pt.x; y *= pt.y; }
+		void  div  (const CFPoint& pt) { x /= pt.x; y /= pt.y; }
 
-		void muladd(const CFPoint& pt, float f)
-			{ x += pt.x * f; y += pt.y * f; }
+		CFPoint& operator -= (const CFPoint& pt) { this->sub(pt); return *this; }
+		CFPoint& operator += (const CFPoint& pt) { this->add(pt); return *this; }
+		CFPoint& operator *= (float f)           { this->mul(f);  return *this; }
+		CFPoint& operator /= (float f)           { this->div(f);  return *this; }
+		CFPoint& operator *= (const CFPoint& pt) { this->mul(pt); return *this; }
+		CFPoint& operator /= (const CFPoint& pt) { this->div(pt); return *this; }
+		bool     operator == (const CFPoint& pt) const { return (x == pt.x && y == pt.y); }
+		bool     operator != (const CFPoint& pt) const { return (!(*this == pt)); }
 
-		void muladd(const CFPoint& pt, const CFPoint& off)
-			{ x += pt.x * off.x; y += pt.y * off.y; }
-
-		float dot(const CFPoint& v)
-			{ return (x * v.x + y * v.y); }
-
-		float length() const { return (float)PTLEN(*this); }
-		void normalize() { this->div(this->length()); }
-		float distance(const CFPoint& pt) const
-			{ return (float)PTSLEN(*this, pt); }
+		void   muladd      (const CFPoint& pt, float f)	            { x += pt.x * f; y += pt.y * f; }
+		void   muladd      (const CFPoint& pt, const CFPoint& off)	{ x += pt.x * off.x; y += pt.y * off.y; }
+		float  dot         (const CFPoint& v)                       { return (x * v.x + y * v.y); }
+		float  angledelta  (const CFPoint& pt)                      { return this->angle() - pt.angle(); }
+		float  length      () const                                 { return (float)PTLEN(*this); }
+		void   normalize   ()                                       { this->div(this->length()); }
+		float  distance    (const CFPoint& pt) const                { return (float)PTSLEN(*this, pt); }
+		void   lerp        (const CFPoint& pt, float t)             { x = LERP(x, pt.x, t); y = LERP(y, pt.y, t); }
+		void   avg         (const CFPoint& pt)                      { x = AVG(x, pt.x); y = AVG(y, pt.y); }
+		bool   iszero      () const                                 { return (x == 0 && y == 0); }
+		float  ordinal     (float w) const                          { return y * w + x; }
 
 		// angle() returns degrees, negative if ccw 
 		// and positive if cw. X-axis = 0 deg.
-		float angle() const
-			{ return (float)RAD2DEG(atan2(y, x)); }
+		float  angle       () const                                 { return (float)RAD2DEG(atan2(y, x)); }
 
 		// Like angle(), but returns 0-360 values.
 		float posangle() const
@@ -114,9 +119,6 @@ class CFPoint
 					a += 360.0f;
 				return a;
 			}
-
-		float angledelta(const CFPoint& pt)
-			{ return this->angle() - pt.angle(); }
 
 		// Like angledelta(), but it always returns 
 		// the positive smallest angular difference.
@@ -129,33 +131,6 @@ class CFPoint
 				return a;
 			}
 
-
-		CFPoint& operator-=(const CFPoint& pt) { this->sub(pt); return *this; }
-		CFPoint& operator+=(const CFPoint& pt) { this->add(pt); return *this; }
-		CFPoint& operator*=(float f) { this->mul(f); return *this; }
-		CFPoint& operator/=(float f) { this->div(f); return *this; }
-		CFPoint& operator*=(const CFPoint& pt) { this->mul(pt); return *this; }
-		CFPoint& operator/=(const CFPoint& pt) { this->div(pt); return *this; }
-
-
-		bool operator==(const CFPoint& pt) const
-			{ return (x == pt.x && y == pt.y); }
-
-		bool operator!=(const CFPoint& pt) const
-			{ return (!(*this == pt)); }
-
-		void lerp(const CFPoint& pt, float t)
-			{
-				x = LERP(x, pt.x, t);
-				y = LERP(y, pt.y, t);
-			}
-
-		void avg(const CFPoint& pt)
-			{
-				x = AVG(x, pt.x);
-				y = AVG(y, pt.y);
-			}
-
 		void clamp(const CFPoint& lower, const CFPoint& upper)
 			{
 				x = FMath::Max(x, lower.x);
@@ -163,8 +138,6 @@ class CFPoint
 				y = FMath::Max(y, lower.y);
 				y = FMath::Min(y, upper.y);
 			}
-
-		bool iszero() const { return (x == 0 && y == 0); }
 
 		void rotate(double dAng)
 		{
@@ -175,19 +148,25 @@ class CFPoint
 			*this = pt;
 		}
 
+
 		void rotate(CFPoint& pt, double dAng)
 		{
 			dAng = fmod(dAng, 360.0);
+
 			if((dAng / 90.0) == (int)dAng/90)
 			{
 				// Right-angled rotation.
 				if(dAng < 0)
+				{
 					dAng = 360.0 + dAng;
+				}
+
 				switch((int)dAng)
 				{
 					case 0: 
 					case 360: return;
-					case 90: pt.x = -y; pt.y = x; break;
+
+					case 90:  pt.x = -y; pt.y = x; break;
 					case 180: pt.x = -x; pt.y = -y; break;
 					case 270: pt.x = y; pt.y = -x; break;
 					default: check(false); break;
@@ -201,11 +180,9 @@ class CFPoint
 			}
 		}
 
-		float ordinal(float w) const { return y * w + x; }
-			
-
 		float	x, y;
 }; // CFPoint
+
 
 inline CFPoint operator - (const CFPoint& pt1, const CFPoint& pt2) { CFPoint r(pt1); r -= pt2; return r; }
 inline CFPoint operator + (const CFPoint& pt1, const CFPoint& pt2) { CFPoint r(pt1); r += pt2; return r; }
@@ -353,19 +330,24 @@ class CBezierSpline2D
 
 		void CalcPt(float t, CFPoint& r) const
 		{
-			const float invt = 1.0f - t;
-			const float t3 = t * 3;
+			const float tsub1     = t - 1.0f;
+			const float tcubed    = t * t * t;
+			const float invt      = 1.0f - t;
+			const float t3        = t * 3;
+			const float invtcubed = invt * invt * invt;
+			const float coeff1    = t3 * tsub1 * tsub1;
+			const float coeff2    = t3 * t * invt;
 
 			r.set(
-				m_pt[0].x * invt*invt*invt +
-				m_pt[1].x * t3*(t-1)*(t-1) +
-				m_pt[2].x * t3*t*invt +
-				m_pt[3].x * t*t*t,
+				m_pt[0].x * invtcubed +
+				m_pt[1].x * coeff1 +
+				m_pt[2].x * coeff2 +
+				m_pt[3].x * tcubed,
 
-				m_pt[0].y * invt*invt*invt +
-				m_pt[1].y * t3*(t-1)*(t-1) +
-				m_pt[2].y * t3*t*invt +
-				m_pt[3].y * t*t*t
+				m_pt[0].y * invtcubed +
+				m_pt[1].y * coeff1 +
+				m_pt[2].y * coeff2 +
+				m_pt[3].y * tcubed
 				);
 		}
 }; // CBezierSpline2D

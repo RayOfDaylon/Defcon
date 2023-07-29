@@ -23,11 +23,11 @@ void Defcon::CPartyMixMission::Init(UDefconPlayViewBase* pA)
 
 	// Precompute the enemy types so we know how many landers we'll have.
 
-	for(size_t i = 0; i < array_size(Waves); i++)
+	for(int32 i = 0; i < array_size(Waves); i++)
 	{
 		for(int32 AttackWave = 0; AttackWave < 4; AttackWave++)
 		{
-			for(size_t j = 0; j < Waves[i].count[AttackWave]; j++)
+			for(int32 j = 0; j < Waves[i].count[AttackWave]; j++)
 			{
 				const auto Kind = EnemyTypes[IRAND(array_size(EnemyTypes))];
 
@@ -98,7 +98,7 @@ void Defcon::CPartyMixMission::MakeTargets(float fElapsed, const CFPoint& where)
 			return;
 
 
-		size_t i, j;
+		int32 i, j;
 
 		for(i = 0; i < array_size(Waves); i++)
 		{

@@ -26,7 +26,7 @@ namespace Defcon
 	{
 		public:
 			ObjType type;
-			size_t	count[4];
+			int32	count[4];
 	};
 
 

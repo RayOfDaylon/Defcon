@@ -10,6 +10,8 @@
 #include "terrain.h"
 
 #include "Common/util_core.h"
+#include "Common/PaintArguments.h"
+#include "Common/util_geom.h"
 #include "Globals/GameColors.h"
 #include "Globals/prefs.h"
 #include "Main/mapper.h"
@@ -63,7 +65,7 @@ const char* Defcon::CTerrain::GetClassname() const
 #endif
 
 
-void Defcon::CTerrain::InitTerrain(int seed, int w, int h, int diff)
+void Defcon::CTerrain::InitTerrain(int32 seed, int32 w, int32 h, int32 diff)
 {
 	// Set up some funky mountainry.
 	// The greater <diff> is, the more funky the terrain.
@@ -79,12 +81,12 @@ void Defcon::CTerrain::InitTerrain(int seed, int w, int h, int diff)
 	if(seed >= 0)
 	{
 		srand(seed);
-		diff = (int)(FRAND * 100000 + 20000);
+		diff = (int32)(FRAND * 100000 + 20000);
 	}
 
 	float t = NORM_((float)diff, 0, 200000);
 	t = FMath::Min(t, 1.0f);
-	diff = (int)(t * 50);
+	diff = (int32)(t * 50);
 
 
 	// New vertex generator
@@ -101,7 +103,7 @@ void Defcon::CTerrain::InitTerrain(int seed, int w, int h, int diff)
 	{
 		FVector2D P2;
 
-		int DirectionY;
+		int32 DirectionY;
 
 		do
 		{
@@ -131,8 +133,8 @@ void Defcon::CTerrain::InitTerrain(int seed, int w, int h, int diff)
 
 	while(CurrentVertexIdx < Vertices.Num() - 1)
 	{
-		const int SlopeBehind = SGN(Vertices[CurrentVertexIdx - 1].Y - Vertices[CurrentVertexIdx].Y);
-		const int SlopeAhead  = SGN(Vertices[CurrentVertexIdx].Y     - Vertices[CurrentVertexIdx + 1].Y);
+		const int32 SlopeBehind = SGN(Vertices[CurrentVertexIdx - 1].Y - Vertices[CurrentVertexIdx].Y);
+		const int32 SlopeAhead  = SGN(Vertices[CurrentVertexIdx].Y     - Vertices[CurrentVertexIdx + 1].Y);
 
 		if(SlopeBehind == SlopeAhead)
 		{
@@ -154,14 +156,14 @@ void Defcon::CTerrain::InitTerrain(int seed, int w, int h, int diff)
 	// Render lines into heightfield for fast access during GetElev().
 	// Note: line vertices are in Slate space, but our elevations are cartesian.
 
-	const size_t numElevs = w + 1;
-	m_elevs.reserve(numElevs);
-	m_elevs.resize(numElevs);
+	const int32 numElevs = w + 1;
+	m_elevs.Reserve(numElevs);
+	m_elevs.SetNum(numElevs);
 
 	for(int32 Index = 0; Index < Vertices.Num() - 1; Index++)
 	{
-		FVector2D P1 = Vertices[Index];
-		FVector2D P2 = Vertices[Index + 1];
+		const FVector2D P1 = Vertices[Index];
+		const FVector2D P2 = Vertices[Index + 1];
 
 		// Iterate through line at pixel res.
 		for(int32 X = (int32)P1.X; X <= (int32)P2.X; X++)
@@ -191,7 +193,7 @@ float Defcon::CTerrain::GetElev(float x) const
 	// 0 and 1 are the same arena point.
 	// This is occupied by the first and last terrain vertex.
 
-	x *= m_elevs.size() - 1;
+	x *= m_elevs.Num() - 1;
 	//return (float)((m_maxheight - 1) - m_elevs[ROUND(x)]);
 	return (float)m_elevs[ROUND(x)];
 }
@@ -273,6 +275,10 @@ void Defcon::CTerrain::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper
 {
 	// The entire terrain is visible, so don't search for start/end points.
 	// Note that the player is always in the center, so the terrain shifts left/right.
+
+	// note: Another way is to render once to texture, then draw at most two quads.
+	// After all, the terrain only takes part of the radar widget and that widget 
+	// takes only a small part of the screen.
 
 
 	CFPoint pt;

@@ -71,7 +71,7 @@ namespace Defcon
 			float   m_xFreq;
 			float   m_yOrg;
 
-			size_t	m_numParts;
+			int32	m_numParts;
 			bool	m_bWaits;
 			float	m_fSpinVel;
 			float	m_fSpinAngle;

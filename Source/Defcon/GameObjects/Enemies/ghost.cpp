@@ -167,8 +167,8 @@ void Defcon::CGhost::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mappe
 
 
 	// Draw the parts in a circle around a central part.
-	size_t n = m_numParts - 1;
-	size_t i;
+	int32 n = m_numParts - 1;
+	int32 i;
 	for(i = 0; i < n; i++)
 	{
 		const float t = (float)(TWO_PI * i / n + ((m_fSpinAngle + FRAND*0.1f) * TWO_PI));

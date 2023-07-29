@@ -120,7 +120,7 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 	float fBrightBase;
 	this->CreateFireball(debris, fBrightBase);
 
-	size_t a, i;
+	int32 a, i;
 	const float off = SFRAND * 0.2f;
 	const float off2 = SFRAND * 0.2f;
 

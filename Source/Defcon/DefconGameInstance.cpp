@@ -461,7 +461,7 @@ void UDefconGameInstance::MissionEnded()
 
 	if(HumansWereInvolved)
 	{
-		size_t n = GetHumans().Count();
+		int32 n = GetHumans().Count();
 
 		if(n > 0)
 		{

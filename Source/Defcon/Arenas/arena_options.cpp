@@ -40,7 +40,7 @@
 
 // ------------------------------------------------------
 
-static size_t sCurrentItem_arena_optons = 0;
+static int32 sCurrentItem_arena_optons = 0;
 
 // ------------------------------------------------------
 
@@ -171,8 +171,8 @@ void Defcon::COptionsArena::Init
 
 	const IntRect& r = params.r;
 
-	const size_t w = r.right - r.left;
-	const size_t h = r.bottom - r.top;
+	const int32 w = r.right - r.left;
+	const int32 h = r.bottom - r.top;
 
 	this->OnDisplaySizeChanged(w, h);
 
@@ -211,7 +211,7 @@ void Defcon::COptionsArena::Init
 	m_keys[Keys::choose].nKey = VK_RETURN;*/
 
 
-	size_t i;
+	int32 i;
 
 	auto varfontid = EFont::heading;
 
@@ -264,12 +264,12 @@ void Defcon::COptionsArena::Scroll()
 	}
 }
 
-void Defcon::COptionsArena::FocusItem(size_t id)
+void Defcon::COptionsArena::FocusItem(int32 id)
 {
 	// Scroll text area if necessary.
 	this->Scroll();
 
-	size_t itemid = sCurrentItem_arena_optons - m_topItem;
+	int32 itemid = sCurrentItem_arena_optons - m_topItem;
 	m_items[itemid].SetColor(C_UNSELECTED);
 	m_values[itemid].SetColor(C_UNSELECTEDVALUE);
 	sCurrentItem_arena_optons = id;
@@ -280,7 +280,7 @@ void Defcon::COptionsArena::FocusItem(size_t id)
 	m_values[itemid].SetColor(C_SELECTEDVALUE);
 
 	// Assign pref vars names to items.
-	for(size_t i = 0; i < array_size(m_items); i++)
+	for(int32 i = 0; i < array_size(m_items); i++)
 	{
 		m_items[i].SetText(gPrefs.m_pref[m_topItem + i].m_metadata.m_pszName);
 
@@ -291,9 +291,9 @@ void Defcon::COptionsArena::FocusItem(size_t id)
 }
 
 
-void Defcon::COptionsArena::UpdateValueText(size_t i)
+void Defcon::COptionsArena::UpdateValueText(int32 i)
 {
-	size_t v = m_topItem + i;
+	int32 v = m_topItem + i;
 	char sz[50], sz2[100];
 	MySprintf(sz2, "%s %s",
 		gPrefs.m_pref[v].GetValueText(sz),
@@ -302,28 +302,28 @@ void Defcon::COptionsArena::UpdateValueText(size_t i)
 }
 
 
-void Defcon::COptionsArena::OnDisplaySizeChanged(size_t w , size_t h)
+void Defcon::COptionsArena::OnDisplaySizeChanged(int32 w , int32 h)
 {
 	m_virtualScreen.Create(nullptr, w, h, 24, "options_arena");
 
 	// Determine widest pref name.
 
-	size_t i;
+	int32 i;
 
 	auto varfontid = EFont::heading;
 	CAppFont& varfont = gFonts.GetFont(varfontid);
-	size_t widestItem = 0;
+	int32 widestItem = 0;
 	for(i = 0; i < array_size(gPrefs.m_pref); i++)
 	{
-		size_t iw, ih;
+		int32 iw, ih;
 		varfont.GetStringExtent(gPrefs.m_pref[i].m_metadata.m_pszName, iw, ih);
 		widestItem = FMath::Max(widestItem, iw);
 	}
 
-	size_t textleft = (w - (1.75f * widestItem)) / 2;
-	size_t leading = varfont.GetLeading();
+	int32 textleft = (w - (1.75f * widestItem)) / 2;
+	int32 leading = varfont.GetLeading();
 
-	size_t texttop = 
+	int32 texttop = 
 		(h - (array_size(m_items) * leading)) / 2
 		+ leading/2;
 
@@ -392,7 +392,7 @@ void Defcon::COptionsArena::navigate(EventType what)
 
 		case EventType::navigate_page_down:
 		{
-			size_t n = 
+			int32 n = 
 				sCurrentItem_arena_optons + array_size(m_items);
 			if(n < array_size(gPrefs.m_pref))
 				this->FocusItem(n);
@@ -417,7 +417,7 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 	m_virtualScreen.Clear(C_BLACK);
 
 
-	//size_t i;
+	//int32 i;
 
 	// Make the selected item flash only if no 
 	// keys are down.
@@ -434,7 +434,7 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 	const bool bkeydown = m_pInputs->in_use();
 
 
-	size_t itemid = sCurrentItem_arena_optons - m_topItem;
+	int32 itemid = sCurrentItem_arena_optons - m_topItem;
 	if(bkeydown)
 	{
 		m_items[itemid].SetColor(C_SELECTED);
@@ -494,7 +494,7 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 			MAP(m_fadeInEditor, 0.0f, 0.33f, 1.0f, 0.33f) );
 
 		CFRect r;
-		size_t i = sCurrentItem_arena_optons - m_topItem;
+		int32 i = sCurrentItem_arena_optons - m_topItem;
 		r.UR = r.LL = m_items[i].m_pos;
 		r.UR += CFPoint(-20, -(int)m_items[i].GetLeading()*2);
 		r.LL += CFPoint(540, 10);
@@ -532,7 +532,7 @@ void Defcon::COptionsArena::UpdateKybdState()
 
 
 #if 0
-void Defcon::COptionsArena::OnKeyboardEvent(size_t key)
+void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 {
 	m_keys[key].fTimeLastFired = gettime_secs();
 
@@ -592,7 +592,7 @@ void Defcon::COptionsArena::OnKeyboardEvent(size_t key)
 
 						case Keys::pagedown:
 						{
-							size_t n = 
+							int32 n = 
 								sCurrentItem_arena_optons + array_size(m_items);
 							if(n < array_size(gPrefs.m_pref))
 								this->FocusItem(n);
@@ -649,7 +649,7 @@ void Defcon::COptionsArena::OnKeyboardEvent(size_t key)
 
 void Defcon::COptionsArena::StartEditing()
 {
-	size_t i = sCurrentItem_arena_optons - m_topItem;
+	int32 i = sCurrentItem_arena_optons - m_topItem;
 	CPrefVar& var = gPrefs.m_pref[sCurrentItem_arena_optons];
 
 	switch(var.m_metadata.m_eVarType)

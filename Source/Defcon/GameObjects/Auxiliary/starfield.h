@@ -31,7 +31,7 @@ namespace Defcon
 			CStarfield();
 			//virtual ~CStarfield() {}
 
-			void InitStarfield(size_t, size_t, float fRange = 7.0f, bool bMorphColor = false, FLinearColor nearColor = C_BLACK);
+			void InitStarfield(int32, int32, float fRange = 7.0f, bool bMorphColor = false, FLinearColor nearColor = C_BLACK);
 
 #ifdef _DEBUG
 			virtual const char* GetClassname() const override { return "Starfield"; }
@@ -43,21 +43,21 @@ namespace Defcon
 
 			void	SetSpeedScale			(float f) { m_fSpeedMul = f; }
 			void	SetRotationSpeedScale	(float f) { m_fSpeedRotMul = f; }
-			void	SetNumStars				(float f) { m_count = (size_t)FMath::Min(f * array_size(m_stars), array_size(m_stars)); }
-			size_t	GetNumStars				() const { return m_count; }
+			void	SetNumStars				(float f) { m_count = (int32)FMath::Min(f * array_size(m_stars), array_size(m_stars)); }
+			int32	GetNumStars				() const { return m_count; }
 			void	SetFat					(bool b = true) { m_bFat = b; }
 
 		private:
 			bool		m_bFat			= false;
 			bool		m_bMorphColor	= false;
-			size_t		m_count;
+			int32		m_count;
 			float		m_fSpeedMul		= 1.0f;
 			float		m_fSpeedRotMul	= 1.0f;
 
 			float		m_fAngle		= 0.0f;
 			CFVector	m_starpos[2000];
-			size_t		m_w				= 0;
-			size_t		m_h				= 0;
+			int32		m_w				= 0;
+			int32		m_h				= 0;
 			star		m_stars[4000];
 
 

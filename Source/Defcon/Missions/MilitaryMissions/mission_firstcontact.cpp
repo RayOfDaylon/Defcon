@@ -93,7 +93,7 @@ void Defcon::CFirstContactMission::MakeTargets(float fElapsed, const CFPoint& wh
 
 		const Wave waves[] = { ObjType::LANDER, { 4, 3, 2, 0 } };
 
-		//const size_t numLanders[] = { 4, 3, 2 }; 
+		//const int32 numLanders[] = { 4, 3, 2 }; 
 		if(m_nAttackWave >= 3/*array_size(numLanders)*/)
 		{
 			return;

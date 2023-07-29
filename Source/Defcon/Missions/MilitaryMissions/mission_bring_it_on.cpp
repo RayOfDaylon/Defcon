@@ -73,8 +73,8 @@ void Defcon::CBringItOn::MakeTargets(float fElapsed, const CFPoint& where)
 	{
 
 		m_fRepopCounter = 0.0f;
-		//const size_t numDynamos[] = { 12 }; 
-		//const size_t numReformers[] = { 6 }; 
+		//const int32 numDynamos[] = { 12 }; 
+		//const int32 numReformers[] = { 6 }; 
 		
 		if(m_nAttackWave >= 1)//array_size(numDynamos))
 			return;

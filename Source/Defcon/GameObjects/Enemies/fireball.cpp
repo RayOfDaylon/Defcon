@@ -176,7 +176,7 @@ void Defcon::CFireball::Explode(CGameObjectCollection& debris)
 	m_fLifespan = 0.0f;
 	this->OnAboutToDie();
 
-	for(size_t i = 0; i < 20; i++)
+	for(int32 i = 0; i < 20; i++)
 	{
 		CFlak* pFlak = new CFlak;
 		pFlak->m_eColorbaseYoung = cby;

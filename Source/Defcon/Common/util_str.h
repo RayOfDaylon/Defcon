@@ -28,7 +28,7 @@ char* trimtrailingwhitespace(char*);
 char* trimwhitespace(char*);
 int isnum(const char*);
 char* strtoupper(char*);
-FString GetNumberSpelling(size_t, int);
+FString GetNumberSpelling(int32, int);
 char* fnicesprintf(char* dst, double d, int prec, char sep = 0);
 
 

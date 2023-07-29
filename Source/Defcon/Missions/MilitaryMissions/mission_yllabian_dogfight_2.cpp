@@ -92,7 +92,7 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 		};
 
 
-		size_t i, j;
+		int32 i, j;
 		for(i = 0; i < array_size(waves); i++)
 		{
 			for(j = 0; j < waves[i].count[m_nAttackWave] && this->HostilesRemaining() > 0; j++)

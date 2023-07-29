@@ -138,15 +138,15 @@ void Defcon::CGameObjectCollection::DetachAll()
 }
 
 
-size_t Defcon::CGameObjectCollection::Count() const
+int32 Defcon::CGameObjectCollection::Count() const
 {
 	return m_count;
 }
 
 
-size_t Defcon::CGameObjectCollection::CountOf(ObjType Kind) const
+int32 Defcon::CGameObjectCollection::CountOf(ObjType Kind) const
 {
-	size_t Result = 0;
+	int32 Result = 0;
 
 	ForEach([&](IGameObject* p) { if(p->GetType() == Kind) { Result++; } });
 

@@ -56,8 +56,8 @@ namespace Defcon
 			// then the object is not allowed to fire.
 			// This prevents objects from just filling 
 			// space with unending weapons fire.
-			size_t		m_maxWeaponBursts;
-			size_t		m_numShotsAlive;
+			int32		m_maxWeaponBursts;
+			int32		m_numShotsAlive;
 
 			// The object that the weapon is mounted on.
 			// We need this reference so that we can

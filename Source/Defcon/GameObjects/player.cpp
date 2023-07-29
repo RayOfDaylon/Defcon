@@ -315,7 +315,7 @@ void Defcon::CPlayer::FireLaserWeapon(CGameObjectCollection& goc)
 	if(m_velocity.y != 0 && FRAND <= LASER_MULTI_PROB)
 	{
 		// Fire extra bolts in the vthrust dir.
-		for(size_t i = 0; i < LASER_EXTRA_COUNT; i++)
+		for(int32 i = 0; i < LASER_EXTRA_COUNT; i++)
 		{
 			CFPoint off(0.0f, m_velocity.y > 0 ? 1.0f : -1.0f);
 			if(FRAND > 0.5f)
@@ -438,8 +438,8 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 			fBrightRange= FRAND * 0.25f;
 			fBrightBase = FRAND * 0.1f + 0.65f;
 		}
-		const size_t frames_per_blast = 12;
-		size_t ex = rand() % 4 * frames_per_blast;
+		const int32 frames_per_blast = 12;
+		int32 ex = rand() % 4 * frames_per_blast;
 		pFireball->Init(CBitmaps::explo0 + ex,
 			frames_per_blast, FRAND * 0.5f + 0.7f,
 			fBrightRange, fBrightBase);
