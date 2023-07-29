@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-July 28, 2023
+July 29, 2023
 
 Chapters:
 
@@ -151,6 +151,15 @@ GameObjectCollection::Process() is the basic object processor that
 ticks each object by calling its Move method, wraps its arena position, 
 deletes mortal objects if their lifespan has reached zero, etc.
 
+Most game objects use a DaylonSprite2D (an SWidget) to visualize 
+their appearance. However, only the main play widget establishes 
+a current root canvas for those sprites to use, but that's okay since 
+the game objects are never used outside the play area, and the 
+radar widget just draws little squares with direct draw calls.
+This means that any install/uninstall of sprites can only happen 
+when the play arena is active. Classes such as Mission, GameObjectCollection, 
+Event, etc. don't do any sprite processing elsewhere.
+
 Global variables are:
 
 gpArena              The play arena where a mission is played out.
@@ -175,8 +184,14 @@ away from the shockwave, and that's easier to do if each debris piece
 is its own game object.
 
 
+Future Work
+-------------------------------------------------------------------------------------
+Some declarations are outside the Defcon namespace when they shouldn't be.
 
+A lot of Hungarian notation is still present e.g. m_varname for class member variables, 
+"p" prefixes for pointers, "f" for floats, etc. "int" and "size_t" are used instead 
+of "int32", varnames and argnames start lowercase, etc. A sweep is needed to convert 
+all that stuff to Epic coding standards.
 
-
-
-
+GameObject::m_inertia is computed by each game object class, when it should be 
+possible to compute it in a game object collection processing loop.
