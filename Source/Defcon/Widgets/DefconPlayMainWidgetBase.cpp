@@ -29,6 +29,7 @@ static void Check(bool Condition) { check(Condition); }
 
 void UDefconPlayMainWidgetBase::NativeOnInitialized()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeOnInitialized();
 
 	// For the duration of the playviewbase, all playobject widgets will be installed/uninstalled on our canvas.
@@ -86,13 +87,18 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 #undef ADD_ATLAS
 
 	Messages->Clear();
-
-	bFirstTime = true;
 }
 
 
 void UDefconPlayMainWidgetBase::OnFinishActivating()
 {
+	LOG_UWIDGET_FUNCTION
+
+	check(PlayerShipPtr != nullptr);
+	check(Humans != nullptr);
+	
+	m_bHumansInMission = gDefconGameInstance->GetMission()->HumansInvolved();
+
 	Stars.Empty();
 	Stars.Reserve(STARS_COUNT);
 
@@ -102,7 +108,7 @@ void UDefconPlayMainWidgetBase::OnFinishActivating()
 
 		const float X = Daylon::FRandRange(0.0f, ArenaSize.X);
 
-		const auto Elev = TerrainPtr->GetElev(X / ArenaSize.X) + 20;
+		const auto Elev = (TerrainPtr == nullptr ? 0.0f : TerrainPtr->GetElev(X / ArenaSize.X) + 20);
 
 		Star.P.set(X, Daylon::FRandRange(Elev, ArenaSize.Y));
 
@@ -111,23 +117,54 @@ void UDefconPlayMainWidgetBase::OnFinishActivating()
 
 	PlayerShipExhaust =	Daylon::SpawnSpritePlayObject2D(PlayerShipExhaustAtlas->Atlas, FVector2D(5, 5), 0.5f);
 	PlayerShipExhaust.Pin()->Hide();
+
+	PlayerShipPtr->InstallSprite();
+
+	if(m_bHumansInMission)
+	{
+		Humans->ForEach([](Defcon::IGameObject* Human) { Human->InstallSprite(); });
+	}
 }
 
 
 void UDefconPlayMainWidgetBase::OnDeactivate()
 {
+	LOG_UWIDGET_FUNCTION
+
+	check(PlayerShipPtr != nullptr);
+	check(Humans != nullptr);
+
 	Daylon::Uninstall(PlayerShipExhaust.Pin());
+    PlayerShipPtr->UninstallSprite();
+
+	if(m_bHumansInMission)
+	{
+		Humans->ForEach([](Defcon::IGameObject* Human) { Human->UninstallSprite(); });
+	}
+
+	bDoneActivating = false;
+	bSafeToStart    = false;
 }
 
 
 void UDefconPlayMainWidgetBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
 
+	// Wait until we've been initialized by the play arena.
 	if(CoordMapperPtr == nullptr || PlayerShipPtr == nullptr)
 	{
 		return;
 	}
+
+	if(!bDoneActivating && bSafeToStart && Daylon::GetRootCanvas()->GetCanvasWidget())
+	{
+		OnFinishActivating();
+		bDoneActivating = true;
+		return;
+	}
+
 
 	UpdatePlayerShip(DeltaTime);
 
@@ -154,6 +191,8 @@ void UDefconPlayMainWidgetBase::UpdatePlayerShip(float DeltaTime)
 {
 	// The player ship is not part of the game objects array, so process its sprite here.
 
+	check(PlayerShipPtr != nullptr && PlayerShipPtr->Sprite);
+
 	if(PlayerShipPtr->Sprite == nullptr)
 	{
 		return;
@@ -163,6 +202,7 @@ void UDefconPlayMainWidgetBase::UpdatePlayerShip(float DeltaTime)
 	CoordMapperPtr->To(PlayerShipPtr->m_pos, pt);
 	PlayerShipPtr->Sprite->SetPosition(FVector2D(pt.x, pt.y));
 	PlayerShipPtr->Sprite->Update(DeltaTime);
+
 
 	auto PlayerShipExhaustPtr = PlayerShipExhaust.Pin();
 
@@ -259,6 +299,7 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 	bool                       bParentEnabled
 ) const
 {
+	LOG_UWIDGET_FUNCTION
 	LayerId = Super::NativePaint(
 		Args,
 		AllottedGeometry,
@@ -296,8 +337,7 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 	PaintArguments.LayerId          = LayerId;
 	PaintArguments.MyCullingRect    = &MyCullingRect;
 	PaintArguments.OutDrawElements  = &OutDrawElements;
-	PaintArguments.RenderOpacity    = 1.0f;
-	PaintArguments.InWidgetStyle    = &InWidgetStyle;
+	PaintArguments.RenderOpacity    = InWidgetStyle.GetColorAndOpacityTint().A;
 
 
 	// Draw the stars underneath everything.
@@ -330,8 +370,6 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 			ESlateDrawEffect::None,
 			Star.Color * Tint * InWidgetStyle.GetColorAndOpacityTint().A);
 	}
-
-
 
 
 	if(TerrainPtr != nullptr)

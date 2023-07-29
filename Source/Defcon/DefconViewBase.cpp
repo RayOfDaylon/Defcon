@@ -24,6 +24,7 @@ void UDefconViewBase::TransitionToArena(EDefconArena Arena)
 }
 
 
+#if 0
 int32 UDefconViewBase::NativePaint
 (
 	const FPaintArgs& Args,
@@ -44,12 +45,64 @@ int32 UDefconViewBase::NativePaint
 		InWidgetStyle,
 		bParentEnabled);
 
-	if(!bDoneActivating && gDefconGameInstance != nullptr && gDefconGameInstance->IsLive())
-	{
-		const_cast<UDefconViewBase*>(this)->OnFinishActivating();
+	// Tracking non-design-time paint events indicates that view widget children have finished setting up and have sizes,
+	// and therefore we can safely finish activating from NativeTick.
 
-		bDoneActivating = true;
+
+	if(!bPaintingOccurring)
+	{
+#if WITH_EDITOR
+		const bool InDesignTime = IsDesignTime();
+#else
+		const bool InDesignTime = false;
+#endif
+		if(!InDesignTime)
+		{
+			bPaintingOccurring = true;
+		}
 	}
 
 	return LayerId;
 }
+#endif
+
+
+void UDefconViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
+{
+	Age += DeltaTime;
+
+	if(!bDoneActivating && IsOkayToFinishActivating()/*bPaintingOccurring*/)
+	{
+		// This test is probably not needed, but just to be safe.
+		if(gDefconGameInstance != nullptr && gDefconGameInstance->IsLive() && gDefconGameInstance->GetCurrentView() == this)
+		{
+			OnFinishActivating();
+
+			bDoneActivating = true;
+		}
+	}
+}
+
+
+void UDefconViewBase::OnActivate()
+{
+	check(!bDoneActivating);
+
+	Age = 0.0f;
+}
+
+
+void UDefconViewBase::OnFinishActivating()
+{
+}
+
+
+void UDefconViewBase::OnDeactivate()
+{
+	check(bDoneActivating);
+	//check(bPaintingOccurring);
+
+	bDoneActivating    = false;
+	//bPaintingOccurring = false;
+}
+

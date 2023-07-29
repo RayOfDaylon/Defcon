@@ -215,8 +215,9 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 
 	UDefconPlayViewBase* GetPlayView() { return Cast<UDefconPlayViewBase>(Views[(int32)EDefconArena::Play]); }
 
-	void SetCurrentView      (UDefconViewBase* View);
-	void SetCurrentMission   (Defcon::MissionID InMissionID);
+	UDefconViewBase* GetCurrentView      () const { return CurrentView; }
+	void             SetCurrentView      (UDefconViewBase* View);
+	void             SetCurrentMission   (Defcon::MissionID InMissionID);
 
 	protected:
 

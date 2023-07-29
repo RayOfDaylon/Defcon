@@ -48,12 +48,14 @@ float GameTime() { check(gpArena != nullptr); return UKismetSystemLibrary::GetGa
 
 void UDefconPlayViewBase::NativeOnInitialized()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeOnInitialized();
 }
 
 
 void UDefconPlayViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
 
 	if(!IsInViewport())
@@ -61,32 +63,21 @@ void UDefconPlayViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTim
 		return;
 	}
 
-	if(bFirstTime)
-	{
-		bFirstTime = false;
-	}
-
-	Age += DeltaTime;
-
 	if(bDoneActivating)
 	{
 		UpdateGameObjects(DeltaTime);
 	}
 
-#if 1
-	// todo: if we use this expander, it should be on the playviewbase so it can cover everything and take the whole screen
-	
 	if(Fader->IsVisible())
 	{
 		const float T = 1.0f - FMath::Max(0.0f, m_fFadeAge / FADE_DURATION_NORMAL);
 
 		Fader->SetRenderOpacity(T);
 	}
-#endif
-
 }
 
 
+#if 0
 int32 UDefconPlayViewBase::NativePaint
 (
 	const FPaintArgs& Args,
@@ -98,6 +89,7 @@ int32 UDefconPlayViewBase::NativePaint
 	bool bParentEnabled
 ) const
 {
+	LOG_UWIDGET_FUNCTION
 	LayerId = Super::NativePaint(
 		Args,
 		AllottedGeometry,
@@ -107,15 +99,9 @@ int32 UDefconPlayViewBase::NativePaint
 		InWidgetStyle,
 		bParentEnabled);
 
-/*	if(bFirstTimePaint)
-	{
-		bFirstTimePaint = false;
-
-		const_cast<UDefconPlayViewBase*>(this)->OnFirstTimePaint();
-	}*/
-
 	return LayerId;
 }
+#endif
 
 
 const Defcon::CGameObjectCollection& UDefconPlayViewBase::GetConstHumans() const 
@@ -141,16 +127,18 @@ void UDefconPlayViewBase::DeleteAllObjects()
 }
 
 
+#if 0
 void UDefconPlayViewBase::OnActivate()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::OnActivate();
-
-	//DeleteAllObjects();
 }
+#endif
 
 
 void UDefconPlayViewBase::OnFinishActivating()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::OnFinishActivating();
 
 	gpArena = this;
@@ -166,6 +154,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 	InitMapperAndTerrain();
 	InitPlayerShip();
 
+	PlayAreaMain->Humans     = &GetHumans();
 	PlayAreaMain->Objects    = &m_objects; // todo: use Init method the way the rader widget does
 	PlayAreaMain->Enemies    = &m_enemies;
 	PlayAreaMain->Debris     = &m_debris;
@@ -182,15 +171,9 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	GI->InitMission(this);
 
-	// Install sprites for the humans.
-	// todo: game instance may have gone away
-
 	m_bHumansInMission = GI->GetMission()->HumansInvolved();
 
-	if(m_bHumansInMission)
-	{
-		GetHumans().ForEach([](Defcon::IGameObject* Ptr) { Ptr->InstallSprite(); });
-	}
+
 
 	PlayAreaRadar->Init(&GetPlayerShip(), MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &m_objects, &m_enemies);
 
@@ -212,7 +195,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 	});
 
 
-	PlayAreaMain  -> OnFinishActivating();
+	PlayAreaMain  -> SetSafeToStart();
 	PlayAreaRadar -> OnFinishActivating();
 
 	GetPlayerShip().EnableInput();
@@ -226,6 +209,7 @@ void UDefconPlayViewBase::OnDeactivate()
 	// We're being transitioned away from.
 	// Empty all our object collections.
 
+	LOG_UWIDGET_FUNCTION
 	Super::OnDeactivate();
 
 	PlayAreaMain->OnDeactivate();
@@ -234,22 +218,31 @@ void UDefconPlayViewBase::OnDeactivate()
 	DeleteAllObjects();
 
 	// Uninstall sprites for any surviving humans.
-	if(m_bHumansInMission)
-	{
-		GetHumans().ForEach([](Defcon::IGameObject* Ptr) { Ptr->UninstallSprite(); });
-	}
+	//if(m_bHumansInMission)
+	//{
+		//GetHumans().ForEach([](Defcon::IGameObject* Ptr) { Ptr->UninstallSprite(); });
+	//}
 
-	GetPlayerShip().UninstallSprite();
+	//GetPlayerShip().UninstallSprite();
 
 	AllStopPlayerShip();
 	GetPlayerShip().EnableInput(false);
 }
 
 
+bool UDefconPlayViewBase::IsOkayToFinishActivating() const
+{
+	auto const S = Daylon::GetWidgetSize(PlayAreaMain);
+
+	return (S.X > 0.0f && S.Y > 0.0f);
+}
+
 
 void UDefconPlayViewBase::InitMapperAndTerrain()
 {
 	MainAreaSize = Daylon::GetWidgetSize(PlayAreaMain);
+
+	check(MainAreaSize.X > 0.0f && MainAreaSize.Y > 0.0f);
 
 	ArenaSize = MainAreaSize * FVector2D(PLANET_TO_SCREEN_RATIO, 1.0);
 
@@ -272,6 +265,7 @@ void UDefconPlayViewBase::InitPlayerShip()
 {
 	// Set up the player ship for the start of a mission.
 
+	LOG_UWIDGET_FUNCTION
 	auto& PlayerShip = GetPlayerShip();
 
 	PlayerShip.WorldContextObject = this; // could probably do this in gameinstance
@@ -285,7 +279,7 @@ void UDefconPlayViewBase::InitPlayerShip()
 	
 	PlayAreaMain->PlayerShipPtr = &PlayerShip;
 
-	PlayerShip.InstallSprite();
+	// Sprite installation for player ship happens in DefconPlayMainWidgetBase
 	PlayerShip.SetIsAlive(true);
 
 	PlayerShip.m_orient.fwd.x = 1.0f;

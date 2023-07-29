@@ -7,10 +7,11 @@
 #include "Common/util_color.h"
 
 
-
+#if 0
 void UDefconHelpViewBase::NativeOnInitialized()
 {
 	// Read the title vector file and set up the lerped lines widget.
+	LOG_UWIDGET_FUNCTION
 
 	Super::NativeOnInitialized();
 }
@@ -18,24 +19,40 @@ void UDefconHelpViewBase::NativeOnInitialized()
 
 void UDefconHelpViewBase::OnActivate()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::OnActivate();
 }
 
 
+int32 UDefconHelpViewBase::NativePaint
+(
+		const FPaintArgs& Args,
+		const FGeometry& AllottedGeometry,
+		const FSlateRect& MyCullingRect,
+		FSlateWindowElementList& OutDrawElements,
+		int32 LayerId,
+		const FWidgetStyle& InWidgetStyle,
+		bool bParentEnabled
+) const
+{
+	LOG_UWIDGET_FUNCTION
+	return Super::NativePaint(
+		Args,
+		AllottedGeometry,
+		MyCullingRect,
+		OutDrawElements,
+		LayerId,
+		InWidgetStyle,
+		bParentEnabled);
+}
+#endif
 
 
 void UDefconHelpViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
 
-	if(bFirstTime)
-	{
-		bFirstTime = false;
-	}
-
-	Age += DeltaTime;
-
-	
 
 	// Oscillate help text between orange and yellow.
 
@@ -68,28 +85,6 @@ void UDefconHelpViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTim
 
 		TextBlock->SetColorAndOpacity(SlateColor);
 	}
-}
-
-
-int32 UDefconHelpViewBase::NativePaint
-(
-		const FPaintArgs& Args,
-		const FGeometry& AllottedGeometry,
-		const FSlateRect& MyCullingRect,
-		FSlateWindowElementList& OutDrawElements,
-		int32 LayerId,
-		const FWidgetStyle& InWidgetStyle,
-		bool bParentEnabled
-) const
-{
-	return Super::NativePaint(
-		Args,
-		AllottedGeometry,
-		MyCullingRect,
-		OutDrawElements,
-		LayerId,
-		InWidgetStyle,
-		bParentEnabled);
 }
 
 

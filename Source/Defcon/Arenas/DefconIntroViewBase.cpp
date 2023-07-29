@@ -45,6 +45,7 @@ static void Subdivide(TArray<FDaylonLine>& Lines)
 void UDefconIntroViewBase::NativeOnInitialized()
 {
 	// Read the title vector file and set up the lerped lines widget.
+		LOG_UWIDGET_FUNCTION
 
 	Super::NativeOnInitialized();
 
@@ -218,13 +219,14 @@ void UDefconIntroViewBase::NativeOnInitialized()
 
 void UDefconIntroViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
 
 	if(bFirstTime)
 	{
 		bFirstTime = false;
 
-		// Wait till here to create and install the widget.
+		// Wait till here to create and install the Slate widget.
 		auto CanvasSlotArgs = RootCanvas->GetCanvasWidget()->AddSlot();
 
 		CanvasSlotArgs[TitleWidget.ToSharedRef()];
@@ -237,13 +239,12 @@ void UDefconIntroViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTi
 		Daylon::Hide(TitleWidget.Get());
 	}
 
-	Age += DeltaTime;
 
-	if(!bIsTitleWidgetInstalled && Age >= TITLE_START / 2)
+	/*if(!bIsTitleWidgetInstalled && Age >= TITLE_START / 2)
 	{
 		bIsTitleWidgetInstalled = true;
 
-	}
+	}*/
 
 	if(Age >= TITLE_START)
 	{
@@ -263,6 +264,7 @@ void UDefconIntroViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTi
 }
 
 
+#if 0
 int32 UDefconIntroViewBase::NativePaint(
 		const FPaintArgs& Args,
 		const FGeometry& AllottedGeometry,
@@ -272,6 +274,7 @@ int32 UDefconIntroViewBase::NativePaint(
 		const FWidgetStyle& InWidgetStyle,
 		bool bParentEnabled) const
 {
+	LOG_UWIDGET_FUNCTION
 	return Super::NativePaint(
 		Args,
 		AllottedGeometry,
@@ -281,6 +284,7 @@ int32 UDefconIntroViewBase::NativePaint(
 		InWidgetStyle,
 		bParentEnabled);
 }
+#endif
 
 
 void UDefconIntroViewBase::OnEnterPressed()

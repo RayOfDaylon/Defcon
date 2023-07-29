@@ -152,7 +152,7 @@ void Defcon::CReformer::DrawPart(FPaintArguments& framebuf, const CFPoint& where
 			Geometry.ToPaintGeometry(),
 			&Info.Atlas->Atlas.AtlasBrush,
 			ESlateDrawEffect::None,
-			C_WHITE * framebuf.RenderOpacity * framebuf.InWidgetStyle->GetColorAndOpacityTint().A);
+			C_WHITE * framebuf.RenderOpacity);
 	}
 }
 

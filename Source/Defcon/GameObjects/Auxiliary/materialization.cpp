@@ -57,8 +57,7 @@ void Defcon::CMaterialization::Draw(FPaintArguments& PaintArgs, const I2DCoordMa
 {
 	const auto LayerId = PaintArgs.LayerId + 1;
 
-	// todo: do this premul higher upstream
-	const auto Os = PaintArgs.RenderOpacity * PaintArgs.InWidgetStyle->GetColorAndOpacityTint().A;
+	const auto Os = PaintArgs.RenderOpacity;
 
 	CFPoint pt;
 

@@ -5,18 +5,14 @@
 
 
 #include "DefconViewBase.h"
-//#include "DefconGameInstance.h"
 #include "Widgets/DefconPlayMainWidgetBase.h"
 #include "Widgets/DefconPlayStatsWidgetBase.h"
 #include "Widgets/DefconPlayRadarWidgetBase.h"
-//#include "UMG/Public/Components/TextBlock.h"
-//#include "UMG/Public/Components/GridPanel.h"
 #include "GameObjects/terrain.h"
 #include "GameObjects/Auxiliary/materialization.h"
 #include "GameObjects/GameObjectCollection.h"
 #include "Main/event.h"
 #include "DefconPlayViewBase.generated.h"
-
 
 
 
@@ -63,17 +59,19 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
-	virtual int32 NativePaint(
+	/*virtual int32 NativePaint(
 		const FPaintArgs& Args,
 		const FGeometry& AllottedGeometry,
 		const FSlateRect& MyCullingRect,
 		FSlateWindowElementList& OutDrawElements,
 		int32 LayerId,
 		const FWidgetStyle& InWidgetStyle,
-		bool bParentEnabled) const override;
+		bool bParentEnabled) const override;*/
 
 
-	virtual void OnActivate         () override;
+	//virtual void OnActivate         () override;
+	virtual bool IsOkayToFinishActivating() const override;
+
 	virtual void OnFinishActivating () override;
 	virtual void OnDeactivate       () override;
 	virtual void OnEscPressed       () override;
@@ -153,9 +151,9 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 	bool 	bFinishActivating = false;
 
+	bool    m_bHumansInMission = false;
 	bool    m_bArenaDying    = false;
 	bool    m_bRunSlow       = false;
-	bool    m_bHumansInMission  = false;
 	float   m_fRadarFritzed  = 0.0f;
 	float   m_fFadeAge       = 0.0f;
 	int32   m_nFlashScreen   = 0;//todo: is this needed?

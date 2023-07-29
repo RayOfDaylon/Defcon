@@ -19,10 +19,11 @@ class DEFCON_API UDefconHelpViewBase : public UDefconViewBase
 	GENERATED_BODY()
 
 	protected:
-
-	virtual void NativeOnInitialized() override;
-
+	
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
+
+#if 0
+	virtual void NativeOnInitialized() override;
 
 	virtual int32 NativePaint(
 		const FPaintArgs& Args,
@@ -35,6 +36,7 @@ class DEFCON_API UDefconHelpViewBase : public UDefconViewBase
 
 
 	virtual void OnActivate   () override;
+#endif
 	virtual void OnEscPressed () override;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))

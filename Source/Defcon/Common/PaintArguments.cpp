@@ -47,7 +47,7 @@ void FPaintArguments::FillRect(float Left, float Top, float Right, float Bottom,
 		Geometry.ToPaintGeometry(),
 		&Brush,
 		ESlateDrawEffect::None,
-		Color * InWidgetStyle->GetColorAndOpacityTint().A);
+		Color * RenderOpacity);
 }
 
 

@@ -22,12 +22,14 @@ void UDefconPrewaveViewBase::NativeOnInitialized()
 {
 	// Read the title vector file and set up the lerped lines widget.
 
+	LOG_UWIDGET_FUNCTION
 	Super::NativeOnInitialized();
 }
 
 
 void UDefconPrewaveViewBase::OnActivate()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::OnActivate();
 
 	// Start the title texts way offstage.
@@ -71,14 +73,9 @@ void UDefconPrewaveViewBase::PositionTexts(float XTitle, float XSubtitle)
 
 void UDefconPrewaveViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
 
-	if(bFirstTime)
-	{
-		bFirstTime = false;
-	}
-
-	Age += DeltaTime;
 
 	if(Age >= PostWaveTimeToTransition)
 	{
@@ -101,6 +98,7 @@ void UDefconPrewaveViewBase::NativeTick(const FGeometry& MyGeometry, float Delta
 }
 
 
+#if 0
 int32 UDefconPrewaveViewBase::NativePaint
 (
 	const FPaintArgs& Args,
@@ -112,6 +110,7 @@ int32 UDefconPrewaveViewBase::NativePaint
 	bool bParentEnabled
 ) const
 {
+	LOG_UWIDGET_FUNCTION
 	return Super::NativePaint(
 		Args,
 		AllottedGeometry,
@@ -121,6 +120,7 @@ int32 UDefconPrewaveViewBase::NativePaint
 		InWidgetStyle,
 		bParentEnabled);
 }
+#endif
 
 
 void UDefconPrewaveViewBase::SetTexts(const FString& InTitle, const FString& InSubtitle)

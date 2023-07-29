@@ -112,7 +112,7 @@ void Defcon::CFlak::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper
 			Geometry.ToPaintGeometry(),
 			BrushPtr,
 			ESlateDrawEffect::None,
-			Color * framebuf.RenderOpacity * framebuf.InWidgetStyle->GetColorAndOpacityTint().A);
+			Color * framebuf.RenderOpacity);
 	}
 }
 
@@ -183,7 +183,7 @@ void Defcon::CGlowingFlak::Draw(FPaintArguments& framebuf, const I2DCoordMapper&
 			Geometry.ToPaintGeometry(),
 			BrushPtr,
 			ESlateDrawEffect::None,
-			Color * framebuf.RenderOpacity * framebuf.InWidgetStyle->GetColorAndOpacityTint().A);
+			Color * framebuf.RenderOpacity);
 
 
 #else		

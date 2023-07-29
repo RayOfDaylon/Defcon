@@ -300,7 +300,7 @@ void Defcon::CPlayer::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper&
 		Geometry.ToPaintGeometry(),
 		&RadarBrush, // todo: can use provided brush
 		ESlateDrawEffect::None,
-		RadarBrush.TintColor.GetSpecifiedColor() * framebuf.RenderOpacity * framebuf.InWidgetStyle->GetColorAndOpacityTint().A);
+		RadarBrush.TintColor.GetSpecifiedColor() * framebuf.RenderOpacity);
 }
 
 

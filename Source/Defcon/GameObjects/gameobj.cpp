@@ -96,7 +96,7 @@ void Defcon::IGameObject::DrawSmall(FPaintArguments& FrameBuffer, const I2DCoord
 		Geometry.ToPaintGeometry(),
 		&Brush,
 		ESlateDrawEffect::None,
-		GetRadarColor() * FrameBuffer.RenderOpacity * FrameBuffer.InWidgetStyle->GetColorAndOpacityTint().A);
+		GetRadarColor() * FrameBuffer.RenderOpacity);
 }
 
 

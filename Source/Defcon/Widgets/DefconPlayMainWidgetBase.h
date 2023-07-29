@@ -249,18 +249,23 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	
 	bool bShowBoundingBoxes = false;
 	bool bShowOrigin        = false;
-	bool bFirstTime = true;
 
 	void UpdatePlayerShip(float DeltaTime);
 
 	void DrawObjects    (const Defcon::CGameObjectCollection* Collection, FPaintArguments& FrameBuffer) const;
 	void DrawObjectBbox (Defcon::IGameObject* Object, FPaintArguments& FrameBuffer) const;
 
+	void OnFinishActivating();
+
+	bool bDoneActivating = false;
+	bool bSafeToStart = false;
+	bool m_bHumansInMission  = false;
 
 
 	public:
 
-	void OnFinishActivating();
+	void SetSafeToStart(bool b = true) { bSafeToStart = b; }
+
 	void OnDeactivate();
 
 	void OnToggleDebugStats        ();
@@ -279,6 +284,7 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	Defcon::CGameObjectCollection*   Enemies             = nullptr;
 	Defcon::CGameObjectCollection*   Debris              = nullptr;
 	Defcon::CGameObjectCollection*   Blasts              = nullptr;
+	Defcon::CGameObjectCollection*   Humans              = nullptr;
 
 	FVector2D                        ArenaSize           = FVector2D(0.0f, 0.0f);
 

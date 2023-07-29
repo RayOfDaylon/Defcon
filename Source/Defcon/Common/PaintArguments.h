@@ -22,7 +22,6 @@ struct FPaintArguments
 	const FSlateRect*        MyCullingRect;
 	FSlateWindowElementList* OutDrawElements;
 	int32                    LayerId;
-	const FWidgetStyle*      InWidgetStyle; // todo: drop this, fold it's alpha into RenderOpacity
 	bool                     bParentEnabled;
 	float                    RenderOpacity;
 

@@ -28,6 +28,7 @@ const float ExpanderLifetime = 1.1f;
 
 void UDefconMissionPickerViewBase::NativeOnInitialized()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeOnInitialized();
 
 
@@ -54,6 +55,7 @@ void UDefconMissionPickerViewBase::NativeOnInitialized()
 
 void UDefconMissionPickerViewBase::OnActivate()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::OnActivate();
 
 	Daylon::Hide(StartMissionExpander);
@@ -67,14 +69,9 @@ void UDefconMissionPickerViewBase::OnActivate()
 
 void UDefconMissionPickerViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
 
-	if(bFirstTime)
-	{
-		bFirstTime = false;
-	}
-
-	Age += DeltaTime;
 
 	// Flash the highlight frame of the selected cell.
 
@@ -118,6 +115,7 @@ void UDefconMissionPickerViewBase::NativeTick(const FGeometry& MyGeometry, float
 }
 
 
+#if 0
 int32 UDefconMissionPickerViewBase::NativePaint
 (
 	const FPaintArgs& Args,
@@ -129,6 +127,7 @@ int32 UDefconMissionPickerViewBase::NativePaint
 	bool bParentEnabled
 ) const
 {
+	LOG_UWIDGET_FUNCTION
 	return Super::NativePaint(
 		Args,
 		AllottedGeometry,
@@ -138,6 +137,7 @@ int32 UDefconMissionPickerViewBase::NativePaint
 		InWidgetStyle,
 		bParentEnabled);
 }
+#endif
 
 
 UBorder* UDefconMissionPickerViewBase::GetCellWidget(int32 Column, int32 Row)

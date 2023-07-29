@@ -22,18 +22,18 @@ class DEFCON_API UDefconMainMenuViewBase : public UDefconViewBase
 	protected:
 
 	// UUserWidget
-	virtual void NativeOnInitialized() override;
+	//virtual void NativeOnInitialized() override;
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
-	virtual int32 NativePaint(
+	/*virtual int32 NativePaint(
 		const FPaintArgs& Args,
 		const FGeometry& AllottedGeometry,
 		const FSlateRect& MyCullingRect,
 		FSlateWindowElementList& OutDrawElements,
 		int32 LayerId,
 		const FWidgetStyle& InWidgetStyle,
-		bool bParentEnabled) const override;
+		bool bParentEnabled) const override;*/
 
 
 	// UDefconViewBase

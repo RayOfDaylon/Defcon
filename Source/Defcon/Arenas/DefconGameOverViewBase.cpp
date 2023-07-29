@@ -26,6 +26,7 @@ const float TimeForOneHuman  = 0.1f;
 void UDefconGameOverViewBase::NativeOnInitialized()
 {
 	// Read the title vector file and set up the lerped lines widget.
+	LOG_UWIDGET_FUNCTION
 
 	Super::NativeOnInitialized();
 }
@@ -33,6 +34,7 @@ void UDefconGameOverViewBase::NativeOnInitialized()
 
 void UDefconGameOverViewBase::OnActivate()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::OnActivate();
 
 	// Start the title texts way offstage.
@@ -58,6 +60,7 @@ void UDefconGameOverViewBase::OnActivate()
 
 void UDefconGameOverViewBase::OnFinishActivating()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::OnFinishActivating();
 
 
@@ -90,15 +93,8 @@ void UDefconGameOverViewBase::PositionTexts(float XTitle, float XSubtitle)
 
 void UDefconGameOverViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
-
-	if(bFirstTime)
-	{
-		bFirstTime = false;
-	}
-
-	Age += DeltaTime;
-
 	
 
 	//auto GI = UDefconUtils::GetGameInstance(this);
@@ -127,6 +123,7 @@ void UDefconGameOverViewBase::NativeTick(const FGeometry& MyGeometry, float Delt
 }
 
 
+#if 0
 int32 UDefconGameOverViewBase::NativePaint
 (
 	const FPaintArgs& Args,
@@ -138,6 +135,7 @@ int32 UDefconGameOverViewBase::NativePaint
 	bool bParentEnabled
 ) const
 {
+	LOG_UWIDGET_FUNCTION
 	return Super::NativePaint(
 		Args,
 		AllottedGeometry,
@@ -147,6 +145,7 @@ int32 UDefconGameOverViewBase::NativePaint
 		InWidgetStyle,
 		bParentEnabled);
 }
+#endif
 
 
 void UDefconGameOverViewBase::SetTexts(const FString& InTitle, const FString& InSubtitle)

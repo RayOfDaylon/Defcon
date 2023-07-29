@@ -9,9 +9,6 @@
 #include "DefconIntroViewBase.generated.h"
 
 
-
-
-
 UCLASS()
 class DEFCON_API UDefconIntroViewBase : public UDefconViewBase
 {
@@ -23,14 +20,14 @@ class DEFCON_API UDefconIntroViewBase : public UDefconViewBase
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
-	virtual int32 NativePaint(
+	/*virtual int32 NativePaint(
 		const FPaintArgs& Args,
 		const FGeometry& AllottedGeometry,
 		const FSlateRect& MyCullingRect,
 		FSlateWindowElementList& OutDrawElements,
 		int32 LayerId,
 		const FWidgetStyle& InWidgetStyle,
-		bool bParentEnabled) const override;
+		bool bParentEnabled) const override;*/
 
 
 	virtual void OnEnterPressed() override;
@@ -41,5 +38,6 @@ class DEFCON_API UDefconIntroViewBase : public UDefconViewBase
 
 	TArray<FDaylonLerpedLine> TitleLines;
 
-	bool bIsTitleWidgetInstalled = false;
+	bool bFirstTime                = true;
+	//bool bIsTitleWidgetInstalled = false;
 };

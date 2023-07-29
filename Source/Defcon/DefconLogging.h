@@ -7,3 +7,16 @@
 
 
 DECLARE_LOG_CATEGORY_EXTERN(LogGame, Log, All);
+
+
+
+#if 0
+	#if WITH_EDITOR
+		#define LOG_UWIDGET_FUNCTION	UE_LOG(LogGame, Log, TEXT("%S: design time: %d"), __FUNCTION__, IsDesignTime());
+	#else
+		#define LOG_UWIDGET_FUNCTION	UE_LOG(LogGame, Log, TEXT("%S: design time: %d"), __FUNCTION__);
+	#endif
+#else
+	#define LOG_UWIDGET_FUNCTION
+#endif
+

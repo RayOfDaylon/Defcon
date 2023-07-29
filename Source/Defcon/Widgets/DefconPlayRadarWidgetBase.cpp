@@ -176,8 +176,8 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 	PaintArguments.LayerId          = LayerId;
 	PaintArguments.MyCullingRect    = &MyCullingRect;
 	PaintArguments.OutDrawElements  = &OutDrawElements;
-	PaintArguments.RenderOpacity    = 1.0f;
-	PaintArguments.InWidgetStyle    = &InWidgetStyle;
+	PaintArguments.RenderOpacity    = InWidgetStyle.GetColorAndOpacityTint().A;
+	//PaintArguments.InWidgetStyle    = &InWidgetStyle;
 
 	// Draw two lines showing the main arena left/right edges.
 	// These should always be equidistant from the player.

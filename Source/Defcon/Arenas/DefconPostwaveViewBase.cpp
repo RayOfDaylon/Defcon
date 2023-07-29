@@ -27,6 +27,7 @@ const float PVTimeForOneHuman  = 0.1f;
 void UDefconPostwaveViewBase::NativeOnInitialized()
 {
 	// Read the title vector file and set up the lerped lines widget.
+	LOG_UWIDGET_FUNCTION
 
 	Super::NativeOnInitialized();
 }
@@ -34,6 +35,7 @@ void UDefconPostwaveViewBase::NativeOnInitialized()
 
 void UDefconPostwaveViewBase::OnActivate()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::OnActivate();
 
 	// Start the title texts way offstage.
@@ -50,6 +52,7 @@ void UDefconPostwaveViewBase::OnActivate()
 
 void UDefconPostwaveViewBase::OnFinishActivating()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::OnFinishActivating();
 
 	Daylon::Show(Starfield);
@@ -111,14 +114,9 @@ void UDefconPostwaveViewBase::PositionTexts(float XTitle, float XSubtitle)
 
 void UDefconPostwaveViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
 
-	if(bFirstTime)
-	{
-		bFirstTime = false;
-	}
-
-	Age += DeltaTime;
 
 	if(Age < PVTimeToShowStars)
 	{
@@ -175,6 +173,7 @@ void UDefconPostwaveViewBase::NativeTick(const FGeometry& MyGeometry, float Delt
 }
 
 
+#if 0
 int32 UDefconPostwaveViewBase::NativePaint
 (
 	const FPaintArgs& Args,
@@ -186,6 +185,7 @@ int32 UDefconPostwaveViewBase::NativePaint
 	bool bParentEnabled
 ) const
 {
+	LOG_UWIDGET_FUNCTION
 	return Super::NativePaint(
 		Args,
 		AllottedGeometry,
@@ -195,6 +195,7 @@ int32 UDefconPostwaveViewBase::NativePaint
 		InWidgetStyle,
 		bParentEnabled);
 }
+#endif
 
 
 void UDefconPostwaveViewBase::SetTexts(const FString& InTitle, const FString& InSubtitle)

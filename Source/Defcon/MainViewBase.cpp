@@ -77,7 +77,7 @@ int32 FSprite2D::Paint(const FPaintArguments& Args) const
 		PaintGeometry,
 		&Atlas.AtlasBrush,
 		ESlateDrawEffect::None,
-		Atlas.AtlasBrush.TintColor.GetSpecifiedColor() * Args.RenderOpacity * Args.InWidgetStyle->GetColorAndOpacityTint().A);
+		Atlas.AtlasBrush.TintColor.GetSpecifiedColor() * Args.RenderOpacity);
 
 	return Args.LayerId;
 }
@@ -113,6 +113,8 @@ int32 UMainViewBase::NativePaint
 {
 	LayerId = Super::NativePaint(Args, AllottedGeometry, MyCullingRect, OutDrawElements, LayerId, InWidgetStyle, bParentEnabled);
 
+	return LayerId;
+#if 0
 	// Test: issue render calls directly.
 
 	const FSlateLayoutTransform Translation(FVector2D(200, 100));
@@ -126,13 +128,14 @@ int32 UMainViewBase::NativePaint
 		&MyCullingRect,
 		&OutDrawElements,
 		LayerId,
-		&InWidgetStyle,
 		bParentEnabled,
-		1.0f
+		InWidgetStyle.GetColorAndOpacityTint().A
 	};
 
 	return TestSprite.Paint(PaintArguments);
+#endif
 }
+
 
 
 

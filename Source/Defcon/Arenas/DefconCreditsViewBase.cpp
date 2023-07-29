@@ -12,6 +12,7 @@
 void UDefconCreditsViewBase::NativeOnInitialized()
 {
 	// Read the title vector file and set up the lerped lines widget.
+	LOG_UWIDGET_FUNCTION
 
 	Super::NativeOnInitialized();
 }
@@ -19,24 +20,16 @@ void UDefconCreditsViewBase::NativeOnInitialized()
 
 void UDefconCreditsViewBase::OnActivate()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::OnActivate();
 }
 
 
-
-
 void UDefconCreditsViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
 
-	if(bFirstTime)
-	{
-		bFirstTime = false;
-	}
-
-	Age += DeltaTime;
-
-	
 
 	// Oscillate help text between orange and yellow.
 
@@ -71,7 +64,7 @@ void UDefconCreditsViewBase::NativeTick(const FGeometry& MyGeometry, float Delta
 	}
 }
 
-
+#if 0
 int32 UDefconCreditsViewBase::NativePaint
 (
 		const FPaintArgs& Args,
@@ -83,6 +76,7 @@ int32 UDefconCreditsViewBase::NativePaint
 		bool bParentEnabled
 ) const
 {
+	LOG_UWIDGET_FUNCTION
 	return Super::NativePaint(
 		Args,
 		AllottedGeometry,
@@ -92,6 +86,7 @@ int32 UDefconCreditsViewBase::NativePaint
 		InWidgetStyle,
 		bParentEnabled);
 }
+#endif
 
 
 void UDefconCreditsViewBase::OnEscPressed()

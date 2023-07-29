@@ -14,6 +14,7 @@
 
 void UDefconMainMenuViewBase::OnActivate()
 {
+	LOG_UWIDGET_FUNCTION
 	Super::OnActivate();
 
 	CurrentItem = 0;
@@ -21,29 +22,27 @@ void UDefconMainMenuViewBase::OnActivate()
 }
 
 
+#if 0
 void UDefconMainMenuViewBase::NativeOnInitialized()
 {
+	LOG_UWIDGET_FUNCTION
 	// Read the title vector file and set up the lerped lines widget.
 
 	Super::NativeOnInitialized();
 }
+#endif
 
 
 void UDefconMainMenuViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
+	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
-
-	if(bFirstTime)
-	{
-		bFirstTime = false;
-	}
-
-	Age += DeltaTime;
 
 	Starfield->Tick(DeltaTime);
 }
 
 
+#if 0
 int32 UDefconMainMenuViewBase::NativePaint
 (
 	const FPaintArgs& Args,
@@ -55,6 +54,7 @@ int32 UDefconMainMenuViewBase::NativePaint
 	bool bParentEnabled
 ) const
 {
+	LOG_UWIDGET_FUNCTION
 	return Super::NativePaint(
 		Args,
 		AllottedGeometry,
@@ -64,6 +64,7 @@ int32 UDefconMainMenuViewBase::NativePaint
 		InWidgetStyle,
 		bParentEnabled);
 }
+#endif
 
 
 void UDefconMainMenuViewBase::UpdateMenuReadout()
