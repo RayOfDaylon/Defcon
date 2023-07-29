@@ -13,7 +13,7 @@
 
 #include "Globals/GameObjectResources.h"
 
-//#define LIFESPAN_DEAD	0.0001f
+//#define LIFESPAN_DEAD 0.0001f
 
 
 
@@ -53,60 +53,60 @@ namespace Defcon
 
 			virtual void          Init                  (const CFPoint& ArenaSize, const CFPoint& ScreenSize);
 			virtual void          OnFinishedCreating    ();
-			virtual bool	      OccursFrequently      () const;
+			virtual bool          OccursFrequently      () const;
 
 			// Linked list stuff.
-			IGameObject*          GetNext	            ();
-			IGameObject*          GetPrev	            ();
-			void                  SetNext	            (IGameObject* p);
-			void                  SetPrev	            (IGameObject* p);
+			IGameObject*          GetNext               ();
+			IGameObject*          GetPrev               ();
+			void                  SetNext               (IGameObject* p);
+			void                  SetPrev               (IGameObject* p);
 
 			// Identify stuff.
-			ObjType			      GetParentType	        () const;
-			ObjType			      GetCreatorType	    () const;
-			void			      SetCreatorType	    (ObjType n);
-			ObjType			      GetType			    () const;
+			ObjType               GetParentType         () const;
+			ObjType               GetCreatorType        () const;
+			void                  SetCreatorType        (ObjType n);
+			ObjType               GetType               () const;
 			void                  SetType               (ObjType n);
-							      
-			virtual void          Move		            (float DeltaTime);
-			virtual void          Draw		            (FPaintArguments&, const I2DCoordMapper&);
-			virtual void          DrawSmall	            (FPaintArguments&, const I2DCoordMapper&, FSlateBrush& Brush);
+								  
+			virtual void          Move                  (float DeltaTime);
+			virtual void          Draw                  (FPaintArguments&, const I2DCoordMapper&);
+			virtual void          DrawSmall             (FPaintArguments&, const I2DCoordMapper&, FSlateBrush& Brush);
 
-			virtual void	      Notify			    (Message, void*);
+			virtual void          Notify                (Message, void*);
 
-			virtual IGameObject*  CreateFireball		(CGameObjectCollection&, float&);
-			virtual bool		  Fireballs				() const;
-			virtual void		  Explode				(CGameObjectCollection&);
-			virtual int			  GetExplosionColorBase	() const;
-			virtual float		  GetExplosionMass		() const;
-			IGameObject*          CreateFireblast	    (CGameObjectCollection& debris, float& fBrightBase);
-			virtual bool          Fireblasts			() const;
+			virtual IGameObject*  CreateFireball        (CGameObjectCollection&, float&);
+			virtual bool          Fireballs             () const;
+			virtual void          Explode               (CGameObjectCollection&);
+			virtual int           GetExplosionColorBase () const;
+			virtual float         GetExplosionMass      () const;
+			IGameObject*          CreateFireblast       (CGameObjectCollection& debris, float& fBrightBase);
+			virtual bool          Fireblasts            () const;
 			
-			void			      ZeroVelocity	        ();
-			const CFPoint&	      GetVelocity		    () const;
+			void                  ZeroVelocity          ();
+			const CFPoint&        GetVelocity           () const;
 
-			void                  MakeHurtable			(bool b = true);
-			bool                  IsMortal			    () const;
-			bool                  ReduceLifespanBy	    (float DeltaTime);
-			void                  MarkAsDead		    ();
-			bool                  MarkedForDeath	    () const;
+			void                  MakeHurtable          (bool b = true);
+			bool                  IsMortal              () const;
+			bool                  ReduceLifespanBy      (float DeltaTime);
+			void                  MarkAsDead            ();
+			bool                  MarkedForDeath        () const;
 			virtual void          OnAboutToDie();
 
-			virtual float         GetCollisionForce	    () const;
-			bool                  IsCollisionInjurious	() const;	
-			void                  SetCollisionInjurious	(bool b = true);
-			bool                  IsInjurious			() const;
-			bool                  CanBeInjured			() const;
-			virtual void          GetInjurePt	        (CFPoint&) const;
-			virtual bool          TestInjury		    (const CFRect&) const;
+			virtual float         GetCollisionForce     () const;
+			bool                  IsCollisionInjurious  () const;   
+			void                  SetCollisionInjurious (bool b = true);
+			bool                  IsInjurious           () const;
+			bool                  CanBeInjured          () const;
+			virtual void          GetInjurePt           (CFPoint&) const;
+			virtual bool          TestInjury            (const CFRect&) const;
 
-			virtual size_t	      GetPointValue         () const;
+			virtual size_t        GetPointValue         () const;
 
-			bool                  ExternallyOwned		() const; // todo: smart pointers would be better for this
-			void                  SetExternalOwnership	(bool b);
+			bool                  ExternallyOwned       () const; // todo: smart pointers would be better for this
+			void                  SetExternalOwnership  (bool b);
 
-			bool                  IsMissionTarget		() const;
-			void                  SetAsMissionTarget	(bool b = true);
+			bool                  IsMissionTarget       () const;
+			void                  SetAsMissionTarget    (bool b = true);
 
 			virtual void          CreateSprite          (ObjType Kind);
 			virtual void          InstallSprite         ();
