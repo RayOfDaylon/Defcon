@@ -49,76 +49,76 @@ namespace Defcon
 	class options_arena_inputs : public Defcon::IControllerInputs
 	{
 		public:
-			options_arena_inputs() : m_pArena(nullptr) 
+			options_arena_inputs() : gpArena(nullptr) 
 			{
 				m_size = 10;
-				m_events[0].what = EventType::navigate_up;			m_events[0].bRepeats = true;
-				m_events[1].what = EventType::navigate_down;		m_events[1].bRepeats = true;
-				m_events[2].what = EventType::navigate_right;		m_events[2].bRepeats = true;
-				m_events[3].what = EventType::navigate_left;		m_events[3].bRepeats = true;
-				m_events[4].what = EventType::select;				m_events[4].bRepeats = false;
-				m_events[5].what = EventType::cancel;				m_events[5].bRepeats = false;
-				m_events[6].what = EventType::navigate_home;		m_events[6].bRepeats = false;
-				m_events[7].what = EventType::navigate_end;			m_events[7].bRepeats = false;
-				m_events[8].what = EventType::navigate_page_up;		m_events[8].bRepeats = false;
-				m_events[9].what = EventType::navigate_page_down;	m_events[9].bRepeats = false;
+				Events[0].what = EventType::navigate_up;			Events[0].bRepeats = true;
+				Events[1].what = EventType::navigate_down;		Events[1].bRepeats = true;
+				Events[2].what = EventType::navigate_right;		Events[2].bRepeats = true;
+				Events[3].what = EventType::navigate_left;		Events[3].bRepeats = true;
+				Events[4].what = EventType::select;				Events[4].bRepeats = false;
+				Events[5].what = EventType::cancel;				Events[5].bRepeats = false;
+				Events[6].what = EventType::navigate_home;		Events[6].bRepeats = false;
+				Events[7].what = EventType::navigate_end;			Events[7].bRepeats = false;
+				Events[8].what = EventType::navigate_page_up;		Events[8].bRepeats = false;
+				Events[9].what = EventType::navigate_page_down;	Events[9].bRepeats = false;
 			}
 			virtual void process(const ControllerEvent&);
-			Defcon::COptionsArena* m_pArena;
+			Defcon::COptionsArena* gpArena;
 	};
 }
 
 
 void Defcon::options_arena_inputs::process(const ControllerEvent& evt)
 {
-	check(m_pArena != nullptr);
+	check(gpArena != nullptr);
 
 	switch(evt.what)
 	{
 		case Defcon::EventType::navigate_up:
 			gpAudio->OutputSound(snd_select);
-			if(m_pArena->m_eState == Defcon::COptionsArena::State::viewing)
+			if(gpArena->m_eState == Defcon::COptionsArena::State::viewing)
 			{
 				if(sCurrentItem_arena_optons == 0)
-					m_pArena->FocusItem(array_size(gPrefs.m_pref)-1);
+					gpArena->FocusItem(array_size(gPrefs.m_pref)-1);
 				else
-					m_pArena->FocusItem(sCurrentItem_arena_optons - 1);
+					gpArena->FocusItem(sCurrentItem_arena_optons - 1);
 			}
 			break;
 
 
 		case Defcon::EventType::navigate_down:
 			gpAudio->OutputSound(snd_select);
-			if(m_pArena->m_eState == Defcon::COptionsArena::State::viewing)
+			if(gpArena->m_eState == Defcon::COptionsArena::State::viewing)
 			{
 				if(sCurrentItem_arena_optons == array_size(gPrefs.m_pref)-1)
-					m_pArena->FocusItem(0);
+					gpArena->FocusItem(0);
 				else
-					m_pArena->FocusItem(sCurrentItem_arena_optons + 1);
+					gpArena->FocusItem(sCurrentItem_arena_optons + 1);
 			}
 			break;
 
 
 		case Defcon::EventType::select:
-			switch(m_pArena->m_eState)
+			switch(gpArena->m_eState)
 			{
 				case Defcon::COptionsArena::State::viewing:
-					m_pArena->StartEditing();
+					gpArena->StartEditing();
 					break;
 				case Defcon::COptionsArena::State::editing:
-					m_pArena->StopEditing();
+					gpArena->StopEditing();
 					break;
 			}
 			break;
 
 		case Defcon::EventType::cancel:
-			switch(m_pArena->m_eState)
+			switch(gpArena->m_eState)
 			{
 				case Defcon::COptionsArena::State::viewing:
-					m_pArena->m_pNextArena = Defcon::CArenaFactory::Make(Defcon::ArenaKind::menu);
+					gpArena->m_pNextArena = Defcon::CArenaFactory::Make(Defcon::ArenaKind::menu);
 					break;
 				case Defcon::COptionsArena::State::editing:
-					m_pArena->CancelEditing();
+					gpArena->CancelEditing();
 					break;
 			}
 			break;
@@ -129,19 +129,19 @@ void Defcon::options_arena_inputs::process(const ControllerEvent& evt)
 		case Defcon::EventType::navigate_end:
 		case Defcon::EventType::navigate_page_up:
 		case Defcon::EventType::navigate_page_down:
-			switch(m_pArena->m_eState)
+			switch(gpArena->m_eState)
 			{
 				case Defcon::COptionsArena::State::viewing:
-					m_pArena->navigate(evt.what);
+					gpArena->navigate(evt.what);
 					break;
 
 				case Defcon::COptionsArena::State::editing:
-					if(m_pArena->m_pEditor != nullptr)
+					if(gpArena->m_pEditor != nullptr)
 					{
-						m_pArena->m_pEditor->process(evt);
-						gPrefs.m_pref[sCurrentItem_arena_optons].SetValue(m_pArena->m_pEditor->GetValue());
+						gpArena->m_pEditor->process(evt);
+						gPrefs.m_pref[sCurrentItem_arena_optons].SetValue(gpArena->m_pEditor->GetValue());
 						//gPrefs.OnUpdate();
-						m_pArena->UpdateValueText(sCurrentItem_arena_optons - m_pArena->m_topItem);
+						gpArena->UpdateValueText(sCurrentItem_arena_optons - gpArena->m_topItem);
 					}
 					break;
 			}
@@ -176,7 +176,7 @@ void Defcon::COptionsArena::Init
 
 	this->OnDisplaySizeChanged(w, h);
 
-	s_event_handler_arena_options.m_pArena = this;
+	s_event_handler_arena_options.gpArena = this;
 	m_pInputs = &s_event_handler_arena_options;
 	m_pInputs->nullify();
 

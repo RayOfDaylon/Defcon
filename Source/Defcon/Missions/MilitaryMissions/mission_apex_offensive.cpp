@@ -13,12 +13,9 @@
 
 
 
-void Defcon::CApexOffensive::Init(UDefconPlayViewBase* pA)
+void Defcon::CApexOffensive::Init()
 {
-	CMilitaryMission::Init(pA);
-
-	//m_nHostilesRemaining = 18 + 13 + 4 + 6 + 6 + 9 + 4 + 8;
-	//m_nLandersRemaining  = 3 + 6 + 5 + 4;
+	CMilitaryMission::Init();
 
 	IntroText =
 		"The landers have adopted an all-out\n"
@@ -40,46 +37,18 @@ void Defcon::CApexOffensive::Init(UDefconPlayViewBase* pA)
 void Defcon::CApexOffensive::MakeTargets(float fElapsed, const CFPoint& where)
 {
 	if(this->HostilesRemaining() > 0 
-		&& m_fAge >= 
+		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 4
 			)
 	{
 		// Add baiters until player clears minimal hostiles.
-		if(m_fAge - m_fLastCleaner >= 2.0f)
+		if(Age - TimeLastCleanerSpawned >= BAITER_SPAWN_FREQUENCY)
 		{
 			this->AddBaiter(where);
 		}
 	}
 
 	UpdateWaves(where);
-
-#if 0
-	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
-	{
-		m_fRepopCounter = 0.0f;
-
-		if(m_nAttackWave >= 4)
-			return;
-
-		const FEnemySpawnCounts waves[] = 
-		{
-			{ ObjType::LANDER, { 3, 6, 5, 4 } },
-			{ ObjType::GUPPY, { 4, 4, 3, 2 } },
-			{ ObjType::HUNTER, { 0, 1, 2, 1 } },
-			{ ObjType::FIREBOMBER_TRUE, { 2, 1, 2, 1 } },
-			{ ObjType::FIREBOMBER_WEAK, { 2, 1, 2, 1 } },
-			{ ObjType::DYNAMO, { 3, 3, 2, 1 } },
-			{ ObjType::POD, { 3, 1, 0, 0 } },
-			{ ObjType::BOMBER, { 2, 2, 2, 2 } }
-		};
-
-
-		STANDARD_ENEMY_SPAWNING(0.5f)
-
-		m_nAttackWave++;
-	}
-#endif
 }
 

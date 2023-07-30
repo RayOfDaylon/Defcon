@@ -92,6 +92,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF( guppy_value,                200,       "",             type_int,       0,        1000,      "Number of points earned for destroying a space guppy"                                      );
 	INITPREF( hunter_value,               250,       "",             type_int,       0,        1000,      "Number of points earned for destroying a hunter"                                           );
 	INITPREF( baiter_prob,                  0.33f,   "%",            type_float,     0,           1,      "Probability of baiter appearing near end of mission"                                       );
+	INITPREF( baiter_spawn_frequency,       2.0f,    "seconds",      type_float,     0.5f,       10.0f,   "Number of seconds before another baiter is spawned"                                        );
 	INITPREF( baiter_value,               200,       "",             type_int,       0,        1000,      "Number of points earned for destroying a baiter"                                           );
 	INITPREF( phred_value,                200,       "",             type_int,       0,        1000,      "Number of points earned for destroying a Phred"                                            );
 	INITPREF( bigred_value,               200,       "",             type_int,       0,        1000,      "Number of points earned for destroying a Big Red"                                          );

@@ -11,13 +11,10 @@
 
 
 
-void Defcon::CBomberShowdown::Init(UDefconPlayViewBase* pA)
+void Defcon::CBomberShowdown::Init()
 {
-	CMilitaryMission::Init(pA);
-
-	//m_nHostilesRemaining = 18+6;
-	// 9*2 bombers + 3*2 pods
-
+	CMilitaryMission::Init();
+	
 	IntroText =
 		"An armada of bombers has been detected.\n"
 		"They will fill the sky with mines;\n"
@@ -34,28 +31,5 @@ void Defcon::CBomberShowdown::Init(UDefconPlayViewBase* pA)
 void Defcon::CBomberShowdown::MakeTargets(float fElapsed, const CFPoint& where)
 {
 	UpdateWaves(where);
-#if 0
-	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
-	{
-
-		m_fRepopCounter = 0.0f;
-
-		if(m_nAttackWave >= 2)
-		{
-			return;
-		}
-
-		const Wave waves[] = 
-		{
-			{ ObjType::BOMBER, { 9, 9, 0, 0 } },
-			{ ObjType::POD,    { 3, 3, 0, 0 } }
-		};
-
-		STANDARD_ENEMY_SPAWNING(0.5f)
-
-		m_nAttackWave++;
-	}
-#endif
 }
 

@@ -94,7 +94,7 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 			if(pt.Distance(bombpt) < shockwave)
 			{
 				pObj2 = pObj->GetNext();
-				m_pArena->ExplodeObject(pObj);
+				gpArena->ExplodeObject(pObj);
 				pObj->MarkAsDead();
 				pObj = pObj2;
 				continue;

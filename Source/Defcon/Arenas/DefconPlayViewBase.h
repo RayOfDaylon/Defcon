@@ -132,7 +132,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	Defcon::CGameObjectCollection  m_debris;
 	Defcon::CGameObjectCollection  m_blasts;
 
-	Defcon::CEventQueue            m_events;
+	Defcon::CEventQueue            Events;
 
 
 	Defcon::CArenaCoordMapper      MainAreaMapper;

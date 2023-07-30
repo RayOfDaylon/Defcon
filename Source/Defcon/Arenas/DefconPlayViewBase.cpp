@@ -123,7 +123,7 @@ void UDefconPlayViewBase::DeleteAllObjects()
 	m_debris. DeleteAll(true);
 	m_objects.DeleteAll(true);
 
-	m_events. DeleteAll();
+	Events. DeleteAll();
 }
 
 
@@ -493,10 +493,10 @@ void UDefconPlayViewBase::ConcludeMission()
 	{
 		m_bArenaDying = true;
 		auto pEvt = new Defcon::CEndMissionEvent;
-		pEvt->Init(this);
+		pEvt->Init();
 		//pEvt->m_what = CEvent::Type::endmission;
 		pEvt->m_when = GameTime() + FADE_DURATION_NORMAL;
-		m_events.Add(pEvt);
+		Events.Add(pEvt);
 
 		m_fFadeAge = FADE_DURATION_NORMAL;
 
@@ -926,7 +926,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		}
 	}
 
-	m_events.Process();
+	Events.Process();
 
 
 	if(m_fFadeAge > 0.0f)
@@ -1182,10 +1182,10 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 			{
 				m_bArenaDying = true;
 				auto pEvt = new Defcon::CRestartMissionEvent;
-				pEvt->Init(this);
+				pEvt->Init();
 
 				pEvt->m_when = now + FADE_DURATION_NORMAL;
-				m_events.Add(pEvt);
+				Events.Add(pEvt);
 
 				m_fFadeAge = FADE_DURATION_NORMAL;
 			}
@@ -1792,10 +1792,10 @@ void UDefconPlayViewBase::OnPlayerShipDestroyed()
 		m_bArenaDying = true;
 
 		auto pEvt = new Defcon::CRestartMissionEvent;
-		pEvt->Init(this);
+		pEvt->Init();
 
 		pEvt->m_when = GameTime() + DESTROYED_PLAYER_LIFETIME * 2;
-		m_events.Add(pEvt);
+		Events.Add(pEvt);
 
 		m_fFadeAge = DESTROYED_PLAYER_LIFETIME * 2;
 	}
@@ -1937,7 +1937,6 @@ void UDefconPlayViewBase::FireSmartbomb()
 		pBomb->m_range.Set(MainAreaSize.X, MainAreaSize.Y);
 		pBomb->m_pTargets = &m_enemies;
 		pBomb->m_pDebris = &m_debris;
-		pBomb->m_pArena = this;
 
 		m_blasts.Add(pBomb);
 
@@ -2053,7 +2052,7 @@ void UDefconPlayViewBase::SpecializeMaterialization(Defcon::FMaterializationPara
 }
 
 
-void UDefconPlayViewBase::CreateEnemy(Defcon::ObjType EnemyType, const CFPoint& where, float RelativeWhen, bool bMaterializes, bool bTarget)
+void UDefconPlayViewBase::CreateEnemy(Defcon::ObjType EnemyType, const CFPoint& Where, float RelativeWhen, bool bMaterializes, bool bTarget)
 {
 	auto TimeToDeploy = GameTime() + RelativeWhen;
 
@@ -2064,7 +2063,7 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::ObjType EnemyType, const CFPoint& 
 		Defcon::FMaterializationParams Params;
 
 		Params.Lifetime          = MaterializationLifetime;
-		Params.P                 = where;
+		Params.P                 = Where;
 		Params.NumParticles      = 100;
 		Params.OsMin             = 0.0f;
 		Params.OsMax             = 1.0f;
@@ -2088,11 +2087,10 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::ObjType EnemyType, const CFPoint& 
 	}
 
 	auto p = new Defcon::CCreateEnemyEvent;
-	p->Init(this);
+	p->Init();
 
 	p->m_objtype			= EnemyType;
-	p->m_where				= where;
-	//p->m_bMaterializes		= false;//bMaterializes;
+	p->m_where				= Where;
 	p->m_bMissionTarget		= bTarget;
 	p->m_when				= TimeToDeploy;
 
@@ -2100,14 +2098,13 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::ObjType EnemyType, const CFPoint& 
 }
 
 
-Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::ObjType kind, const CFPoint& where, bool bMaterializes, bool bTarget)
+Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::ObjType EnemyType, const CFPoint& Where, bool bMaterializes, bool bTarget)
 {
 	// Create an enemy immediately by executing its Do method and not putting the event into the event queue.
 	auto* p = new Defcon::CCreateEnemyEvent;
-	p->Init(this);
-	p->m_objtype = kind;
-	p->m_where = where;
-	//p->m_bMaterializes = bMaterializes;
+	p->Init();
+	p->m_objtype = EnemyType;
+	p->m_where = Where;
 	p->m_bMissionTarget = bTarget;
 	
 	p->Do();

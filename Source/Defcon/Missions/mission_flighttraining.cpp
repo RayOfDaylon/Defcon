@@ -24,7 +24,7 @@ constexpr int32 NumBeacons = 15;
 
 Defcon::CFlightTrainingMission::CFlightTrainingMission()
 {
-	m_ID = MissionID::flighttraining;
+	ID = MissionID::flighttraining;
 
 	IntroText = 
 		"Welcome, Defender.\n"
@@ -51,13 +51,7 @@ bool Defcon::CFlightTrainingMission::Update(float fElapsed)
 		return false;
 	}
 
-	if(m_fAge < 5.0f)
-	{
-		//this->DoIntroText(fElapsed);
-		return true;
-	}
-
-	if(m_fAge < 6.0f)
+	if(Age < 6.0f)
 	{
 		this->DoMakeTargets(fElapsed);
 		return true;
@@ -75,12 +69,12 @@ bool Defcon::CFlightTrainingMission::Update(float fElapsed)
 
 void Defcon::CFlightTrainingMission::DoMakeTargets(float fElapsed)
 {
-	if(m_bTargetsMade)
+	if(TargetsMade)
 	{
 		return;
 	}
 
-	m_bTargetsMade = true;
+	TargetsMade = true;
 
 	for(int32 i = 0; i < NumBeacons; i++)
 	{
@@ -89,17 +83,17 @@ void Defcon::CFlightTrainingMission::DoMakeTargets(float fElapsed)
 		p->InstallSprite();
 
 		p->m_pos.Set(
-			MAP(i, 0, 6, m_pArena->GetDisplayWidth()*.66f, m_pArena->GetWidth() * 0.9f),
-			SFRAND * 0.33f * m_pArena->GetHeight() + m_pArena->GetHeight() / 2);
+			MAP(i, 0, 6, gpArena->GetDisplayWidth()*.66f, gpArena->GetWidth() * 0.9f),
+			SFRAND * 0.33f * gpArena->GetHeight() + gpArena->GetHeight() / 2);
 
-		m_pArena->GetObjects().Add(p);
+		gpArena->GetObjects().Add(p);
 	}
 }
 
 
 void Defcon::CFlightTrainingMission::CheckTargetHit(float fElapsed)
 {
-	auto ObjPtr = m_pArena->GetObjects().GetFirst();
+	auto ObjPtr = gpArena->GetObjects().GetFirst();
 
 	while(ObjPtr != nullptr)
 	{
@@ -108,8 +102,8 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float fElapsed)
 			auto BeaconPtr = static_cast<CBeacon*>(ObjPtr);
 			CFRect rPlayer, rBeacon;
 
-			rPlayer.Set(m_pArena->GetPlayerShip().m_pos);
-			rPlayer.Inflate(m_pArena->GetPlayerShip().m_bboxrad);
+			rPlayer.Set(gpArena->GetPlayerShip().m_pos);
+			rPlayer.Inflate(gpArena->GetPlayerShip().m_bboxrad);
 			rBeacon.Set(BeaconPtr->m_pos);
 			rBeacon.Inflate(BeaconPtr->m_bboxrad);
 		
@@ -117,9 +111,9 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float fElapsed)
 			{
 				gpAudio->OutputSound(Defcon::snd_gulp);
 				ObjPtr->UninstallSprite();
-				m_pArena->GetObjects().Delete(ObjPtr);
+				gpArena->GetObjects().Delete(ObjPtr);
 
-				const int32 TargetsLeft = m_pArena->GetObjects().CountOf(ObjType::BEACON);
+				const int32 TargetsLeft = gpArena->GetObjects().CountOf(ObjType::BEACON);
 
 				// Show message.
 				FString Str;
@@ -135,7 +129,7 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float fElapsed)
 					Str = TEXT("All done! Yay!");
 				}
 
-				m_pArena->AddMessage(Str);
+				gpArena->AddMessage(Str);
 
 				break;
 			}
@@ -149,6 +143,6 @@ bool Defcon::CFlightTrainingMission::AreAllTargetsHit(float fElapsed)
 {
 	this->CheckTargetHit(fElapsed);
 
-	return (m_pArena->GetObjects().Find(ObjType::BEACON, nullptr) == nullptr);
+	return (gpArena->GetObjects().Find(ObjType::BEACON, nullptr) == nullptr);
 }
 

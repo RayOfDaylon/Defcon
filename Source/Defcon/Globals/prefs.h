@@ -32,6 +32,7 @@ namespace Defcon
 				attack_initialdistance,
 
 				baiter_prob,
+				baiter_spawn_frequency,
 				baiter_value,
 				//baiters_in_first_wave,
 				//baiters_per_attack,
@@ -236,6 +237,7 @@ extern Defcon::CPrefs	gPrefs;
 
 #define ARENA_BOGDOWN              (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::arena_bogdown].m_fValue)
 #define BAITER_PROB                gPrefs.m_pref[Defcon::CPrefs::Pref::baiter_prob].m_fValue
+#define BAITER_SPAWN_FREQUENCY     gPrefs.m_pref[Defcon::CPrefs::Pref::baiter_spawn_frequency].m_fValue
 #define BAITER_VALUE               (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::baiter_value].m_fValue
 #define BIGRED_VALUE               (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::bigred_value].m_fValue
 #define BOMBER_VALUE               (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::bomber_value].m_fValue

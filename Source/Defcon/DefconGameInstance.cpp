@@ -423,7 +423,7 @@ void UDefconGameInstance::InitMission(UDefconPlayViewBase* p)
 {
 	check(m_pMission);
 
-	m_pMission->Init(p);
+	m_pMission->Init();
 }
 
 

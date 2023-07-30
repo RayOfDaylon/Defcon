@@ -14,11 +14,11 @@
 
 
 
-void Defcon::CYllabianDogfight::Init(UDefconPlayViewBase* pA)
+void Defcon::CYllabianDogfight::Init()
 {
-	CMilitaryMission::Init(pA);
+	CMilitaryMission::Init();
 
-	m_nHostilesRemaining = 12+15+9+6+3+6;
+	NumHostilesRemaining = 12+15+9+6+3+6;
 
 	IntroText =
 		"Yllabian space guppies and swarmers have set an ambush.\n"
@@ -30,12 +30,12 @@ void Defcon::CYllabianDogfight::Init(UDefconPlayViewBase* pA)
 
 void Defcon::CYllabianDogfight::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
+	if((this->HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
+		|| (this->HostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
 	{
-		m_fRepopCounter = 0.0f;
+		RepopCounter = 0.0f;
 
-		if(m_nAttackWave >= 3)
+		if(WaveIndex >= 3)
 			return;
 
 		const FEnemySpawnCounts waves[] = 
@@ -48,18 +48,18 @@ void Defcon::CYllabianDogfight::MakeTargets(float fElapsed, const CFPoint& where
 		int32 i, j;
 		for(i = 0; i < array_size(waves); i++)
 		{
-			for(j = 0; j < waves[i].NumPerWave[m_nAttackWave] && this->HostilesRemaining() > 0; j++)
+			for(j = 0; j < waves[i].NumPerWave[WaveIndex] && this->HostilesRemaining() > 0; j++)
 			{
-				float wp = m_pArena->GetWidth();
-				float x = (FRAND - 0.5f) * m_pArena->GetDisplayWidth() + wp/2;
+				float wp = gpArena->GetWidth();
+				float x = (FRAND - 0.5f) * gpArena->GetDisplayWidth() + wp/2;
 				x = (float)fmod(x, wp);
-				float y = FRANDRANGE(0.25f, 0.75f) * m_pArena->GetHeight();
+				float y = FRANDRANGE(0.25f, 0.75f) * gpArena->GetHeight();
 
-				m_pArena->CreateEnemy(waves[i].Kind, CFPoint(x, y), FRANDRANGE(0.0f, 0.1f * j), true, true);
+				gpArena->CreateEnemy(waves[i].Kind, CFPoint(x, y), FRANDRANGE(0.0f, 0.1f * j), true, true);
 			}
 		}
 
-		m_nAttackWave++;
+		WaveIndex++;
 	}
 }
 

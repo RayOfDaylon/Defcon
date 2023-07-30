@@ -40,13 +40,13 @@
 
 Defcon::CEventQueue::~CEventQueue()
 {
-	while(!m_events.IsEmpty())
+	while(!Events.IsEmpty())
 	{
-		check(m_events.Last(0) != nullptr);
+		check(Events.Last(0) != nullptr);
 		
-		delete m_events.Last(0);
+		delete Events.Last(0);
 		
-		m_events.Pop();
+		Events.Pop();
 	}
 }
 
@@ -55,7 +55,7 @@ void Defcon::CEventQueue::Add(CEvent* pE)
 {
 	check(pE != nullptr);
 
-	m_events.Add(pE);
+	Events.Add(pE);
 }
 
 
@@ -63,23 +63,23 @@ void Defcon::CEventQueue::Process()
 {
 	const float now = GameTime();
 
-	for(int32 Index = m_events.Num() - 1; Index >= 0; Index--)
+	for(int32 Index = Events.Num() - 1; Index >= 0; Index--)
 	{
-		auto EvtPtr = m_events[Index];
+		auto EvtPtr = Events[Index];
 
 		if(EvtPtr->m_when <= now)
 		{
 			EvtPtr->Do();
 
 			// If the event caused an arena transition, the event queue may have emptied, so check for that.
-			if(m_events.IsEmpty())
+			if(Events.IsEmpty())
 			{
 				return;
 			}
 
 			delete EvtPtr;
 
-			m_events.RemoveAtSwap(Index);
+			Events.RemoveAtSwap(Index);
 		}
 	}
 }
@@ -87,13 +87,13 @@ void Defcon::CEventQueue::Process()
 
 void Defcon::CEventQueue::DeleteAll()
 {
-	for(auto EvtPtr : m_events)
+	for(auto EvtPtr : Events)
 	{
 		check(EvtPtr != nullptr);
 		
 		delete EvtPtr;
 	}
-	m_events.Empty();
+	Events.Empty();
 }
 
 
@@ -111,10 +111,10 @@ void Defcon::CRestartMissionEvent::Do()
 
 void Defcon::CEndMissionEvent::Do()
 {
-	SAFE_DELETE(m_pArena->Terrain);
+	SAFE_DELETE(gpArena->Terrain);
 
-	m_pArena->PlayAreaMain->TerrainPtr = nullptr;
-	m_pArena->PlayAreaRadar->SetTerrain(nullptr);
+	gpArena->PlayAreaMain->TerrainPtr = nullptr;
+	gpArena->PlayAreaRadar->SetTerrain(nullptr);
 
 	gDefconGameInstance->MissionEnded();
 }
@@ -176,7 +176,7 @@ void Defcon::CCreateEnemyEvent::Do()
 		pE->SetCollisionInjurious();
 	//}
 
-	m_pArena->GetEnemies().Add(pE);
+	gpArena->GetEnemies().Add(pE);
 
 	pE->OnFinishedCreating();
 }
@@ -217,11 +217,11 @@ Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(ObjType kind, const CFPoi
 		default: throw 0; break;
 	}
 
-	pE->m_pMapper = &m_pArena->GetMainAreaMapper();
+	pE->m_pMapper = &gpArena->GetMainAreaMapper();
 	pE->m_pos = where;
-	float w = m_pArena->GetDisplayWidth();
+	float w = gpArena->GetDisplayWidth();
 
-	pE->Init(CFPoint((float)m_pArena->GetWidth(), (float)m_pArena->GetHeight()), CFPoint(w, (float)m_pArena->GetHeight()));
+	pE->Init(CFPoint((float)gpArena->GetWidth(), (float)gpArena->GetHeight()), CFPoint(w, (float)gpArena->GetHeight()));
 
 	return pE;
 }
@@ -229,7 +229,7 @@ Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(ObjType kind, const CFPoi
 
 
 #define SET_RANDOM_FWD_ORIENT   pE->m_orient.fwd.x = SBRAND;
-#define SET_PLAYER_AS_TARGET    pE->SetTarget(&m_pArena->GetPlayerShip());
+#define SET_PLAYER_AS_TARGET    pE->SetTarget(&gpArena->GetPlayerShip());
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForBouncer(Defcon::CEnemy* pE, const CFPoint& where)
@@ -246,7 +246,6 @@ void Defcon::CCreateEnemyEvent::SpecializeForWeakBouncer(Defcon::CEnemy* pE, con
 
 void Defcon::CCreateEnemyEvent::SpecializeForPhred(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	//check(m_pArena == gpArena);
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
@@ -254,7 +253,6 @@ void Defcon::CCreateEnemyEvent::SpecializeForPhred(Defcon::CEnemy* pE, const CFP
 
 void Defcon::CCreateEnemyEvent::SpecializeForBigRed(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	//check(m_pArena == gpArena);
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
@@ -262,7 +260,6 @@ void Defcon::CCreateEnemyEvent::SpecializeForBigRed(Defcon::CEnemy* pE, const CF
 
 void Defcon::CCreateEnemyEvent::SpecializeForMunchie(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	//check(m_pArena == gpArena);
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
@@ -271,7 +268,6 @@ void Defcon::CCreateEnemyEvent::SpecializeForMunchie(Defcon::CEnemy* pE, const C
 
 void Defcon::CCreateEnemyEvent::SpecializeForGhost(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	check(m_pArena == gpArena);
 	CGhost* p = static_cast<CGhost*>(pE);
 	SET_PLAYER_AS_TARGET
 }
@@ -279,7 +275,6 @@ void Defcon::CCreateEnemyEvent::SpecializeForGhost(Defcon::CEnemy* pE, const CFP
 
 void Defcon::CCreateEnemyEvent::SpecializeForGhostPart(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	check(m_pArena == gpArena);
 	CGhostPart* p = static_cast<CGhostPart*>(pE);
 	SET_PLAYER_AS_TARGET
 	p->SetCollisionInjurious(false);
@@ -288,9 +283,8 @@ void Defcon::CCreateEnemyEvent::SpecializeForGhostPart(Defcon::CEnemy* pE, const
 #if 0
 void Defcon::CCreateEnemyEvent::SpecializeForGhostPartPrimary(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	check(m_pArena == gpArena);
 	CGhostPrimaryPart* p = static_cast<CGhostPrimaryPart*>(pE);
-	p->SetTarget((IGameObject*)&m_pArena->GetPlayerShip());
+	p->SetTarget((IGameObject*)&gpArena->GetPlayerShip());
 	p->SetCollisionInjurious(false);
 }
 #endif
@@ -300,9 +294,9 @@ void Defcon::CCreateEnemyEvent::SpecializeForLander(Defcon::CEnemy* pE, const CF
 	CLander* p = static_cast<CLander*>(pE);
 	//p->m_fnTerrainEval = GetTerrainElevFunc;
 	//p->m_fnHumanFinder = Defcon::FindHumanFunc;
-	p->m_pvUserTerrainEval = m_pArena;
+	p->m_pvUserTerrainEval = gpArena;
 	SET_PLAYER_AS_TARGET
-	p->m_pObjects = &m_pArena->GetObjects();
+	p->m_pObjects = &gpArena->GetObjects();
 	p->SetDoChaseHumans(gDefconGameInstance->GetMission()->HumansInvolved());
 }
 
@@ -311,7 +305,7 @@ void Defcon::CCreateEnemyEvent::SpecializeForGuppy(Defcon::CEnemy* pE, const CFP
 {
 	CGuppy* p = static_cast<CGuppy*>(pE);
 	SET_PLAYER_AS_TARGET
-	p->m_pObjects = &m_pArena->GetEnemies();
+	p->m_pObjects = &gpArena->GetEnemies();
 }
 
 
@@ -319,7 +313,7 @@ void Defcon::CCreateEnemyEvent::SpecializeForHunter(Defcon::CEnemy* pE, const CF
 {
 	CHunter* p = static_cast<CHunter*>(pE);
 	SET_PLAYER_AS_TARGET
-	p->m_pObjects = &m_pArena->GetEnemies();
+	p->m_pObjects = &gpArena->GetEnemies();
 }
 
 
@@ -348,7 +342,7 @@ void Defcon::CCreateEnemyEvent::SpecializeForFireball(Defcon::CEnemy* pE, const 
 
 void Defcon::CCreateEnemyEvent::SpecializeForDynamo(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	//pE->m_pos.y = FRANDRANGE(90, m_pArena->GetHeight() - 90);
+	//pE->m_pos.y = FRANDRANGE(90, gpArena->GetHeight() - 90);
 	SET_RANDOM_FWD_ORIENT
 }
 

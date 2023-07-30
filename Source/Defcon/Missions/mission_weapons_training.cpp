@@ -29,11 +29,11 @@ constexpr int32 NumTargets = 15;
 
 
 
-void Defcon::CWeaponsTrainingMission::Init(UDefconPlayViewBase* pA)
+void Defcon::CWeaponsTrainingMission::Init()
 {
-	IMission::Init(pA);
+	IMission::Init();
 
-	m_bTargetsMade = false;
+	TargetsMade = false;
 
 	NumTargetsHit = 0;
 
@@ -57,11 +57,11 @@ bool Defcon::CWeaponsTrainingMission::Update(float fElapsed)
 		return false;
 	}
 
-	if(m_fAge < 5.0f)
+	if(Age < 5.0f)
 	{
 		//this->DoIntroText(fElapsed);
 	}
-	else if(m_fAge < 6.0f)
+	else if(Age < 6.0f)
 	{
 		this->DoMakeTargets(fElapsed);
 	}
@@ -77,12 +77,12 @@ bool Defcon::CWeaponsTrainingMission::Update(float fElapsed)
 
 void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 {
-	if(m_bTargetsMade)
+	if(TargetsMade)
 	{
 		return;
 	}
 
-	m_bTargetsMade = true;
+	TargetsMade = true;
 
 	for(int32 i = 0; i < NumTargets; i++)
 	{
@@ -92,11 +92,11 @@ void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 		p->m_fLifespan = 2.0f;
 		p->MakeHurtable();
 		p->m_pos.Set(
-			MAP(i, 0, 6, m_pArena->GetDisplayWidth()*.66f, m_pArena->GetWidth() * 0.9f),
-			SFRAND * 0.33f * m_pArena->GetHeight() + m_pArena->GetHeight()/2);
+			MAP(i, 0, 6, gpArena->GetDisplayWidth()*.66f, gpArena->GetWidth() * 0.9f),
+			SFRAND * 0.33f * gpArena->GetHeight() + gpArena->GetHeight()/2);
 
 		//p->SetAsMissionTarget();
-		m_pArena->GetObjects().Add(p);
+		gpArena->GetObjects().Add(p);
 	}
 }
 
@@ -104,7 +104,7 @@ void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 
 bool Defcon::CWeaponsTrainingMission::AreAllTargetsHit(float fElapsed)
 {
-	const int32 NumTargetsLeft = m_pArena->GetObjects().CountOf(ObjType::BEACON);
+	const int32 NumTargetsLeft = gpArena->GetObjects().CountOf(ObjType::BEACON);
 	const int32 NumHit         = NumTargets - NumTargetsLeft;
 
 	if(NumHit != NumTargetsHit)
@@ -122,10 +122,10 @@ bool Defcon::CWeaponsTrainingMission::AreAllTargetsHit(float fElapsed)
 			Str = TEXT("All targets destroyed.");
 		}
 
-		m_pArena->AddMessage(Str);
+		gpArena->AddMessage(Str);
 	}
 
-	return (m_pArena->GetObjects().Find(ObjType::BEACON, nullptr) == nullptr);
+	return (gpArena->GetObjects().Find(ObjType::BEACON, nullptr) == nullptr);
 }
 
 

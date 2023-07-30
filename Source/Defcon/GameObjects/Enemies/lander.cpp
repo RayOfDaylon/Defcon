@@ -42,7 +42,6 @@ Defcon::CLander::CLander()
 	m_smallColor		= MakeColorFromComponents(255, 255, 0);
 	m_fSpeed			= FRAND + 1.0f;
 	m_fHoverAltitude	= FRAND * 20 + 40;
-	//m_fnTerrainEval		= nullptr;
 	m_fAnimSpeed		= FRAND * 0.66f + 0.33f;
 
 	m_orient.fwd.Set(speed, 0);
@@ -54,9 +53,8 @@ Defcon::CLander::CLander()
 	// 0 - 10000    0.1
 	// 60000+        0.9
 	float fProbChaseHuman = 0.05f;
-	//const float score = (float)UDefconUtils::GetGameInstance(gpArena)->GetScore();
-	const float score = (float)gDefconGameInstance->GetScore();
 
+	const float score = (float)gDefconGameInstance->GetScore();
 
 	if(score > 10000 && score <= 60000)
 	{

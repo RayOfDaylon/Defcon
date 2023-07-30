@@ -13,13 +13,9 @@
 
 
 
-void Defcon::CReinforcedMission::Init(UDefconPlayViewBase* pA)
+void Defcon::CReinforcedMission::Init()
 {
-	CMilitaryMission::Init(pA);
-
-	//m_nHostilesRemaining = 12 + 6;
-	//m_nLandersRemaining  = 12;
-	// 3*4 landers + 6 dynamos
+	CMilitaryMission::Init();
 
 	IntroText = 
 		"More landers are coming.\n"
@@ -36,40 +32,18 @@ void Defcon::CReinforcedMission::Init(UDefconPlayViewBase* pA)
 void Defcon::CReinforcedMission::MakeTargets(float fElapsed, const CFPoint& where)
 {
 	if(this->HostilesRemaining() > 0 
-		&& m_fAge >= 
+		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 3
 			)
 	{
 		// Add baiters until player clears minimal hostiles.
-		if(m_fAge - m_fLastCleaner >= 2.0f)
+		if(Age - TimeLastCleanerSpawned >= BAITER_SPAWN_FREQUENCY)
 		{
 			this->AddBaiter(where);
 		}
 	}
 
 	UpdateWaves(where);
-
-#if 0
-	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
-	{
-
-		m_fRepopCounter = 0.0f;
-
-		if(m_nAttackWave >= 3)
-			return;
-
-		const Wave waves[] =
-		{
-			{ ObjType::LANDER, { 4, 4, 4, 0 } },
-			{ ObjType::DYNAMO, { 3, 2, 1, 0 } }
-		};
-
-		STANDARD_ENEMY_SPAWNING(0.5f)
-
-		m_nAttackWave++;
-	}
-#endif
 }
 

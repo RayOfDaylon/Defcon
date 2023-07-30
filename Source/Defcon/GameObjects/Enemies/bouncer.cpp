@@ -181,7 +181,6 @@ void Defcon::CBouncer::Move(float fElapsedTime)
 	IBouncer::Move(fElapsedTime);
 
 	// todo: Is the firing time based on fps or on time?
-	//float diff = (float)UDefconUtils::GetGameInstance(gpArena)->GetScore() / 50000;
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 	//if(m_bWaits)
 		//diff *= (float)(ABS(sin(m_fAge * PI)));

@@ -45,22 +45,20 @@
 
 
 
-void Defcon::IMission::Init(UDefconPlayViewBase* p)
+void Defcon::IMission::Init()
 {
-	m_pArena = p; 
-
 	this->CreateTerrain();
 	this->AddHumanoids();
 
-	m_pArena->GetPlayerShip().EnableInput(false);
+	gpArena->GetPlayerShip().EnableInput(false);
 }
 
 
 bool Defcon::IMission::Update(float DeltaTime) 
 {
-	m_fAge += DeltaTime; 
+	Age += DeltaTime; 
 
-	m_events.Process();
+	Events.Process();
 
 	DoIntroText(DeltaTime);
 
@@ -70,16 +68,16 @@ bool Defcon::IMission::Update(float DeltaTime)
 
 void Defcon::IMission::DoIntroText(float DeltaTime)
 {
-	if(!m_bIntroDone)
+	if(!IntroIsDone)
 	{
-		m_bIntroDone = true;
+		IntroIsDone = true;
 
 		TArray<FString> IntroTextLines;
 		IntroText.ParseIntoArray(IntroTextLines, TEXT("\n"), false);
 
 		for(const auto& IntroTextLine : IntroTextLines)
 		{
-			m_pArena->AddMessage(IntroTextLine);
+			gpArena->AddMessage(IntroTextLine);
 		}
 	}
 }
@@ -87,7 +85,7 @@ void Defcon::IMission::DoIntroText(float DeltaTime)
 
 void Defcon::IMission::CreateTerrain()
 {
-	m_pArena->CreateTerrain();
+	gpArena->CreateTerrain();
 }
 
 
@@ -96,18 +94,18 @@ void Defcon::IMission::AddHumanoids()
 	// Most missions have humanoids. 
 	// We mod the game's humanoids for the arena.
 
-	auto& Humans = m_pArena->GetHumans();
+	auto& Humans = gpArena->GetHumans();
 
 	Humans.ForEach([&](Defcon::IGameObject* Obj)
 	{
 		auto Human = static_cast<CHuman*>(Obj);
-		Human->m_pObjects  = &m_pArena->GetObjects();
-		Human->m_pObjects2 = &m_pArena->GetEnemies();
+		Human->m_pObjects  = &gpArena->GetObjects();
+		Human->m_pObjects2 = &gpArena->GetEnemies();
 
 		// If we're on wave 2 or higher, don't move the humans
 		// except to reset them vertically.
 		Human->InitHuman(CFPoint(
-			(gDefconGameInstance->GetScore() == 0) ? FRAND * m_pArena->GetWidth() * HUMAN_DISTRIBUTION : Human->m_pos.x, 
+			(gDefconGameInstance->GetScore() == 0) ? FRAND * gpArena->GetWidth() * HUMAN_DISTRIBUTION : Human->m_pos.x, 
 			FRAND * 5 + 25));
 	}
 	);

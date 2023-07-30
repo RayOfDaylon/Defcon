@@ -12,7 +12,7 @@
 
 
 
-#define DEBUG_MODULE      0
+#define DEBUG_MODULE      1
 
 #if(DEBUG_MODULE == 1)
 #pragma optimize("", off)

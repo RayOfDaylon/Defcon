@@ -13,13 +13,10 @@
 
 
 
-void Defcon::CApexOffensiveLite::Init(UDefconPlayViewBase* pA)
+void Defcon::CApexOffensiveLite::Init()
 {
-	CMilitaryMission::Init(pA);
-
-	//m_nHostilesRemaining = 18 + 9 + 3 + 4 + 4 + 7 + 3 + 5;
-	//m_nLandersRemaining  = 3 + 6 + 5 + 4;
-
+	CMilitaryMission::Init();
+	
 	IntroText =
 		"The landers have adopted a more varied\n"
 		"escort strategy. Destroy the landers first\n"
@@ -40,37 +37,18 @@ void Defcon::CApexOffensiveLite::Init(UDefconPlayViewBase* pA)
 void Defcon::CApexOffensiveLite::MakeTargets(float fElapsed, const CFPoint& where)
 {
 	if(this->HostilesRemaining() > 0 
-		&& m_fAge >= 
+		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 4
 			)
 	{
 		// Add baiters until player clears minimal hostiles.
-		if(m_fAge - m_fLastCleaner >= 2.0f)
+		if(Age - TimeLastCleanerSpawned >= BAITER_SPAWN_FREQUENCY)
 		{
 			this->AddBaiter(where);
 		}
 	}
 
 	UpdateWaves(where);
-
-#if 0
-	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
-	{
-		m_fRepopCounter = 0.0f;
-
-		if(m_nAttackWave >= 4)
-			return;
-
-		const Wave waves[] = 
-		{
-		};
-
-		STANDARD_ENEMY_SPAWNING(0.5f)
-
-		m_nAttackWave++;
-	}
-#endif
 }
 

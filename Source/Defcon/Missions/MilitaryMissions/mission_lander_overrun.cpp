@@ -15,12 +15,9 @@
 
 
 
-void Defcon::CLanderOverrun::Init(UDefconPlayViewBase* pA)
+void Defcon::CLanderOverrun::Init()
 {
-	CMilitaryMission::Init(pA);
-
-	//m_nHostilesRemaining = 50*2 + 6*2;
-	//m_nLandersRemaining  = 100;
+	CMilitaryMission::Init();
 
 	IntroText = 
 		"A large mob of landers with minimal escort\n"
@@ -37,26 +34,5 @@ void Defcon::CLanderOverrun::Init(UDefconPlayViewBase* pA)
 void Defcon::CLanderOverrun::MakeTargets(float fElapsed, const CFPoint& where)
 {
 	UpdateWaves(where);
-
-#if 0
-	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
-		|| m_fRepopCounter > DELAY_BETWEEN_REATTACK)
-	{
-		m_fRepopCounter = 0.0f;
-
-		if(m_nAttackWave >= 2)
-			return;
-
-		const Wave waves[] = 
-		{
-			{ ObjType::LANDER, { 50, 50, 0, 0 } },
-			{ ObjType::DYNAMO, { 6, 6, 0, 0 } },
-		};
-
-		STANDARD_ENEMY_SPAWNING(0.1f)
-
-		m_nAttackWave++;
-	}
-#endif
 }
 

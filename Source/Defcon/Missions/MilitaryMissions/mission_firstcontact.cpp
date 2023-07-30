@@ -20,12 +20,9 @@
 
 
 
-void Defcon::CFirstContactMission::Init(UDefconPlayViewBase* pA)
+void Defcon::CFirstContactMission::Init()
 {
-	CMilitaryMission::Init(pA);
-
-	//m_nHostilesRemaining = 9;
-	//m_nLandersRemaining  = 9;
+	CMilitaryMission::Init();
 
 	IntroText =
 		"A small group of Landers is approaching.\n"
@@ -37,14 +34,12 @@ void Defcon::CFirstContactMission::Init(UDefconPlayViewBase* pA)
 }
 
 
-
-
 void Defcon::CFirstContactMission::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(this->HostilesRemaining() > 0 && m_fAge >= 25.0f)
+	if(this->HostilesRemaining() > 0 && Age >= 25.0f)
 	{
 		// Add baiters until player clears minimal hostiles.
-		if(m_fAge - m_fLastCleaner >= 2.0f)
+		if(Age - TimeLastCleanerSpawned >= BAITER_SPAWN_FREQUENCY)
 		{
 			this->AddBaiter(where);
 		}

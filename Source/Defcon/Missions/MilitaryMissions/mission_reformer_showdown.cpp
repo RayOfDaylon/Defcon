@@ -11,11 +11,9 @@
 
 
 
-void Defcon::CReformerShowdown::Init(UDefconPlayViewBase* pA)
+void Defcon::CReformerShowdown::Init()
 {
-	CMilitaryMission::Init(pA);
-
-	//m_nHostilesRemaining = 6+6;
+	CMilitaryMission::Init();
 
 	IntroText =
 		"Reformers have moved in to engage you.\n"
@@ -33,27 +31,5 @@ void Defcon::CReformerShowdown::Init(UDefconPlayViewBase* pA)
 void Defcon::CReformerShowdown::MakeTargets(float fElapsed, const CFPoint& where)
 {
 	UpdateWaves(where);
-
-#if 0
-	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
-	{
-
-		m_fRepopCounter = 0.0f;
-
-		if(m_nAttackWave >= 2)
-			return;
-
-		const Wave waves[] =
-		{
-			{ ObjType::REFORMER, { 4, 2, 0, 0 } },
-			{ ObjType::SWARMER,  { 3, 3, 0, 0 } }
-		};
-
-		STANDARD_ENEMY_SPAWNING(0.5f)
-
-		m_nAttackWave++;
-	}
-#endif
 }
 

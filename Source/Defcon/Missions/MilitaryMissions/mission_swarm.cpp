@@ -15,11 +15,11 @@
 // ----------------------------------------------------------
 
 #if 0
-void Defcon::CSwarm::Init(UDefconPlayViewBase* pA)
+void Defcon::CSwarm::Init()
 {
-	CMilitaryMission::Init(pA);
+	CMilitaryMission::Init();
 
-	m_nHostilesRemaining = 30 + 45 + 80 + 10;
+	NumHostilesRemaining = 30 + 45 + 80 + 10;
 }
 
 
@@ -37,10 +37,10 @@ bool Defcon::CSwarm::Update(float fElapsed)
 void Defcon::CSwarm::DoIntroText(float fElapsed)
 {
 	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
+	if(IntroIsDone)
 		return;
 
-	m_bIntroDone = true;
+	IntroIsDone = true;
 	// First time here; create intro text objects.
 
 
@@ -54,7 +54,7 @@ void Defcon::CSwarm::DoIntroText(float fElapsed)
 
 	for(auto Text : psz)
 	{
-		m_pArena->AddMessage(Text);
+		gpArena->AddMessage(Text);
 	}
 }
 
@@ -71,12 +71,12 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 	}
 
 
-	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
+	if((this->HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
+		|| (this->HostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
 	{
-		m_fRepopCounter = 0.0f;
+		RepopCounter = 0.0f;
 
-		if(m_nAttackWave >= 3)
+		if(WaveIndex >= 3)
 			return;
 
 		const Wave waves[] = 
@@ -89,22 +89,22 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 		int32 i, j;
 		for(i = 0; i < array_size(waves); i++)
 		{
-			for(j = 0; j < waves[i].count[m_nAttackWave] && this->HostilesRemaining() > 0; j++)
+			for(j = 0; j < waves[i].count[WaveIndex] && this->HostilesRemaining() > 0; j++)
 			{
 				CCreateEnemyEvent* p = new CCreateEnemyEvent;
-				p->Init(m_pArena);
+				p->Init(gpArena);
 				p->m_objtype = waves[i].type;
 				p->m_when = GameTime() + FRAND * 0.1f * j;
-				float wp = m_pArena->GetWidth();
-				float x = (FRAND - 0.5f) * 0.2f * m_pArena->GetDisplayWidth() + wp/2;
+				float wp = gpArena->GetWidth();
+				float x = (FRAND - 0.5f) * 0.2f * gpArena->GetDisplayWidth() + wp/2;
 				x = (float)fmod(x, wp);
-				float y = (float)m_pArena->GetHeight() * FRAND;
+				float y = (float)gpArena->GetHeight() * FRAND;
 				p->m_where.Set(x, y);
 				this->AddEvent(p);
 			}
 		}
 
-		m_nAttackWave++;
+		WaveIndex++;
 	}
 }
 

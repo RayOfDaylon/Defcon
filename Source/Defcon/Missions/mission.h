@@ -78,7 +78,7 @@ namespace Defcon
 			IMission() {}
 			virtual ~IMission() {}
 
-			virtual void Init(UDefconPlayViewBase*);
+			virtual void Init();
 
 			virtual FString GetName() const = 0;
 			virtual FString GetDesc() const = 0;
@@ -86,28 +86,27 @@ namespace Defcon
 			virtual bool    IsMilitary      () const { return false; }
 			virtual bool	Update			(float DeltaTime);
 			virtual void	Conclude		();
-			virtual bool	HumansInvolved	() { return true; }
-			virtual bool	IsCompleted		() { return true; }
 			virtual void	CreateTerrain	();
 			virtual void	AddHumanoids	();
+			virtual bool	HumansInvolved	() const { return true; }
+			virtual bool	IsCompleted		() const { return true; }
 
-			MissionID		GetID			() const { return m_ID; }
-			void			AddEvent		(CEvent* p) { m_events.Add(p); }
-			bool			IsRunning		() const { return (m_pArena != nullptr); }
+			MissionID		GetID			() const { return ID; }
+			void			AddEvent		(CEvent* p) { Events.Add(p); }
+			bool			IsRunning		() const { return (gpArena != nullptr); }
 
-			const FString& GetIntroText() const { return IntroText; }
+			const FString&  GetIntroText    () const { return IntroText; }
 
 
 		protected:
 
 			void DoIntroText(float DeltaTime);
 
-			CEventQueue            m_events;
+			CEventQueue            Events;
 			FString                IntroText;
-			MissionID              m_ID         = MissionID::notdef;
-			float                  m_fAge       = 0.0f;
-			UDefconPlayViewBase*   m_pArena     = nullptr;
-			bool                   m_bIntroDone = false;
+			MissionID              ID          = MissionID::notdef;
+			float                  Age         = 0.0f;
+			bool                   IntroIsDone = false;
 	};
 
 
@@ -122,38 +121,35 @@ namespace Defcon
 
 			virtual void AddHumanoids	() override {}
 			virtual void Conclude		() override {}
-			virtual bool HumansInvolved	() override { return false; }
+			virtual bool HumansInvolved	() const override { return false; }
 
 		private:
-			//void DoIntroText		(float);
 			void DoMakeTargets		(float);
 			bool AreAllTargetsHit	(float);
 			void CheckTargetHit		(float);
 
-			bool m_bTargetsMade = false;
+			bool TargetsMade = false;
 	};
 
 
 	class CWeaponsTrainingMission : public IMission
 	{
 		public:
-			CWeaponsTrainingMission() { m_ID = MissionID::weapons_training; }
-			virtual void Init(UDefconPlayViewBase*) override;
+			CWeaponsTrainingMission() { ID = MissionID::weapons_training; }
+			virtual void Init() override;
 			virtual bool Update(float) override;
 
 			virtual FString GetName        () const override { return "Weapons Training"; }
 			virtual FString GetDesc        () const override { return "Practice shooting at various targets"; }
 			virtual void    AddHumanoids   () override {}
 			virtual void    Conclude       () override {}
-			virtual bool    HumansInvolved () override { return false; }
+			virtual bool    HumansInvolved () const override { return false; }
 
 		private:
-			//void DoIntroText		(float);
 			void DoMakeTargets		(float);
 			bool AreAllTargetsHit	(float);
-			//void CheckTargetHit		(float);
 
-			bool m_bTargetsMade = false;
+			bool  TargetsMade = false;
 			int32 NumTargetsHit = 0;
 	};
 }

@@ -12,11 +12,9 @@
 #include "MilitaryMission.h"
 
 
-void Defcon::CBringItOn::Init(UDefconPlayViewBase* pA)
+void Defcon::CBringItOn::Init()
 {
-	CMilitaryMission::Init(pA);
-
-	//m_nHostilesRemaining = 12 + 6;
+	CMilitaryMission::Init();
 
 	IntroText =
 		"Reformers and dynamos have laid a trap.\n"
@@ -35,32 +33,11 @@ void Defcon::CBringItOn::Init(UDefconPlayViewBase* pA)
 
 void Defcon::CBringItOn::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(this->HostilesRemaining() > 0 && m_fAge >= PLAYER_BIRTHDURATION + 6)
+	if(this->HostilesRemaining() > 0 && Age >= PLAYER_BIRTHDURATION + 6)
 	{
 		this->AddMissionCleaner(where);
 	}
 
 	UpdateWaves(where);
-
-#if 0
-	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
-	{
-
-		m_fRepopCounter = 0.0f;
-		
-		if(m_nAttackWave >= 1)
-			return;
-
-		const Wave waves[] = { 
-								ObjType::DYNAMO, { 12, 0, 0, 0 },
-								ObjType::REFORMER, { 6, 0, 0, 0 },
-							};
-		
-		STANDARD_ENEMY_SPAWNING(0.5f)
-
-		m_nAttackWave++;
-	}
-#endif
 }
 

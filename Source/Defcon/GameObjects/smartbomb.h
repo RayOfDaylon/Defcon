@@ -30,7 +30,6 @@ namespace Defcon
 			I2DCoordMapper*			m_pMapper  = nullptr;
 			CGameObjectCollection*	m_pTargets = nullptr;
 			CGameObjectCollection*	m_pDebris  = nullptr;
-			UDefconPlayViewBase*	m_pArena   = nullptr; // todo: use gpArena
 
 		protected:
 			UMaterialInstanceDynamic* MID;

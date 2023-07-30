@@ -8,7 +8,6 @@
 #include "GameObjects/obj_types.h"
 
 
-class UDefconPlayViewBase;
 
 namespace Defcon
 {
@@ -17,18 +16,14 @@ namespace Defcon
 	class CEvent
 	{
 		public:
-			CEvent() : m_pArena(nullptr) {}
+			CEvent() {}
 			virtual ~CEvent() {}
-			virtual void Init(UDefconPlayViewBase* p) { m_pArena = p; }
+			virtual void Init() {}
 
 			float	m_when = 0.0f; // todo: s/b a countdown value instead of an absolute timestamp
 			CFPoint m_where;
 
 			virtual void Do() = 0;
-
-		protected:
-
-			UDefconPlayViewBase*	m_pArena = nullptr;
 	};
 
 
@@ -45,7 +40,7 @@ namespace Defcon
 			void  DeleteAll ();
 
 		private:
-			TArray<CEvent*>  m_events;
+			TArray<CEvent*>  Events;
 	};
 
 
@@ -75,7 +70,6 @@ namespace Defcon
 
 			ObjType	m_objtype;
 			bool	m_bMissionTarget;
-			//bool	m_bMaterializes;
 
 			virtual void Do() override;
 
