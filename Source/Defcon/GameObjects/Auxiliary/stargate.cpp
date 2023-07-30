@@ -47,7 +47,7 @@ Defcon::CStargate::CStargate()
 
 	CreateSprite(ObjType::STARGATE);
 
-	m_bboxrad.set(Sprite->GetActualSize().X / 2, Sprite->GetActualSize().Y / 2);
+	m_bboxrad.Set(Sprite->GetActualSize().X / 2, Sprite->GetActualSize().Y / 2);
 }
 
 

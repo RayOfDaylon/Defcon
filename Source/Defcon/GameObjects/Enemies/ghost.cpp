@@ -28,7 +28,7 @@ Defcon::CGhost::CGhost()
 	m_type       = ObjType::GHOST;
 
 	m_pointValue = GHOST_VALUE;
-	m_orient.fwd.set(1.0f, 0.0f);
+	m_orient.fwd.Set(1.0f, 0.0f);
 	m_smallColor = MakeColorFromComponents(192, 192, 192);
 	// Our size is the size of a part x 3.
 	m_fAnimSpeed = FRAND * 0.35f + 0.65f;
@@ -41,7 +41,7 @@ Defcon::CGhost::CGhost()
 	DispersalCountdown = 0.0f;
 
 	const auto& Info = GameObjectResources.Get(ObjType::GHOSTPART);
-	m_bboxrad.set(Info.Size.X * 1.5f, Info.Size.Y * 1.5f);
+	m_bboxrad.Set(Info.Size.X * 1.5f, Info.Size.Y * 1.5f);
 }
 
 
@@ -98,7 +98,7 @@ void Defcon::CGhost::Move(float fTime)
 	m_fSpinVel = 1.0f;//sin(m_fAge * PI * m_fSpinVelMax);
 	m_fSpinAngle += (m_fSpinVel * fTime);
 
-	m_pos.muladd(m_orient.fwd, fTime * 50.0f);
+	m_pos.MulAdd(m_orient.fwd, fTime * 50.0f);
 	m_inertia = m_pos - m_inertia;
 
 	// See if we need to disperse (player ship got too close).
@@ -174,7 +174,7 @@ void Defcon::CGhost::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mappe
 		const float t = (float)(TWO_PI * i / n + ((m_fSpinAngle + FRAND*0.1f) * TWO_PI));
 		CFPoint pt2((float)cos(t), (float)sin(t));
 		float r = (float)(sin((f + FRAND*3) * PI) * 5 + 10);
-		m_bboxrad.set(r, r);
+		m_bboxrad.Set(r, r);
 		pt2 *= r;
 		pt2 += m_pos;
 		m_partLocs[i+1] = pt2;
@@ -281,7 +281,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.set((float)cos(t), (float)sin(t));
+		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
 		pFlak->m_orient.fwd = m_inertia;
@@ -294,7 +294,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 		float speed = FRAND * 180 + 90;
 
 
-		pFlak->m_orient.fwd.muladd(dir, speed);
+		pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -325,14 +325,14 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 			CFPoint dir;
 			double t = FRAND * TWO_PI;
 			
-			dir.set((float)cos(t), (float)sin(t));
+			dir.Set((float)cos(t), (float)sin(t));
 
 			pFlak->m_orient.fwd = m_inertia;
 
 			pFlak->m_orient.fwd *= FRAND * 12.0f + 30.0f;
 			float speed = FRAND * 45 + 22;
 
-			pFlak->m_orient.fwd.muladd(dir, speed);
+			pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 			debris.Add(pFlak);
 		}
@@ -358,7 +358,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.set((float)cos(t), (float)sin(t));
+		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
 		pFlak->m_orient.fwd = m_inertia;
@@ -369,7 +369,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->m_orient.fwd.muladd(dir, speed);
+		pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -384,7 +384,7 @@ Defcon::CGhostPart::CGhostPart()
 	m_parentType = m_type;
 	m_type = ObjType::GHOSTPART;
 	m_pointValue = 0;
-	m_orient.fwd.set(1.0f, 0.0f);
+	m_orient.fwd.Set(1.0f, 0.0f);
 	m_smallColor = C_WHITE;
 	m_fAnimSpeed = FRAND * 0.35f + 0.15f;
 	m_bCanBeInjured = false;
@@ -392,7 +392,7 @@ Defcon::CGhostPart::CGhostPart()
 
 	CreateSprite(m_type);
 	const auto& Info = GameObjectResources.Get(m_type);
-	m_bboxrad.set(Info.Size.X / 2, Info.Size.Y / 2);
+	m_bboxrad.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 
 

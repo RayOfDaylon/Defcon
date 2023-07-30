@@ -57,7 +57,7 @@ Defcon::CFireball::CFireball()
 
 	//CTrueBitmap& bmp = gBitmaps.GetBitmap(CBitmaps::fireball0);
 	const auto& Info = GameObjectResources.Get(m_type);
-	m_bboxrad.set(Info.Size.X / 2, Info.Size.Y / 2);
+	m_bboxrad.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 
 
@@ -191,7 +191,7 @@ void Defcon::CFireball::Explode(CGameObjectCollection& debris)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.set((float)cos(t), (float)sin(t));
+		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
 		pFlak->m_orient.fwd = m_inertia;
@@ -202,7 +202,7 @@ void Defcon::CFireball::Explode(CGameObjectCollection& debris)
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->m_orient.fwd.muladd(dir, speed);
+		pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

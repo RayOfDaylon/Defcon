@@ -31,14 +31,14 @@ Defcon::CPod::CPod()
 	m_parentType = m_type;
 	m_type = ObjType::POD;
 	m_pointValue = POD_VALUE;
-	m_orient.fwd.set(1.0f, 0.0f);
+	m_orient.fwd.Set(1.0f, 0.0f);
 	m_smallColor = C_MAGENTA;
 	m_fAnimSpeed = FRAND * 0.35f + 0.65f;
 	m_xFreq = FRAND * 0.5f + 1.0f;
 
 	CreateSprite(m_type);
 	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 
@@ -74,7 +74,7 @@ void Defcon::CPod::Move(float fTime)
 	LerpColor(C_RED, C_BLUE, f, m_smallColor);
 
 
-	m_pos.muladd(m_orient.fwd, fTime * 50.0f);
+	m_pos.MulAdd(m_orient.fwd, fTime * 50.0f);
 
 	//UE_LOG(LogGame, Log, TEXT("%S: Pod now at %d, %d"), __FUNCTION__, (int32)m_pos.x, (int32)m_pos.y);
 
@@ -143,7 +143,7 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.set((float)cos(t), (float)sin(t));
+		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
 		pFlak->m_orient.fwd = m_inertia;
@@ -156,7 +156,7 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 		float speed = FRAND * 180 + 90;
 
 
-		pFlak->m_orient.fwd.muladd(dir, speed);
+		pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -185,14 +185,14 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 			CFPoint dir;
 			double t = FRAND * TWO_PI;
 			
-			dir.set((float)cos(t), (float)sin(t));
+			dir.Set((float)cos(t), (float)sin(t));
 
 			pFlak->m_orient.fwd = m_inertia;
 
 			pFlak->m_orient.fwd *= FRAND * 12.0f + 30.0f;
 			float speed = FRAND * 45 + 22;
 
-			pFlak->m_orient.fwd.muladd(dir, speed);
+			pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 			debris.Add(pFlak);
 		}

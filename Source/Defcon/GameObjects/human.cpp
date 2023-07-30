@@ -31,7 +31,7 @@ Defcon::CHuman::CHuman()
 	m_fSwitchTime = FRAND * 3 + 1;
 	m_bCanBeInjured = true;
 	m_bIsCollisionInjurious = false;
-	m_bboxrad.set(4, 10);
+	m_bboxrad.Set(4, 10);
 
 	UE_LOG(LogGame, Log, TEXT("Creating human sprite"));
 	CreateSprite(ObjType::HUMAN);
@@ -125,11 +125,11 @@ void Defcon::CHuman::Move(float fElapsedTime)
 		{
 			// We're above the ground, so we must be 
 			// falling from a killed abductor.
-			m_orient.fwd.set(
+			m_orient.fwd.Set(
 				0.0f, 
 				m_orient.fwd.y +  m_orient.fwd.y * 1.5f * fElapsedTime);
 				
-			m_pos.muladd(m_orient.fwd, fElapsedTime);
+			m_pos.MulAdd(m_orient.fwd, fElapsedTime);
 
 			if(m_pos.y < h)
 			{
@@ -155,8 +155,8 @@ void Defcon::CHuman::Move(float fElapsedTime)
 			f = (float)sin(f * TWO_PI);
 			float fy = (float)cos(f * TWO_PI);
 			CFPoint motion(f+(FRAND-0.5f), fy + (FRAND - 0.5f));
-			//motion.mul(CFPoint(1.0f, 0.75f));
-			motion.mul(fElapsedTime * 10.0f);
+			//motion.Mul(CFPoint(1.0f, 0.75f));
+			motion.Mul(fElapsedTime * 10.0f);
 
 			m_pos += motion;
 			m_pos.y = FMath::Min(m_pos.y, h-5);

@@ -332,18 +332,18 @@ void Defcon::COptionsArena::OnDisplaySizeChanged(int32 w , int32 h)
 	// Set up item text displayers.
 	for(i = 0; i < array_size(m_items); i++)
 	{
-		m_items[i].m_pos.set(textleft, texttop + i * leading);
-		m_values[i].m_pos.set(m_valueLeft, m_items[i].m_pos.y);
+		m_items[i].m_pos.Set(textleft, texttop + i * leading);
+		m_values[i].m_pos.Set(m_valueLeft, m_items[i].m_pos.y);
 	}
 
-	m_box.set(w/2, h/2 - leading/4);
-	m_box.inflate(
+	m_box.Set(w/2, h/2 - leading/4);
+	m_box.Inflate(
 		CFPoint(0.5f*w - textleft+100, 
 		leading + 0.5f * array_size(m_items) * leading));
 
 	m_title.m_pos.set(w/2, m_items[0].m_pos.y - leading * 3);
 
-	m_desc.m_pos.set(
+	m_desc.m_pos.Set(
 		w/2, m_items[array_size(m_items)-1].m_pos.y + leading * 3);
 
 	if(m_eState == State::editing)
@@ -355,7 +355,7 @@ void Defcon::COptionsArena::OnDisplaySizeChanged(int32 w , int32 h)
 		{
 			case type_int:
 			case type_float:
-				m_slider.m_pos.set(m_valueLeft + SLIDER_LEN/2, 
+				m_slider.m_pos.Set(m_valueLeft + SLIDER_LEN/2, 
 					m_items[i].m_pos.y - 
 					(1.25f * m_items[i].GetLeading()));
 				break;
@@ -478,7 +478,7 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 
 
 	int x1, y1, x2, y2;
-	m_box.classicize(x1, y1, x2, y2);
+	m_box.Classicize(x1, y1, x2, y2);
 	for(int off = 0; off < 2; off++)
 		m_virtualScreen.ColorRect(
 			x1+off, y1+off, x2-off, y2-off, C_BLUE);
@@ -499,7 +499,7 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 		r.UR += CFPoint(-20, -(int)m_items[i].GetLeading()*2);
 		r.LL += CFPoint(540, 10);
 		r.order();
-		r.classicize(x1, y1, x2, y2);
+		r.Classicize(x1, y1, x2, y2);
 		m_virtualScreen.FillRect(x1, y1, x2, y2, C_BLACK);
 		for(int off = 0; off < 2; off++)
 			m_virtualScreen.ColorRect(
@@ -686,7 +686,7 @@ void Defcon::COptionsArena::StartEditing()
 				var.m_fValue, 
 				var.m_metadata.m_fMin,
 				var.m_metadata.m_fMax, fInc, fPage);
-			m_slider.m_pos.set(m_valueLeft + SLIDER_LEN/2, 
+			m_slider.m_pos.Set(m_valueLeft + SLIDER_LEN/2, 
 						m_items[i].m_pos.y - (1.25f * m_items[i].GetLeading()));
 
 			m_pEditor = &m_slider;

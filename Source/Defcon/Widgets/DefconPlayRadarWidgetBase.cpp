@@ -57,7 +57,7 @@ void UDefconPlayRadarWidgetBase::Init
 
 	const auto S = Daylon::GetWidgetSize(this);
 	CoordMapper.m_pPlayer = PlayerShipPtr;
-	CoordMapper.m_radarSize.set((float)S.X, (float)S.Y);
+	CoordMapper.m_radarSize.Set((float)S.X, (float)S.Y);
 	CoordMapper.Init((int32)MainSize.X, (int32)MainSize.Y, ArenaWidth);
 
 	Objects = ObjectsPtr;

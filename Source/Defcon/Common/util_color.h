@@ -8,6 +8,7 @@
 	Color-related types and routines. 
 */
 
+#include "CoreMinimal.h"
 #include "Runtime/Core/Public/Math/Color.h"
 
 

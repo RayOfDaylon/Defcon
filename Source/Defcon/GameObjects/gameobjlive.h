@@ -28,20 +28,22 @@ typedef struct
 inline void pos_delta(CFPoint& result, const CFPoint& p1, const CFPoint& p2, float aw)
 {
 	result = p2;
-	result.sub(p1);
+	result.Sub(p1);
 
-	float d1 = ABS(result.x);
-	float tail1 = aw - p1.x;
-	float tail2 = aw - p2.x;
-
-	float d2 = FMath::Min(p1.x + tail2, p2.x + tail1);
+	const float d1    = ABS(result.x);
+	const float tail1 = aw - p1.x;
+	const float tail2 = aw - p2.x;
+	const float d2    = FMath::Min(p1.x + tail2, p2.x + tail1);
 
 	if(d2 < d1)
 	{
 		// The shortest distance lies across the origin.
 		result.x = d2;
+
 		if(p2.x > p1.x)
+		{
 			result.x *= -1;
+		}
 	}
 }
 
@@ -77,7 +79,7 @@ namespace Defcon
 			virtual void SetIsAlive     (bool b) { m_bAlive = b; }
 
 
-			void ZeroThrust()	{ m_thrustVector.set(0,0); }
+			void ZeroThrust()	{ m_thrustVector.Set(0,0); }
 			void ZeroMotion()	{ this->ZeroVelocity(); this->ZeroThrust();	}
 			void ZeroInput()	{ for(auto& Ctl : m_navCtls) { Ctl.bActive = false; } }
 

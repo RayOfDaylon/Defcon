@@ -200,7 +200,7 @@ int32 UDefconPostwaveViewBase::NativePaint
 
 void UDefconPostwaveViewBase::SetTexts(const FString& InTitle, const FString& InSubtitle)
 {
-	Title->SetText(FText::FromString(InTitle));
+	Title   ->SetText(FText::FromString(InTitle));
 	Subtitle->SetText(FText::FromString(InSubtitle));
 }
 
@@ -222,6 +222,13 @@ void UDefconPostwaveViewBase::OnEscPressed()
 
 void UDefconPostwaveViewBase::OnSkipPressed()
 {
+	if(Age < PVTimeToShowStars)
+	{
+		// todo: stop playing the warping sound e.g. use UGameplayStatics::SpawnSound instead of Play.
+		Age = PVTimeToShowStars;
+		return;
+	}
+	
 	StartMission();
 }
 

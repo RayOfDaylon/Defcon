@@ -32,7 +32,7 @@ void Defcon::CMaterialization::InitMaterialization(const FMaterializationParams&
 
 		Particle.Color = Params.Colors[IRAND(Params.Colors.Num())];
 		const auto Vec = FVector2D(Params.P.x, Params.P.y)  + Daylon::AngleToVector2D(Daylon::FRandRange(0.0f, 360.0f)) * FVector2D(1.0f, 1.0f / Params.AspectRatio) * Daylon::FRandRange(Params.StartingRadiusMin, Params.StartingRadiusMax);
-		Particle.SrcP.set(Vec.X, Vec.Y);
+		Particle.SrcP.Set(Vec.X, Vec.Y);
 		Particle.DstP = Params.P; // for now. Later on we might want to use some point on the bboxrad
 
 		Particles.Add(Particle);

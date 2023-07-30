@@ -31,7 +31,7 @@ Defcon::CGuppy::CGuppy()
 	float speed = FRANDRANGE(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
 	if(FRAND > 0.5f) 
 		speed *= -1;
-	m_orient.fwd.set(speed, 0);
+	m_orient.fwd.Set(speed, 0);
 	m_personalSpace = FRAND * 60 + 20;
 	m_smallColor = C_ORANGE;
 
@@ -43,7 +43,7 @@ Defcon::CGuppy::CGuppy()
 
 	CreateSprite(m_type);
 	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2 - 1);
+	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2 - 1);
 }
 
 
@@ -101,7 +101,7 @@ void Defcon::CGuppy::Move(float fTime)
 			{
 				m_fTimeTargetWithinRange = fTime;
 
-				m_targetOffset.set(
+				m_targetOffset.Set(
 					FRANDRANGE(-100, 100), 
 					FRANDRANGE(50, 90) * SGN(m_pos.y - pTarget->m_pos.y));
 				m_freq = FRANDRANGE(6, 12);
@@ -123,9 +123,9 @@ void Defcon::CGuppy::Move(float fTime)
 				CFPoint pt;
 				gpArena->Direction(m_pos, pTarget->m_pos, m_orient.fwd);
 
-				//m_orient.fwd.set(SGN(this->m_targetOffset.y), 0);
+				//m_orient.fwd.Set(SGN(this->m_targetOffset.y), 0);
 				m_orient.fwd.y += (float)(m_amp * sin(m_fAge * m_freq));
-				m_pos.muladd(m_orient.fwd, fTime * GUPPY_SPEEDMIN/2);
+				m_pos.MulAdd(m_orient.fwd, fTime * GUPPY_SPEEDMIN/2);
 			}
 			break;
 
@@ -147,7 +147,7 @@ void Defcon::CGuppy::Move(float fTime)
 					CFPoint pt;
 					gpArena->Direction(m_pos, pTarget->m_pos, pt);
 					m_orient.fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
-					m_pos.muladd(m_orient.fwd, fTime * AVG(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX));
+					m_pos.MulAdd(m_orient.fwd, fTime * AVG(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX));
 				}
 			}
 			
@@ -185,7 +185,7 @@ void Defcon::CGuppy::Move(float fTime)
 						speed = MAP(dist, 0.0f, 0.8f, GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
 
 					m_orient.fwd.y += (float)(m_amp * sin(m_fAge * m_freq));
-					m_pos.muladd(m_orient.fwd, fTime * speed);
+					m_pos.MulAdd(m_orient.fwd, fTime * speed);
 
 					if(this->CanBeInjured() && pTarget->CanBeInjured() && speed < 400)
 					{
@@ -270,7 +270,7 @@ void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.set((float)cos(t), (float)sin(t));
+		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
 		pFlak->m_orient.fwd = m_inertia;
@@ -281,7 +281,7 @@ void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->m_orient.fwd.muladd(dir, speed);
+		pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

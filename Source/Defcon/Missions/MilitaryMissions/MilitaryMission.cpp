@@ -34,7 +34,7 @@ void Defcon::CMilitaryMission::Init(UDefconPlayViewBase* p)
 	this->AddStargate();
 
 #if 0
-	// Turrets were an experiment, maybe later we'll have them.
+	// Turrets are an experiment, maybe later we'll have them.
 	// Add some turrets.
 
 	check(m_pArena != nullptr);
@@ -51,7 +51,7 @@ void Defcon::CMilitaryMission::Init(UDefconPlayViewBase* p)
 			float x = FRAND * wp;
 			x = (float)fmod(x, wp);
 			float y = p->GetTerrainElev(x) - 10;
-			pEvt->m_where.set(x, y);
+			pEvt->m_where.Set(x, y);
 			pEvt->m_bMissionTarget = false; // can leave turrets alive w/o aborting mission
 			pEvt->m_bMaterializes = false;
 			this->AddEvent(pEvt);
@@ -66,20 +66,20 @@ void Defcon::CMilitaryMission::AddStargate()
 	check(m_pArena != nullptr);
 	m_pStargate = new CStargate;
 	CFPoint pos(0.5f, 0.75f);
-	pos.mul(CFPoint(m_pArena->GetWidth(), m_pArena->GetHeight()));
+	pos.Mul(CFPoint(m_pArena->GetWidth(), m_pArena->GetHeight()));
 	m_pStargate->m_pos = pos; 
 	m_pStargate->InstallSprite();
 	m_pArena->GetObjects().Add(m_pStargate);
 
 	// Since the stargate is stationary, cache its rectangle.
-	StargateRect.set(m_pStargate->m_pos);
-	StargateRect.inflate(m_pStargate->m_bboxrad);
+	StargateRect.Set(m_pStargate->m_pos);
+	StargateRect.Inflate(m_pStargate->m_bboxrad);
 }
 
 
 bool Defcon::CMilitaryMission::PlayerInStargate() const
 {
-	return StargateRect.ptinside(gpArena->GetPlayerShip().m_pos);
+	return StargateRect.PtInside(gpArena->GetPlayerShip().m_pos);
 }
 
 
@@ -112,7 +112,7 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 				if(Human->IsBeingCarried() && Human->GetCarrier()->GetType() == ObjType::PLAYER)
 				{
 					Human->SetToNotCarried();
-					Human->m_pos.set(FRANDRANGE(0.0f, m_pArena->GetWidth() - 1), 0.04f * m_pArena->GetHeight()); 
+					Human->m_pos.Set(FRANDRANGE(0.0f, m_pArena->GetWidth() - 1), 0.04f * m_pArena->GetHeight()); 
 				}
 			});
  			return false;
@@ -167,18 +167,11 @@ void Defcon::CMilitaryMission::AddNonMissionTarget(ObjType objType, const CFPoin
 	check(m_pArena == gpArena);
 
 	m_fLastCleaner = m_fAge;
-	//CCreateEnemyEvent* p = new CCreateEnemyEvent;
-	//p->Init(m_pArena);
-	//p->m_objtype = objType;
-	//p->m_when = GameTime();
-	//p->m_bMaterializes = true;
-	//p->m_bMissionTarget = false;
+
 	float wp = m_pArena->GetWidth();
 	float x = (FRAND - 0.5f) * 1.0f * m_pArena->GetDisplayWidth() + where.x;
 	x = (float)fmod(x, wp);
 	float y = FRANDRANGE(0.3f, 0.8f) * m_pArena->GetHeight();
-	//p->m_where.set(x, y);
-	//this->AddEvent(p);
 
 	m_pArena->CreateEnemy(objType, CFPoint(x, y), 0.0f, true, false);
 }
@@ -187,18 +180,11 @@ void Defcon::CMilitaryMission::AddNonMissionTarget(ObjType objType, const CFPoin
 void Defcon::CMilitaryMission::AddBaiter(const CFPoint& where)
 {
 	m_fLastCleaner = m_fAge;
-	//CCreateEnemyEvent* p = new CCreateEnemyEvent;
-	//p->Init(m_pArena);
-	//p->m_objtype = ObjType::BAITER;
-	//p->m_when = GameTime();
-	//p->m_bMaterializes = true;
-	//p->m_bMissionTarget = false;
+
 	float wp = m_pArena->GetWidth();
 	float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + where.x;
 	x = (float)fmod(x, wp);
-	float y = (FRAND * .15f + .85f) * m_pArena->GetHeight();
-	//p->m_where.set(x, y);
-	//this->AddEvent(p);
+	float y = FRANDRANGE(0.2f, 0.8f) * m_pArena->GetHeight();
 
 	m_pArena->CreateEnemy(ObjType::BAITER, CFPoint(x, y), 0.0f, true, false);
 }

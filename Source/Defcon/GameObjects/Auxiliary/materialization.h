@@ -50,7 +50,7 @@ namespace Defcon
 		void Update(float T, const FMaterializationParams& Params)
 		{
 			P = SrcP;
-			P.lerp(DstP, T);
+			P.Lerp(DstP, T);
 
 			Color.A = LERP(Params.OsMin, Params.OsMax, T);
 			S       = LERP(Params.ParticleSizeMin, Params.ParticleSizeMax, T);

@@ -88,7 +88,7 @@ void Defcon::CFlightTrainingMission::DoMakeTargets(float fElapsed)
 
 		p->InstallSprite();
 
-		p->m_pos.set(
+		p->m_pos.Set(
 			MAP(i, 0, 6, m_pArena->GetDisplayWidth()*.66f, m_pArena->GetWidth() * 0.9f),
 			SFRAND * 0.33f * m_pArena->GetHeight() + m_pArena->GetHeight() / 2);
 
@@ -108,41 +108,36 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float fElapsed)
 			auto BeaconPtr = static_cast<CBeacon*>(ObjPtr);
 			CFRect rPlayer, rBeacon;
 
-			rPlayer.set(m_pArena->GetPlayerShip().m_pos);
-			rPlayer.inflate(m_pArena->GetPlayerShip().m_bboxrad);
-			rBeacon.set(BeaconPtr->m_pos);
-			rBeacon.inflate(BeaconPtr->m_bboxrad);
+			rPlayer.Set(m_pArena->GetPlayerShip().m_pos);
+			rPlayer.Inflate(m_pArena->GetPlayerShip().m_bboxrad);
+			rBeacon.Set(BeaconPtr->m_pos);
+			rBeacon.Inflate(BeaconPtr->m_bboxrad);
 		
-			if(rPlayer.intersect(rBeacon))
+			if(rPlayer.Intersect(rBeacon))
 			{
-				//BeaconPtr->IncrementCollisionCount();
+				gpAudio->OutputSound(Defcon::snd_gulp);
+				ObjPtr->UninstallSprite();
+				m_pArena->GetObjects().Delete(ObjPtr);
 
-				//if(BeaconPtr->CollisionCount() == 1)
+				const int32 TargetsLeft = m_pArena->GetObjects().CountOf(ObjType::BEACON);
+
+				// Show message.
+				FString Str;
+
+				if(TargetsLeft > 0)
 				{
-					gpAudio->OutputSound(Defcon::snd_gulp);
-					ObjPtr->UninstallSprite();
-					m_pArena->GetObjects().Delete(ObjPtr);
+					auto TargetsDown = NumBeacons - TargetsLeft;
 
-					const int32 TargetsLeft = m_pArena->GetObjects().CountOf(ObjType::BEACON);
-
-					// Show message.
-					FString Str;
-
-					if(TargetsLeft > 0)
-					{
-						auto TargetsDown = NumBeacons - TargetsLeft;
-
-						Str = FString::Printf(TEXT("%d target%s down, %d to go"), TargetsDown, TargetsDown == 1 ? TEXT("") : TEXT("s"), TargetsLeft);
-					}
-					else
-					{
-						Str = TEXT("All done! Yay!");
-					}
-
-					m_pArena->AddMessage(Str);
-
-					break;
+					Str = FString::Printf(TEXT("%d target%s down, %d to go"), TargetsDown, TargetsDown == 1 ? TEXT("") : TEXT("s"), TargetsLeft);
 				}
+				else
+				{
+					Str = TEXT("All done! Yay!");
+				}
+
+				m_pArena->AddMessage(Str);
+
+				break;
 			}
 		}
 		ObjPtr = ObjPtr->GetNext();

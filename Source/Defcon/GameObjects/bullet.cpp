@@ -60,7 +60,7 @@ void Defcon::IBullet::Move(float fTime)
 		}
 	}
 
-	m_pos.muladd(m_orient.fwd, fTime * m_fSpeed);
+	m_pos.MulAdd(m_orient.fwd, fTime * m_fSpeed);
 }
 
 
@@ -72,7 +72,7 @@ void Defcon::IBullet::GetInjurePt(CFPoint& pt) const
 
 bool Defcon::IBullet::TestInjury(const CFRect& r) const
 {
-	return r.ptinside(m_pos);
+	return r.PtInside(m_pos);
 }
 
 // ------------------------------------------------------------------

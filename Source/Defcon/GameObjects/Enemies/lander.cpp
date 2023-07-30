@@ -45,8 +45,8 @@ Defcon::CLander::CLander()
 	//m_fnTerrainEval		= nullptr;
 	m_fAnimSpeed		= FRAND * 0.66f + 0.33f;
 
-	m_orient.fwd.set(speed, 0);
-	//m_bboxrad.set(11, 11); // todo: s/b based on sprite size?
+	m_orient.fwd.Set(speed, 0);
+	//m_bboxrad.Set(11, 11); // todo: s/b based on sprite size?
 
 	// With increasing probability over 10,000 pts,
 	// and the nearest human is behind us, then 
@@ -72,7 +72,7 @@ Defcon::CLander::CLander()
 	CreateSprite(ObjType::LANDER);
 
 	const auto& Info = GameObjectResources.Get(m_type);
-	m_bboxrad.set(Info.Size.X * 0.5f * 0.75f, Info.Size.Y * 0.5f * 0.75f);
+	m_bboxrad.Set(Info.Size.X * 0.5f * 0.75f, Info.Size.Y * 0.5f * 0.75f);
 }
 
 
@@ -178,7 +178,7 @@ void Defcon::CLander::Move(float fTime)
 			{
 				// Lower ourself.
 				m_orient.fwd.y = -1.0f;
-				m_pos.muladd(m_orient.fwd, fTime * m_fSpeed * LANDER_DESCENT_SPEED);
+				m_pos.MulAdd(m_orient.fwd, fTime * m_fSpeed * LANDER_DESCENT_SPEED);
 			}
 			break;
 
@@ -221,11 +221,11 @@ void Defcon::CLander::Move(float fTime)
 			}
 
 			// Move towards target.
-			check(m_orient.fwd.length() != 0.0f);
+			check(m_orient.fwd.Length() != 0.0f);
 
 			pos_delta(m_orient.fwd, m_pos, target, m_arenasize.x);
-			float dist = m_orient.fwd.length();
-			m_orient.fwd.normalize();
+			float dist = m_orient.fwd.Length();
+			m_orient.fwd.Normalize();
 
 			// Take terrain into account.
 			//float fAltDelta = m_pos.y - m_fnTerrainEval(m_pos.x, m_pvUserTerrainEval);
@@ -237,7 +237,7 @@ void Defcon::CLander::Move(float fTime)
 			m_orient.fwd.y = FMath::Min(m_orient.fwd.y, 1.25f);
 			m_orient.fwd.y = FMath::Max(m_orient.fwd.y, -1.25f);
 
-			m_pos.muladd(m_orient.fwd, fTime * m_screensize.x * speed);
+			m_pos.MulAdd(m_orient.fwd, fTime * m_screensize.x * speed);
 
 			// If we are near a human, and the odds 
 			// say so or we've been around for more than 
@@ -273,17 +273,17 @@ void Defcon::CLander::Move(float fTime)
 				target = m_pTrackedHuman->m_pos;
 				target.y += 27.0f; // Don't center lander with human!
 				pos_delta(m_orient.fwd, m_pos, target, m_arenasize.x);
-				float dist = m_orient.fwd.length();
-				m_orient.fwd.normalize();
+				float dist = m_orient.fwd.Length();
+				m_orient.fwd.Normalize();
 				float speed = m_maxSpeed * 0.33f;
 				float motion = FMath::Min(fTime * m_screensize.x * speed, dist);
-				m_pos.muladd(m_orient.fwd, /*fTime * 80.0f*/motion);
+				m_pos.MulAdd(m_orient.fwd, /*fTime * 80.0f*/motion);
 
 				// If we've docked, switch to ascent mode.
 
 				CFPoint dd(target);
 
-				if(dd.distance(m_pos) < 2.0f)
+				if(dd.Distance(m_pos) < 2.0f)
 				{
 					m_eState = State::ascending;
 					m_pHuman = m_pTrackedHuman;
@@ -326,7 +326,7 @@ void Defcon::CLander::Move(float fTime)
 					m_orient.fwd.x = 0.0f;
 
 				m_orient.fwd.y = 1.0f;
-				m_pos.muladd(m_orient.fwd, fTime * LANDER_ASCENTRATE);
+				m_pos.MulAdd(m_orient.fwd, fTime * LANDER_ASCENTRATE);
 			
 				// Did we reach orbit?
 				if(m_pHuman->m_pos.y > m_arenasize.y + m_pHuman->m_bboxrad.y)
@@ -372,15 +372,15 @@ void Defcon::CLander::Move(float fTime)
 				// Target present, move towards it.
 				gpArena->Direction(m_pos, pTarget->m_pos, m_orient.fwd);
 				//m_orient.fwd = pTarget->m_pos;
-				//float dist = m_orient.fwd.distance(m_pos);
+				//float dist = m_orient.fwd.Distance(m_pos);
 				//m_orient.fwd -= m_pos;
 				//if(dist > m_arenasize.x / 2)
 				//	m_orient.fwd *= -1;
-				//m_orient.fwd.normalize();
+				//m_orient.fwd.Normalize();
 			}
 
 			CFPoint fpos(m_pos);
-			fpos.muladd(m_orient.fwd, fTime * m_screensize.x * speed);
+			fpos.MulAdd(m_orient.fwd, fTime * m_screensize.x * speed);
 
 #if 0
 			// Avoid moving too close to other hunters.
@@ -391,7 +391,7 @@ void Defcon::CLander::Move(float fTime)
 				if(id != 1 && id != 6) // not the player or human
 				{
 					float dist1 = m_pos.distance(pObj->m_pos);
-					float dist2 = fpos.distance(pObj->m_pos);
+					float dist2 = fpos.Distance(pObj->m_pos);
 					if(dist1 < m_personalSpace)
 					{
 						if(dist2 < dist1)
@@ -413,7 +413,7 @@ void Defcon::CLander::Move(float fTime)
 			}
 #endif
 
-			m_pos.muladd(m_orient.fwd, fTime * m_screensize.x * speed);
+			m_pos.MulAdd(m_orient.fwd, fTime * m_screensize.x * speed);
 		}
 			break;
 	} // switch(state)

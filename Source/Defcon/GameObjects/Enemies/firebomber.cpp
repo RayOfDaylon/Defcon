@@ -46,11 +46,11 @@ Defcon::IFirebomber::IFirebomber()
 
 	m_travelCountdown = 1.0f;
 
-	m_orient.fwd.set(SBRAND, SBRAND);
+	m_orient.fwd.Set(SBRAND, SBRAND);
 	m_ourInertia = m_orient.fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
 
 	const auto& Info = GameObjectResources.Get(ObjType::FIREBOMBER_TRUE);
-	m_bboxrad.set(Info.Size.X / 2, Info.Size.Y / 2);
+	m_bboxrad.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 
 
@@ -79,7 +79,7 @@ void Defcon::IFirebomber::Move(float fTime)
 	if(m_travelCountdown <= 0.0f)
 	{
 		// We've finished traveling, so define a new direction and travel length.
-		m_orient.fwd.set(SBRAND, SBRAND);
+		m_orient.fwd.Set(SBRAND, SBRAND);
 		m_ourInertia      = m_orient.fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
 
 		if(IRAND(3) == 1)
@@ -139,7 +139,7 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 
 			float angle = MAP(a, 0, 7, 0, 5.5f);
 			angle += off + SFRAND * 0.05f;
-			pFlak->m_orient.fwd.set(sinf(angle), cosf(angle));
+			pFlak->m_orient.fwd.Set(sinf(angle), cosf(angle));
 			
 			pFlak->m_orient.fwd *= (SFRAND*15+30) * (i+2);
 			pFlak->m_orient.fwd += m_inertia;
@@ -165,7 +165,7 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 
 				float angle = MAP(a, 0, 7, 0, 5.5f);
 				angle += off2 + SFRAND * 0.05f;
-				pFlak->m_orient.fwd.set(sinf(angle), cosf(angle));
+				pFlak->m_orient.fwd.Set(sinf(angle), cosf(angle));
 				
 				pFlak->m_orient.fwd *= (SFRAND*5+6) * (i+2);
 				pFlak->m_orient.fwd += m_inertia;

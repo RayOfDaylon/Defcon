@@ -155,53 +155,54 @@ void Defcon::ILiveGameObject::ComputeForces(float frametime)
 
 		if(m_orient.fwd.x > 0)
 		{
-			m_thrustVector.mul(m_fThrustDuration_Forwards * kHorzSpeedScaler);
-			m_thrustVector.muladd(m_orient.fwd, -m_fThrustDuration_Backwards * kHorzSpeedScaler);
+			m_thrustVector.Mul(m_fThrustDuration_Forwards * kHorzSpeedScaler);
+			m_thrustVector.MulAdd(m_orient.fwd, -m_fThrustDuration_Backwards * kHorzSpeedScaler);
 		}
 		else
 		{
-			m_thrustVector.mul(m_fThrustDuration_Backwards * kHorzSpeedScaler);
-			m_thrustVector.muladd(m_orient.fwd, -m_fThrustDuration_Forwards * kHorzSpeedScaler);
+			m_thrustVector.Mul(m_fThrustDuration_Backwards * kHorzSpeedScaler);
+			m_thrustVector.MulAdd(m_orient.fwd, -m_fThrustDuration_Forwards * kHorzSpeedScaler);
 		}
 
-		m_thrustVector.muladd(m_orient.up, m_fThrustDuration_Vertical * kVertSpeedScaler);
-		m_thrustVector.mul(m_maxThrust / frametime);
+		m_thrustVector.MulAdd(m_orient.up, m_fThrustDuration_Vertical * kVertSpeedScaler);
+		m_thrustVector.Mul(m_maxThrust / frametime);
 	}
 }
 
 
-void Defcon::ILiveGameObject::ImpartForces(float frametime)
+void Defcon::ILiveGameObject::ImpartForces(float DeltaTime)
 {
-	check(frametime > 0.0f);
 	check(m_fMass > 0.0f);
 
 	if(!m_bCanMove)
+	{
 		return;
+	}
 
 	check(m_fDrag > 0);
 
-	const float FT = frametime;//0.0001f;
+	const float FT = DeltaTime;
 
 	//do thrust & drag
-	int count = (int)(frametime / FT);
-	double r = fmod(frametime, FT);
-	double k = r / FT;
+	int count = (int)(DeltaTime / FT);
+	const double r = fmod(DeltaTime, FT);
+	const double k = r / FT;
 
 	CFPoint accel = m_thrustVector;
-	accel.div(m_fMass);
+	accel.Div(m_fMass);
 
 	while(count--)
 	{
-		m_velocity.add(accel);
-		m_velocity.mul(1.0f - m_fDrag);
+		m_velocity.Add(accel);
+		m_velocity.Mul(1.0f - m_fDrag);
 	}
 
-	accel.mul((float)k);
-	m_velocity.add(accel);
-	m_velocity.mul(1.0f - (float)k * m_fDrag);
+	accel.Mul((float)k);
+	m_velocity.Add(accel);
+	m_velocity.Mul(1.0f - (float)k * m_fDrag);
 
 	// Now move the object.
-	m_pos.muladd(m_velocity, frametime);
+	m_pos.MulAdd(m_velocity, DeltaTime);
 }
 
 

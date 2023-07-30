@@ -35,11 +35,11 @@ Defcon::CTurret::CTurret()
 	m_fAnimSpeed				= FRAND * 0.35f + 0.15f;
 	m_fTimeTargetWithinRange	= 0.0f;
 
-	m_inertia.set(0.0f, 0.0f);
-	m_orient.fwd.set(0.0f, 1.0f);
+	m_inertia.Set(0.0f, 0.0f);
+	m_orient.fwd.Set(0.0f, 1.0f);
 
 	//CTrueBitmap& bmp = gBitmaps.GetBitmap(CBitmaps::turret);
-	//m_bboxrad.set(bmp.GetWidth() / 2.0f, bmp.GetHeight() / 2.0f);
+	//m_bboxrad.Set(bmp.GetWidth() / 2.0f, bmp.GetHeight() / 2.0f);
 
 	SetShieldStrength(10.0f); // can take ten laser hits
 
@@ -103,7 +103,7 @@ void Defcon::CTurret::Move(float fTime)
 			{
 				m_fTimeTargetWithinRange = fTime;
 
-				//m_targetOffset.set(
+				//m_targetOffset.Set(
 				//	LERP(-100, 100, FRAND), 
 				//	LERP(50, 90, FRAND) * SGN(m_pos.y - pTarget->m_pos.y));
 				//m_freq = LERP(6, 12, FRAND);
@@ -120,7 +120,7 @@ void Defcon::CTurret::Move(float fTime)
 			{
 				m_orient.fwd = dir;
 				m_orient.fwd.y = 0;
-				m_orient.fwd.normalize();
+				m_orient.fwd.Normalize();
 			}
 		}*/
 		// todo: this is framerate dependant.
@@ -211,10 +211,10 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.set((float)cos(t), (float)abs(sin(t)));
+		dir.Set((float)cos(t), (float)abs(sin(t)));
 
 #if 1
-		pFlak->m_orient.fwd.set(0.0f, 0.0f);
+		pFlak->m_orient.fwd.Set(0.0f, 0.0f);
 
 		// Debris has at least the object's momentum.
 		//pFlak->m_orient.fwd = m_inertia;
@@ -225,7 +225,7 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 600 + 100;
 
-		pFlak->m_orient.fwd.muladd(dir, speed);
+		pFlak->m_orient.fwd.MulAdd(dir, speed);
 #endif
 		debris.Add(pFlak);
 	}

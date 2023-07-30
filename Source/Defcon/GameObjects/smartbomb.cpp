@@ -91,7 +91,7 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 			&& pObj->GetType() != ObjType::HUMAN)
 		{
 			m_pMapper->To(pObj->m_pos, pt);
-			if(pt.distance(bombpt) < shockwave)
+			if(pt.Distance(bombpt) < shockwave)
 			{
 				pObj2 = pObj->GetNext();
 				m_pArena->ExplodeObject(pObj);
@@ -111,13 +111,13 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 		if(pObj->GetType() != ObjType::TEXT)
 		{
 			m_pMapper->To(pObj->m_pos, pt);
-			if(pt.distance(bombpt) < shockwave)
+			if(pt.Distance(bombpt) < shockwave)
 			{
 				// Make debris pushed by shockwave.
-				pt.sub(bombpt);
-				pt.normalize();
+				pt.Sub(bombpt);
+				pt.Normalize();
 				pt.y *= -1;
-				pt.mul(SMARTBOMB_WAVEPUSH * (1.0f - t) + SMARTBOMB_WAVEPUSHMIN);
+				pt.Mul(SMARTBOMB_WAVEPUSH * (1.0f - t) + SMARTBOMB_WAVEPUSHMIN);
 				pObj->m_orient.fwd += pt;
 			}
 		}
@@ -149,15 +149,15 @@ void Defcon::CSmartbomb::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 	map.To(m_pos, r.LL);
 	const FVector2D pt(r.LL.x, r.LL.y);
 	r.UR = r.LL;
-	r.inflate(CFPoint(shockwave, shockwave * .5f));
+	r.Inflate(CFPoint(shockwave, shockwave * .5f));
 	int x1, y1, x2, y2;
-	r.classicize(x1, y1, x2, y2);
+	r.Classicize(x1, y1, x2, y2);
 
 	// To draw in UE, we need to access the material used by the smartbomb brush.
 
 	MID->SetScalarParameterValue(NameOs, 1.0f - t);
 
-	const auto S = FVector2D(r.getwidth(), r.getheight());
+	const auto S = FVector2D(r.GetWidth(), r.GetHeight());
 	const FSlateLayoutTransform Translation(pt - S / 2);
 	const auto Geometry = framebuf.AllottedGeometry->MakeChild(S, Translation);
 

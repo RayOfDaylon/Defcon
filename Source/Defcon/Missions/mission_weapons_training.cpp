@@ -91,7 +91,7 @@ void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 
 		p->m_fLifespan = 2.0f;
 		p->MakeHurtable();
-		p->m_pos.set(
+		p->m_pos.Set(
 			MAP(i, 0, 6, m_pArena->GetDisplayWidth()*.66f, m_pArena->GetWidth() * 0.9f),
 			SFRAND * 0.33f * m_pArena->GetHeight() + m_pArena->GetHeight()/2);
 

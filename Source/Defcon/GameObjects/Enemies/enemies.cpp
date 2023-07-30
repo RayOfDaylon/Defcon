@@ -65,7 +65,7 @@ void Defcon::CEnemy::Init(const CFPoint& size1, const CFPoint& size2)
 		float fRad = FRAND * ENEMY_BIRTHDEBRISDIST;
 		float fw = m_arenasize.x;
 				
-		m_birthDebrisLocsOrg[i].set((float)cos(u) * fRad, (float)sin(u) * fRad * .66f);
+		m_birthDebrisLocsOrg[i].Set((float)cos(u) * fRad, (float)sin(u) * fRad * .66f);
 		m_birthDebrisLocsOrg[i] += m_pos;
 		if(m_birthDebrisLocsOrg[i].x < 0)
 			m_birthDebrisLocsOrg[i].x += fw;

@@ -42,7 +42,7 @@ Defcon::CBomber::CBomber()
 	m_parentType = m_type;
 	m_type = ObjType::BOMBER;
 	m_pointValue = BOMBER_VALUE;
-	m_orient.fwd.set(1.0f, 0.0f);
+	m_orient.fwd.Set(1.0f, 0.0f);
 	m_smallColor = MakeColorFromComponents(64, 0, 255);
 	
 	m_fAnimSpeed = FRAND * 0.35f + 0.15f;
@@ -50,7 +50,7 @@ Defcon::CBomber::CBomber()
 
 	CreateSprite(m_type);
 	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 
 	m_secondsPerPath = Daylon::FRandRange(SECONDS_PER_PATH_MIN, SECONDS_PER_PATH_MAX);
 }

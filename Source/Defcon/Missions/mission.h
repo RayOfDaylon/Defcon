@@ -40,10 +40,10 @@ namespace Defcon
 		//humanstraining,
 
 		firstcontact,
-		bomber_showdown,
 		reinforcements,
 		yllabian_dogfight,
 		apex_offensive_lite,
+		bomber_showdown,
 		//swarm,
 		apex_offensive,
 		firebomber_showdown,

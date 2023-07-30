@@ -19,9 +19,9 @@
 
 void Defcon::CArenaCoordMapper::Init(int w, int h, int circum)
 {
-	m_screensize.set((float)w, (float)h);
+	m_screensize.Set((float)w, (float)h);
 	m_planetCircumference = (float)circum;
-	m_offset.set(0, 0);
+	m_offset.Set(0, 0);
 }
 
 
@@ -97,9 +97,9 @@ void Defcon::CArenaCoordMapper::SlideBy(float f)
 
 void Defcon::CRadarCoordMapper::Init(int w, int h, int circum)
 {
-	m_screensize.set((float)w, (float)h);
+	m_screensize.Set((float)w, (float)h);
 	m_planetCircumference = (float)circum;
-	//m_offset.set(0, 0);
+	//m_offset.Set(0, 0);
 
 	m_scale = m_radarSize;
 	m_scale /= CFPoint((float)m_planetCircumference, (float)h);

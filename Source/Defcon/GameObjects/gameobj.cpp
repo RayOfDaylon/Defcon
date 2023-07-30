@@ -33,9 +33,9 @@ Defcon::IGameObject::IGameObject()
 	:
 	m_smallColor(MakeColorFromComponents(255,255,255))
 {
-	m_orient.up.set(0.0f, 1.0f);
-	m_orient.fwd.set(1.0f, 0.0f);
-	m_bboxrad.set(10, 10);
+	m_orient.up.Set(0.0f, 1.0f);
+	m_orient.fwd.Set(1.0f, 0.0f);
+	m_bboxrad.Set(10, 10);
 }
 
 
@@ -164,7 +164,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	// If the inertia is some crazy value, zero it.
 	if(ABS(m_inertia.x) > 2000)
 	{
-		m_inertia.set(0.0f, 0.0f);
+		m_inertia.Set(0.0f, 0.0f);
 	}
 
 	m_bMortal = true;
@@ -216,7 +216,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.set((float)cos(t), (float)sin(t));
+		dir.Set((float)cos(t), (float)sin(t));
 
 		if(m_grounded)
 		{
@@ -233,7 +233,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 		// as if it were standing still.
 		const float speed = FRAND * 180 + 90;
 
-		pFlak->m_orient.fwd.muladd(dir, speed);
+		pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -269,7 +269,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 			CFPoint dir;
 			double t = FRAND * TWO_PI;
 			
-			dir.set((float)cos(t), (float)sin(t));
+			dir.Set((float)cos(t), (float)sin(t));
 			if(m_grounded)
 				dir.y = abs(dir.y);
 
@@ -278,7 +278,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 			pFlak->m_orient.fwd *= FRAND * 12.0f + 30.0f;
 			float speed = FRAND * 45 + 22;
 
-			pFlak->m_orient.fwd.muladd(dir, speed);
+			pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 			debris.Add(pFlak);
 		}
@@ -312,7 +312,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 			CFPoint dir;
 			double t = FRAND * TWO_PI;
 			
-			dir.set((float)cos(t), (float)sin(t));
+			dir.Set((float)cos(t), (float)sin(t));
 
 			if(m_grounded)
 				dir.y = abs(dir.y);
@@ -331,7 +331,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 
 			CFPoint speed_((FRAND*2+2)*speed, speed);
 
-			pPuff->m_orient.fwd.muladd(dir, speed_);
+			pPuff->m_orient.fwd.MulAdd(dir, speed_);
 
 
 			debris.Add(pPuff);
@@ -441,7 +441,7 @@ bool                 Defcon::IGameObject::OccursFrequently() const             {
 bool                 Defcon::IGameObject::Fireballs() const                    { return false; }
 float                Defcon::IGameObject::GetExplosionMass() const             { return 1.0f; }
 bool                 Defcon::IGameObject::Fireblasts() const                   { return false; }
-void                 Defcon::IGameObject::ZeroVelocity()                       { m_velocity.set(0,0); }
+void                 Defcon::IGameObject::ZeroVelocity()                       { m_velocity.Set(0,0); }
 const CFPoint&       Defcon::IGameObject::GetVelocity() const                  { return m_velocity; }
 void                 Defcon::IGameObject::MakeHurtable(bool b)                 { m_bCanBeInjured = b; }
 bool                 Defcon::IGameObject::IsMortal() const                     { return m_bMortal; }

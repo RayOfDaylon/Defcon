@@ -110,7 +110,7 @@ void UDefconPlayMainWidgetBase::OnFinishActivating()
 
 		const auto Elev = (TerrainPtr == nullptr ? 0.0f : TerrainPtr->GetElev(X / ArenaSize.X) + 20);
 
-		Star.P.set(X, Daylon::FRandRange(Elev, ArenaSize.Y));
+		Star.P.Set(X, Daylon::FRandRange(Elev, ArenaSize.Y));
 
 		Stars.Add(Star);
 	}
@@ -256,7 +256,7 @@ void UDefconPlayMainWidgetBase::DrawObjectBbox(Defcon::IGameObject* Object, FPai
 	CoordMapperPtr->To(Object->m_pos, pt);
 
 	CFRect r(pt);
-	r.inflate(Object->m_bboxrad);
+	r.Inflate(Object->m_bboxrad);
 
 	if(r.UR.x > 0 && r.LL.x < FrameBuffer.AllottedGeometry->GetLocalSize().X)
 	{

@@ -28,9 +28,10 @@ Defcon::CFlak::CFlak()
 	m_bCold(false)
 {
 	m_parentType = m_type;
-	m_type = ObjType::FLAK;
-	m_bMortal = true;
-	m_bInjurious = false;
+	m_type       = ObjType::FLAK;
+
+	m_bMortal       = true;
+	m_bInjurious    = false;
 	m_bCanBeInjured = false;
 
 	m_maxAge = m_fLifespan = Daylon::FRandRange(0.5f, 2.0f);
@@ -71,10 +72,10 @@ void Defcon::CFlak::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper
 		#define BUDGE (IRAND(3) - 1)
 
 		IntRect r;
-		r.left   = ROUND(pt.x - size + BUDGE);
-		r.right  = ROUND(pt.x + size + BUDGE);
-		r.top    = ROUND(pt.y - size + BUDGE);
-		r.bottom = ROUND(pt.y + size + BUDGE);
+		r.Left   = ROUND(pt.x - size + BUDGE);
+		r.Right  = ROUND(pt.x + size + BUDGE);
+		r.Top    = ROUND(pt.y - size + BUDGE);
+		r.Bottom = ROUND(pt.y + size + BUDGE);
 
 
 		// values of the CGameColors enum
@@ -102,7 +103,7 @@ void Defcon::CFlak::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper
 				: gGameColors.GetColor(IRAND(3), fYouth);
 		}
 
-		const auto S = FVector2D(r.width(), r.height());
+		const auto S = FVector2D(r.Width(), r.Height());
 		const FSlateLayoutTransform Translation(FVector2D(pt.x, pt.y) - S / 2);
 		const auto Geometry = framebuf.AllottedGeometry->MakeChild(S, Translation);
 
@@ -124,7 +125,7 @@ void Defcon::CFlak::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper& m
 
 void Defcon::CFlak::Move(float fElapsedTime)
 {
-	m_pos.muladd(m_orient.fwd, fElapsedTime);
+	m_pos.MulAdd(m_orient.fwd, fElapsedTime);
 }
 
 
@@ -333,7 +334,7 @@ void Defcon::CPuff::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper& m
 
 void Defcon::CPuff::Move(float fElapsedTime)
 {
-	m_pos.muladd(m_orient.fwd, fElapsedTime);
+	m_pos.MulAdd(m_orient.fwd, fElapsedTime);
 }
 
 #endif

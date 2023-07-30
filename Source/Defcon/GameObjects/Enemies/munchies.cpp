@@ -42,7 +42,7 @@ Defcon::CPhred::CPhred()
 
 	CreateSprite(m_type);
 	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 
@@ -214,7 +214,7 @@ Defcon::CMunchie::CMunchie()
 
 	CreateSprite(m_type);
 	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 
@@ -385,7 +385,7 @@ Defcon::CBigRed::CBigRed()
 
 	CreateSprite(m_type);
 	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 

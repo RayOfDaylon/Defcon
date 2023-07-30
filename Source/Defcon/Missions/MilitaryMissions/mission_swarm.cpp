@@ -99,7 +99,7 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 				float x = (FRAND - 0.5f) * 0.2f * m_pArena->GetDisplayWidth() + wp/2;
 				x = (float)fmod(x, wp);
 				float y = (float)m_pArena->GetHeight() * FRAND;
-				p->m_where.set(x, y);
+				p->m_where.Set(x, y);
 				this->AddEvent(p);
 			}
 		}

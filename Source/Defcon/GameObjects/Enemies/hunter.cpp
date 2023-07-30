@@ -32,10 +32,10 @@ Defcon::CHunter::CHunter()
 	{
 		speed *= -1;
 	}
-	m_orient.fwd.set(speed, 0);
+	m_orient.fwd.Set(speed, 0);
 	m_personalSpace = FRAND * 60 + 20;
 	m_smallColor = C_ORANGE;
-	//m_bboxrad.set(15, 15);
+	//m_bboxrad.Set(15, 15);
 	m_fAnimSpeed = FRAND * 0.6f + 0.4f;
 	m_fBrightness = 1.0f;
 	m_fTimeTargetWithinRange = 0.0f;
@@ -43,7 +43,7 @@ Defcon::CHunter::CHunter()
 
 	CreateSprite(m_type);
 	const auto& Info = GameObjectResources.Get(m_type);
-	m_bboxrad.set(Info.Size.X / 2, Info.Size.Y / 2);
+	m_bboxrad.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 
 
@@ -123,7 +123,7 @@ void Defcon::CHunter::Move(float fTime)
 			{
 				m_fTimeTargetWithinRange = fTime;
 
-				m_targetOffset.set(
+				m_targetOffset.Set(
 					FRANDRANGE(-100, 100), 
 					FRANDRANGE(50, 90) * SGN(m_pos.y - pTarget->m_pos.y));
 				m_freq = FRANDRANGE(6, 12);
@@ -145,9 +145,9 @@ void Defcon::CHunter::Move(float fTime)
 				CFPoint pt;
 				gpArena->Direction(m_pos, pTarget->m_pos, m_orient.fwd);
 
-				//m_orient.fwd.set(SGN(this->m_targetOffset.y), 0);
+				//m_orient.fwd.Set(SGN(this->m_targetOffset.y), 0);
 				m_orient.fwd.y += (float)(m_amp * sin(m_fAge * m_freq));
-				m_pos.muladd(m_orient.fwd, fTime * HUNTER_SPEEDMIN/2);
+				m_pos.MulAdd(m_orient.fwd, fTime * HUNTER_SPEEDMIN/2);
 			}
 			break;
 
@@ -169,7 +169,7 @@ void Defcon::CHunter::Move(float fTime)
 					CFPoint pt;
 					gpArena->Direction(m_pos, pTarget->m_pos, pt);
 					m_orient.fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
-					m_pos.muladd(m_orient.fwd, fTime * AVG(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX));
+					m_pos.MulAdd(m_orient.fwd, fTime * AVG(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX));
 				}
 			}
 			
@@ -209,7 +209,7 @@ void Defcon::CHunter::Move(float fTime)
 						speed = MAP(dist, 0.0f, 0.8f, HUNTER_SPEEDMIN, HUNTER_SPEEDMAX);
 
 					m_orient.fwd.y += (float)(m_amp * sin(m_fAge * m_freq));
-					m_pos.muladd(m_orient.fwd, fTime * speed);
+					m_pos.MulAdd(m_orient.fwd, fTime * speed);
 
 					if(this->CanBeInjured() 
 						&& pTarget->CanBeInjured()

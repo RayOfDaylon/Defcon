@@ -83,13 +83,13 @@ void Defcon::CGameObjectCollection::Add(IGameObject* p)
 }
 
 
-void Defcon::CGameObjectCollection::Add(CGameObjectCollection& set)
+void Defcon::CGameObjectCollection::Add(CGameObjectCollection& Set)
 {
 	IGameObject* p;
 
-	while((p = set.GetFirst()) != nullptr)
+	while((p = Set.GetFirst()) != nullptr)
 	{
-		set.Detach(p);
+		Set.Detach(p);
 		this->Add(p);
 	}
 }

@@ -274,7 +274,7 @@ void UDefconPlayViewBase::InitPlayerShip()
 	PlayerShip.InitPlayer(ArenaWidth);
 
 	// Position the ship at x=0, and halfway up.
-	PlayerShip.m_pos.set(0.0f, ArenaSize.Y / 2);
+	PlayerShip.m_pos.Set(0.0f, ArenaSize.Y / 2);
 	PlayerShip.FaceRight();
 	
 	PlayAreaMain->PlayerShipPtr = &PlayerShip;
@@ -352,7 +352,7 @@ void UDefconPlayViewBase::TransportPlayerShip()
 
 		do
 		{
-			PlayerShip.m_pos.set(WrapX(FRAND * ArenaWidth), (FRAND * 0.8f + 0.1f) * ArenaSize.Y);
+			PlayerShip.m_pos.Set(WrapX(FRAND * ArenaWidth), (FRAND * 0.8f + 0.1f) * ArenaSize.Y);
 		} while(Mission->PlayerInStargate());
 	}
 
@@ -469,7 +469,7 @@ void UDefconPlayViewBase::IncreaseScore(int32 Points, bool bVis, const CFPoint* 
 		pScore->m_pos = *pPos;
 		pScore->m_pos.x += (FRAND - 0.5f) * 30;
 		pScore->m_pos.y += 30;
-		pScore->m_orient.fwd.set((FRAND - 0.5f)*100, 50.0f);
+		pScore->m_orient.fwd.Set((FRAND - 0.5f)*100, 50.0f);
 		pScore->Init((int)points);
 		this->AddDebris(pScore);
 #endif
@@ -783,8 +783,8 @@ void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& object
 	CFRect bbox;
 	CFPoint injurePt;
 
-	bbox.set(PlayerShip.m_pos);
-	bbox.inflate(PlayerShip.m_bboxrad);
+	bbox.Set(PlayerShip.m_pos);
+	bbox.Inflate(PlayerShip.m_bboxrad);
 
 
 	Defcon::IGameObject* pObj = m_objects.GetFirst();
@@ -795,7 +795,7 @@ void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& object
 		{
 			pObj->GetInjurePt(injurePt);
 
-			const bool bHit = (bbox.ptinside(injurePt) || pObj->TestInjury(bbox));
+			const bool bHit = (bbox.PtInside(injurePt) || pObj->TestInjury(bbox));
 
 			if(bHit)
 			{
@@ -839,7 +839,7 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 	}
 
 	CFRect rObj, rPlayer(PlayerShip.m_pos);
-	rPlayer.inflate(PlayerShip.m_bboxrad);
+	rPlayer.Inflate(PlayerShip.m_bboxrad);
 	
 	Defcon::IGameObject* pObj = m_enemies.GetFirst();
 
@@ -847,10 +847,10 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 	{
 		if(pObj->IsCollisionInjurious())
 		{
-			rObj.set(pObj->m_pos);
-			rObj.inflate(pObj->m_bboxrad);
+			rObj.Set(pObj->m_pos);
+			rObj.Inflate(pObj->m_bboxrad);
 
-			if(rObj.intersect(rPlayer))
+			if(rObj.Intersect(rPlayer))
 			{
 				const bool bPlayerKilled = !gDefconGameInstance->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
 
@@ -1118,7 +1118,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 					MainAreaMapper.To(PlayerShip.m_pos, playerScreenPos);
 
 					CFRect rPlayer(playerScreenPos);
-					rPlayer.inflate(PlayerShip.GetPickupRadBox());
+					rPlayer.Inflate(PlayerShip.GetPickupRadBox());
 
 					//Defcon::IGameObject* pObj = this->GetHumans().GetFirst();
 					GetHumans().ForEachUntil([&](Defcon::IGameObject* pObj)
@@ -1127,7 +1127,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 						CFPoint humanScreenPos;
 						MainAreaMapper.To(pObj->m_pos, humanScreenPos);
 
-						if(rPlayer.intersect(CFRect(humanScreenPos)))
+						if(rPlayer.Intersect(CFRect(humanScreenPos)))
 						{
 							Defcon::CHuman& Human = *((Defcon::CHuman*)pObj);
 
@@ -1391,10 +1391,10 @@ float UDefconPlayViewBase::Direction(const CFPoint& posA, const CFPoint& posB, C
 		result = b - result;
 	}
 
-	const float dist = result.length();
+	const float dist = result.Length();
 	check(xdist <= w/2);
 	check(ABS(result.x) <= w/2);
-	result.normalize();
+	result.Normalize();
 
 	return dist;
 }
@@ -1499,7 +1499,7 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 			// firing angle is +/- 45 deg to zero
 			// depending on player score.
 			const float fa = SFRAND * MAP(score, 0, FIRE_AT, 45, 0);
-			dir.rotate(fa);
+			dir.Rotate(fa);
 		}
 			break;
 
@@ -1728,10 +1728,10 @@ void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& ob
 				continue;
 			}
 				
-			bbox.set(pObj2->m_pos);
-			bbox.inflate(pObj2->m_bboxrad);
+			bbox.Set(pObj2->m_pos);
+			bbox.Inflate(pObj2->m_bboxrad);
 
-			const bool bHit = (bbox.ptinside(injurePt) || pObj->TestInjury(bbox));
+			const bool bHit = (bbox.PtInside(injurePt) || pObj->TestInjury(bbox));
 
 			if(bHit)
 			{
@@ -1823,7 +1823,7 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.set((float)cos(t), (float)sin(t));
+		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
 		pFlak->m_orient.fwd = pObj->m_inertia;
@@ -1834,7 +1834,7 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->m_orient.fwd.muladd(dir, speed);
+		pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 		m_debris.Add(pFlak);
 	}
@@ -1897,7 +1897,7 @@ void UDefconPlayViewBase::Hyperspace()
 	//m_pPlayer->SetShieldStrength(fs);
 
 	// Randomize player ship position.
-	GetPlayerShip().m_pos.set(FRAND * ArenaWidth, (FRAND * 0.8f + 0.1f) * ArenaSize.Y);
+	GetPlayerShip().m_pos.Set(FRAND * ArenaWidth, (FRAND * 0.8f + 0.1f) * ArenaSize.Y);
 
 	// todo: set player ship so that the body is hidden and it starts materializing
 
@@ -1934,7 +1934,7 @@ void UDefconPlayViewBase::FireSmartbomb()
 
 		pBomb->m_pMapper = &GetMainAreaMapper();
 		pBomb->m_pos = GetPlayerShip().m_pos;
-		pBomb->m_range.set(MainAreaSize.X, MainAreaSize.Y);
+		pBomb->m_range.Set(MainAreaSize.X, MainAreaSize.Y);
 		pBomb->m_pTargets = &m_enemies;
 		pBomb->m_pDebris = &m_debris;
 		pBomb->m_pArena = this;
@@ -2074,7 +2074,7 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::ObjType EnemyType, const CFPoint& 
 		Params.StartingRadiusMax = ENEMY_BIRTHDEBRISDIST;
 		Params.AspectRatio       = 1.5f;
 		Params.Colors            = { C_WHITE, C_RED, C_YELLOW, C_ORANGE, C_LIGHTYELLOW };
-		Params.TargetBoxRadius.set(0.0f, 0.0f);
+		Params.TargetBoxRadius.Set(0.0f, 0.0f);
 
 		SpecializeMaterialization(Params, EnemyType);
 

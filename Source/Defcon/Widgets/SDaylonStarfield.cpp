@@ -171,17 +171,17 @@ int32 SDaylonStarfield::OnPaint
 		// Project 3D star location to 2D.
 		CFPoint starproj;
 
-		starproj.set(Star.P.X / Star.P.Z, Star.P.Y / Star.P.Z);
+		starproj.Set(Star.P.X / Star.P.Z, Star.P.Y / Star.P.Z);
 
-		starproj.mul(scale);
-		starproj.rotate(Angle);
+		starproj.Mul(scale);
+		starproj.Rotate(Angle);
 
 		float c;
 
-		if(rect.ptinside(starproj))
+		if(rect.PtInside(starproj))
 		{
 			CFRect r(starproj);
-			r.inflate(inc);
+			r.Inflate(inc);
 			c = 0.25f;//C_DARKER;
 
 
@@ -205,10 +205,10 @@ int32 SDaylonStarfield::OnPaint
 #if 0
 			int x1, y1, x2, y2;
 			r.order();
-			r.classicize(x1, y1, x2, y2);
+			r.Classicize(x1, y1, x2, y2);
 #endif
 
-			//CMaskMap& mask = gBitmaps.GetMask(ROUND(r.LL.distance(r.UR)), 0);
+			//CMaskMap& mask = gBitmaps.GetMask(ROUND(r.LL.Distance(r.UR)), 0);
 			//FLinearColor cf = MakeBlendedColor(C_BLACK, m_stars[i].m_colorFar, c);
 
 			/*if(m_bMorphColor && m_stars[i].m_pos.z <= 3.0f)

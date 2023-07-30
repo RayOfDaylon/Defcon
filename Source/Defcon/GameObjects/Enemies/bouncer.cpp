@@ -30,14 +30,14 @@ Defcon::IBouncer::IBouncer()
 	m_parentType = m_type;
 	m_type = ObjType::BOUNCER;
 	m_pointValue = BOUNCER_VALUE;
-	m_orient.fwd.set(1.0f, 0.0f);
+	m_orient.fwd.Set(1.0f, 0.0f);
 	m_smallColor = C_WHITE;
 	m_fAnimSpeed = FRAND * 0.05f + 0.12f;
 	m_orient.fwd.y = 0.0; 
 	m_fGravity = FRAND * 10.0f + 5.0f;
 
 	const auto& Info = GameObjectResources.Get(ObjType::FIREBOMBER_TRUE);
-	m_bboxrad.set(Info.Size.X / 2, Info.Size.Y / 2);
+	m_bboxrad.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 
 
@@ -75,7 +75,7 @@ void Defcon::IBouncer::Move(float fElapsedTime)
 	//float speed = ABS(m_orient.fwd.y);
 	m_orient.fwd.y -= m_fGravity * fElapsedTime;
 
-	m_pos.muladd(m_orient.fwd, fElapsedTime * 40);
+	m_pos.MulAdd(m_orient.fwd, fElapsedTime * 40);
 
 
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
@@ -122,7 +122,7 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 
 			float angle = MAP(a, 0, 7, 0, 5.5f);
 			angle += off + SFRAND * 0.05f;
-			pFlak->m_orient.fwd.set(sinf(angle), cosf(angle));
+			pFlak->m_orient.fwd.Set(sinf(angle), cosf(angle));
 			
 			pFlak->m_orient.fwd *= (SFRAND*15+30) * (i+2);
 			pFlak->m_orient.fwd += m_inertia;
@@ -148,7 +148,7 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 
 				float angle = MAP(a, 0, 7, 0, 5.5f);
 				angle += off2 + SFRAND * 0.05f;
-				pFlak->m_orient.fwd.set(
+				pFlak->m_orient.fwd.Set(
 					sinf(angle), cosf(angle));
 				
 				pFlak->m_orient.fwd *= (SFRAND*5+6) * (i+2);

@@ -33,7 +33,7 @@ Defcon::CSwarmer::CSwarmer()
 	m_type = ObjType::SWARMER;
 	m_pointValue = SWARMER_VALUE;
 
-	m_orient.fwd.set(1.0f, 0.0f);
+	m_orient.fwd.Set(1.0f, 0.0f);
 	m_smallColor = C_ORANGE;
 	
 	m_fAnimSpeed = FRAND * 0.35f + 0.15f;
@@ -46,7 +46,7 @@ Defcon::CSwarmer::CSwarmer()
 	CreateSprite(m_type);
 
 	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 
@@ -96,7 +96,7 @@ void Defcon::CSwarmer::Move(float fTime)
 			{
 				m_fTimeTargetWithinRange = fTime;
 
-				//m_targetOffset.set(
+				//m_targetOffset.Set(
 				//	LERP(-100, 100, FRAND), 
 				//	LERP(50, 90, FRAND) * SGN(m_pos.y - pTarget->m_pos.y));
 				//m_freq = LERP(6, 12, FRAND);
@@ -113,7 +113,7 @@ void Defcon::CSwarmer::Move(float fTime)
 			{
 				m_orient.fwd = dir;
 				m_orient.fwd.y = 0;
-				m_orient.fwd.normalize();
+				m_orient.fwd.Normalize();
 			}
 		}
 
@@ -185,7 +185,7 @@ void Defcon::CSwarmer::Explode(CGameObjectCollection& debris)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.set((float)cos(t), (float)sin(t));
+		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
 		pFlak->m_orient.fwd = m_inertia;
@@ -196,7 +196,7 @@ void Defcon::CSwarmer::Explode(CGameObjectCollection& debris)
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->m_orient.fwd.muladd(dir, speed);
+		pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

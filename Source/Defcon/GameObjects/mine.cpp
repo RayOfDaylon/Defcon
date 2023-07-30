@@ -28,7 +28,7 @@ Defcon::CMine::CMine()
 
 	CreateSprite(m_type);
 	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.set(SpriteInfo.Size.X, SpriteInfo.Size.Y);
+	m_bboxrad.Set(SpriteInfo.Size.X, SpriteInfo.Size.Y);
 }
 
 
@@ -66,5 +66,5 @@ void Defcon::CMine::GetInjurePt(CFPoint& pt) const
 
 bool Defcon::CMine::TestInjury(const CFRect& r) const
 {
-	return r.ptinside(m_pos);
+	return r.PtInside(m_pos);
 }

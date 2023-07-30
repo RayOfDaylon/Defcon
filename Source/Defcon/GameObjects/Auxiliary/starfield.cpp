@@ -62,7 +62,7 @@ void Defcon::CStarfield::InitStarfield(int32 w, int32 h, float fRange, bool bMor
 
 	for(int32 i = 0; i < n; i++)
 	{
-		m_stars[i].m_pos.set(SFRAND * 4000, SFRAND * 4000, kBackplane - FRAND * fRange);
+		m_stars[i].m_pos.Set(SFRAND * 4000, SFRAND * 4000, kBackplane - FRAND * fRange);
 		m_stars[i].m_colorFar = colors[IRAND(array_size(colors))];
 		
 		if(m_bMorphColor)
@@ -83,7 +83,7 @@ void Defcon::CStarfield::Move(float f)
 		m_stars[i].m_pos.z -= (f * kSpeed * m_fSpeedMul);
 		// If too close, wrap it back.
 		if(m_stars[i].m_pos.z < kForeplane)
-			m_stars[i].m_pos.set(SFRAND * 2000, SFRAND * 2000, kBackplane - FRAND*7);
+			m_stars[i].m_pos.Set(SFRAND * 2000, SFRAND * 2000, kBackplane - FRAND*7);
 	}
 
 	m_fAngle += (f * kSpeedRot * m_fSpeedRotMul);
@@ -104,7 +104,7 @@ void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 
 	const CFPoint halfsize(0.5f * m_w, 0.5f * m_h);
 	CFRect rect(pt);
-	rect.inflate(halfsize);
+	rect.Inflate(halfsize);
 
 
 	CFPoint scale(1.0f, (float)m_h/m_w);
@@ -117,7 +117,7 @@ void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 		// Project 3D star location to 2D.
 		CFPoint starproj;
 
-		starproj.set(m_stars[i].m_pos.x / m_stars[i].m_pos.z,
+		starproj.Set(m_stars[i].m_pos.x / m_stars[i].m_pos.z,
 					m_stars[i].m_pos.y / m_stars[i].m_pos.z);
 
 		starproj.mul(scale);
@@ -126,10 +126,10 @@ void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 
 		float c;
 
-		if(rect.ptinside(starproj))
+		if(rect.PtInside(starproj))
 		{
 			CFRect r(starproj);
-			r.inflate(inc);
+			r.Inflate(inc);
 			c = 0.25f;//C_DARKER;
 
 
@@ -151,10 +151,10 @@ void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 #if 0
 			int x1, y1, x2, y2;
 			r.order();
-			r.classicize(x1, y1, x2, y2);
+			r.Classicize(x1, y1, x2, y2);
 #endif
 
-			CMaskMap& mask = gBitmaps.GetMask(ROUND(r.LL.distance(r.UR)), 0);
+			CMaskMap& mask = gBitmaps.GetMask(ROUND(r.LL.Distance(r.UR)), 0);
 			FLinearColor cf = MakeBlendedColor(C_BLACK, m_stars[i].m_colorFar, c);
 
 			if(m_bMorphColor && m_stars[i].m_pos.z <= 3.0f)

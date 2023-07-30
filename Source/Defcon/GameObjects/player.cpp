@@ -49,18 +49,18 @@ Defcon::CPlayer::CPlayer()
 	CreateSprite(m_type);
 
 	const auto& Info = GameObjectResources.Get(m_type);
-	m_bboxrad.set(Info.Size.X * 0.25f, Info.Size.Y * 0.25f);
+	m_bboxrad.Set(Info.Size.X * 0.25f, Info.Size.Y * 0.25f);
 
 	// Make our "pickup human" bboxrad more generous than hitbox.
-	m_bboxradPickup.set(Info.Size.X * 0.4f, Info.Size.Y * 0.4f);
+	m_bboxradPickup.Set(Info.Size.X * 0.4f, Info.Size.Y * 0.4f);
 }
 
 
 void Defcon::CPlayer::InitPlayer(float fw)
 {
-	m_fDrag = PLAYER_DRAG;//0.1f;
+	m_fDrag     = PLAYER_DRAG;//0.1f;
 	m_maxThrust = PLAYER_MAXTHRUST;
-	m_fMass = PLAYER_MASS;
+	m_fMass     = PLAYER_MASS;
 
 	m_laserWeapon.m_fArenawidth = fw;
 
@@ -79,7 +79,7 @@ void Defcon::CPlayer::InitPlayer(float fw)
 
 		float fRad = FRAND * PLAYER_BIRTHDEBRISDIST;
 		
-		m_birthDebrisLocsOrg[i].set((float)cos(u) * fRad, (float)sin(u) * fRad * .33f);
+		m_birthDebrisLocsOrg[i].Set((float)cos(u) * fRad, (float)sin(u) * fRad * .33f);
 		m_birthDebrisLocsOrg[i] += m_pos;
 
 		if(m_birthDebrisLocsOrg[i].x < 0)
@@ -366,12 +366,12 @@ void Defcon::CPlayer::ImpartForces(float frameTime)
 	if(m_navCtls[ctlUp].bActive)
 	{
 		const float timeHeld = GameTime() - m_navCtls[ctlUp].fTimeDown;
-		m_pos.muladd({ 0.0f, FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
+		m_pos.MulAdd({ 0.0f, FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
 	}
 	else if(m_navCtls[ctlDown].bActive)
 	{
 		const float timeHeld = GameTime() - m_navCtls[ctlDown].fTimeDown;
-		m_pos.muladd({ 0.0f, -FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
+		m_pos.MulAdd({ 0.0f, -FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
 	}
 }
 
@@ -466,7 +466,7 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.set((float)cos(t), (float)sin(t));
+		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
 		pFlak->m_orient.fwd = m_inertia;
@@ -479,7 +479,7 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 		float speed = FRAND * 180 + 90;
 
 
-		pFlak->m_orient.fwd.muladd(dir, speed);
+		pFlak->m_orient.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
