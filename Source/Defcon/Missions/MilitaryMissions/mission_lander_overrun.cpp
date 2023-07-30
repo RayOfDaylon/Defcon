@@ -19,8 +19,8 @@ void Defcon::CLanderOverrun::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
-	m_nHostilesRemaining = 50*2 + 6*2;
-	m_nLandersRemaining  = 100;
+	//m_nHostilesRemaining = 50*2 + 6*2;
+	//m_nLandersRemaining  = 100;
 
 	IntroText = 
 		"A large mob of landers with minimal escort\n"
@@ -28,11 +28,17 @@ void Defcon::CLanderOverrun::Init(UDefconPlayViewBase* pA)
 		"\n"
 		"Engage enemy forces and eliminate."
 		;
+
+	AddEnemySpawnInfo({ ObjType::LANDER, { 50, 50 } });
+	AddEnemySpawnInfo({ ObjType::DYNAMO, {  6,  6 } });
 }
 
 
 void Defcon::CLanderOverrun::MakeTargets(float fElapsed, const CFPoint& where)
 {
+	UpdateWaves(where);
+
+#if 0
 	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
 		|| m_fRepopCounter > DELAY_BETWEEN_REATTACK)
 	{
@@ -51,5 +57,6 @@ void Defcon::CLanderOverrun::MakeTargets(float fElapsed, const CFPoint& where)
 
 		m_nAttackWave++;
 	}
+#endif
 }
 

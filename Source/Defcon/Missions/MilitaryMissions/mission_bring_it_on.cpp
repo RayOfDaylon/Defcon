@@ -16,7 +16,7 @@ void Defcon::CBringItOn::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
-	m_nHostilesRemaining = 12 + 6;
+	//m_nHostilesRemaining = 12 + 6;
 
 	IntroText =
 		"Reformers and dynamos have laid a trap.\n"
@@ -27,6 +27,9 @@ void Defcon::CBringItOn::Init(UDefconPlayViewBase* pA)
 		"properly eliminating the ordinary enemies,\n"
 		"otherwise you will be overwhelmed.\n"
 	;
+
+	AddEnemySpawnInfo({ ObjType::DYNAMO,   { 12, 0, 0, 0 }});
+	AddEnemySpawnInfo({ ObjType::REFORMER, {  6, 0, 0, 0 }});
 }
 
 
@@ -37,16 +40,16 @@ void Defcon::CBringItOn::MakeTargets(float fElapsed, const CFPoint& where)
 		this->AddMissionCleaner(where);
 	}
 
+	UpdateWaves(where);
 
+#if 0
 	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
 		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
 	{
 
 		m_fRepopCounter = 0.0f;
-		//const int32 numDynamos[] = { 12 }; 
-		//const int32 numReformers[] = { 6 }; 
 		
-		if(m_nAttackWave >= 1)//array_size(numDynamos))
+		if(m_nAttackWave >= 1)
 			return;
 
 		const Wave waves[] = { 
@@ -58,5 +61,6 @@ void Defcon::CBringItOn::MakeTargets(float fElapsed, const CFPoint& where)
 
 		m_nAttackWave++;
 	}
+#endif
 }
 

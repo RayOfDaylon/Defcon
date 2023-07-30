@@ -52,25 +52,25 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 		if(m_nAttackWave >= 4)
 			return;
 
-		const Wave waves[] = 
+		const FEnemySpawnCounts waves[] = 
 		{
 			{ ObjType::GUPPY,   { 24, 30, 30, 30 } },
-			{ ObjType::SWARMER, { 3, 3, 3, 3 } },
-			{ ObjType::POD,     { 3, 3, 3, 0 } },
-			{ ObjType::DYNAMO,  { 10, 7, 4, 3 } },
-			{ ObjType::HUNTER,  { 3, 4, 4, 3 } }
+			{ ObjType::SWARMER, {  3,  3,  3,  3 } },
+			{ ObjType::POD,     {  3,  3,  3,  0 } },
+			{ ObjType::DYNAMO,  { 10,  7,  4,  3 } },
+			{ ObjType::HUNTER,  {  3,  4,  4,  3 } }
 		};
 
 
 		int32 i, j;
 		for(i = 0; i < array_size(waves); i++)
 		{
-			for(j = 0; j < waves[i].count[m_nAttackWave] && this->HostilesRemaining() > 0; j++)
+			for(j = 0; j < waves[i].NumPerWave[m_nAttackWave] && this->HostilesRemaining() > 0; j++)
 			{
 				float wp = m_pArena->GetWidth();
 				CFPoint P;
 
-				switch(waves[i].type)
+				switch(waves[i].Kind)
 				{
 					case ObjType::POD:
 					case ObjType::HUNTER:
@@ -87,7 +87,7 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 				P.x = (float)fmod(P.x, wp);
 				P.y *= m_pArena->GetHeight();
 
-				m_pArena->CreateEnemy(waves[i].type, P, FRANDRANGE(0.0f, 0.1f * j), true, true);
+				m_pArena->CreateEnemy(waves[i].Kind, P, FRANDRANGE(0.0f, 0.1f * j), true, true);
 			}
 		}
 

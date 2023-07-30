@@ -19,6 +19,13 @@ void Defcon::CPartyMixMission::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
+	IntroText =
+		"The Apex are temporarily thrown into chaos\n"
+		"and can only mount a mixed, random counterattack.\n"
+		"There's no telling what will come your way."
+		;
+
+#if 0
 	m_nHostilesRemaining = 15 + 20 + 25 + 20;
 
 	// Precompute the enemy types so we know how many landers we'll have.
@@ -39,12 +46,40 @@ void Defcon::CPartyMixMission::Init(UDefconPlayViewBase* pA)
 			}
 		}
 	}
+#endif
 
-	IntroText =
-		"The Apex are temporarily thrown into chaos\n"
-		"and can only mount a mixed, random counterattack.\n"
-		"There's no telling what will come your way."
-		;
+	// Build up a local enemy counts array that we can then copy to the actual one.
+
+	const int32 EnemyCounts[] = { 15, 20, 25, 20 };
+
+	TArray<FEnemySpawnCounts> LocalSpawnCounts;
+
+	for(int32 I = 0; I < array_size(EnemyTypes); I++)
+	{
+		LocalSpawnCounts.Add({ EnemyTypes[I], {} });
+	}
+
+	for(int32 AttackWave = 0; AttackWave < 4; AttackWave++)
+	{
+		for(int32 j = 0; j < EnemyCounts[AttackWave]; j++)
+		{
+			const auto Kind = EnemyTypes[IRAND(array_size(EnemyTypes))];
+
+			for(int32 k = 0; k < LocalSpawnCounts.Num(); k++)
+			{
+				if(LocalSpawnCounts[k].Kind == Kind)
+				{
+					LocalSpawnCounts[k].NumPerWave[AttackWave]++;
+					break;
+				}
+			}
+		}
+	}
+
+	for(const auto& LocalSpawnCount : LocalSpawnCounts)
+	{
+		AddEnemySpawnInfo(LocalSpawnCount);
+	}
 }
 
 
@@ -59,7 +94,9 @@ void Defcon::CPartyMixMission::MakeTargets(float fElapsed, const CFPoint& where)
 		this->AddMissionCleaner(where);
 	}
 
+	UpdateWaves(where);
 
+#if 0
 	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
 		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
 	{
@@ -86,5 +123,6 @@ void Defcon::CPartyMixMission::MakeTargets(float fElapsed, const CFPoint& where)
 
 		m_nAttackWave++;
 	}
+#endif
 }
 

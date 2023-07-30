@@ -61,6 +61,31 @@ void Defcon::CMilitaryMission::Init(UDefconPlayViewBase* p)
 }
 
 
+void Defcon::CMilitaryMission::AddEnemySpawnInfo(const FEnemySpawnCounts& EnemySpawnCounts)
+{
+	EnemySpawnCountsArray.Add(EnemySpawnCounts);
+
+	int32 WaveNumber = 1;
+
+	for(auto EnemyTypeCount : EnemySpawnCounts.NumPerWave)
+	{
+		m_nHostilesRemaining += EnemyTypeCount;
+
+		if(EnemySpawnCounts.Kind == ObjType::LANDER)
+		{
+			m_nLandersRemaining	+= EnemyTypeCount;
+		}
+
+		if(EnemyTypeCount > 0 && WaveNumber > MaxWaves)
+		{
+			MaxWaves = WaveNumber;
+		}
+
+		WaveNumber++;
+	}
+}
+
+
 void Defcon::CMilitaryMission::AddStargate()
 {
 	check(m_pArena != nullptr);
@@ -80,6 +105,60 @@ void Defcon::CMilitaryMission::AddStargate()
 bool Defcon::CMilitaryMission::PlayerInStargate() const
 {
 	return StargateRect.PtInside(gpArena->GetPlayerShip().m_pos);
+}
+
+
+void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
+{
+	// For now, defer to legacy wave processing if this class has empty EnemySpawnCountsArray member.
+	if(EnemySpawnCountsArray.IsEmpty())
+	{
+		return;
+	}
+
+	if(    !( (this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
+		   || (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK) ))
+	{
+		return;
+	}
+
+	m_fRepopCounter = 0.0f;
+
+	if(m_nAttackWave >= MaxWaves)
+	{
+			return;
+	}
+	
+	for(int32 i = 0; i < EnemySpawnCountsArray.Num(); i++)	
+	{	
+		for(int32 j = 0; j < EnemySpawnCountsArray[i].NumPerWave[m_nAttackWave] && this->HostilesRemaining() > 0; j++)	
+		{	
+			const float wp = m_pArena->GetWidth();
+
+			float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + Where.x;	
+			x = (float)fmod(x, wp);	
+
+			float y;	
+
+			switch(EnemySpawnCountsArray[i].Kind)	
+			{	
+				// Make these enemies spawn high up
+				case ObjType::LANDER:	
+				case ObjType::BOUNCER:	
+					y = FRANDRANGE(0.85f, 1.0f);	
+					break;	
+					
+				default:	
+					y = FRANDRANGE(MinSpawnAlt, MaxSpawnAlt);	
+			}	
+
+			y *= m_pArena->GetHeight();	
+
+			m_pArena->CreateEnemy(EnemySpawnCountsArray[i].Kind, CFPoint(x, y), FRANDRANGE(0.0f, JFactor * j), true, true);	
+		}	
+	}	
+	
+	m_nAttackWave++;
 }
 
 

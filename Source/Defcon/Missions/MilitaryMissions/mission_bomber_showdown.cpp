@@ -15,7 +15,7 @@ void Defcon::CBomberShowdown::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
-	m_nHostilesRemaining = 18+6;
+	//m_nHostilesRemaining = 18+6;
 	// 9*2 bombers + 3*2 pods
 
 	IntroText =
@@ -25,11 +25,16 @@ void Defcon::CBomberShowdown::Init(UDefconPlayViewBase* pA)
 		"\n"
 		"Engage enemy forces and eliminate them."
 		;
+
+	AddEnemySpawnInfo({ ObjType::BOMBER, { 9, 9, 0, 0 } });
+	AddEnemySpawnInfo({ ObjType::POD,    { 3, 3, 0, 0 } });
 }
 
 
 void Defcon::CBomberShowdown::MakeTargets(float fElapsed, const CFPoint& where)
 {
+	UpdateWaves(where);
+#if 0
 	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
 		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
 	{
@@ -51,5 +56,6 @@ void Defcon::CBomberShowdown::MakeTargets(float fElapsed, const CFPoint& where)
 
 		m_nAttackWave++;
 	}
+#endif
 }
 

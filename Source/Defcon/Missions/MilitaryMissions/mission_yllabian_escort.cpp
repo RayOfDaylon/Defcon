@@ -16,19 +16,28 @@ void Defcon::CYllabianEscort::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
-	m_nHostilesRemaining = 24+30+30+30
+	/*m_nHostilesRemaining = 24+30+30+30
 							+3+3+3+3
 							+3+3+3
 							+10+7+4+3
 							+3+4+4+3
 							+10+12+10+5;
 
-	m_nLandersRemaining =  10 + 12 + 10 + 5;
+	m_nLandersRemaining =  10 + 12 + 10 + 5;*/
 
 	IntroText = 
 		"Yllabian fighters are escorting a lander attack.\n"
 		"Engage enemy forces and eliminate them."
 	;
+
+	JFactor = 0.1f;
+
+	AddEnemySpawnInfo({ ObjType::GUPPY,   { 24, 30, 30, 30 } });
+	AddEnemySpawnInfo({ ObjType::SWARMER, {  3,  3,  3,  3 } });
+	AddEnemySpawnInfo({ ObjType::POD,     {  3,  3,  3,  0 } });
+	AddEnemySpawnInfo({ ObjType::DYNAMO,  { 10,  7,  4,  3 } });
+	AddEnemySpawnInfo({ ObjType::HUNTER,  {  3,  4,  4,  3 } });
+	AddEnemySpawnInfo({ ObjType::LANDER,  { 10, 12, 10,  5 } });
 }
 
 
@@ -43,7 +52,9 @@ void Defcon::CYllabianEscort::MakeTargets(float fElapsed, const CFPoint& where)
 		this->AddMissionCleaner(where);
 	}
 
+	UpdateWaves(where);
 
+#if 0
 	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
 		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
 	{
@@ -99,4 +110,5 @@ void Defcon::CYllabianEscort::MakeTargets(float fElapsed, const CFPoint& where)
 
 		m_nAttackWave++;
 	}
+#endif
 }

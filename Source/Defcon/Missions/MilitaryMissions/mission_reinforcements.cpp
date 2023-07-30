@@ -17,8 +17,8 @@ void Defcon::CReinforcedMission::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
-	m_nHostilesRemaining = 12 + 6;
-	m_nLandersRemaining  = 12;
+	//m_nHostilesRemaining = 12 + 6;
+	//m_nLandersRemaining  = 12;
 	// 3*4 landers + 6 dynamos
 
 	IntroText = 
@@ -27,6 +27,9 @@ void Defcon::CReinforcedMission::Init(UDefconPlayViewBase* pA)
 		"\n"
 		"Engage enemy forces and eliminate them."
 		;
+
+	AddEnemySpawnInfo({ ObjType::LANDER, { 4, 4, 4 } });
+	AddEnemySpawnInfo({ ObjType::DYNAMO, { 3, 2, 1 } });
 }
 
 
@@ -45,7 +48,9 @@ void Defcon::CReinforcedMission::MakeTargets(float fElapsed, const CFPoint& wher
 		}
 	}
 
+	UpdateWaves(where);
 
+#if 0
 	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
 		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
 	{
@@ -65,5 +70,6 @@ void Defcon::CReinforcedMission::MakeTargets(float fElapsed, const CFPoint& wher
 
 		m_nAttackWave++;
 	}
+#endif
 }
 

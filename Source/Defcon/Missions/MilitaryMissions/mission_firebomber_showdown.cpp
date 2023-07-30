@@ -15,7 +15,7 @@ void Defcon::CFirebomberShowdown::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
-	m_nHostilesRemaining = 12 + 6;
+	//m_nHostilesRemaining = 12 + 6;
 	// 6*2 firebombers + 6 dynamos
 
 	IntroText = 
@@ -25,11 +25,18 @@ void Defcon::CFirebomberShowdown::Init(UDefconPlayViewBase* pA)
 		"\n"
 		"Engage enemy forces and eliminate them.\n"
 		;
+
+	AddEnemySpawnInfo({ ObjType::FIREBOMBER_TRUE, { 3, 3, 0, 0 } });
+	AddEnemySpawnInfo({ ObjType::FIREBOMBER_WEAK, { 3, 3, 0, 0 } });
+	AddEnemySpawnInfo({ ObjType::DYNAMO,          { 3, 3, 0, 0 } });
 }
 
 
 void Defcon::CFirebomberShowdown::MakeTargets(float fElapsed, const CFPoint& where)
 {
+	UpdateWaves(where);
+
+#if 0
 	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
 		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
 	{
@@ -52,5 +59,6 @@ void Defcon::CFirebomberShowdown::MakeTargets(float fElapsed, const CFPoint& whe
 
 		m_nAttackWave++;
 	}
+#endif
 }
 

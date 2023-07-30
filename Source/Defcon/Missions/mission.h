@@ -22,11 +22,10 @@ namespace Defcon
 	class IGameObject;
 
 
-	class Wave
+	struct FEnemySpawnCounts
 	{
-		public:
-			ObjType type;
-			int32	count[4];
+		ObjType Kind;			// Type of enemy to spawn
+		int32	NumPerWave[4];  // How many of said enemy type to spawn in each wave
 	};
 
 

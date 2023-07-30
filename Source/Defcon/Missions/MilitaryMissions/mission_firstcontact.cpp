@@ -24,15 +24,19 @@ void Defcon::CFirstContactMission::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
-	m_nHostilesRemaining = 9;
-	m_nLandersRemaining  = 9;
+	//m_nHostilesRemaining = 9;
+	//m_nLandersRemaining  = 9;
 
 	IntroText =
 		"A small group of Landers is approaching.\n"
 		"\n"
 		"Engage enemy forces and eliminate them."
 	;
+
+	AddEnemySpawnInfo({ObjType::LANDER, { 4, 3, 2, 0 }});
 }
+
+
 
 
 void Defcon::CFirstContactMission::MakeTargets(float fElapsed, const CFPoint& where)
@@ -46,24 +50,7 @@ void Defcon::CFirstContactMission::MakeTargets(float fElapsed, const CFPoint& wh
 		}
 	}
 
-	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
-	{
-
-		m_fRepopCounter = 0.0f;
-
-		const Wave waves[] = { ObjType::LANDER, { 4, 3, 2, 0 } };
-
-		//const int32 numLanders[] = { 4, 3, 2 }; 
-		if(m_nAttackWave >= 3/*array_size(numLanders)*/)
-		{
-			return;
-		}
-
-		STANDARD_ENEMY_SPAWNING(0.5f)
-
-		m_nAttackWave++;
-	}
+	UpdateWaves(where);
 }
 
 

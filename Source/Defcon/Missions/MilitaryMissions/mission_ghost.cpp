@@ -15,7 +15,7 @@ void Defcon::CGhostMission::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
-	m_nHostilesRemaining = 9 + 40 + 6;
+	//m_nHostilesRemaining = 9 + 40 + 6;
 
 	IntroText =
 		"The 'ghost' reformer variant has appeared en masse.\n"
@@ -25,6 +25,12 @@ void Defcon::CGhostMission::Init(UDefconPlayViewBase* pA)
 		"\n"
 		"Engage enemy forces and eliminate them."
 		;
+
+	JFactor = 0.1f;
+
+	AddEnemySpawnInfo({ ObjType::DYNAMO,   {  2,  5,  2 } });
+	AddEnemySpawnInfo({ ObjType::GHOST,    { 10, 15, 15 } });
+	AddEnemySpawnInfo({ ObjType::REFORMER, {  3,  2,  1 } });
 }
 
 
@@ -39,7 +45,9 @@ void Defcon::CGhostMission::MakeTargets(float fElapsed, const CFPoint& where)
 		this->AddMissionCleaner(where);
 	}
 
+	UpdateWaves(where);
 
+#if 0
 	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
 		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
 	{
@@ -59,5 +67,6 @@ void Defcon::CGhostMission::MakeTargets(float fElapsed, const CFPoint& where)
 
 		m_nAttackWave++;
 	}
+#endif
 }
 

@@ -16,10 +16,19 @@ void Defcon::CBouncersMission::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
-	m_nHostilesRemaining = 71 + 9 + 9;
-	m_nLandersRemaining  = 30;
+	//m_nHostilesRemaining = 71 + 9 + 9;
+	//m_nLandersRemaining  = 30;
 
 	IntroText = "A group of bouncers has decided to 'drop' in.";
+
+	JFactor = 0.1f;
+
+	AddEnemySpawnInfo({ ObjType::LANDER,          { 10, 10, 10, } });
+	AddEnemySpawnInfo({ ObjType::BOMBER,          {  3,  5,  3  } });
+	AddEnemySpawnInfo({ ObjType::BOUNCER_TRUE,    {  5,  5,  5  } });
+	AddEnemySpawnInfo({ ObjType::BOUNCER_WEAK,    {  3,  3,  3  } });
+	AddEnemySpawnInfo({ ObjType::FIREBOMBER_TRUE, {  5,  5,  5  } });
+	AddEnemySpawnInfo({ ObjType::FIREBOMBER_WEAK, {  3,  3,  3  } });
 }
 
 
@@ -34,11 +43,12 @@ void Defcon::CBouncersMission::MakeTargets(float fElapsed, const CFPoint& where)
 		this->AddMissionCleaner(where);
 	}
 
+	UpdateWaves(where);
 
+#if 0
 	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
 		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
 	{
-
 		m_fRepopCounter = 0.0f;
 
 		if(m_nAttackWave >= 3)
@@ -58,5 +68,6 @@ void Defcon::CBouncersMission::MakeTargets(float fElapsed, const CFPoint& where)
 
 		m_nAttackWave++;
 	}
+#endif
 }
 

@@ -72,18 +72,27 @@ namespace Defcon
 
 
 		protected:
-			void AddStargate();
+
+			void AddStargate       ();
+			void AddEnemySpawnInfo (const FEnemySpawnCounts& EnemySpawnCounts);
+			void UpdateWaves       (const CFPoint& Where);
+
+			TArray<FEnemySpawnCounts> EnemySpawnCountsArray;
+			int32                     MaxWaves    = 0;
+			float                     JFactor     = 0.5f;
+			float                     MinSpawnAlt = 0.2f;
+			float                     MaxSpawnAlt = 0.8f;
 
 			CFRect       StargateRect;
-
 			IGameObject* m_pStargate = nullptr;
 
-			int32	m_nHostilesRemaining	= 0;   // Number of mission-critical enemies remaining
-			int32   m_nLandersRemaining     = 0;
-			float	m_fRepopCounter			= 0.0f;
-			int32	m_nAttackWave			= 0;
-			float	m_fLastCleaner			= 0.0f; // Last time a cleaner enemy (baiter/phred/etc) was spawned
-			float	m_CleanerFreq			= 4.0f;
+			int32        m_nHostilesRemaining	= 0;   // Number of mission-critical enemies remaining
+			int32        m_nLandersRemaining    = 0;
+			float        m_fRepopCounter		= 0.0f;
+			int32        m_nAttackWave			= 0;
+			float        m_fLastCleaner			= 0.0f; // Last time a cleaner enemy (baiter/phred/etc) was spawned
+			float        m_CleanerFreq			= 4.0f;
+
 	};
 
 
@@ -260,7 +269,7 @@ namespace Defcon
 
 			int32 IdxEnemyTypes = 0;
 
-			Wave Waves[1] = { { ObjType::UNKNOWN, { 15, 20, 25, 20 } } };
+			//Wave Waves[1] = { { ObjType::UNKNOWN, { 15, 20, 25, 20 } } };
 
 			ObjType EnemyTypes[15] = 
 			{

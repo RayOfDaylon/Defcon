@@ -17,14 +17,23 @@ void Defcon::CApexOffensive::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
-	m_nHostilesRemaining = 18 + 13 + 4 + 6 + 6 + 9 + 4 + 8;
-	m_nLandersRemaining  = 3 + 6 + 5 + 4;
+	//m_nHostilesRemaining = 18 + 13 + 4 + 6 + 6 + 9 + 4 + 8;
+	//m_nLandersRemaining  = 3 + 6 + 5 + 4;
 
 	IntroText =
 		"The landers have adopted an all-out\n"
 		"escort strategy. Destroy the landers first\n"
 		"to minimize humanoid losses."
 		;
+
+	AddEnemySpawnInfo({ ObjType::LANDER,          { 3, 6, 5, 4 } });
+	AddEnemySpawnInfo({ ObjType::GUPPY,           { 4, 4, 3, 2 } });
+	AddEnemySpawnInfo({ ObjType::HUNTER,          { 0, 1, 2, 1 } });
+	AddEnemySpawnInfo({ ObjType::FIREBOMBER_TRUE, { 2, 1, 2, 1 } });
+	AddEnemySpawnInfo({ ObjType::FIREBOMBER_WEAK, { 2, 1, 2, 1 } });
+	AddEnemySpawnInfo({ ObjType::DYNAMO,          { 3, 3, 2, 1 } });
+	AddEnemySpawnInfo({ ObjType::POD,             { 3, 1, 0, 0 } });
+	AddEnemySpawnInfo({ ObjType::BOMBER,          { 2, 2, 2, 2 } });
 }
 
 
@@ -43,7 +52,9 @@ void Defcon::CApexOffensive::MakeTargets(float fElapsed, const CFPoint& where)
 		}
 	}
 
+	UpdateWaves(where);
 
+#if 0
 	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
 		|| (this->HostilesInPlay() > 0 && m_fRepopCounter > DELAY_BETWEEN_REATTACK))
 	{
@@ -52,7 +63,7 @@ void Defcon::CApexOffensive::MakeTargets(float fElapsed, const CFPoint& where)
 		if(m_nAttackWave >= 4)
 			return;
 
-		const Wave waves[] = 
+		const FEnemySpawnCounts waves[] = 
 		{
 			{ ObjType::LANDER, { 3, 6, 5, 4 } },
 			{ ObjType::GUPPY, { 4, 4, 3, 2 } },
@@ -69,5 +80,6 @@ void Defcon::CApexOffensive::MakeTargets(float fElapsed, const CFPoint& where)
 
 		m_nAttackWave++;
 	}
+#endif
 }
 

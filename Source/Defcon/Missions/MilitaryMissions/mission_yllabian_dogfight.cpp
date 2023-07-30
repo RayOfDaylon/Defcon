@@ -38,7 +38,7 @@ void Defcon::CYllabianDogfight::MakeTargets(float fElapsed, const CFPoint& where
 		if(m_nAttackWave >= 3)
 			return;
 
-		const Wave waves[] = 
+		const FEnemySpawnCounts waves[] = 
 		{
 			{ ObjType::GUPPY,   { 12, 15, 9, 0 } },
 			{ ObjType::SWARMER, {  6,  3, 6, 0 } }
@@ -48,14 +48,14 @@ void Defcon::CYllabianDogfight::MakeTargets(float fElapsed, const CFPoint& where
 		int32 i, j;
 		for(i = 0; i < array_size(waves); i++)
 		{
-			for(j = 0; j < waves[i].count[m_nAttackWave] && this->HostilesRemaining() > 0; j++)
+			for(j = 0; j < waves[i].NumPerWave[m_nAttackWave] && this->HostilesRemaining() > 0; j++)
 			{
 				float wp = m_pArena->GetWidth();
 				float x = (FRAND - 0.5f) * m_pArena->GetDisplayWidth() + wp/2;
 				x = (float)fmod(x, wp);
 				float y = FRANDRANGE(0.25f, 0.75f) * m_pArena->GetHeight();
 
-				m_pArena->CreateEnemy(waves[i].type, CFPoint(x, y), FRANDRANGE(0.0f, 0.1f * j), true, true);
+				m_pArena->CreateEnemy(waves[i].Kind, CFPoint(x, y), FRANDRANGE(0.0f, 0.1f * j), true, true);
 			}
 		}
 

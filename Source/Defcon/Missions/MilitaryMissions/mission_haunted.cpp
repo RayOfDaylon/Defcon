@@ -14,13 +14,19 @@ void Defcon::CHaunted::Init(UDefconPlayViewBase* pA)
 {
 	CMilitaryMission::Init(pA);
 
-	m_nHostilesRemaining = 81;
-	m_nLandersRemaining  = 30;
+	//m_nHostilesRemaining = 81;
+	//m_nLandersRemaining  = 30;
 
 	IntroText =
 		"Landers are arriving with a ghost escort.\n"
 		"Engage enemy forces and eliminate."
 		;
+
+	JFactor = 0.1f;
+
+	AddEnemySpawnInfo({ ObjType::LANDER, { 10, 10, 10 } });
+	AddEnemySpawnInfo({ ObjType::DYNAMO, {  3,  5,  3 } });
+	AddEnemySpawnInfo({ ObjType::GHOST,  { 10, 15, 15 } });
 }
 
 
@@ -35,7 +41,9 @@ void Defcon::CHaunted::MakeTargets(float fElapsed, const CFPoint& where)
 		this->AddMissionCleaner(where);
 	}
 
+	UpdateWaves(where);
 
+#if 0
 	if((this->HostilesInPlay() == 0 && m_fRepopCounter > DELAY_BEFORE_ATTACK) 
 		|| m_fRepopCounter > DELAY_BETWEEN_REATTACK)
 	{
@@ -72,5 +80,6 @@ void Defcon::CHaunted::MakeTargets(float fElapsed, const CFPoint& where)
 
 		m_nAttackWave++;
 	}
+#endif
 }
 
