@@ -16,43 +16,14 @@ void Defcon::CReformerShowdown::Init(UDefconPlayViewBase* pA)
 	CMilitaryMission::Init(pA);
 
 	m_nHostilesRemaining = 6+6;
-}
 
-
-bool Defcon::CReformerShowdown::Update(float fElapsed)
-{
-	if(!CMilitaryMission::Update(fElapsed))
-		return false;
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CReformerShowdown::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"Reformers have moved in to engage you.",
-		"Destroy their parts before they regroup.",
-		"Also watch out for swarmer escorts.",
-		"",
-		"Engage enemy forces and eliminate them.",
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+	IntroText =
+		"Reformers have moved in to engage you.\n"
+		"Destroy their parts before they regroup.\n"
+		"Also watch out for swarmer escorts.\n"
+		"\n"
+		"Engage enemy forces and eliminate them."
+		;
 }
 
 

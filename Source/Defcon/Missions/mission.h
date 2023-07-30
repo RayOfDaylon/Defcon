@@ -10,7 +10,7 @@
 	For military missions, please see MilitaryMissions.h
 */
 
-
+#include "CoreMinimal.h"
 #include "Main/event.h"
 #include "Arenas/DefconPlayViewBase.h"
 
@@ -85,7 +85,7 @@ namespace Defcon
 			virtual FString GetDesc() const = 0;
 
 			virtual bool    IsMilitary      () const { return false; }
-			virtual bool	Update			(float);
+			virtual bool	Update			(float DeltaTime);
 			virtual void	Conclude		();
 			virtual bool	HumansInvolved	() { return true; }
 			virtual bool	IsCompleted		() { return true; }
@@ -96,10 +96,15 @@ namespace Defcon
 			void			AddEvent		(CEvent* p) { m_events.Add(p); }
 			bool			IsRunning		() const { return (m_pArena != nullptr); }
 
+			const FString& GetIntroText() const { return IntroText; }
+
 
 		protected:
 
+			void DoIntroText(float DeltaTime);
+
 			CEventQueue            m_events;
+			FString                IntroText;
 			MissionID              m_ID         = MissionID::notdef;
 			float                  m_fAge       = 0.0f;
 			UDefconPlayViewBase*   m_pArena     = nullptr;
@@ -110,7 +115,7 @@ namespace Defcon
 	class CFlightTrainingMission : public IMission
 	{
 		public:
-			CFlightTrainingMission() { m_ID = MissionID::flighttraining; }
+			CFlightTrainingMission();
 			virtual bool Update(float) override;
 
 			virtual FString GetName() const override { return "Flight Training"; }
@@ -121,7 +126,7 @@ namespace Defcon
 			virtual bool HumansInvolved	() override { return false; }
 
 		private:
-			void DoIntroText		(float);
+			//void DoIntroText		(float);
 			void DoMakeTargets		(float);
 			bool AreAllTargetsHit	(float);
 			void CheckTargetHit		(float);
@@ -144,7 +149,7 @@ namespace Defcon
 			virtual bool    HumansInvolved () override { return false; }
 
 		private:
-			void DoIntroText		(float);
+			//void DoIntroText		(float);
 			void DoMakeTargets		(float);
 			bool AreAllTargetsHit	(float);
 			//void CheckTargetHit		(float);

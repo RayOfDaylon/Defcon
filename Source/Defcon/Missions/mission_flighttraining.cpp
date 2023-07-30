@@ -22,6 +22,22 @@
 
 constexpr int32 NumBeacons = 15;
 
+Defcon::CFlightTrainingMission::CFlightTrainingMission()
+{
+	m_ID = MissionID::flighttraining;
+
+	IntroText = 
+		"Welcome, Defender.\n"
+		"\n"
+		"This is a training exercise to help familiarize you\n"
+		"with your ship's navigation controls.\n"
+		"\n"
+		"Press A and Z to move up and down, and K and L to move left and right.\n"
+		"\n"
+		"Collide with all of the beacon targets to complete the exercise."
+		;
+}
+
 
 bool Defcon::CFlightTrainingMission::Update(float fElapsed)
 {
@@ -31,11 +47,13 @@ bool Defcon::CFlightTrainingMission::Update(float fElapsed)
 	//   the mission ends.
 
 	if(!IMission::Update(fElapsed))
+	{
 		return false;
+	}
 
 	if(m_fAge < 5.0f)
 	{
-		this->DoIntroText(fElapsed);
+		//this->DoIntroText(fElapsed);
 		return true;
 	}
 
@@ -52,36 +70,6 @@ bool Defcon::CFlightTrainingMission::Update(float fElapsed)
 	}
 
 	return true;
-}
-
-
-void Defcon::CFlightTrainingMission::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-
-	if(m_bIntroDone)
-	{
-		return;
-	}
-
-	m_bIntroDone = true;
-	
-	const char* psz[] = 
-	{
-		"Welcome, Defender.",
-		"",
-		"This is a training exercise to help familiarize you",
-		"with your ship's navigation controls.",
-		"",
-		"Press A and Z to move up and down, and K and L to move left and right.",
-		"",
-		"Collide with all of the beacon targets to complete the exercise."
-	};
-
-	for(auto p : psz)
-	{
-		m_pArena->AddMessage(FString(p));
-	}
 }
 
 

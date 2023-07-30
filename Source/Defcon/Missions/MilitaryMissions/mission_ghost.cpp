@@ -16,44 +16,15 @@ void Defcon::CGhostMission::Init(UDefconPlayViewBase* pA)
 	CMilitaryMission::Init(pA);
 
 	m_nHostilesRemaining = 9 + 40 + 6;
-}
 
-
-bool Defcon::CGhostMission::Update(float fElapsed)
-{
-	if(!CMilitaryMission::Update(fElapsed))
-		return false;
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CGhostMission::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"The 'ghost' reformer variant has appeared en masse.",
-		"They are based on some type of controlled plasma",
-		"and can break up and reform at will. They are",
-		"impossible to destroy at close range.",
-		"",
-		"Engage enemy forces and eliminate them.",
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+	IntroText =
+		"The 'ghost' reformer variant has appeared en masse.\n"
+		"They are based on some type of controlled plasma\n"
+		"and can break up and reform at will. They are\n"
+		"impossible to destroy at close range.\n"
+		"\n"
+		"Engage enemy forces and eliminate them."
+		;
 }
 
 

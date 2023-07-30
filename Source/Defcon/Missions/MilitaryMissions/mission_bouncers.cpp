@@ -18,40 +18,8 @@ void Defcon::CBouncersMission::Init(UDefconPlayViewBase* pA)
 
 	m_nHostilesRemaining = 71 + 9 + 9;
 	m_nLandersRemaining  = 30;
-}
 
-
-bool Defcon::CBouncersMission::Update(float fElapsed)
-{
-	if(!CMilitaryMission::Update(fElapsed))
-		return false;
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CBouncersMission::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"A group of bouncers has decided",
-		"to 'drop' in."
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+	IntroText = "A group of bouncers has decided to 'drop' in.";
 }
 
 

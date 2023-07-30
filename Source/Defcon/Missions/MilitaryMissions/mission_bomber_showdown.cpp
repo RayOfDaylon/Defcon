@@ -17,44 +17,14 @@ void Defcon::CBomberShowdown::Init(UDefconPlayViewBase* pA)
 
 	m_nHostilesRemaining = 18+6;
 	// 9*2 bombers + 3*2 pods
-}
 
-
-bool Defcon::CBomberShowdown::Update(float fElapsed)
-{
-	if(!CMilitaryMission::Update(fElapsed))
-	{
-		return false;
-	}
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CBomberShowdown::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-	const char* psz[] = 
-	{
-		"An armada of bombers has been detected.",
-		"They will fill the sky with mines; ",
-		"avoid impacting them at all costs.",
-		"",
-		"Engage enemy forces and eliminate them.",
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+	IntroText =
+		"An armada of bombers has been detected.\n"
+		"They will fill the sky with mines;\n"
+		"avoid impacting them at all costs.\n"
+		"\n"
+		"Engage enemy forces and eliminate them."
+		;
 }
 
 

@@ -39,41 +39,12 @@ void Defcon::CPartyMixMission::Init(UDefconPlayViewBase* pA)
 			}
 		}
 	}
-}
 
-
-bool Defcon::CPartyMixMission::Update(float fElapsed)
-{
-	if(!CMilitaryMission::Update(fElapsed))
-		return false;
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CPartyMixMission::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"The Apex are temporarily thrown into chaos",
-		"and can only mount a mixed, random counterattack.",
+	IntroText =
+		"The Apex are temporarily thrown into chaos\n"
+		"and can only mount a mixed, random counterattack.\n"
 		"There's no telling what will come your way."
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+		;
 }
 
 

@@ -17,46 +17,16 @@ void Defcon::CBringItOn::Init(UDefconPlayViewBase* pA)
 	CMilitaryMission::Init(pA);
 
 	m_nHostilesRemaining = 12 + 6;
-}
 
-
-bool Defcon::CBringItOn::Update(float fElapsed)
-{
-	if(!CMilitaryMission::Update(fElapsed))
-	{
-		return false;
-	}
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CBringItOn::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-	const char* psz[] = 
-	{
-		"Reformers and dynamos have laid a trap.",
-		"They have signalled baiters, phreds and munchies",
-		"to arrive early in a high-numbered ambush.",
-		"",
-		"Don't let the ambush distract you from",
-		"properly eliminating the ordinary enemies,",
-		"otherwise you will be overwhelmed.",
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+	IntroText =
+		"Reformers and dynamos have laid a trap.\n"
+		"They have signalled baiters, phreds and munchies\n"
+		"to arrive early in a high-numbered ambush.\n"
+		"\n"
+		"Don't let the ambush distract you from\n"
+		"properly eliminating the ordinary enemies,\n"
+		"otherwise you will be overwhelmed.\n"
+	;
 }
 
 

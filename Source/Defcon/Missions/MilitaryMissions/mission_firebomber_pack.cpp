@@ -17,43 +17,14 @@ void Defcon::CFirebomberPack::Init(UDefconPlayViewBase* pA)
 	CMilitaryMission::Init(pA);
 
 	m_nHostilesRemaining = 40;
-}
 
-
-bool Defcon::CFirebomberPack::Update(float fElapsed)
-{
-	if(!CMilitaryMission::Update(fElapsed))
-		return false;
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CFirebomberPack::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"A rogue group of firebombers has tightly",
-		"clustered on the far side of the planet.",
-		"",
-		"Their combined firepower in tight quarters",
-		"may require deploying smartbombs."
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+	IntroText = 
+		"A rogue group of firebombers has tightly\n"
+		"clustered on the far side of the planet.\n"
+		"\n"
+		"Their combined firepower in tight quarters\n"
+		"may require deploying smartbombs.\n"
+	;
 }
 
 

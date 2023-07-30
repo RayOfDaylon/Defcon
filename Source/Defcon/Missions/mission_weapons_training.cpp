@@ -36,6 +36,17 @@ void Defcon::CWeaponsTrainingMission::Init(UDefconPlayViewBase* pA)
 	m_bTargetsMade = false;
 
 	NumTargetsHit = 0;
+
+	IntroText = 
+		"Now we'll practice shooting.\n"
+		"\n"
+		"Destroy the targets with your ship's laser cannon.\n"
+		"Pressing the spacebar will fire a round.\n"
+		"\n"
+		"When you have destroyed all the targets,\n"
+		"you'll be cleared for your first real mission."
+		;
+
 }
 
 
@@ -48,7 +59,7 @@ bool Defcon::CWeaponsTrainingMission::Update(float fElapsed)
 
 	if(m_fAge < 5.0f)
 	{
-		this->DoIntroText(fElapsed);
+		//this->DoIntroText(fElapsed);
 	}
 	else if(m_fAge < 6.0f)
 	{
@@ -61,37 +72,6 @@ bool Defcon::CWeaponsTrainingMission::Update(float fElapsed)
 	}
 
 	return true;
-}
-
-
-void Defcon::CWeaponsTrainingMission::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-	{
-		return;
-	}
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"Now we'll practice shooting.",
-		"",
-		"Destroy the targets with your ship's laser cannon.",
-		"Pressing the spacebar will fire a round.",
-		"",
-		"When you have destroyed all the targets,",
-		"you'll be cleared for your first real mission."
-	};
-
-
-	for(auto p : psz)
-	{
-		m_pArena->AddMessage(FString(p));
-	}
 }
 
 

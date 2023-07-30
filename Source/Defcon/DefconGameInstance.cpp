@@ -123,7 +123,7 @@ bool UDefconGameInstance::Update(float DeltaTime)
 		return m_pMission->Update(DeltaTime);
 	}
 
-	return (m_pMission != nullptr);
+	return false;
 }
 
 
@@ -133,8 +133,6 @@ void UDefconGameInstance::AddEvent(Defcon::CEvent* Event)
 
 	m_pMission->AddEvent(Event);
 }
-
-
 
 
 void UDefconGameInstance::CreateArenas()

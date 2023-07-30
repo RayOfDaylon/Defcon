@@ -24,40 +24,11 @@ void Defcon::CYllabianEscort::Init(UDefconPlayViewBase* pA)
 							+10+12+10+5;
 
 	m_nLandersRemaining =  10 + 12 + 10 + 5;
-}
 
-
-bool Defcon::CYllabianEscort::Update(float fElapsed)
-{
-	if(!CMilitaryMission::Update(fElapsed))
-		return false;
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CYllabianEscort::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"Yllabian fighters are escorting a lander attack.",
+	IntroText = 
+		"Yllabian fighters are escorting a lander attack.\n"
 		"Engage enemy forces and eliminate them."
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+	;
 }
 
 

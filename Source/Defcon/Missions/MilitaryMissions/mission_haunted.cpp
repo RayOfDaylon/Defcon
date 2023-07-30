@@ -16,40 +16,11 @@ void Defcon::CHaunted::Init(UDefconPlayViewBase* pA)
 
 	m_nHostilesRemaining = 81;
 	m_nLandersRemaining  = 30;
-}
 
-
-bool Defcon::CHaunted::Update(float fElapsed)
-{
-	if(!CMilitaryMission::Update(fElapsed))
-		return false;
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CHaunted::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"Landers are arriving with a ghost escort.",
+	IntroText =
+		"Landers are arriving with a ghost escort.\n"
 		"Engage enemy forces and eliminate."
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+		;
 }
 
 

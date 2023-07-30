@@ -19,49 +19,12 @@ void Defcon::CApexOffensive::Init(UDefconPlayViewBase* pA)
 
 	m_nHostilesRemaining = 18 + 13 + 4 + 6 + 6 + 9 + 4 + 8;
 	m_nLandersRemaining  = 3 + 6 + 5 + 4;
-}
 
-
-bool Defcon::CApexOffensive::Update(float fElapsed)
-{
-	// - Show some intro text.
-	// - Make nine landers appear, first wave
-	// - of four, second of three, third of two.
-	//   Make them come in every DELAY_BETWEEN_REATTACK 
-	//   or if no hostiles exist.
-	// - When all hostiles gone,
-	//   the mission ends.
-
-	if(!CMilitaryMission::Update(fElapsed))
-		return false;
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CApexOffensive::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"The landers have adopted an all-out",
-		"escort strategy. Destroy the landers first",
+	IntroText =
+		"The landers have adopted an all-out\n"
+		"escort strategy. Destroy the landers first\n"
 		"to minimize humanoid losses."
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+		;
 }
 
 

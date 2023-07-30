@@ -23,42 +23,12 @@ void Defcon::CYllabianDogfight2::Init(UDefconPlayViewBase* pA)
 							+3+3+3
 							+10+7+4+3
 							+3+4+4+3;
-}
 
-
-bool Defcon::CYllabianDogfight2::Update(float fElapsed)
-{
-	if(!CMilitaryMission::Update(fElapsed))
-		return false;
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CYllabianDogfight2::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"More Yllabian space guppies and swarmers",
-		"have set an ambush.",
-		"",
-		"Engage enemy forces and eliminate them.",
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+	IntroText =
+		"More Yllabian space guppies and swarmers have set an ambush.\n"
+		"\n"
+		"Engage enemy forces and eliminate them."
+		;
 }
 
 

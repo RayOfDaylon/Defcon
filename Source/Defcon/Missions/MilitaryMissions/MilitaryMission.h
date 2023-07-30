@@ -72,7 +72,9 @@ namespace Defcon
 
 
 		protected:
-			void AddStargate		();
+			void AddStargate();
+
+			CFRect       StargateRect;
 
 			IGameObject* m_pStargate = nullptr;
 
@@ -91,13 +93,13 @@ namespace Defcon
 			CFirstContactMission() { m_ID = MissionID::firstcontact; }
 
 			virtual void Init    (UDefconPlayViewBase*) override;
-			virtual bool Update  (float) override;
+			//virtual bool Update  (float) override;
 
 			virtual FString GetName() const override { return "First Contact"; }
 			virtual FString GetDesc() const override { return "A few landers of the Asanthi Apex arrive"; }
 
 		private:
-			void         DoIntroText  (float);
+			//void         DoIntroText  (float);
 			virtual void MakeTargets  (float, const CFPoint&) override;
 	};
 
@@ -107,13 +109,13 @@ namespace Defcon
 		public:
 			CReinforcedMission() { m_ID = MissionID::reinforcements; }
 			virtual void Init    (UDefconPlayViewBase*) override;
-			virtual bool Update  (float) override;
+			//virtual bool Update  (float) override;
 
 			virtual FString GetName() const override { return "Reinforcements"; }
 			virtual FString GetDesc() const override { return "The landers bring some friends to escort them"; }
 
 		private:
-			void         DoIntroText  (float);
+			//void         DoIntroText  (float);
 			virtual void MakeTargets  (float, const CFPoint&) override;
 	};
 
@@ -123,13 +125,13 @@ namespace Defcon
 		public:
 			CBomberShowdown() { m_ID = MissionID::bomber_showdown; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Bomber Showdown"; }
 			virtual FString GetDesc() const { return "Even a few mines will blow your shields away"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -139,13 +141,13 @@ namespace Defcon
 		public:
 			CFirebomberShowdown() { m_ID = MissionID::firebomber_showdown; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Firebomber Showdown"; }
 			virtual FString GetDesc() const { return "These guys are hard to hit, and love to shoot"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&) override;
 	};
 
@@ -155,7 +157,7 @@ namespace Defcon
 		public:
 			CYllabianDogfight() { m_ID = MissionID::yllabian_dogfight; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Yllabian Dogfight"; }
 			virtual FString GetDesc() const { return "In space, no one can hear you scream"; }
@@ -166,7 +168,7 @@ namespace Defcon
 			virtual bool HumansInvolved() { return false; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -176,7 +178,7 @@ namespace Defcon
 		public:
 			CYllabianDogfight2() { m_ID = MissionID::yllabian_dogfight2; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Yllabian Dogfight #2"; }
 			virtual FString GetDesc() const { return "Space gets more crowded"; }
@@ -187,7 +189,7 @@ namespace Defcon
 			virtual bool HumansInvolved() { return false; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -197,14 +199,14 @@ namespace Defcon
 		public:
 			CYllabianEscort() { m_ID = MissionID::yllabian_escort; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Yllabian Escort"; }
 			virtual FString GetDesc() const { return "This ought to be interesting"; }
 
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -214,13 +216,13 @@ namespace Defcon
 		public:
 			CFirebomberPack() { m_ID = MissionID::firebomber_pack; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Firebomber Pack"; }
 			virtual FString GetDesc() const { return "A rogue cluster of firebombers in a tight formation"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -229,13 +231,13 @@ namespace Defcon
 		public:
 			CApexOffensive() { m_ID = MissionID::apex_offensive; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Apex Offensive"; }
 			virtual FString GetDesc() const { return "The Apex beef up the lander escort to full strength"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -245,13 +247,13 @@ namespace Defcon
 		public:
 			CPartyMixMission() { m_ID = MissionID::random; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Party Mix"; }
 			virtual FString GetDesc() const { return "Mix it up with a random assortment of Apex enemies"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 
 			TArray<ObjType> ChosenEnemyTypes;
@@ -294,13 +296,13 @@ namespace Defcon
 		public:
 			CApexOffensiveLite() { m_ID = MissionID::apex_offensive_lite; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Apex Offensive Lite"; }
 			virtual FString GetDesc() const { return "The Apex beef up their lander escort a little more"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -317,7 +319,7 @@ namespace Defcon
 			virtual FString GetDesc() const { return "A huge swarmer fleet takes you on by itself"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 #endif
@@ -327,13 +329,13 @@ namespace Defcon
 		public:
 			CLanderOverrun() { m_ID = MissionID::lander_overrun; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Lander Overrun"; }
 			virtual FString GetDesc() const { return "A large group of landers takes matters into their own hands"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -343,13 +345,13 @@ namespace Defcon
 		public:
 			CReformerShowdown() { m_ID = MissionID::reformer_showdown; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Reformer Showdown"; }
 			virtual FString GetDesc() const { return "Death is only the beginning"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -359,13 +361,13 @@ namespace Defcon
 		public:
 			CHaunted() { m_ID = MissionID::haunted; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Haunted"; }
 			virtual FString GetDesc() const { return "Landers try a little supernatural help"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -375,13 +377,13 @@ namespace Defcon
 		public:
 			CBouncersMission() { m_ID = MissionID::bouncers; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Attack of the Bouncers"; }
 			virtual FString GetDesc() const { return "Follow the bouncing ball and fire"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -391,13 +393,13 @@ namespace Defcon
 		public:
 			CGhostMission() { m_ID = MissionID::ghost; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Ghost in the Machine"; }
 			virtual FString GetDesc() const { return "These reformer mutations are also hard to kill"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 
@@ -407,13 +409,13 @@ namespace Defcon
 		public:
 			CBringItOn() { m_ID = MissionID::bring_it_on; }
 			virtual void Init(UDefconPlayViewBase*);
-			virtual bool Update(float);
+			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Bring it On!"; }
 			virtual FString GetDesc() const { return "You guys want a piece of me? Do you? Yeah?"; }
 
 		private:
-			void DoIntroText(float);
+			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 

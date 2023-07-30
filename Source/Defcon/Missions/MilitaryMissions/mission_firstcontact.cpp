@@ -26,51 +26,12 @@ void Defcon::CFirstContactMission::Init(UDefconPlayViewBase* pA)
 
 	m_nHostilesRemaining = 9;
 	m_nLandersRemaining  = 9;
-}
 
-
-bool Defcon::CFirstContactMission::Update(float fElapsed)
-{
-	// - Show some intro text.
-	// - Make nine landers appear, first wave
-	// - of four, second of three, third of two.
-	//   Make them come in every DELAY_BETWEEN_REATTACK 
-	//   or if no hostiles exist.
-	// - When all hostiles gone,
-	//   the mission ends.
-
-	if(!CMilitaryMission::Update(fElapsed))
-	{
-		return false;
-	}
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CFirstContactMission::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"A small group of Landers is approaching.",
-		"",
-		"Engage enemy forces and eliminate them.",
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+	IntroText =
+		"A small group of Landers is approaching.\n"
+		"\n"
+		"Engage enemy forces and eliminate them."
+	;
 }
 
 

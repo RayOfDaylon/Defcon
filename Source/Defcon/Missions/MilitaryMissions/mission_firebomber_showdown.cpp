@@ -17,43 +17,14 @@ void Defcon::CFirebomberShowdown::Init(UDefconPlayViewBase* pA)
 
 	m_nHostilesRemaining = 12 + 6;
 	// 6*2 firebombers + 6 dynamos
-}
 
-
-bool Defcon::CFirebomberShowdown::Update(float fElapsed)
-{
-	if(!CMilitaryMission::Update(fElapsed))
-		return false;
-
-	this->DoIntroText(fElapsed);
-
-	return true;
-}
-
-
-void Defcon::CFirebomberShowdown::DoIntroText(float fElapsed)
-{
-	// If we already created the intro text, then do nothing.
-	if(m_bIntroDone)
-		return;
-
-	m_bIntroDone = true;
-	// First time here; create intro text objects.
-
-
-	const char* psz[] = 
-	{
-		"Firebombers have moved in to engage you.",
-		"Try to fire at them from a distance.",
-		"Also watch out for dynamo escorts.",
-		"",
-		"Engage enemy forces and eliminate them.",
-	};
-
-	for(auto Text : psz)
-	{
-		m_pArena->AddMessage(Text);
-	}
+	IntroText = 
+		"Firebombers have moved in to engage you.\n"
+		"Try to fire at them from a distance.\n"
+		"Also watch out for dynamo escorts.\n"
+		"\n"
+		"Engage enemy forces and eliminate them.\n"
+		;
 }
 
 
