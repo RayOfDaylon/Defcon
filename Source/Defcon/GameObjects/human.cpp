@@ -25,16 +25,16 @@ Defcon::CHuman::CHuman()
 	Type = EObjType::HUMAN;
 
 	Objects = nullptr;
-	m_pCarrier = nullptr;
+	Carrier = nullptr;
 	Age = FRAND * 10;
 	RadarColor = C_MAGENTA;
-	m_fSwitchTime = FRANDRANGE(1.0f, 4.0f);
+	SwitchFacingDirectionCountdown = FRANDRANGE(1.0f, 4.0f);
 	bCanBeInjured = true;
 	bIsCollisionInjurious = false;
 	BboxRadius.Set(4, 10);
 	
 	WalkingSpeed = FRANDRANGE(8.0f, 12.0f);
-	m_fSwitchWalkDirectionTime = FRANDRANGE(2.0f, 5.0f);
+	SwitchWalkingDirectionCountdown = FRANDRANGE(2.0f, 5.0f);
 
 	const auto V = Daylon::RandVector2D();
 	Motion.Set(V.X, V.Y * 0.25f);
@@ -60,7 +60,7 @@ bool Defcon::CHuman::IsFalling() const
 
 void Defcon::CHuman::OnAboutToDie()
 {
-	m_pCarrier = nullptr;
+	Carrier = nullptr;
 
 	// Tell everyone what happened.
 	// If we have an abductor, he'll get told too.
@@ -86,9 +86,9 @@ void Defcon::CHuman::Notify(Defcon::EMessage msg, void* pObj)
 	{
 		case Defcon::EMessage::TakenAboard:
 		{
-			check(m_pCarrier == nullptr);
-			m_pCarrier = (IGameObject*)pObj;
-			check(m_pCarrier != nullptr);
+			check(Carrier == nullptr);
+			Carrier = (IGameObject*)pObj;
+			check(Carrier != nullptr);
 			
 			// Tell everyone what happened.
 			Objects ->Notify(Defcon::EMessage::HumanTakenAboard, this);
@@ -98,8 +98,8 @@ void Defcon::CHuman::Notify(Defcon::EMessage msg, void* pObj)
 
 		case Defcon::EMessage::CarrierKilled:
 		case Defcon::EMessage::Released:
-			check(m_pCarrier != nullptr);
-			m_pCarrier = nullptr;
+			check(Carrier != nullptr);
+			Carrier = nullptr;
 			break;
 	}
 
@@ -114,18 +114,18 @@ void Defcon::CHuman::Move(float DeltaTime)
 
 
 	// Flip sprite every now and then.
-	m_fSwitchTime -= DeltaTime;
+	SwitchFacingDirectionCountdown -= DeltaTime;
 
-	if(m_fSwitchTime <= 0.0f)
+	if(SwitchFacingDirectionCountdown <= 0.0f)
 	{
 		// Make player "thrash frantically" if being abducted.
 		if(IsBeingCarried() && GetCarrier()->GetType() != EObjType::PLAYER)
 		{
-			m_fSwitchTime = FRANDRANGE(0.25f, 1.0f);
+			SwitchFacingDirectionCountdown = FRANDRANGE(0.25f, 1.0f);
 		}
 		else
 		{
-			m_fSwitchTime = FRANDRANGE(1.0f, 4.0f);
+			SwitchFacingDirectionCountdown = FRANDRANGE(1.0f, 4.0f);
 		}
 	
 		Sprite->FlipHorizontal = !Sprite->FlipHorizontal;
@@ -177,11 +177,11 @@ void Defcon::CHuman::Move(float DeltaTime)
 		{
 			// Casually roam the terrain.
 
-			m_fSwitchWalkDirectionTime -= DeltaTime;
+			SwitchWalkingDirectionCountdown -= DeltaTime;
 
-			if(m_fSwitchWalkDirectionTime <= 0.0f)
+			if(SwitchWalkingDirectionCountdown <= 0.0f)
 			{
-				m_fSwitchWalkDirectionTime = FRANDRANGE(2.0f, 5.0f);
+				SwitchWalkingDirectionCountdown = FRANDRANGE(2.0f, 5.0f);
 
 				const auto V = Daylon::RandVector2D();
 				Motion.Set(V.X, V.Y * 0.25f);

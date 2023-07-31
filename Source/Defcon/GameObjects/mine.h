@@ -17,7 +17,7 @@ namespace Defcon
 {
 	class CMine : public IGameObject
 	{
-		// Laid by bombers.
+		// Stationary collision hazards laid by bombers.
 
 		public:
 			CMine();
@@ -25,24 +25,18 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			//void Create(const CFPoint&, const Orient2D&);
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual void DrawSmall(FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override {}
-			virtual void DrawBbox(FPaintArguments&, const I2DCoordMapper&);
 
-			virtual void GetInjurePt(CFPoint&) const;
-			virtual bool TestInjury(const CFRect&) const;
+			virtual void  Move               (float) override;
+			virtual void  DrawSmall          (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override {}
 
-			virtual float GetCollisionForce() const
-				{
-					return 0.01f * MINE_DAMAGE; 
-				}
+			virtual void  GetInjurePt        (CFPoint&) const override;
+			virtual bool  TestInjury         (const CFRect&) const override;
+			virtual float GetCollisionForce  () const override { return 0.01f * MINE_DAMAGE; }
 
 
 		private:
-			float	     m_maxAge;
-			FLinearColor m_color;
+			//float	     m_maxAge;
+			//FLinearColor m_color;
 
-	}; // CMine
+	};
 }

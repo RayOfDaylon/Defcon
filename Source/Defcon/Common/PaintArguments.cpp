@@ -7,7 +7,7 @@
 #include "Runtime/SlateCore/Public/Brushes/SlateColorBrush.h"
 
 
-void FPaintArguments::DrawLaserBeam(int32 X, int32 Y, int32 X2, const FLinearColor& Color)
+void FPaintArguments::DrawLaserBeam(float X, float Y, float X2, const FLinearColor& Color)
 {
 	TArray<FVector2f> Points;
 

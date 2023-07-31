@@ -19,18 +19,18 @@ namespace Defcon
 		public:
 			IBullet();
 			virtual void Move         (float) override;
+			virtual void DrawSmall    (FPaintArguments& FrameBuffer, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush) {}
 			virtual void GetInjurePt  (CFPoint&) const;
 			virtual bool TestInjury   (const CFRect&) const;
-			virtual void SetSpeed     (float f) { m_fSpeed = f; }
+			virtual void SetSpeed     (float f) { Speed = f; }
+
 
 			virtual float GetCollisionForce() const { return 0.01f * BULLET_DAMAGE; }
 
 
 		protected:
-			FLinearColor    m_color;
-			float		    m_fSpeed;
-			float		    m_fRadius;
-			float		    m_fOrgLifespan;
+			FLinearColor    Color;
+			float		    Speed;
 			int32           NumSpriteCels = 0;
 	};
 
@@ -44,8 +44,7 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			void Create(const CFPoint&, const Orient2D&);
-	}; // CBullet
+	};
 
 
 	class CThinBullet : public IBullet
@@ -57,7 +56,6 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			void Create(const CFPoint&, const Orient2D&);
 	}; 
 }
 

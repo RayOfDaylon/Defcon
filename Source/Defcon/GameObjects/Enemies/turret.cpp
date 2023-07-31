@@ -198,11 +198,11 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 	{
 		CFlak* pFlak = new CFlak;
 
-		pFlak->m_eColorbaseYoung = EColor::lightyellow;
-		pFlak->m_eColorbaseOld	= cby;
-		pFlak->m_bCold			= true;
-		pFlak->m_fLargestSize	= FRAND * 15 + 2;
-		pFlak->m_bFade			= true;//bDieOff;
+		pFlak->ColorbaseYoung = EColor::lightyellow;
+		pFlak->ColorbaseOld	= cby;
+		pFlak->bCold			= true;
+		pFlak->LargestSize	= FRAND * 15 + 2;
+		pFlak->bFade			= true;//bDieOff;
 		pFlak->Lifespan		= 1.0f;
 
 		pFlak->Position			= Position;

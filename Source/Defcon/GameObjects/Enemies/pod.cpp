@@ -131,11 +131,11 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 	for(i = 0; i < n; i++)
 	{
 		CFlak* pFlak = new CFlak;
-		pFlak->m_eColorbaseYoung = cby;
-		pFlak->m_eColorbaseOld   = cby;
-		pFlak->m_fLargestSize    = maxsize;
-		pFlak->m_bFade = bDieOff;
-		pFlak->m_bCold = true;
+		pFlak->ColorbaseYoung = cby;
+		pFlak->ColorbaseOld   = cby;
+		pFlak->LargestSize    = maxsize;
+		pFlak->bFade = bDieOff;
+		pFlak->bCold = true;
 
 		pFlak->Position = Position;
 		pFlak->Orientation = Orientation;
@@ -172,12 +172,12 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 		for(i = 0; i < n; i++)
 		{
 			CFlak* pFlak = new CFlak;
-			pFlak->m_eColorbaseYoung = cby;
-			pFlak->m_eColorbaseOld = cby;
-			pFlak->m_fLargestSize = maxsize;
-			pFlak->m_bFade = bDieOff;
+			pFlak->ColorbaseYoung = cby;
+			pFlak->ColorbaseOld = cby;
+			pFlak->LargestSize = maxsize;
+			pFlak->bFade = bDieOff;
 			//pFlak->bDrawsOnRadar = false;
-			pFlak->m_bCold = true;
+			pFlak->bCold = true;
 
 			pFlak->Position = Position;
 			pFlak->Orientation = Orientation;

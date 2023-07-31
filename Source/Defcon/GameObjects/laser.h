@@ -14,7 +14,7 @@
 #include "GameObjects/obj_types.h"
 #include "GameObjects/weapon.h"
 
-#define BEAM_MAXLEN		700
+#define BEAM_MAXLEN     700
 
 
 namespace Defcon
@@ -45,7 +45,7 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			void		  Create            (const CFPoint&, const Orient2D&);
+			void          Create            (const CFPoint&, const Orient2D&);
 			virtual void  Move              (float) override;
 			virtual void  Draw              (FPaintArguments&, const I2DCoordMapper&) override;
 			virtual void  DrawSmall         (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
@@ -55,22 +55,18 @@ namespace Defcon
 
 			virtual bool  OccursFrequently  () const override { return true; }
 			virtual float GetCollisionForce () const override { return 1.1f; }
+			void          SetMaxLength      (float);
 
-			void          SetMaxLength       (int n);
 
-
-			float		m_fArenawidth;
+			//float         m_fArenawidth;
 
 
 		protected:
-			CFPoint		m_posStart;
-			float		m_fLength;
-			float		m_fScale;
-			float		m_maxAge;
-			FLinearColor	m_color;
-			int			m_maxLength = BEAM_MAXLEN; // px
+			CFPoint       StartPosition;
+			float         Length;
+			float         Scale;
+			float         MaxAge;
+			float         MaxLength = BEAM_MAXLEN; // px
 
-	}; // CLaserbeam
+	};
 }
-
-

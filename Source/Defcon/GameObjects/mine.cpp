@@ -18,13 +18,13 @@ Defcon::CMine::CMine()
 	ParentType = Type;
 	Type = EObjType::MINE;
 	bInjurious = true;
-	bCanBeInjured = false;
+	bCanBeInjured = false; // todo: what if we let mines have a tiny bbox requiring precise shots to destroy them?
 
-	RadarColor = C_DARK;
+	//RadarColor = C_DARK;
 
-	m_color = MakeColorFromComponents(255, 255, 255);
+	//m_color = C_WHITE;
 	bMortal = true;
-	Lifespan = SFRAND * 0.25f + MINE_LIFESPAN;
+	Lifespan = FRANDRANGE(MINE_LIFESPAN - 0.25f, MINE_LIFESPAN + 0.25f);//  SFRAND * 0.25f + MINE_LIFESPAN;
 
 	CreateSprite(Type);
 	const auto& SpriteInfo = GameObjectResources.Get(Type);
@@ -42,29 +42,21 @@ const char* Defcon::CMine::GetClassname() const
 
 
 
-void Defcon::CMine::Move(float fTime)
+void Defcon::CMine::Move(float DeltaTime)
 {
-	Age += fTime;
+	Age += DeltaTime;
+
+	// todo: might be cool to have a mine explode if it dies
 }
 
 
-void Defcon::CMine::DrawBbox(FPaintArguments&, const I2DCoordMapper&)
+void Defcon::CMine::GetInjurePt(CFPoint& Pt) const
 {
+	Pt = Position;
 }
 
 
-void Defcon::CMine::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
+bool Defcon::CMine::TestInjury(const CFRect& R) const
 {
-}
-
-
-void Defcon::CMine::GetInjurePt(CFPoint& pt) const
-{
-	pt = Position;
-}
-
-
-bool Defcon::CMine::TestInjury(const CFRect& r) const
-{
-	return r.PtInside(Position);
+	return R.PtInside(Position);
 }

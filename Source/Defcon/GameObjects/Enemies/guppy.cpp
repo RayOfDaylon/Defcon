@@ -254,11 +254,11 @@ void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
 	for(int32 i = 0; i < 20; i++)
 	{
 		CFlak* pFlak = new CFlak;
-		pFlak->m_eColorbaseYoung = BRAND ? EColor::magenta : EColor::red;
-		pFlak->m_eColorbaseOld = BRAND ? EColor::magenta : EColor::orange;
-		pFlak->m_bCold = true;
-		pFlak->m_fLargestSize = 6;
-		pFlak->m_bFade = true;//bDieOff;
+		pFlak->ColorbaseYoung = BRAND ? EColor::magenta : EColor::red;
+		pFlak->ColorbaseOld = BRAND ? EColor::magenta : EColor::orange;
+		pFlak->bCold = true;
+		pFlak->LargestSize = 6;
+		pFlak->bFade = true;//bDieOff;
 
 		pFlak->Position = Position;
 		pFlak->Orientation = Orientation;

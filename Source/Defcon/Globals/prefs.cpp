@@ -77,6 +77,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF( display_blur,                 0,       "",             type_int,       0,           4,      "Set display blurring strength (depends on blur method)"                                    );
 	INITPREF( display_interlace,            0,       "",             type_bool,      0,           0,      "Enable visible scanline display effect"                                                    );
 	INITPREF( lander_value,               150,       "",             type_int,       0,        1000,      "Number of points earned for destroying a lander"                                           );
+	INITPREF( laser_age_max,                0.5f,    "seconds",      type_float,     0.1f,        1.0f,   "Longest length of time a laser beam can exist"                                             );
 	INITPREF( laser_extra_count,            1,       "",             type_int,       1,           4,      "Number of extra rounds per laser shot"                                                     );
 	INITPREF( laser_multi_prob,             0.25f,   "%",            type_float,     0.0f,        1.0f,   "Probablity that extra laser rounds occur per shot"                                         );
 	INITPREF( bomber_value,               250,       "",             type_int,       0,        1000,      "Number of points earned for destroying a bomber"                                           );

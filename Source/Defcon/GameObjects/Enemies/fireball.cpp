@@ -179,11 +179,11 @@ void Defcon::CFireball::Explode(CGameObjectCollection& debris)
 	for(int32 i = 0; i < 20; i++)
 	{
 		CFlak* pFlak = new CFlak;
-		pFlak->m_eColorbaseYoung = cby;
-		pFlak->m_eColorbaseOld = BRAND ? EColor::yellow : EColor::red;
-		pFlak->m_bCold = true;
-		pFlak->m_fLargestSize = 5;
-		pFlak->m_bFade = true;//bDieOff;
+		pFlak->ColorbaseYoung = cby;
+		pFlak->ColorbaseOld = BRAND ? EColor::yellow : EColor::red;
+		pFlak->bCold = true;
+		pFlak->LargestSize = 5;
+		pFlak->bFade = true;//bDieOff;
 
 		pFlak->Position = Position;
 		pFlak->Orientation = Orientation;

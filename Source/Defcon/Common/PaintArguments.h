@@ -27,10 +27,10 @@ struct FPaintArguments
 	float GetWidth  () const { return AllottedGeometry->GetAbsoluteSize().X / AllottedGeometry->Scale; }
 	float GetHeight () const { return AllottedGeometry->GetAbsoluteSize().Y / AllottedGeometry->Scale; }
 
-	void DrawLaserBeam         (int32 X, int32 Y, int32 X2, const FLinearColor& Color);
+	void DrawLaserBeam         (float X, float Y, float X2, const FLinearColor& Color);
 	void ColorRect             (float Left, float Top, float Right, float Bottom, const FLinearColor& Color, float Linewidth = 2.0f);
 	void FillRect              (float Left, float Top, float Right, float Bottom, const FLinearColor& Color);
 	void ColorStraightLine     (int32 X, int32 Y, int32 W, int32 H, const FLinearColor& Color) {}
-	void BrightenStraightLine  (int32 X, int32 Y, int32, int32) {}
+	void BrightenStraightLine  (float X, float Y, float, float) {}
 	//void DarkenRect            (int32 Left, int32 Top, int32 Right, int32 Bottom, float Amount) {}
 };

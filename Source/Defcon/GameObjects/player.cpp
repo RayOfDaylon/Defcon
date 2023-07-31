@@ -458,9 +458,9 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 	for(i = 0; i < n; i++)
 	{
 		CFlak* pFlak = new CFlak;
-		pFlak->m_eColorbaseYoung = cby;
-		pFlak->m_fLargestSize = maxsize;
-		pFlak->m_bFade = bDieOff;
+		pFlak->ColorbaseYoung = cby;
+		pFlak->LargestSize = maxsize;
+		pFlak->bFade = bDieOff;
 
 		pFlak->Position = Position;
 		pFlak->Orientation = Orientation;

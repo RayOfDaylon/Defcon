@@ -206,9 +206,9 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	for(i = 0; i < n; i++)
 	{
 		CFlak* pFlak				= new CFlak;
-		pFlak->m_eColorbaseYoung	= cby;
-		pFlak->m_fLargestSize		= maxsize;
-		pFlak->m_bFade				= bDieOff;
+		pFlak->ColorbaseYoung	= cby;
+		pFlak->LargestSize		= maxsize;
+		pFlak->bFade				= bDieOff;
 
 		pFlak->Position				= Position;
 		pFlak->Orientation				= Orientation;
@@ -258,9 +258,9 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 		{
 			CFlak* pFlak = new CFlak;
 
-			pFlak->m_eColorbaseYoung = cby;
-			pFlak->m_fLargestSize = maxsize;
-			pFlak->m_bFade = bDieOff;
+			pFlak->ColorbaseYoung = cby;
+			pFlak->LargestSize = maxsize;
+			pFlak->bFade = bDieOff;
 			//pFlak->bDrawsOnRadar = false;
 
 			pFlak->Position = Position;
@@ -297,11 +297,11 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 			CPuff* pPuff = new CPuff;
 			// Make at least one big buff.
 			if(i == n-1)
-				pPuff->m_fLargestSize = (float)(maxsize/1.5f * 2 * (FRAND + 1.0f));
+				pPuff->LargestSize = (float)(maxsize/1.5f * 2 * (FRAND + 1.0f));
 			else
-				pPuff->m_fLargestSize = (float)(maxsize/1.5f * (FRAND * .5f+ .5f));
+				pPuff->LargestSize = (float)(maxsize/1.5f * (FRAND * .5f+ .5f));
 
-			pPuff->m_maxAge = pPuff->Lifespan = 
+			pPuff->MaxAge = pPuff->Lifespan = 
 				fLife + SFRAND * 0.125f;
 				
 			pPuff->m_fBrightest = fBrightness + SFRAND*0.1f;

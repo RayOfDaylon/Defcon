@@ -20,16 +20,14 @@
 Defcon::IBullet::IBullet()
 {
 	ParentType = Type;
-	Type = EObjType::BULLET;
-	bInjurious = true;
-	bCanBeInjured = false;
+	Type       = EObjType::BULLET;
 
-	RadarColor.A = 0.0f;
-	m_color = MakeColorFromComponents(255, 255, 255);
-	bMortal = true;
-	m_fOrgLifespan = Lifespan = FRANDRANGE(MIN_BULLETAGE, MAX_BULLETAGE);
-	m_fRadius = 5;
-	m_fSpeed = FRAND * 300 + 352;
+	bInjurious    = true;
+	bCanBeInjured = false;
+	Color         = C_WHITE;
+	bMortal       = true;
+	Lifespan      = FRANDRANGE(MIN_BULLETAGE, MAX_BULLETAGE);
+	Speed         = FRAND * 300 + 352;
 }
 
 
@@ -54,13 +52,14 @@ void Defcon::IBullet::Move(float fTime)
 	{
 		WRAP(Position.x, 0, gpArena->GetWidth());
 		check(Position.x >= 0.0f && Position.x < gpArena->GetWidth());
+
 		if(Position.y <= gpArena->GetTerrainElev(Position.x))
 		{
 			this->MarkAsDead();
 		}
 	}
 
-	Position.MulAdd(Orientation.Fwd, fTime * m_fSpeed);
+	Position.MulAdd(Orientation.Fwd, fTime * Speed);
 }
 
 

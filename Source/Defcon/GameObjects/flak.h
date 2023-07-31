@@ -28,22 +28,20 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move      (float);
-			virtual void Draw      (FPaintArguments&, const I2DCoordMapper&);
-			virtual void DrawSmall (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&);
-			virtual void DrawBbox  (FPaintArguments&, const I2DCoordMapper&) {}
+			virtual void Move      (float DeltaTime) override;
+			virtual void Draw      (FPaintArguments&, const I2DCoordMapper&) override;
+			virtual void DrawSmall (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override {}
 
 			virtual bool OccursFrequently () const { return true; }
 
-			float	m_fLargestSize = 6;
-			bool	m_bFade = true;
-
-			EColor	m_eColorbaseOld;
-			EColor	m_eColorbaseYoung;
-			bool	m_bCold;
+			float	LargestSize = 6;
+			EColor	ColorbaseOld;
+			EColor	ColorbaseYoung;
+			bool	bFade = true;
+			bool	bCold;
 
 		protected:
-			float          m_maxAge;
+			float          MaxAge;
 			FSlateBrush*   BrushPtr = nullptr;
 	};
 
@@ -60,7 +58,6 @@ namespace Defcon
 			//virtual void Move(float);
 			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
 			//virtual void DrawSmall(FPaintArguments&, const I2DCoordMapper&);
-			//virtual void DrawBbox(FPaintArguments&, const I2DCoordMapper&) {}
 
 			//virtual bool OccursFrequently() const { return true; }
 
@@ -91,9 +88,9 @@ namespace Defcon
 
 			virtual bool OccursFrequently() const { return true; }
 
-			float	m_fLargestSize;
+			float	LargestSize;
 			float	m_fBrightest;
-			float	m_maxAge;
+			float	MaxAge;
 
 
 	}; // CPuff

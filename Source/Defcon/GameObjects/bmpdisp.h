@@ -20,23 +20,11 @@ namespace Defcon
 			CBitmapDisplayer();
 			virtual ~CBitmapDisplayer();
 
-			virtual void InitBitmapDisplayer(int32, int32, float, float, float);
-
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
 
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual void DrawSmall(FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
-
-		protected:
-			int32		m_nFrame, m_nBaseID, m_nFrameCount;
-
-		private:
-			float		m_fOrgLifespan;
-			float		m_fAlphaScale;
-			float		m_fAlphaMin;
+			virtual void Move(float DeltaTime);
 
 	}; // CBitmapDisplayer
 }

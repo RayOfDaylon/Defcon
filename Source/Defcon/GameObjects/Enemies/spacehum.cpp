@@ -97,9 +97,9 @@ void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 	for(int32 i = 0; i < 10; i++)
 	{
 		CFlak* pFlak = new CFlak;
-		pFlak->m_eColorbaseYoung = cby;
-		pFlak->m_fLargestSize = 4;
-		pFlak->m_bFade = true;//bDieOff;
+		pFlak->ColorbaseYoung = cby;
+		pFlak->LargestSize = 4;
+		pFlak->bFade = true;//bDieOff;
 
 		pFlak->Position = Position;
 		pFlak->Orientation = Orientation;

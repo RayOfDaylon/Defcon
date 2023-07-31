@@ -19,7 +19,6 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const override { return "Beacon"; }
 #endif
-			virtual void	Draw					(FPaintArguments&, const I2DCoordMapper&) override;
-			virtual void    Move                    (float DeltaTime) override;
+			virtual void    Move   (float DeltaTime) override;
 	};
 }

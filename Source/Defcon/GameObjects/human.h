@@ -27,15 +27,15 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 
-			virtual void   InitHuman              (const CFPoint& pt) { Position = pt; m_pCarrier = nullptr; Age = 0.0f; }
+			virtual void   InitHuman              (const CFPoint& pt) { Position = pt; Carrier = nullptr; Age = 0.0f; }
 						   				          
 			virtual void   Move                   (float);
 			virtual void   Draw                   (FPaintArguments&, const I2DCoordMapper&);
-			IGameObject*   GetCarrier             () const { return m_pCarrier; }
+			IGameObject*   GetCarrier             () const { return Carrier; }
 			bool           IsBeingCarried         () const { return (this->GetCarrier() != nullptr); }
 			bool           IsFalling              () const;
 			bool           IsOnGround             () const { return !(this->IsFalling() || this->IsBeingCarried()); }
-			void           SetToNotCarried        () { m_pCarrier = nullptr; }
+			void           SetToNotCarried        () { Carrier = nullptr; }
 						   
 			void           Notify                 (EMessage, void*);
 			bool           Fireballs              () const { return false; }
@@ -49,11 +49,11 @@ namespace Defcon
 
 
 		private:
-			float			m_fSwitchTime;
-			float           m_fSwitchWalkDirectionTime;
+			float			SwitchFacingDirectionCountdown;
+			float           SwitchWalkingDirectionCountdown;
 			float           WalkingSpeed;
 			CFPoint         Motion;
-			IGameObject*	m_pCarrier;
-	}; // CHuman
+			IGameObject*	Carrier = nullptr;
+	};
 }
 

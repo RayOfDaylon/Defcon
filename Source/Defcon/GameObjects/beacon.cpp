@@ -32,12 +32,7 @@ void Defcon::CBeacon::Move(float DeltaTime)
 
 	Age += DeltaTime;
 
-	float T = (sin(Age * PI * 2) + 1) * 0.5f;
-
-	LerpColor(C_YELLOW, C_BROWN, T, RadarColor);
+	LerpColor(C_YELLOW, C_BROWN, PSIN(Age * PI * 2), RadarColor);
 }
 
 
-void Defcon::CBeacon::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
-}
