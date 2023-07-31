@@ -13,11 +13,12 @@
 #include "GameObjects/gameobjlive.h"
 #include "GameObjects/laser.h"
 #include "GameObjects/obj_types.h"
-//#include "Globals/GameColors.h"
 
 #include "Runtime/SlateCore/Public/Styling/SlateBrush.h"
 
+
 class UDefconPlayerShipDebugWidgetBase;
+
 
 namespace Defcon
 {
@@ -37,16 +38,13 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 
-			virtual void Move         (float) override;
-			virtual void Draw         (FPaintArguments&, const I2DCoordMapper&) override;
-			virtual void DrawSmall    (FPaintArguments&, const I2DCoordMapper&, FSlateBrush& Brush) override;
-			virtual void Explode      (CGameObjectCollection&) override;
-			virtual void OnAboutToDie () override;
-			virtual void SetIsAlive   (bool b) override;
-
-			// For the player ship, we need to customize vertical motion.
-			virtual void ImpartForces			(float) override;
-
+			virtual void  Move          (float) override;
+			virtual void  Draw          (FPaintArguments&, const I2DCoordMapper&) override;
+			virtual void  DrawSmall     (FPaintArguments&, const I2DCoordMapper&, FSlateBrush& Brush) override;
+			virtual void  Explode       (CGameObjectCollection&) override;
+			virtual void  OnAboutToDie  () override;
+			virtual void  SetIsAlive    (bool b) override;
+			virtual void  ImpartForces  (float) override; // For the player ship, we need to customize vertical motion.
 
 
 #ifdef SHOW_STATS
@@ -56,20 +54,17 @@ namespace Defcon
 			void FaceLeft   () { Orientation.Fwd.x = -1.0f; }
 			void FaceRight  () { Orientation.Fwd.x = 1.0f; }
 
-			void FireLaserWeapon           (CGameObjectCollection&);
-			bool IsSolid                   () const;
-			bool EmbarkPassenger           (IGameObject*, CGameObjectCollection&);
-			bool DebarkOnePassenger        (CGameObjectCollection&);
-			const CFPoint& GetPickupRadBox () const { return m_bboxradPickup; }
+			void FireLaserWeapon              (CGameObjectCollection&);
+			bool IsSolid                      () const;
+			bool EmbarkPassenger              (IGameObject*, CGameObjectCollection&);
+			bool DebarkOnePassenger           (CGameObjectCollection&);
+			const CFPoint& GetPickupRadiusBox () const { return PickupBboxRadius; }
 
 			FSlateBrush     RadarBrush;
 
 		private:
-			CLaserWeapon	m_laserWeapon;
-			CFPoint         m_bboxradPickup;
+			CLaserWeapon	LaserWeapon;
+			CFPoint         PickupBboxRadius;
 
 	}; // CPlayer
-
 }
-
-

@@ -26,10 +26,10 @@ namespace Defcon
 			virtual void Move(float);
 			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
 
-			CFPoint					m_range;
-			I2DCoordMapper*			MapperPtr  = nullptr;
-			CGameObjectCollection*	m_pTargets = nullptr;
-			CGameObjectCollection*	m_pDebris  = nullptr;
+			CFPoint                   Range;
+			I2DCoordMapper*           MapperPtr  = nullptr;
+			CGameObjectCollection*    Targets    = nullptr;
+			CGameObjectCollection*    Debris     = nullptr;
 
 		protected:
 			UMaterialInstanceDynamic* MID;
@@ -37,5 +37,3 @@ namespace Defcon
 			FName                     NameOs;
 	};
 }
-
-

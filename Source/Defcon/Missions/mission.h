@@ -125,10 +125,11 @@ namespace Defcon
 
 		private:
 			void DoMakeTargets		(float);
-			bool AreAllTargetsHit	(float);
 			void CheckTargetHit		(float);
+			bool AreAllTargetsHit	() const;
 
-			bool TargetsMade = false;
+			bool  TargetsMade = false;
+			int32 NumTargets = 0;
 	};
 
 

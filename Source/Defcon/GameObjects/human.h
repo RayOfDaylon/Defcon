@@ -40,8 +40,8 @@ namespace Defcon
 			void         Notify        (EMessage, void*);
 			bool         Fireballs     () const { return false; }
 
-			CGameObjectCollection*	m_pObjects;
-			CGameObjectCollection*	m_pObjects2;
+			CGameObjectCollection*	Objects;
+			CGameObjectCollection*	Objects2;
 
 			virtual void  OnAboutToDie          ();
 			virtual int   GetExplosionColorBase () const;
@@ -49,6 +49,9 @@ namespace Defcon
 
 		private:
 			float			m_fSwitchTime;
+			float           m_fSwitchWalkDirectionTime;
+			float           WalkingSpeed;
+			CFPoint         Motion;
 			IGameObject*	m_pCarrier;
 	}; // CHuman
 }

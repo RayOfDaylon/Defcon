@@ -25,7 +25,7 @@ namespace Defcon
 
 			void SetDoChaseHumans(bool b) { m_bChaseNearestHuman = b; }
 
-			CGameObjectCollection*	m_pObjects;
+			CGameObjectCollection*	Objects;
 			float					m_personalSpace;
 			float					m_maxSpeed;
 

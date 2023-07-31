@@ -73,8 +73,8 @@ void Defcon::CBitmapDisplayer::DrawSmall(FPaintArguments& framebuf, const I2DCoo
 }
 
 
-void Defcon::CBitmapDisplayer::Move(float fElapsedTime)
+void Defcon::CBitmapDisplayer::Move(float DeltaTime)
 {
-	Age += fElapsedTime;
-	Position.MulAdd(Orientation.Fwd, fElapsedTime);
+	Age += DeltaTime;
+	Position.MulAdd(Orientation.Fwd, DeltaTime);
 }

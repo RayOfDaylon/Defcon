@@ -307,7 +307,7 @@ void UDefconPlayViewBase::TransportPlayerShip()
 		{
 			auto Human = static_cast<Defcon::CHuman*>(Object);
 
-			if(Human->IsBeingCarried())
+			if(Human->IsBeingCarried() && Human->GetCarrier()->GetType() != Defcon::EObjType::PLAYER)
 			{
 				// Track highest human but not one that is too close to the top of the arena.
 				if(Human->Position.y > pt.y && Human->Position.y < ArenaSize.Y - 150)
@@ -901,7 +901,7 @@ void UDefconPlayViewBase::CreateTerrain()
 {
 	SAFE_DELETE(Terrain);
 	Terrain = new Defcon::CTerrain;
-	Terrain->InitTerrain(-1, (int)GetWidth(), (int)GetHeight(), gDefconGameInstance->GetScore());
+	Terrain->InitTerrain(GetWidth(), GetHeight());
 
 	PlayAreaMain->TerrainPtr = Terrain;
 	PlayAreaRadar->SetTerrain(Terrain);
@@ -983,11 +983,8 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	Defcon::GameObjectProcessingParams gop;
 
 	gop.UninstallSpriteIfObjectDeleted = true;
-	gop.fElapsedTime	= DeltaTime;
-	gop.fArenaWidth		= ArenaWidth;
-	gop.fArenaHeight    = ArenaSize.Y;
-	gop.pMapper			= &MainAreaMapper;
-	gop.pvUser          = nullptr; // todo: we don't use this
+	gop.DeltaTime	= DeltaTime;
+	gop.MapperPtr   = &MainAreaMapper;
 
 	m_blasts.Process(gop);
 	m_debris.Process(gop);
@@ -1014,7 +1011,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		}
 	}
 
-	gop.fnOnDeath = [this](Defcon::IGameObject* ObjPtr, void*)
+	gop.OnDeath = [this](Defcon::IGameObject* ObjPtr)
 	{
 		const auto Mission = gDefconGameInstance->GetMission();
 		
@@ -1101,7 +1098,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 					MainAreaMapper.To(PlayerShip.Position, playerScreenPos);
 
 					CFRect rPlayer(playerScreenPos);
-					rPlayer.Inflate(PlayerShip.GetPickupRadBox());
+					rPlayer.Inflate(PlayerShip.GetPickupRadiusBox());
 
 					//Defcon::IGameObject* pObj = this->GetHumans().GetFirst();
 					GetHumans().ForEachUntil([&](Defcon::IGameObject* pObj)
@@ -1141,7 +1138,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 #if 0
 		if(gpGame->PlayerLivesLeft())
 		{
-			m_fPlayerRebirthClock -= fElapsedTime;
+			m_fPlayerRebirthClock -= DeltaTime;
 			m_fPlayerRebirthClock = FMath::Max(0, m_fPlayerRebirthClock);
 			if(m_fPlayerRebirthClock == 0)
 			{
@@ -1916,9 +1913,9 @@ void UDefconPlayViewBase::FireSmartbomb()
 
 		pBomb->MapperPtr = &GetMainAreaMapper();
 		pBomb->Position = GetPlayerShip().Position;
-		pBomb->m_range.Set(MainAreaSize.X, MainAreaSize.Y);
-		pBomb->m_pTargets = &m_enemies;
-		pBomb->m_pDebris = &m_debris;
+		pBomb->Range.Set(MainAreaSize.X, MainAreaSize.Y);
+		pBomb->Targets = &m_enemies;
+		pBomb->Debris = &m_debris;
 
 		m_blasts.Add(pBomb);
 

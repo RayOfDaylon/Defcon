@@ -54,9 +54,9 @@ const char* Defcon::IBouncer::GetClassname() const
 #endif
 
 
-void Defcon::IBouncer::Move(float fElapsedTime)
+void Defcon::IBouncer::Move(float DeltaTime)
 {
-	CEnemy::Move(fElapsedTime);
+	CEnemy::Move(DeltaTime);
 	Inertia = Position;
 
 	// Check if terrain hit.
@@ -73,9 +73,9 @@ void Defcon::IBouncer::Move(float fElapsedTime)
 
 	// Have gravity pull bouncer down.
 	//float speed = ABS(Orientation.Fwd.y);
-	Orientation.Fwd.y -= m_fGravity * fElapsedTime;
+	Orientation.Fwd.y -= m_fGravity * DeltaTime;
 
-	Position.MulAdd(Orientation.Fwd, fElapsedTime * 40);
+	Position.MulAdd(Orientation.Fwd, DeltaTime * 40);
 
 
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
@@ -176,9 +176,9 @@ Defcon::CBouncer::~CBouncer()
 }
 
 
-void Defcon::CBouncer::Move(float fElapsedTime)
+void Defcon::CBouncer::Move(float DeltaTime)
 {
-	IBouncer::Move(fElapsedTime);
+	IBouncer::Move(DeltaTime);
 
 	// todo: Is the firing time based on fps or on time?
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
@@ -213,9 +213,9 @@ Defcon::CWeakBouncer::~CWeakBouncer()
 }
 
 
-void Defcon::CWeakBouncer::Move(float fElapsedTime)
+void Defcon::CWeakBouncer::Move(float DeltaTime)
 {
-	IBouncer::Move(fElapsedTime);
+	IBouncer::Move(DeltaTime);
 
 	// todo: Is the firing time based on fps or on time?
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;

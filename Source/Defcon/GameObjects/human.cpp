@@ -24,14 +24,21 @@ Defcon::CHuman::CHuman()
 	ParentType = Type;
 	Type = EObjType::HUMAN;
 
-	m_pObjects = nullptr;
+	Objects = nullptr;
 	m_pCarrier = nullptr;
 	Age = FRAND * 10;
 	RadarColor = C_MAGENTA;
-	m_fSwitchTime = FRAND * 3 + 1;
+	m_fSwitchTime = FRANDRANGE(1.0f, 4.0f);
 	bCanBeInjured = true;
 	bIsCollisionInjurious = false;
 	BboxRadius.Set(4, 10);
+	
+	WalkingSpeed = FRANDRANGE(8.0f, 12.0f);
+	m_fSwitchWalkDirectionTime = FRANDRANGE(2.0f, 5.0f);
+
+	const auto V = Daylon::RandVector2D();
+	Motion.Set(V.X, V.Y * 0.25f);
+	Motion.Normalize();
 
 	UE_LOG(LogGame, Log, TEXT("Creating human sprite"));
 	CreateSprite(EObjType::HUMAN);
@@ -57,10 +64,10 @@ void Defcon::CHuman::OnAboutToDie()
 
 	// Tell everyone what happened.
 	// If we have an abductor, he'll get told too.
-	check(m_pObjects != nullptr);
+	check(Objects != nullptr);
 
-	m_pObjects ->Notify(Defcon::EMessage::HumanKilled, this);
-	m_pObjects2->Notify(Defcon::EMessage::HumanKilled, this);
+	Objects ->Notify(Defcon::EMessage::HumanKilled, this);
+	Objects2->Notify(Defcon::EMessage::HumanKilled, this);
 }
 
 
@@ -84,8 +91,8 @@ void Defcon::CHuman::Notify(Defcon::EMessage msg, void* pObj)
 			check(m_pCarrier != nullptr);
 			
 			// Tell everyone what happened.
-			m_pObjects ->Notify(Defcon::EMessage::HumanTakenAboard, this);
-			m_pObjects2->Notify(Defcon::EMessage::HumanTakenAboard, this);
+			Objects ->Notify(Defcon::EMessage::HumanTakenAboard, this);
+			Objects2->Notify(Defcon::EMessage::HumanTakenAboard, this);
 		}
 			break;
 
@@ -100,10 +107,30 @@ void Defcon::CHuman::Notify(Defcon::EMessage msg, void* pObj)
 }
 
 
-void Defcon::CHuman::Move(float fElapsedTime)
+void Defcon::CHuman::Move(float DeltaTime)
 {
 	// Humans walk around mostly horizontally.
-	Age += fElapsedTime;
+	Age += DeltaTime;
+
+
+	// Flip sprite every now and then.
+	m_fSwitchTime -= DeltaTime;
+
+	if(m_fSwitchTime <= 0.0f)
+	{
+		// Make player "thrash frantically" if being abducted.
+		if(IsBeingCarried() && GetCarrier()->GetType() != EObjType::PLAYER)
+		{
+			m_fSwitchTime = FRANDRANGE(0.25f, 1.0f);
+		}
+		else
+		{
+			m_fSwitchTime = FRANDRANGE(1.0f, 4.0f);
+		}
+	
+		Sprite->FlipHorizontal = !Sprite->FlipHorizontal;
+	}
+
 
 	if(this->IsBeingCarried())
 	{
@@ -119,21 +146,21 @@ void Defcon::CHuman::Move(float fElapsedTime)
 	}
 	else
 	{
-		float h = gpArena->GetTerrainElev(Position.x);
+		float MaxH = gpArena->GetTerrainElev(Position.x);
 
-		if(Position.y >= h)
+		if(Position.y >= MaxH)
 		{
 			// We're above the ground, so we must be 
 			// falling from a killed abductor.
 			Orientation.Fwd.Set(
 				0.0f, 
-				Orientation.Fwd.y +  Orientation.Fwd.y * 1.5f * fElapsedTime);
+				Orientation.Fwd.y +  Orientation.Fwd.y * 1.5f * DeltaTime);
 				
-			Position.MulAdd(Orientation.Fwd, fElapsedTime);
+			Position.MulAdd(Orientation.Fwd, DeltaTime);
 
-			if(Position.y < h)
+			if(Position.y < MaxH)
 			{
-				// We fall to the ground.
+				// We've fallen to the ground.
 				if(Orientation.Fwd.y < -HUMAN_TERMINALVELOCITY)
 				{
 					// We landed too hard, so we're toast.
@@ -141,36 +168,36 @@ void Defcon::CHuman::Move(float fElapsedTime)
 				}
 				else
 				{
-					// We landed okay. Give the player 250.
-					gpArena->IncreaseScore((int32)HUMAN_VALUE_LIBERATED, true, &Position);
+					// We landed okay.
+					gpArena->IncreaseScore(HUMAN_VALUE_LIBERATED, true, &Position);
 				}
 			}
 		}
 		else
 		{
 			// Casually roam the terrain.
-			// todo: we seem to have a 'bug' where the 
-			// person likes to ascend hills.
-			float f = (float)fmod(Age, 10.0f) / 10.0f;
-			f = (float)sin(f * TWO_PI);
-			float fy = (float)cos(f * TWO_PI);
-			CFPoint motion(f+(FRAND-0.5f), fy + (FRAND - 0.5f));
-			//motion.Mul(CFPoint(1.0f, 0.75f));
-			motion.Mul(fElapsedTime * 10.0f);
 
-			Position += motion;
-			Position.y = FMath::Min(Position.y, h-5);
+			m_fSwitchWalkDirectionTime -= DeltaTime;
+
+			if(m_fSwitchWalkDirectionTime <= 0.0f)
+			{
+				m_fSwitchWalkDirectionTime = FRANDRANGE(2.0f, 5.0f);
+
+				const auto V = Daylon::RandVector2D();
+				Motion.Set(V.X, V.Y * 0.25f);
+				Motion.Normalize();
+
+				WalkingSpeed = FRANDRANGE(8.0f, 12.0f);
+			}
+
+			Position.MulAdd(Motion, DeltaTime * WalkingSpeed);
+
+			MaxH = gpArena->GetTerrainElev(gpArena->WrapX(Position.x));
+
+			Position.y = FMath::Min(Position.y, MaxH - 5);
 			Position.y = FMath::Max(Position.y, 20);
 		}
 	}
-	// todo: switch to a different atlas cel every now and then
-	// or based on our orientation.
-	check(m_fSwitchTime != 0.0f);
-	float f = (float)fmod(Age, m_fSwitchTime) / m_fSwitchTime;
-	f = (float)cos(f * PI) + 1.0f;
-	f /= 2;
-	//Sprite->SetCurrentCel(ROUND(f));
-	Sprite->FlipHorizontal = (ROUND(f) == 0);
 }
 
 

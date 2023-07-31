@@ -123,9 +123,9 @@ void Defcon::CFlak::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper& m
 }
 
 
-void Defcon::CFlak::Move(float fElapsedTime)
+void Defcon::CFlak::Move(float DeltaTime)
 {
-	Position.MulAdd(Orientation.Fwd, fElapsedTime);
+	Position.MulAdd(Orientation.Fwd, DeltaTime);
 }
 
 
@@ -332,9 +332,9 @@ void Defcon::CPuff::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper& m
 
 
 
-void Defcon::CPuff::Move(float fElapsedTime)
+void Defcon::CPuff::Move(float DeltaTime)
 {
-	Position.MulAdd(Orientation.Fwd, fElapsedTime);
+	Position.MulAdd(Orientation.Fwd, DeltaTime);
 }
 
 #endif

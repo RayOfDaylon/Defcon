@@ -77,7 +77,7 @@ void Defcon::options_arena_inputs::process(const ControllerEvent& evt)
 	{
 		case Defcon::EventType::navigate_up:
 			gpAudio->OutputSound(snd_select);
-			if(gpArena->m_eState == Defcon::COptionsArena::State::viewing)
+			if(gpArena->State == Defcon::COptionsArena::State::viewing)
 			{
 				if(sCurrentItem_arena_optons == 0)
 					gpArena->FocusItem(array_size(gPrefs.m_pref)-1);
@@ -89,7 +89,7 @@ void Defcon::options_arena_inputs::process(const ControllerEvent& evt)
 
 		case Defcon::EventType::navigate_down:
 			gpAudio->OutputSound(snd_select);
-			if(gpArena->m_eState == Defcon::COptionsArena::State::viewing)
+			if(gpArena->State == Defcon::COptionsArena::State::viewing)
 			{
 				if(sCurrentItem_arena_optons == array_size(gPrefs.m_pref)-1)
 					gpArena->FocusItem(0);
@@ -100,7 +100,7 @@ void Defcon::options_arena_inputs::process(const ControllerEvent& evt)
 
 
 		case Defcon::EventType::select:
-			switch(gpArena->m_eState)
+			switch(gpArena->State)
 			{
 				case Defcon::COptionsArena::State::viewing:
 					gpArena->StartEditing();
@@ -112,7 +112,7 @@ void Defcon::options_arena_inputs::process(const ControllerEvent& evt)
 			break;
 
 		case Defcon::EventType::cancel:
-			switch(gpArena->m_eState)
+			switch(gpArena->State)
 			{
 				case Defcon::COptionsArena::State::viewing:
 					gpArena->m_pNextArena = Defcon::CArenaFactory::Make(Defcon::ArenaKind::menu);
@@ -129,7 +129,7 @@ void Defcon::options_arena_inputs::process(const ControllerEvent& evt)
 		case Defcon::EventType::navigate_end:
 		case Defcon::EventType::navigate_page_up:
 		case Defcon::EventType::navigate_page_down:
-			switch(gpArena->m_eState)
+			switch(gpArena->State)
 			{
 				case Defcon::COptionsArena::State::viewing:
 					gpArena->navigate(evt.what);
@@ -161,7 +161,7 @@ void Defcon::COptionsArena::Init
 )
 {
 	m_pEditor = nullptr;
-	m_eState = State::viewing;
+	State = State::viewing;
 	m_bLaunching = false;
 	m_fLaunchAge = 0.0f;
 	Age = 0.0f;
@@ -346,7 +346,7 @@ void Defcon::COptionsArena::OnDisplaySizeChanged(int32 w , int32 h)
 	m_desc.Position.Set(
 		w/2, m_items[array_size(m_items)-1].Position.y + leading * 3);
 
-	if(m_eState == State::editing)
+	if(State == State::editing)
 	{
 		i = sCurrentItem_arena_optons - m_topItem;
 		CPrefVar& var = gPrefs.m_pref[sCurrentItem_arena_optons];
@@ -404,12 +404,12 @@ void Defcon::COptionsArena::navigate(EventType what)
 }
 
 
-void Defcon::COptionsArena::Update(float fElapsedTime)
+void Defcon::COptionsArena::Update(float DeltaTime)
 {
-	if(fElapsedTime == 0)
+	if(DeltaTime == 0)
 		return;
 
-	Age += fElapsedTime;
+	Age += DeltaTime;
 
 
 	// Move and draw our objects.
@@ -450,7 +450,7 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 	}
 
 
-	switch(m_eState)
+	switch(State)
 	{
 		case State::viewing:
 		{
@@ -469,10 +469,10 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 
 	GameObjectProcessingParams gop;
 
-	gop.fArenaWidth		= m_virtualScreen.GetWidth();
-	gop.fElapsedTime	= fElapsedTime;
+	gop.ArenaWidth		= m_virtualScreen.GetWidth();
+	gop.DeltaTime	= DeltaTime;
 	gop.pDib			= &m_virtualScreen;
-	gop.pMapper			= &m_coordMapper;
+	gop.MapperPtr			= &m_coordMapper;
 
 	m_objects.Process(gop);
 
@@ -483,12 +483,12 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 		m_virtualScreen.ColorRect(
 			x1+off, y1+off, x2-off, y2-off, C_BLUE);
 
-	if(m_eState == State::editing)
+	if(State == State::editing)
 	{
 		// Make a box around the current var.
 		// Leave room above the var for some extra stuff.
 
-		m_fadeInEditor += fElapsedTime;
+		m_fadeInEditor += DeltaTime;
 		m_fadeInEditor = FMath::Min(m_fadeInEditor, 0.33f);
 		m_virtualScreen.DarkenRect(x1, y1, x2, y2, 
 			MAP(m_fadeInEditor, 0.0f, 0.33f, 1.0f, 0.33f) );
@@ -541,7 +541,7 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 	switch(key)
 	{
 		case Keys::moveup:
-			if(m_eState == State::viewing)
+			if(State == State::viewing)
 			{
 				if(sCurrentItem_arena_optons == 0)
 					this->FocusItem(array_size(gPrefs.m_pref)-1);
@@ -552,7 +552,7 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 
 
 		case Keys::movedown:
-			if(m_eState == State::viewing)
+			if(State == State::viewing)
 			{
 				if(sCurrentItem_arena_optons == array_size(gPrefs.m_pref)-1)
 					this->FocusItem(0);
@@ -568,7 +568,7 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 		case Keys::pagedown:
 		case Keys::home:
 		case Keys::end:
-			switch(m_eState)
+			switch(State)
 			{
 				case State::viewing:
 					switch(key)
@@ -618,7 +618,7 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 
 
 		case Keys::choose:
-			switch(m_eState)
+			switch(State)
 			{
 				case State::viewing:
 					this->StartEditing();
@@ -631,7 +631,7 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 
 
 		case Keys::exit:
-			switch(m_eState)
+			switch(State)
 			{
 				case State::viewing:
 					m_pNextArena = Defcon::CArenaFactory::Make(Defcon::ArenaKind::menu);
@@ -699,7 +699,7 @@ void Defcon::COptionsArena::StartEditing()
 	}
 	if(m_pEditor != nullptr)
 	{
-		m_eState = State::editing;
+		State = State::editing;
 		m_fadeInEditor = 0.0f;
 	}
 }
@@ -708,7 +708,7 @@ void Defcon::COptionsArena::StartEditing()
 void Defcon::COptionsArena::StopEditing()
 {
 	//gPrefs.m_pref[sCurrentItem_arena_optons].m_fValue = m_pEditor->GetValue();
-	m_eState = State::viewing;
+	State = State::viewing;
 	m_pEditor = nullptr;
 }
 
@@ -717,7 +717,7 @@ void Defcon::COptionsArena::CancelEditing()
 {
 	gPrefs.m_pref[sCurrentItem_arena_optons].m_fValue = m_pEditor->GetInitialValue();
 	this->UpdateValueText(sCurrentItem_arena_optons - m_topItem);
-	m_eState = State::viewing;
+	State = State::viewing;
 }
 
 #endif // 0

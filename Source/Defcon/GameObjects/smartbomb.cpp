@@ -73,7 +73,7 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 
 	Age += fTimeElapsed;
 
-	CFPoint radius = m_range;
+	CFPoint radius = Range;
 	float t = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
 	radius *= t;
 	float shockwave = radius.x;
@@ -81,7 +81,7 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 	CFPoint pt, bombpt;
 	MapperPtr->To(Position, bombpt);
 
-	IGameObject* pObj = m_pTargets->GetFirst();
+	IGameObject* pObj = Targets->GetFirst();
 	IGameObject* pObj2;
 
 	while(pObj != nullptr)
@@ -106,7 +106,7 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 
 	// Push debris with shockwave.
 
-	m_pDebris->ForEach([&](IGameObject* pObj)
+	Debris->ForEach([&](IGameObject* pObj)
 	{
 		if(pObj->GetType() != EObjType::TEXT)
 		{
@@ -140,7 +140,7 @@ void Defcon::CSmartbomb::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 		return;
 	}
 
-	CFPoint radius = m_range;
+	CFPoint radius = Range;
 	float t = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
 	radius *= t;
 	float shockwave = radius.x;

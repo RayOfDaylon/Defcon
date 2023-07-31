@@ -3,6 +3,7 @@
 
 #include "PaintArguments.h"
 #include "util_math.h"
+#include "util_color.h"
 #include "Runtime/SlateCore/Public/Brushes/SlateColorBrush.h"
 
 
@@ -34,7 +35,7 @@ void FPaintArguments::ColorRect(float Left, float Top, float Right, float Bottom
 void FPaintArguments::FillRect(float Left, float Top, float Right, float Bottom, const FLinearColor& Color)
 {
 	const auto S = FVector2D(ABS(Right - Left), ABS(Bottom - Top));
-	const FSlateLayoutTransform Translation(FVector2D((Left + Right) / 2, (Top + Bottom) / 2) - S / 2);
+	const FSlateLayoutTransform Translation(FVector2D(AVG(Left, Right), AVG(Top, Bottom)) - S / 2);
 	//const FSlateLayoutTransform Translation(FVector2D(0, 0));
 
 	const auto Geometry = AllottedGeometry->MakeChild(S, Translation);

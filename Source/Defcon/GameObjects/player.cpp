@@ -41,8 +41,8 @@ Defcon::CPlayer::CPlayer()
 	bCanBeInjured = false;//true;
 	//m_bBirthsoundPlayed = false;
 
-	m_laserWeapon.MountOnto(*this, CFPoint(0,0));
-	m_laserWeapon.SetEmissionPt(CFPoint(0, -8)); // todo: could improve this
+	LaserWeapon.MountOnto(*this, CFPoint(0,0));
+	LaserWeapon.SetEmissionPt(CFPoint(0, -8)); // todo: could improve this
 
 	this->SetShieldStrength(1.0f);
 
@@ -52,7 +52,7 @@ Defcon::CPlayer::CPlayer()
 	BboxRadius.Set(Info.Size.X * 0.25f, Info.Size.Y * 0.25f);
 
 	// Make our "pickup human" bboxrad more generous than hitbox.
-	m_bboxradPickup.Set(Info.Size.X * 0.4f, Info.Size.Y * 0.4f);
+	PickupBboxRadius.Set(Info.Size.X * 0.4f, Info.Size.Y * 0.4f);
 }
 
 
@@ -62,7 +62,7 @@ void Defcon::CPlayer::InitPlayer(float fw)
 	MaxThrust = PLAYER_MAXTHRUST;
 	Mass     = PLAYER_MASS;
 
-	m_laserWeapon.m_fArenawidth = fw;
+	LaserWeapon.m_fArenawidth = fw;
 
 	// Arrange the birth debris in a circle.
 	// Don't do this in ctor since we don't 
@@ -196,7 +196,7 @@ bool Defcon::CPlayer::IsSolid() const
 }
 
 
-void Defcon::CPlayer::Move(float fElapsedTime)
+void Defcon::CPlayer::Move(float DeltaTime)
 {
 #if 0
 	// test mapper.
@@ -217,7 +217,7 @@ void Defcon::CPlayer::Move(float fElapsedTime)
 		}
 	}
 #endif
-	ILiveGameObject::Move(fElapsedTime);
+	ILiveGameObject::Move(DeltaTime);
 
 #if 0
 	if(!m_bBirthsoundPlayed && Age > PLAYER_BIRTHDURATION * .66f)
@@ -237,7 +237,7 @@ void Defcon::CPlayer::Move(float fElapsedTime)
 
 		CFPoint pt;
 
-		const float fw = m_laserWeapon.m_fArenawidth;
+		const float fw = LaserWeapon.m_fArenawidth;
 
 		for(int i = 0; i < n; i++)
 		{
@@ -273,7 +273,7 @@ void Defcon::CPlayer::Move(float fElapsedTime)
 
 	if(fs < 1.0f)
 	{
-		fs = FMath::Min(1.0f, fs + fElapsedTime / 20);
+		fs = FMath::Min(1.0f, fs + DeltaTime / 20);
 		this->SetShieldStrength(fs);
 	}
 
@@ -311,7 +311,7 @@ void Defcon::CPlayer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapp
 
 void Defcon::CPlayer::FireLaserWeapon(CGameObjectCollection& goc)
 {
-	m_laserWeapon.Fire(goc);
+	LaserWeapon.Fire(goc);
 	if(Velocity.y != 0 && FRAND <= LASER_MULTI_PROB)
 	{
 		// Fire extra bolts in the vthrust dir.
@@ -322,12 +322,12 @@ void Defcon::CPlayer::FireLaserWeapon(CGameObjectCollection& goc)
 				off *= 2;
 			CFPoint backup(Position);
 			Position += off;
-			m_laserWeapon.Fire(goc);
+			LaserWeapon.Fire(goc);
 			Position = backup;
 		}
 	}
 #if 0
-	m_laserWeapon.Fire(goc);
+	LaserWeapon.Fire(goc);
 	if(Velocity.y != 0 && FRAND > 0.75f)
 	{
 		// Fire another bolt 2 pixels in the vthrust dir.
@@ -336,7 +336,7 @@ void Defcon::CPlayer::FireLaserWeapon(CGameObjectCollection& goc)
 			off *= 2;
 		CFPoint backup(Position);
 		Position += off;
-		m_laserWeapon.Fire(goc);
+		LaserWeapon.Fire(goc);
 		Position = backup;
 	}
 #endif

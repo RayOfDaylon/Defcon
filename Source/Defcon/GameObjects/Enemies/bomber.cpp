@@ -170,7 +170,7 @@ void Defcon::CBomber::Move(float fTime)
 
 	//const float xinc = Orientation.Fwd.x * m_xFreq * fTime * ScreenSize.x * + (FRAND * .05f + 0.25f);
 
-	const float y = sinf(m_freq * (m_yoff + Age)) * m_amp + m_halfwayAltitude;
+	const float y = sinf(Frequency * (m_yoff + Age)) * m_amp + m_halfwayAltitude;
 
 	// Don't start moving until we're close enough to our desired position.
 	if(ABS(y - m_orgY) < 10.0f)

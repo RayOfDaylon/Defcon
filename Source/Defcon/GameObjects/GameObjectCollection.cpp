@@ -9,9 +9,8 @@
 
 Defcon::CGameObjectCollection::CGameObjectCollection()
 	:
-	m_pFirst(nullptr),
-	m_pLast(nullptr),
-	m_count(0)
+	First(nullptr),
+	NumElems(0)
 {
 }
 
@@ -24,21 +23,21 @@ Defcon::CGameObjectCollection::~CGameObjectCollection()
 
 void Defcon::CGameObjectCollection::DeleteAll(bool IncludingSprites)
 {
-	while(m_pFirst != nullptr)
+	while(First != nullptr)
 	{
 		if(IncludingSprites)
 		{
-			m_pFirst->UninstallSprite();
+			First->UninstallSprite();
 		}
 			
-		this->Delete(m_pFirst);
+		this->Delete(First);
 	}
 }
 
 
 void Defcon::CGameObjectCollection::ForEach(TFunction<void(IGameObject*)> Function) const
 {
-	auto p = m_pFirst;
+	auto p = First;
 
 	while(p != nullptr)
 	{
@@ -51,7 +50,7 @@ void Defcon::CGameObjectCollection::ForEach(TFunction<void(IGameObject*)> Functi
 
 void Defcon::CGameObjectCollection::ForEachUntil(TFunction<bool(IGameObject*)> Function) const
 {
-	auto p = m_pFirst;
+	auto p = First;
 
 	while(p != nullptr && Function(p))
 	{
@@ -65,10 +64,10 @@ void Defcon::CGameObjectCollection::Add(IGameObject* p)
 	check(p);
 	check(p->GetType() != EObjType::UNKNOWN);
 
-	if(m_pFirst != nullptr)
+	if(First != nullptr)
 	{
-		m_pFirst->SetPrev(p);
-		p->SetNext(m_pFirst);
+		First->SetPrev(p);
+		p->SetNext(First);
 		p->SetPrev(nullptr);
 	}
 	else
@@ -76,10 +75,10 @@ void Defcon::CGameObjectCollection::Add(IGameObject* p)
 		check(p->GetNext() == nullptr && p->GetPrev() == nullptr);
 	}
 
-	m_pFirst = p;
-	check(m_pFirst->GetNext() != m_pFirst);
+	First = p;
+	check(First->GetNext() != First);
 
-	m_count++;
+	NumElems++;
 }
 
 
@@ -114,7 +113,7 @@ void Defcon::CGameObjectCollection::Detach(IGameObject* p)
 	}
 	else
 	{
-		m_pFirst = p->GetNext();
+		First = p->GetNext();
 	}
 
 	if(p->GetNext() != nullptr)
@@ -125,22 +124,22 @@ void Defcon::CGameObjectCollection::Detach(IGameObject* p)
 	p->SetNext(nullptr);
 	p->SetPrev(nullptr);
 
-	m_count--;
+	NumElems--;
 }
 
 
 void Defcon::CGameObjectCollection::DetachAll()
 {
-	while(m_pFirst != nullptr)
+	while(First != nullptr)
 	{
-		this->Detach(m_pFirst);
+		this->Detach(First);
 	}
 }
 
 
 int32 Defcon::CGameObjectCollection::Count() const
 {
-	return m_count;
+	return NumElems;
 }
 
 
@@ -190,7 +189,7 @@ bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
 	// Perform a standard processing run on all the objects.
 	// Return true if any objects were in the collection.
 
-	check(params.pMapper);
+	check(params.MapperPtr);
 
 	IGameObject* pObj = this->GetFirst();
 	bool b = false;
@@ -199,12 +198,12 @@ bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
 	{
 		b = true;
 
-		if(params.fnOnEvery)
+		if(params.OnEvery)
 		{
-			params.fnOnEvery(pObj, params.pvUser);
+			params.OnEvery(pObj);
 		}
 
-		if(pObj->IsMortal() && pObj->ReduceLifespanBy(params.fElapsedTime))
+		if(pObj->IsMortal() && pObj->ReduceLifespanBy(params.DeltaTime))
 		{
 			IGameObject* pObj2 = pObj->GetNext();
 #ifdef _DEBUG
@@ -215,9 +214,9 @@ bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
 				OutputDebugString(sz);
 			}
 #endif
-			if(params.fnOnDeath != nullptr)
+			if(params.OnDeath != nullptr)
 			{
-				params.fnOnDeath(pObj, params.pvUser);
+				params.OnDeath(pObj);
 			}
 
 			if(params.UninstallSpriteIfObjectDeleted)
@@ -231,23 +230,23 @@ bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
 			continue;
 		}
 		
-		pObj->Move(params.fElapsedTime);
+		pObj->Move(params.DeltaTime);
 
 		// Handle wraparound onto planet.
 		pObj->Position.x = gpArena->WrapX(pObj->Position.x);
 
 
 		// Lots of objects temporarily exist outside arena's vertical bounds.
-		//check(pObj->Position.y >= 0 && pObj->Position.y <= params.fArenaHeight);
+		//check(pObj->Position.y >= 0 && pObj->Position.y <= params.ArenaHeight);
 
 		// If the object has a visual, sync its position and update its animation.
 
 		if(pObj->Sprite)
 		{
 			CFPoint pt;
-			params.pMapper->To(pObj->Position, pt);
+			params.MapperPtr->To(pObj->Position, pt);
 			pObj->Sprite->SetPosition(FVector2D(pt.x, pt.y));
-			pObj->Sprite->Update(params.fElapsedTime);
+			pObj->Sprite->Update(params.DeltaTime);
 		}
 
 		pObj = pObj->GetNext();

@@ -99,8 +99,8 @@ void Defcon::IMission::AddHumanoids()
 	Humans.ForEach([&](Defcon::IGameObject* Obj)
 	{
 		auto Human = static_cast<CHuman*>(Obj);
-		Human->m_pObjects  = &gpArena->GetObjects();
-		Human->m_pObjects2 = &gpArena->GetEnemies();
+		Human->Objects  = &gpArena->GetObjects();
+		Human->Objects2 = &gpArena->GetEnemies();
 
 		// If we're on wave 2 or higher, don't move the humans
 		// except to reset them vertically.

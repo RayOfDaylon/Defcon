@@ -57,15 +57,13 @@ bool Defcon::CWeaponsTrainingMission::Update(float fElapsed)
 		return false;
 	}
 
-	if(Age < 5.0f)
-	{
-		//this->DoIntroText(fElapsed);
-	}
-	else if(Age < 6.0f)
+	if(!TargetsMade)
 	{
 		this->DoMakeTargets(fElapsed);
+		TargetsMade = true;
 	}
-	else if(this->AreAllTargetsHit(fElapsed))
+
+	if(this->AreAllTargetsHit(fElapsed))
 	{
 		// We're done.
 		return false;
@@ -77,13 +75,6 @@ bool Defcon::CWeaponsTrainingMission::Update(float fElapsed)
 
 void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 {
-	if(TargetsMade)
-	{
-		return;
-	}
-
-	TargetsMade = true;
-
 	for(int32 i = 0; i < NumTargets; i++)
 	{
 		CBeacon* p = new CBeacon;
@@ -95,7 +86,6 @@ void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 			MAP(i, 0, 6, gpArena->GetDisplayWidth()*.66f, gpArena->GetWidth() * 0.9f),
 			SFRAND * 0.33f * gpArena->GetHeight() + gpArena->GetHeight()/2);
 
-		//p->SetAsMissionTarget();
 		gpArena->GetObjects().Add(p);
 	}
 }
@@ -125,7 +115,7 @@ bool Defcon::CWeaponsTrainingMission::AreAllTargetsHit(float fElapsed)
 		gpArena->AddMessage(Str);
 	}
 
-	return (gpArena->GetObjects().Find(EObjType::BEACON, nullptr) == nullptr);
+	return (gpArena->GetObjects().Find(EObjType::BEACON) == nullptr);
 }
 
 

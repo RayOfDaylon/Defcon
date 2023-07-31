@@ -143,7 +143,7 @@ void Defcon::CTurret::Move(float fTime)
 	else
 		pos.x = Position.x + Orientation.Fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 	pos.y = 
-		(float)sin(m_freq * (m_yoff + Age)) 
+		(float)sin(Frequency * (m_yoff + Age)) 
 		* m_amp + m_halfwayAltitude;
 
 	Position = pos;

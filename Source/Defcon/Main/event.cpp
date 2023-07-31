@@ -180,29 +180,28 @@ Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(EObjType kind, const CFPo
 
 	switch(kind)
 	{
-		case EObjType::LANDER:			pE = new CLander;			break;
-		case EObjType::GUPPY:			pE = new CGuppy;			break;
-		case EObjType::HUNTER:			pE = new CHunter;			break;
-		case EObjType::BOMBER:			pE = new CBomber;			break;
-		case EObjType::BAITER:			pE = new CBaiter;			break;
-		case EObjType::POD:				pE = new CPod;				break;
-		case EObjType::SWARMER:			pE = new CSwarmer;			break;
-		case EObjType::FIREBOMBER_TRUE:  pE = new CFirebomber;		break;
-		case EObjType::FIREBOMBER_WEAK:  pE = new CWeakFirebomber;	break;
-		case EObjType::FIREBALL:			pE = new CFireball;			break;
-		case EObjType::DYNAMO:			pE = new CDynamo;			break;
-		case EObjType::SPACEHUM:			pE = new CSpacehum;			break;
-		case EObjType::REFORMER:			pE = new CReformer;			break;
-		case EObjType::REFORMERPART:		pE = new CReformerPart;		break;
-		case EObjType::BOUNCER_TRUE:  	pE = new CBouncer;			break;
-		case EObjType::BOUNCER_WEAK:  	pE = new CWeakBouncer;		break;
-		case EObjType::PHRED:			pE = new CPhred;			break;
-		case EObjType::BIGRED:			pE = new CBigRed;			break;
-		case EObjType::MUNCHIE:			pE = new CMunchie;			break;
-		case EObjType::GHOST:			pE = new CGhost;			break;
-		case EObjType::GHOSTPART:		pE = new CGhostPart;		break;
-		//case EObjType::GHOSTPARTPRIMARY: pE = new CGhostPrimaryPart;	break;
-		case EObjType::TURRET:			pE = new CTurret;			break;
+		case EObjType::LANDER:          pE = new CLander;           break;
+		case EObjType::GUPPY:           pE = new CGuppy;            break;
+		case EObjType::HUNTER:          pE = new CHunter;           break;
+		case EObjType::BOMBER:          pE = new CBomber;           break;
+		case EObjType::BAITER:          pE = new CBaiter;           break;
+		case EObjType::POD:             pE = new CPod;              break;
+		case EObjType::SWARMER:         pE = new CSwarmer;          break;
+		case EObjType::FIREBOMBER_TRUE: pE = new CFirebomber;       break;
+		case EObjType::FIREBOMBER_WEAK: pE = new CWeakFirebomber;   break;
+		case EObjType::FIREBALL:        pE = new CFireball;         break;
+		case EObjType::DYNAMO:          pE = new CDynamo;           break;
+		case EObjType::SPACEHUM:        pE = new CSpacehum;         break;
+		case EObjType::REFORMER:        pE = new CReformer;         break;
+		case EObjType::REFORMERPART:    pE = new CReformerPart;     break;
+		case EObjType::BOUNCER_TRUE:    pE = new CBouncer;          break;
+		case EObjType::BOUNCER_WEAK:    pE = new CWeakBouncer;      break;
+		case EObjType::PHRED:           pE = new CPhred;            break;
+		case EObjType::BIGRED:          pE = new CBigRed;           break;
+		case EObjType::MUNCHIE:         pE = new CMunchie;          break;
+		case EObjType::GHOST:           pE = new CGhost;            break;
+		case EObjType::GHOSTPART:       pE = new CGhostPart;        break;
+		case EObjType::TURRET:          pE = new CTurret;           break;
 
 		default: throw 0; break;
 	}
@@ -270,23 +269,13 @@ void Defcon::CCreateEnemyEvent::SpecializeForGhostPart(Defcon::CEnemy* pE, const
 	p->SetCollisionInjurious(false);
 }
 
-#if 0
-void Defcon::CCreateEnemyEvent::SpecializeForGhostPartPrimary(Defcon::CEnemy* pE, const CFPoint& where)
-{
-	CGhostPrimaryPart* p = static_cast<CGhostPrimaryPart*>(pE);
-	p->SetTarget((IGameObject*)&gpArena->GetPlayerShip());
-	p->SetCollisionInjurious(false);
-}
-#endif
 
 void Defcon::CCreateEnemyEvent::SpecializeForLander(Defcon::CEnemy* pE, const CFPoint& where)
 {
 	CLander* p = static_cast<CLander*>(pE);
-	//p->m_fnTerrainEval = GetTerrainElevFunc;
-	//p->m_fnHumanFinder = Defcon::FindHumanFunc;
 	p->m_pvUserTerrainEval = gpArena;
 	SET_PLAYER_AS_TARGET
-	p->m_pObjects = &gpArena->GetObjects();
+	p->Objects = &gpArena->GetObjects();
 	p->SetDoChaseHumans(gDefconGameInstance->GetMission()->HumansInvolved());
 }
 
@@ -295,7 +284,7 @@ void Defcon::CCreateEnemyEvent::SpecializeForGuppy(Defcon::CEnemy* pE, const CFP
 {
 	CGuppy* p = static_cast<CGuppy*>(pE);
 	SET_PLAYER_AS_TARGET
-	p->m_pObjects = &gpArena->GetEnemies();
+	//p->Objects = &gpArena->GetEnemies();
 }
 
 
@@ -303,7 +292,7 @@ void Defcon::CCreateEnemyEvent::SpecializeForHunter(Defcon::CEnemy* pE, const CF
 {
 	CHunter* p = static_cast<CHunter*>(pE);
 	SET_PLAYER_AS_TARGET
-	p->m_pObjects = &gpArena->GetEnemies();
+	//p->Objects = &gpArena->GetEnemies();
 }
 
 

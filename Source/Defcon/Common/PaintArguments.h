@@ -9,7 +9,6 @@
 #include "Runtime/SlateCore/Public/Rendering/DrawElements.h"
 #include "Runtime/SlateCore/Public/Styling/WidgetStyle.h"
 
-#include "util_color.h"
 
 
 struct FPaintArguments

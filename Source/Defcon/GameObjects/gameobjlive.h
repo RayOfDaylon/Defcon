@@ -16,33 +16,9 @@
 
 struct FNavControl
 {
-	float	TimeDown;
-	bool	bActive;
+	float	TimeDown = 0.0f;
+	bool	bActive  = false;
 };
-
-
-// Return the shortest position delta from p1 to p2 given a modulus range aw.
-inline void PositionDelta(CFPoint& Result, const CFPoint& P1, const CFPoint& P2, float ArenaWidth)
-{
-	Result = P2;
-	Result.Sub(P1);
-
-	const float D1    = ABS(Result.x);
-	const float Tail1 = ArenaWidth - P1.x;
-	const float Tail2 = ArenaWidth - P2.x;
-	const float D2    = FMath::Min(P1.x + Tail2, P2.x + Tail1);
-
-	if(D2 < D1)
-	{
-		// The shortest distance lies across the origin.
-		Result.x = D2;
-
-		if(P2.x > P1.x)
-		{
-			Result.x *= -1;
-		}
-	}
-}
 
 
 namespace Defcon
@@ -116,4 +92,29 @@ namespace Defcon
 			Daylon::TBindableValue<float> ShieldStrength; // 0..1 value
 			bool                          bAlive = true;
 	};
+
+
+	// Return the shortest position delta from p1 to p2 given a modulus range aw.
+	inline void PositionDelta(CFPoint& Result, const CFPoint& P1, const CFPoint& P2, float ArenaWidth)
+	{
+		Result = P2;
+		Result.Sub(P1);
+
+		const float D1    = ABS(Result.x);
+		const float Tail1 = ArenaWidth - P1.x;
+		const float Tail2 = ArenaWidth - P2.x;
+		const float D2    = FMath::Min(P1.x + Tail2, P2.x + Tail1);
+
+		if(D2 < D1)
+		{
+			// The shortest distance lies across the origin.
+			Result.x = D2;
+
+			if(P2.x > P1.x)
+			{
+				Result.x *= -1;
+			}
+		}
+	}
 }
+

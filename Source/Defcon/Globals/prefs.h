@@ -275,9 +275,9 @@ extern Defcon::CPrefs	gPrefs;
 #define GUPPY_SPEEDMAX             gPrefs.m_pref[Defcon::CPrefs::Pref::guppy_speedmax].Value
 #define GUPPY_SPEEDMIN             gPrefs.m_pref[Defcon::CPrefs::Pref::guppy_speedmin].Value
 #define GUPPY_VALUE                (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::guppy_value].Value
-#define HUMAN_VALUE_DEBARKED       gPrefs.m_pref[Defcon::CPrefs::Pref::human_value_debarked].Value
-#define HUMAN_VALUE_EMBARKED       gPrefs.m_pref[Defcon::CPrefs::Pref::human_value_embarked].Value
-#define HUMAN_VALUE_LIBERATED      gPrefs.m_pref[Defcon::CPrefs::Pref::human_value_liberated].Value
+#define HUMAN_VALUE_DEBARKED       (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::human_value_debarked].Value
+#define HUMAN_VALUE_EMBARKED       (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::human_value_embarked].Value
+#define HUMAN_VALUE_LIBERATED      (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::human_value_liberated].Value
 #define HUNTER_SPEEDMAX            gPrefs.m_pref[Defcon::CPrefs::Pref::hunter_speedmax].Value
 #define HUNTER_SPEEDMIN            gPrefs.m_pref[Defcon::CPrefs::Pref::hunter_speedmin].Value
 #define HUNTER_VALUE               (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::hunter_value].Value

@@ -67,15 +67,15 @@ void Defcon::ILiveGameObject::Notify(Defcon::EMessage msg, void* pObj)
 }
 
 
-void Defcon::ILiveGameObject::Move(float fElapsedTime)
+void Defcon::ILiveGameObject::Move(float DeltaTime)
 {
-	Age += fElapsedTime;
+	Age += DeltaTime;
 
 	Inertia = Position;
 
-	this->ComputeThrustTimings(fElapsedTime);
-	this->ComputeForces(fElapsedTime);
-	this->ImpartForces(fElapsedTime);
+	this->ComputeThrustTimings(DeltaTime);
+	this->ComputeForces(DeltaTime);
+	this->ImpartForces(DeltaTime);
 
 	Inertia = Position - Inertia;
 }

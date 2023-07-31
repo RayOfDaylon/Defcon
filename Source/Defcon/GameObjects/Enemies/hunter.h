@@ -25,7 +25,6 @@ namespace Defcon
 			virtual int GetExplosionColorBase() const;
 			virtual float GetExplosionMass() const;
 
-			CGameObjectCollection*	m_pObjects;
 			float					m_personalSpace;
 			float					m_maxSpeed;
 

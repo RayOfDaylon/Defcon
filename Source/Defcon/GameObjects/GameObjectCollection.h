@@ -30,36 +30,32 @@ namespace Defcon
 			virtual void ForEach      (TFunction<void(IGameObject*)> Function) const;
 			virtual void ForEachUntil (TFunction<bool(IGameObject*)> Function) const;
 
-			virtual int32 Count      () const;
-			virtual int32 CountOf    (EObjType Kind) const;
+			virtual int32 Count       () const;
+			virtual int32 CountOf     (EObjType Kind) const;
 									  
-			IGameObject* GetFirst     () const { return m_pFirst; }
+			IGameObject* GetFirst     () const { return First; }
 			IGameObject* Find         (EObjType Kind, IGameObject* SearchAfter = nullptr) const;
 									  
 			virtual bool Process      (GameObjectProcessingParams&);
 			virtual void Notify       (EMessage Msg, IGameObject* Sender);
 
 		private:
-			IGameObject*    m_pFirst    = nullptr;
-			IGameObject*    m_pLast     = nullptr;
-			int32          m_count     = 0;
+			IGameObject*    First     = nullptr;
+			int32           NumElems  = 0;
 
 	}; // CGameObjectCollection
 
 
 
-	typedef std::function<void(IGameObject*, void*)> GameObjectProcessDelegate;
+	typedef std::function<void(IGameObject*)> GameObjectProcessDelegate;
 
 	class GameObjectProcessingParams
 	{
 		public:
-			GameObjectProcessDelegate   fnOnDeath                      = nullptr;
-			GameObjectProcessDelegate   fnOnEvery                      = nullptr;
-			I2DCoordMapper*             pMapper                        = nullptr;  
-			void*                       pvUser                         = nullptr;
-			float                       fElapsedTime                   = 0.0f;
-			float                       fArenaWidth                    = 0.0f;
-			float                       fArenaHeight                   = 0.0f;
+			GameObjectProcessDelegate   OnDeath                        = nullptr;
+			GameObjectProcessDelegate   OnEvery                        = nullptr;
+			I2DCoordMapper*             MapperPtr                      = nullptr;  
+			float                       DeltaTime                      = 0.0f;
 			bool                        UninstallSpriteIfObjectDeleted = false;
 	};
 }

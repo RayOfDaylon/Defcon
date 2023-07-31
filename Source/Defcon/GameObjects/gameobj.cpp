@@ -100,7 +100,7 @@ void Defcon::IGameObject::DrawSmall(FPaintArguments& FrameBuffer, const I2DCoord
 }
 
 
-void Defcon::IGameObject::Move(float fElapsedTime)
+void Defcon::IGameObject::Move(float DeltaTime)
 {
 	// Default motion behavior for an object.
 }

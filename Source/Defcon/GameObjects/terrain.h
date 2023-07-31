@@ -31,19 +31,15 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 
-			void          InitTerrain (int32 seed, int32 w, int32 h, int32 diff);
-			virtual void  Move        (float);
+			void          InitTerrain (float W, float H);
 			virtual void  Draw        (FPaintArguments&, const I2DCoordMapper&) override;
 			virtual void  DrawSmall   (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
-			float	      GetElev     (float) const;
+			float	      GetElev     (float X) const;
 
 		private:
 			TArray<FVector2D>   Vertices;
-			TArray<int32>       m_elevs;
-			bool*				m_deltas;
-			int                 m_width;
-			int                 m_maxheight;
-			bool				m_firsttime;
-
-	}; // CTerrain
+			TArray<float>       Elevations;
+			float               ArenaWidth;
+			float               ArenaHeight;
+	};
 }

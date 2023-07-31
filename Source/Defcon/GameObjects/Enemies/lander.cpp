@@ -382,7 +382,7 @@ void Defcon::CLander::Move(float fTime)
 
 #if 0
 			// Avoid moving too close to other hunters.
-			IGameObject* pObj = m_pObjects->GetFirst();
+			IGameObject* pObj = Objects->GetFirst();
 			while(pObj != nullptr)
 			{
 				int id = pObj->GetID();

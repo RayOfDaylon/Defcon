@@ -2,7 +2,13 @@ Bug list for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-July 29, 2023
+July 31, 2023
+
+
+FIXED: Guppies didn't face left when traveling that way.
+ 
+FIXED: Player ship would not teleport through stargate facing 
+highest abuducting lander if player was carrying humans.
 
 FIXED: Firebomber Showdown mission had dynamos spawning only at the 
 top of the arena.

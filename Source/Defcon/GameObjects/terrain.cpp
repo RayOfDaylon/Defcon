@@ -39,20 +39,14 @@ const float MaxTerrainLineLength = 120.0f;
 
 Defcon::CTerrain::CTerrain()
 {
-	Age          = 0.0f;
+	Age           = 0.0f;
 	bMortal       = false;
 	bCanBeInjured = false;
-	m_width         = m_maxheight = 0;
-	m_firsttime     = true;
-	m_deltas        = nullptr;
+	ArenaWidth    = ArenaHeight = 0;
 }
 
 Defcon::CTerrain::~CTerrain()
 {
-	if(m_deltas != nullptr)
-	{
-		delete [] m_deltas;
-	}
 }
 
 
@@ -65,34 +59,19 @@ const char* Defcon::CTerrain::GetClassname() const
 #endif
 
 
-void Defcon::CTerrain::InitTerrain(int32 seed, int32 w, int32 h, int32 diff)
+void Defcon::CTerrain::InitTerrain(float w, float h)
 {
-	// Set up some funky mountainry.
-	// The greater <diff> is, the more funky the terrain.
-	// todo: we don't use <diff> at the moment, but should.
-
 	Vertices.Reserve(300);
 	Vertices.Empty();
 
-	m_width     = w;
-	m_maxheight = h;
+	ArenaWidth  = w;
+	ArenaHeight = h;
 
 
-	if(seed >= 0)
-	{
-		srand(seed);
-		diff = (int32)(FRAND * 100000 + 20000);
-	}
+	// Vertex generator
 
-	float t = NORM_((float)diff, 0, 200000);
-	t = FMath::Min(t, 1.0f);
-	diff = (int32)(t * 50);
-
-
-	// New vertex generator
-
-	const float MaxHeight = h * 0.45f;
-	const float MinHeight = h * 0.05f;
+	const float MaxHeight = ArenaHeight * 0.45f;
+	const float MinHeight = ArenaHeight * 0.05f;
 	
 	FVector2D P(0.0f, Daylon::FRandRange(MinHeight, MaxHeight)); // current point. Start at x = 0
 	Vertices.Add(P);
@@ -108,7 +87,6 @@ void Defcon::CTerrain::InitTerrain(int32 seed, int32 w, int32 h, int32 diff)
 		do
 		{
 			DirectionY = Daylon::RandRange(-1, 1);
-			// todo: we can boost performance by collapsing lines that extend current direction.
 
 			FVector2D V(1.0f, (float)DirectionY);
 			V.Normalize();
@@ -156,9 +134,9 @@ void Defcon::CTerrain::InitTerrain(int32 seed, int32 w, int32 h, int32 diff)
 	// Render lines into heightfield for fast access during GetElev().
 	// Note: line vertices are in Slate space, but our elevations are cartesian.
 
-	const int32 numElevs = w + 1;
-	m_elevs.Reserve(numElevs);
-	m_elevs.SetNum(numElevs);
+	const int32 numElevs = (int32)ArenaWidth + 1;
+	Elevations.Reserve(numElevs);
+	Elevations.SetNum(numElevs);
 
 	for(int32 Index = 0; Index < Vertices.Num() - 1; Index++)
 	{
@@ -168,110 +146,103 @@ void Defcon::CTerrain::InitTerrain(int32 seed, int32 w, int32 h, int32 diff)
 		// Iterate through line at pixel res.
 		for(int32 X = (int32)P1.X; X <= (int32)P2.X; X++)
 		{
-			m_elevs[X] = (int32)FMath::Lerp(P1.Y, P2.Y, Daylon::Normalize(X, P1.X, P2.X));
+			Elevations[X] = FMath::Lerp(P1.Y, P2.Y, Daylon::Normalize(X, P1.X, P2.X));
 		}
 	}
-	// todo: we probably have gaps in m_elevs, need to clean that up.
+	// todo: we probably have gaps in Elevations, need to clean that up.
 }
 
 
-float Defcon::CTerrain::GetElev(float x) const
+float Defcon::CTerrain::GetElev(float X) const
 {
 	// x is normalized.
-	check(x >= 0.0f && x <= 1.0f);
+	check(X >= 0.0f && X <= 1.0f);
 
 	if(this == nullptr)
 	{
 		return 0.0f;
 	}
 
-	if(x >= 1.0f)
+	if(X >= 1.0f)
 	{
-		x -= 1.0f;
+		X -= 1.0f;
 	}
 
 	// 0 and 1 are the same arena point.
 	// This is occupied by the first and last terrain vertex.
 
-	x *= m_elevs.Num() - 1;
-	//return (float)((m_maxheight - 1) - m_elevs[ROUND(x)]);
-	return (float)m_elevs[ROUND(x)];
+	X *= Elevations.Num() - 1;
+	
+	return Elevations[ROUND(X)];
 }
 
 
-void Defcon::CTerrain::Move(float f)
-{
-	Age += f;
-}
-
-
-void Defcon::CTerrain::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
+void Defcon::CTerrain::Draw(FPaintArguments& PaintArguments, const I2DCoordMapper& Mapper)
 {
 	// In UE, we draw the terrain as a set of solid lines.
 
-	const float framebufWidth = framebuf.GetWidth();
+	const float PaintWidth = PaintArguments.GetWidth();
 
-	CFPoint pt;
+	CFPoint Pt;
 
 	const int32 NumVertices = Vertices.Num();
 
-	int32 i, j = 0, k = 0;
-	float xmin = 1.0e+10f, xmax = -1.0e+10f;
+	int32 J = 0, K = 0;
+	float Xmin = 1.0e+10f, Xmax = -1.0e+10f;
 
 	// Find the visible part of the terrain.
 
 	// Find the first visible terrain part on the left side.
-	for(i = 0; i < NumVertices; i++)
+	for(int32 I = 0; I < NumVertices; I++)
 	{
-		CFPoint ptTemp((float)Vertices[i].X, (float)Vertices[i].Y);
-		mapper.To(ptTemp, pt);
+		CFPoint PtTemp((float)Vertices[I].X, (float)Vertices[I].Y);
+		Mapper.To(PtTemp, Pt);
 
-		if(pt.x >= 0 && pt.x < framebufWidth)
+		if(Pt.x >= 0 && Pt.x < PaintWidth)
 		{
-			if(pt.x < xmin)
+			if(Pt.x < Xmin)
 			{
-				xmin = pt.x;
-				j = i;
+				Xmin = Pt.x;
+				J = I;
 			}
 
-			if(pt.x > xmax)
+			if(Pt.x > Xmax)
 			{
-				xmax = pt.x;
-				k = i;
+				Xmax = Pt.x;
+				K = I;
 			}
 		}
 	}
 
 	// todo: cache j, k and perform above calc only when invalidated.
-	j -= 2;
-	k++;
+	J -= 2;
+	K++;
 
-	if(k < j)
+	if(K < J)
 	{
-		k+= NumVertices;
+		K += NumVertices;
 	}
 
 	TArray<FVector2f>  LinePts;
 
-	LinePts.Reserve(k - j + 1);
+	LinePts.Reserve(K - J + 1);
 
-	for(i = j; i <= k; i++)
+	for(int32 I = J; I <= K; I++)
 	{
-		const int32 m = (i + NumVertices) % NumVertices;
+		const int32 M = (I + NumVertices) % NumVertices;
 
-		CFPoint ptTemp((float)Vertices[m].X, (float)Vertices[m].Y);
+		CFPoint PtTemp((float)Vertices[M].X, (float)Vertices[M].Y);
 
-		mapper.To(ptTemp, pt);
+		Mapper.To(PtTemp, Pt);
 
-		LinePts.Add(FVector2f(pt.x, pt.y));
+		LinePts.Add(FVector2f(Pt.x, Pt.y));
 	}
 
-
-	FSlateDrawElement::MakeLines(*framebuf.OutDrawElements, framebuf.LayerId, *framebuf.PaintGeometry, LinePts, ESlateDrawEffect::None, C_RED, true, 3.0f);
+	FSlateDrawElement::MakeLines(*PaintArguments.OutDrawElements, PaintArguments.LayerId, *PaintArguments.PaintGeometry, LinePts, ESlateDrawEffect::None, C_RED, true, 3.0f);
 }
 
 
-void Defcon::CTerrain::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper& mapper, FSlateBrush&)
+void Defcon::CTerrain::DrawSmall(FPaintArguments& PaintArguments, const I2DCoordMapper& Mapper, FSlateBrush&)
 {
 	// The entire terrain is visible, so don't search for start/end points.
 	// Note that the player is always in the center, so the terrain shifts left/right.
@@ -281,7 +252,7 @@ void Defcon::CTerrain::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper
 	// takes only a small part of the screen.
 
 
-	CFPoint pt;
+	CFPoint Pt;
 
 	const int32 NumVertices = Vertices.Num();
 
@@ -296,66 +267,67 @@ void Defcon::CTerrain::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper
 	// We need to start with the visually leftmost vertex, and increment with modulus.
 
 	// Find the visually leftmost vertex.
-	float minX = 1.0e+10;
+	float MinX = 1.0e+10;
 
-	int32 j = 0;
+	int32 J = 0;
 
 	for(int32 Index = 0; Index < NumVertices - 1; Index++)
 	{
 		const auto& Vertex = Vertices[Index];
-		CFPoint ptTemp((float)Vertex.X, (float)Vertex.Y);
-		mapper.To(ptTemp, pt);
+		CFPoint PtTemp((float)Vertex.X, (float)Vertex.Y);
+		Mapper.To(PtTemp, Pt);
 
-		if(pt.x > 0 && pt.x < minX)
+		if(Pt.x > 0 && Pt.x < MinX)
 		{
-			j = Index;
-			minX = pt.x;
+			J = Index;
+			MinX = Pt.x;
 		}
 	}
 
 	// Start with the vertex just outside the left edge.
-	j--;
-	if(j < 0)
+	J--;
+	if(J < 0)
 	{
-		j = NumVertices - 2;
+		J = NumVertices - 2;
 	}
 
 	// Now draw all the vertices starting at J and wrapping around when we hit the right edge.
 
-	int32 i = 0;
+	int32 I = 0;
 
-	const float OurWidth = framebuf.AllottedGeometry->GetLocalSize().X;
+	const float OurWidth = PaintArguments.AllottedGeometry->GetLocalSize().X;
 
-	for(int32 Index = j; Index < j + NumVertices; Index++, i++)
+	for(int32 Index = J; Index < J + NumVertices; Index++, I++)
 	{
 		const auto& Vertex = Vertices[Index % (NumVertices)];
-		CFPoint ptTemp((float)Vertex.X, (float)Vertex.Y);
-		mapper.To(ptTemp, pt);
+		CFPoint PtTemp((float)Vertex.X, (float)Vertex.Y);
+		Mapper.To(PtTemp, Pt);
 
 		// First drawn vertex will be near the right edge
-		if(i == 0)
+		if(I == 0)
 		{
-			pt.x -= OurWidth;
+			Pt.x -= OurWidth;
 		}
 
-		LinePts.Add(FVector2f(pt.x, pt.y));
+		LinePts.Add(FVector2f(Pt.x, Pt.y));
 	}
 
 	// We still need 1-2 more lines to clip against the right edge.
-	for(int32 Index = j + NumVertices; Index < j + NumVertices + 2; Index++)
+	for(int32 Index = J + NumVertices; Index < J + NumVertices + 2; Index++)
 	{
 		const auto& Vertex = Vertices[Index % NumVertices];
-		CFPoint ptTemp((float)Vertex.X, (float)Vertex.Y);
-		mapper.To(ptTemp, pt);
+		CFPoint PtTemp((float)Vertex.X, (float)Vertex.Y);
+		Mapper.To(PtTemp, Pt);
+
 		// If we wrapped back to the left edge, unwrap.
-		if(pt.x < OurWidth / 2)
+		if(Pt.x < OurWidth / 2)
 		{
-			pt.x += OurWidth;
+			Pt.x += OurWidth;
 		}
-		LinePts.Add(FVector2f(pt.x, pt.y));
+		LinePts.Add(FVector2f(Pt.x, Pt.y));
 	}
 
-	FSlateDrawElement::MakeLines(*framebuf.OutDrawElements, framebuf.LayerId, *framebuf.PaintGeometry, LinePts, ESlateDrawEffect::None, C_RED, true, 2.0f);
+	FSlateDrawElement::MakeLines(*PaintArguments.OutDrawElements, PaintArguments.LayerId, *PaintArguments.PaintGeometry, LinePts, ESlateDrawEffect::None, C_RED, true, 2.0f);
 }
 
 
