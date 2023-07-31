@@ -19,7 +19,7 @@ namespace Defcon
 {
 	typedef struct
 	{
-		CFVector	m_pos;
+		CFVector	Position;
 		FLinearColor	m_colorFar;
 		FLinearColor	m_colorNear;
 	} star;

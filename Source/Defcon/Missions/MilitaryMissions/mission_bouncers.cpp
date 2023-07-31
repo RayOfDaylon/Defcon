@@ -20,12 +20,12 @@ void Defcon::CBouncersMission::Init()
 
 	JFactor = 0.1f;
 
-	AddEnemySpawnInfo({ ObjType::LANDER,          { 10, 10, 10, } });
-	AddEnemySpawnInfo({ ObjType::BOMBER,          {  3,  5,  3  } });
-	AddEnemySpawnInfo({ ObjType::BOUNCER_TRUE,    {  5,  5,  5  } });
-	AddEnemySpawnInfo({ ObjType::BOUNCER_WEAK,    {  3,  3,  3  } });
-	AddEnemySpawnInfo({ ObjType::FIREBOMBER_TRUE, {  5,  5,  5  } });
-	AddEnemySpawnInfo({ ObjType::FIREBOMBER_WEAK, {  3,  3,  3  } });
+	AddEnemySpawnInfo({ EObjType::LANDER,          { 10, 10, 10, } });
+	AddEnemySpawnInfo({ EObjType::BOMBER,          {  3,  5,  3  } });
+	AddEnemySpawnInfo({ EObjType::BOUNCER_TRUE,    {  5,  5,  5  } });
+	AddEnemySpawnInfo({ EObjType::BOUNCER_WEAK,    {  3,  3,  3  } });
+	AddEnemySpawnInfo({ EObjType::FIREBOMBER_TRUE, {  5,  5,  5  } });
+	AddEnemySpawnInfo({ EObjType::FIREBOMBER_WEAK, {  3,  3,  3  } });
 }
 
 

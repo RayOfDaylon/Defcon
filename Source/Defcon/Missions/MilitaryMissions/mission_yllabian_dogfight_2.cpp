@@ -54,11 +54,11 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 
 		const FEnemySpawnCounts waves[] = 
 		{
-			{ ObjType::GUPPY,   { 24, 30, 30, 30 } },
-			{ ObjType::SWARMER, {  3,  3,  3,  3 } },
-			{ ObjType::POD,     {  3,  3,  3,  0 } },
-			{ ObjType::DYNAMO,  { 10,  7,  4,  3 } },
-			{ ObjType::HUNTER,  {  3,  4,  4,  3 } }
+			{ EObjType::GUPPY,   { 24, 30, 30, 30 } },
+			{ EObjType::SWARMER, {  3,  3,  3,  3 } },
+			{ EObjType::POD,     {  3,  3,  3,  0 } },
+			{ EObjType::DYNAMO,  { 10,  7,  4,  3 } },
+			{ EObjType::HUNTER,  {  3,  4,  4,  3 } }
 		};
 
 
@@ -72,9 +72,9 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 
 				switch(waves[i].Kind)
 				{
-					case ObjType::POD:
-					case ObjType::HUNTER:
-					case ObjType::DYNAMO:
+					case EObjType::POD:
+					case EObjType::HUNTER:
+					case EObjType::DYNAMO:
 						P.x = FRAND * (gpArena->GetWidth() - 1);
 						P.y = FRANDRANGE(0.15f, 0.85f);
 						break;

@@ -25,24 +25,24 @@
 
 Defcon::CPhred::CPhred()
 {
-	m_parentType = m_type;
-	m_type = ObjType::PHRED;
-	m_pointValue = PHRED_VALUE;
-	m_smallColor = MakeColorFromComponents(192, 128, 192);
-	m_fAnimSpeed = FRAND * 0.35f + 0.15f;
+	ParentType = Type;
+	Type = EObjType::PHRED;
+	PointValue = PHRED_VALUE;
+	RadarColor = MakeColorFromComponents(192, 128, 192);
+	AnimSpeed = FRAND * 0.35f + 0.15f;
 
-	m_fDrag = PLAYER_DRAG * 0.15f;
+	Drag = PLAYER_DRAG * 0.15f;
 	m_maxThrust = PLAYER_MAXTHRUST * 9.0f;
-	m_fMass = PLAYER_MASS * 20;
-	m_bIsCollisionInjurious = true;
+	Mass = PLAYER_MASS * 20;
+	bIsCollisionInjurious = true;
 	m_bPreferTargetUnderside = FRAND >= 0.5f;
 	m_fBrightness = FRAND * 0.1f + 0.4f;
 	m_fSquakTime = 0;
 	m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
 
-	CreateSprite(m_type);
-	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	CreateSprite(Type);
+	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 
@@ -62,34 +62,34 @@ const char* Defcon::CPhred::GetClassname() const
 
 void Defcon::CPhred::Move(float fTime)
 {
-	//m_fAge += fTime;
+	//Age += fTime;
 	//this->DoPhysics2(fTime);
-	CFPoint orgpos = m_pos;
+	CFPoint orgpos = Position;
 
 	IGameObject* pTarget = m_pTarget;
 	if(pTarget != nullptr)
 	{
-		const float xd = gpArena->HorzDistance(m_pos, pTarget->m_pos);
-		float d = m_fDrag;
-		float m = m_fMass;
+		const float xd = gpArena->HorzDistance(Position, pTarget->Position);
+		float d = Drag;
+		float m = Mass;
 		// Increase drag as baiter near player.
 		float t = NORM_(xd, 0.0f, 500.0f);
 		t = FMath::Min(1.0f, t);
-		//m_fDrag = LERP(m_fDrag*30.0f, m_fDrag, t);
-		m_fMass = LERP(m_fMass*3.0f, m_fMass, t);
+		//Drag = LERP(Drag*30.0f, Drag, t);
+		Mass = LERP(Mass*3.0f, Mass, t);
 		CEnemy::Move(fTime);
-		m_fDrag = d;
-		m_fMass = m;
+		Drag = d;
+		Mass = m;
 	}
 
-	orgpos -= m_pos;
+	orgpos -= Position;
 	m_bFacingLeft = (orgpos.x > 0);
 	Sprite->FlipHorizontal = (m_bFacingLeft);
-	//m_bIsCollisionInjurious = true;
+	//bIsCollisionInjurious = true;
 
 
 	// Don't move until after materialization is complete.
-	if(m_fAge > ENEMY_BIRTHDURATION)
+	if(Age > ENEMY_BIRTHDURATION)
 	{
 		// Thrust in a way that will take us towards 
 		// the player. Only thrust vertically if we 
@@ -98,15 +98,15 @@ void Defcon::CPhred::Move(float fTime)
 		if(pTarget != nullptr)
 		{
 			CFPoint delta, target;
-			target = pTarget->m_pos;
+			target = pTarget->Position;
 			const float vsign = m_bPreferTargetUnderside ? -1.0f : 1.0f;
 
 			target += CFPoint(
-				(float)cos(m_fAge) * 300.0f * SGN(pTarget->m_orient.fwd.x),
-				vsign * (float)fabs(sin(m_fAge)) * 50.0f + vsign * 50.0f);
+				(float)cos(Age) * 300.0f * SGN(pTarget->Orientation.fwd.x),
+				vsign * (float)fabs(sin(Age)) * 50.0f + vsign * 50.0f);
 
-			float xd = gpArena->Direction(m_pos, target, delta);
-			bool bMoveTowards = (xd > 150 || SGN(m_orient.fwd.x) != SGN(pTarget->m_orient.fwd.x));
+			float xd = gpArena->Direction(Position, target, delta);
+			bool bMoveTowards = (xd > 150 || SGN(Orientation.fwd.x) != SGN(pTarget->Orientation.fwd.x));
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.x < 0)	
@@ -133,7 +133,7 @@ void Defcon::CPhred::Move(float fTime)
 			}
 
 			// Vertical.
-			bMoveTowards = (xd > 50/* && SGN(m_orient.fwd.y) != SGN(pTarget->m_orient.fwd.y)*/);
+			bMoveTowards = (xd > 50/* && SGN(Orientation.fwd.y) != SGN(pTarget->Orientation.fwd.y)*/);
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.y < 0)	
@@ -161,8 +161,8 @@ void Defcon::CPhred::Move(float fTime)
 /*			// Fire control.
 			if(FRAND <= 0.05f * 0.33f
 				&& this->CanBeInjured()
-				&& gpArena->IsPointVisible(m_pos))
-				gpArena->FireBullet(*this, m_pos, 1, 1);
+				&& gpArena->IsPointVisible(Position))
+				gpArena->FireBullet(*this, Position, 1, 1);
 */
 
 			if(xd < 350 && FRAND < 0.02 && m_fSquakTime == 0.0f)
@@ -197,24 +197,24 @@ int Defcon::CPhred::GetExplosionColorBase() const
 
 Defcon::CMunchie::CMunchie()
 {
-	m_parentType = m_type;
-	m_type = ObjType::MUNCHIE;
-	m_pointValue = MUNCHIE_VALUE;
-	m_smallColor = MakeColorFromComponents(0, 192, 0);
-	m_fAnimSpeed = FRAND * 0.35f + 0.15f;
+	ParentType = Type;
+	Type = EObjType::MUNCHIE;
+	PointValue = MUNCHIE_VALUE;
+	RadarColor = MakeColorFromComponents(0, 192, 0);
+	AnimSpeed = FRAND * 0.35f + 0.15f;
 
-	m_fDrag = PLAYER_DRAG * 0.15f;
+	Drag = PLAYER_DRAG * 0.15f;
 	m_maxThrust = PLAYER_MAXTHRUST * 9.0f;
-	m_fMass = PLAYER_MASS * 18;
-	m_bIsCollisionInjurious = true;
+	Mass = PLAYER_MASS * 18;
+	bIsCollisionInjurious = true;
 	m_bPreferTargetUnderside = FRAND >= 0.5f;
 	m_fBrightness = FRAND * 0.1f + 0.4f;
 	m_fSquakTime = 0;
 	m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
 
-	CreateSprite(m_type);
-	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	CreateSprite(Type);
+	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 
@@ -234,34 +234,34 @@ const char* Defcon::CMunchie::GetClassname() const
 
 void Defcon::CMunchie::Move(float fTime)
 {
-	//m_fAge += fTime;
+	//Age += fTime;
 	//this->DoPhysics2(fTime);
-	CFPoint orgpos = m_pos;
+	CFPoint orgpos = Position;
 
 	IGameObject* pTarget = m_pTarget;
 	if(pTarget != nullptr)
 	{
-		const float xd = gpArena->HorzDistance(m_pos, pTarget->m_pos);
-		float d = m_fDrag;
-		float m = m_fMass;
+		const float xd = gpArena->HorzDistance(Position, pTarget->Position);
+		float d = Drag;
+		float m = Mass;
 		// Increase drag as baiter near player.
 		float t = NORM_(xd, 0.0f, 500.0f);
 		t = FMath::Min(1.0f, t);
-		//m_fDrag = LERP(m_fDrag*30.0f, m_fDrag, t);
-		m_fMass = LERP(m_fMass*3.0f, m_fMass, t);
+		//Drag = LERP(Drag*30.0f, Drag, t);
+		Mass = LERP(Mass*3.0f, Mass, t);
 		CEnemy::Move(fTime);
-		m_fDrag = d;
-		m_fMass = m;
+		Drag = d;
+		Mass = m;
 	}
 
-	orgpos -= m_pos;
+	orgpos -= Position;
 	m_bFacingLeft = (orgpos.x > 0);
 	Sprite->FlipHorizontal = (m_bFacingLeft);
-	//m_bIsCollisionInjurious = true;
+	//bIsCollisionInjurious = true;
 
 
 	// Don't move until after materialization is complete.
-	if(m_fAge > ENEMY_BIRTHDURATION)
+	if(Age > ENEMY_BIRTHDURATION)
 	{
 		// Thrust in a way that will take us towards 
 		// the player. Only thrust vertically if we 
@@ -270,15 +270,15 @@ void Defcon::CMunchie::Move(float fTime)
 		if(pTarget != nullptr)
 		{
 			CFPoint delta, target;
-			target = pTarget->m_pos;
+			target = pTarget->Position;
 			const float vsign = m_bPreferTargetUnderside ? -1.0f : 1.0f;
 
 			target += CFPoint(
-				(float)cos(m_fAge) * 300.0f * SGN(pTarget->m_orient.fwd.x),
-				vsign * (float)fabs(sin(m_fAge)) * 50.0f + vsign * 50.0f);
+				(float)cos(Age) * 300.0f * SGN(pTarget->Orientation.fwd.x),
+				vsign * (float)fabs(sin(Age)) * 50.0f + vsign * 50.0f);
 
-			float xd = gpArena->Direction(m_pos, target, delta);
-			bool bMoveTowards = (xd > 150 || SGN(m_orient.fwd.x) != SGN(pTarget->m_orient.fwd.x));
+			float xd = gpArena->Direction(Position, target, delta);
+			bool bMoveTowards = (xd > 150 || SGN(Orientation.fwd.x) != SGN(pTarget->Orientation.fwd.x));
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.x < 0)	
@@ -305,7 +305,7 @@ void Defcon::CMunchie::Move(float fTime)
 			}
 
 			// Vertical.
-			bMoveTowards = (xd > 50/* && SGN(m_orient.fwd.y) != SGN(pTarget->m_orient.fwd.y)*/);
+			bMoveTowards = (xd > 50/* && SGN(Orientation.fwd.y) != SGN(pTarget->Orientation.fwd.y)*/);
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.y < 0)	
@@ -333,8 +333,8 @@ void Defcon::CMunchie::Move(float fTime)
 /*			// Fire control.
 			if(FRAND <= 0.05f * 0.33f
 				&& this->CanBeInjured()
-				&& gpArena->IsPointVisible(m_pos))
-				gpArena->FireBullet(*this, m_pos, 1, 1);
+				&& gpArena->IsPointVisible(Position))
+				gpArena->FireBullet(*this, Position, 1, 1);
 */
 			if(xd < 350 && FRAND < 0.02 && m_fSquakTime == 0.0f)
 			{
@@ -368,24 +368,24 @@ int Defcon::CMunchie::GetExplosionColorBase() const
 
 Defcon::CBigRed::CBigRed()
 {
-	m_parentType = m_type;
-	m_type = ObjType::BIGRED;
-	m_pointValue = BIGRED_VALUE;
-	m_smallColor = MakeColorFromComponents(255, 128, 0);
-	m_fAnimSpeed = FRAND * 0.35f + 0.15f;
+	ParentType = Type;
+	Type = EObjType::BIGRED;
+	PointValue = BIGRED_VALUE;
+	RadarColor = MakeColorFromComponents(255, 128, 0);
+	AnimSpeed = FRAND * 0.35f + 0.15f;
 
-	m_fDrag = PLAYER_DRAG * 0.15f;
+	Drag = PLAYER_DRAG * 0.15f;
 	m_maxThrust = PLAYER_MAXTHRUST * 9.0f;
-	m_fMass = PLAYER_MASS * 22;
-	m_bIsCollisionInjurious = true;
+	Mass = PLAYER_MASS * 22;
+	bIsCollisionInjurious = true;
 	m_bPreferTargetUnderside = FRAND >= 0.5f;
 	m_fBrightness = FRAND * 0.1f + 0.4f;
 	m_fSquakTime = 0;
 	m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
 
-	CreateSprite(m_type);
-	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	CreateSprite(Type);
+	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 
@@ -405,34 +405,34 @@ const char* Defcon::CBigRed::GetClassname() const
 
 void Defcon::CBigRed::Move(float fTime)
 {
-	//m_fAge += fTime;
+	//Age += fTime;
 	//this->DoPhysics2(fTime);
-	CFPoint orgpos = m_pos;
+	CFPoint orgpos = Position;
 
  	IGameObject* pTarget = m_pTarget;
 
 	if(pTarget != nullptr)
 	{
-		const float xd = gpArena->HorzDistance(m_pos, pTarget->m_pos);
-		float d = m_fDrag;
-		float m = m_fMass;
+		const float xd = gpArena->HorzDistance(Position, pTarget->Position);
+		float d = Drag;
+		float m = Mass;
 		// Increase drag as baiter near player.
 		float t = NORM_(xd, 0.0f, 500.0f);
 		t = FMath::Min(1.0f, t);
-		//m_fDrag = LERP(m_fDrag*30.0f, m_fDrag, t);
-		m_fMass = LERP(m_fMass*3.0f, m_fMass, t);
+		//Drag = LERP(Drag*30.0f, Drag, t);
+		Mass = LERP(Mass*3.0f, Mass, t);
 		CEnemy::Move(fTime);
-		m_fDrag = d;
-		m_fMass = m;
+		Drag = d;
+		Mass = m;
 	}
 
-	orgpos -= m_pos;
+	orgpos -= Position;
 	m_bFacingLeft = (orgpos.x > 0);
-	//m_bIsCollisionInjurious = true;
+	//bIsCollisionInjurious = true;
 	Sprite->FlipHorizontal = (m_bFacingLeft);
 
 	// Don't move until after materialization is complete.
-	if(m_fAge > m_fBirthDuration)
+	if(Age > m_fBirthDuration)
 	{
 		// Thrust in a way that will take us towards 
 		// the player. Only thrust vertically if we 
@@ -441,15 +441,15 @@ void Defcon::CBigRed::Move(float fTime)
 		if(pTarget != nullptr)
 		{
 			CFPoint delta, target;
-			target = pTarget->m_pos;
+			target = pTarget->Position;
 			const float vsign = m_bPreferTargetUnderside ? -1.0f : 1.0f;
 
 			target += CFPoint(
-				(float)cos(m_fAge) * 300.0f * SGN(pTarget->m_orient.fwd.x),
-				vsign * (float)fabs(sin(m_fAge)) * 50.0f + vsign * 50.0f);
+				(float)cos(Age) * 300.0f * SGN(pTarget->Orientation.fwd.x),
+				vsign * (float)fabs(sin(Age)) * 50.0f + vsign * 50.0f);
 
-			float xd = gpArena->Direction(m_pos, target, delta);
-			bool bMoveTowards = (xd > 150 || SGN(m_orient.fwd.x) != SGN(pTarget->m_orient.fwd.x));
+			float xd = gpArena->Direction(Position, target, delta);
+			bool bMoveTowards = (xd > 150 || SGN(Orientation.fwd.x) != SGN(pTarget->Orientation.fwd.x));
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.x < 0)	
@@ -476,7 +476,7 @@ void Defcon::CBigRed::Move(float fTime)
 			}
 
 			// Vertical.
-			bMoveTowards = (xd > 50/* && SGN(m_orient.fwd.y) != SGN(pTarget->m_orient.fwd.y)*/);
+			bMoveTowards = (xd > 50/* && SGN(Orientation.fwd.y) != SGN(pTarget->Orientation.fwd.y)*/);
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.y < 0)	
@@ -504,8 +504,8 @@ void Defcon::CBigRed::Move(float fTime)
 /*			// Fire control.
 			if(FRAND <= 0.05f * 0.33f
 				&& this->CanBeInjured()
-				&& gpArena->IsPointVisible(m_pos))
-				gpArena->FireBullet(*this, m_pos, 1, 1);
+				&& gpArena->IsPointVisible(Position))
+				gpArena->FireBullet(*this, Position, 1, 1);
 */
 			if(xd < 350 && FRAND < 0.02 && m_fSquakTime == 0.0f)
 			{

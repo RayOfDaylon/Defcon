@@ -35,8 +35,8 @@ const char* Defcon::CSmartbomb::GetClassname() const
 
 Defcon::CSmartbomb::CSmartbomb()
 {
-	m_parentType = m_type;
-	m_type = ObjType::SMARTBOMB;
+	ParentType = Type;
+	Type = EObjType::SMARTBOMB;
 
 	NameColor = TEXT("Color");
 	NameOs    = TEXT("Os");
@@ -68,18 +68,18 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 	// moves quickly and destroys anything on 
 	// the screen.
 
-	if(m_bMortal)
+	if(bMortal)
 		return;
 
-	m_fAge += fTimeElapsed;
+	Age += fTimeElapsed;
 
 	CFPoint radius = m_range;
-	float t = FMath::Min(1.0f, m_fAge / SMARTBOMB_LIFESPAN);
+	float t = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
 	radius *= t;
 	float shockwave = radius.x;
 
 	CFPoint pt, bombpt;
-	m_pMapper->To(m_pos, bombpt);
+	MapperPtr->To(Position, bombpt);
 
 	IGameObject* pObj = m_pTargets->GetFirst();
 	IGameObject* pObj2;
@@ -87,10 +87,10 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 	while(pObj != nullptr)
 	{
 		if(pObj->CanBeInjured() 
-			&& pObj->GetType() != ObjType::PLAYER
-			&& pObj->GetType() != ObjType::HUMAN)
+			&& pObj->GetType() != EObjType::PLAYER
+			&& pObj->GetType() != EObjType::HUMAN)
 		{
-			m_pMapper->To(pObj->m_pos, pt);
+			MapperPtr->To(pObj->Position, pt);
 			if(pt.Distance(bombpt) < shockwave)
 			{
 				pObj2 = pObj->GetNext();
@@ -108,9 +108,9 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 
 	m_pDebris->ForEach([&](IGameObject* pObj)
 	{
-		if(pObj->GetType() != ObjType::TEXT)
+		if(pObj->GetType() != EObjType::TEXT)
 		{
-			m_pMapper->To(pObj->m_pos, pt);
+			MapperPtr->To(pObj->Position, pt);
 			if(pt.Distance(bombpt) < shockwave)
 			{
 				// Make debris pushed by shockwave.
@@ -118,15 +118,15 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 				pt.Normalize();
 				pt.y *= -1;
 				pt.Mul(SMARTBOMB_WAVEPUSH * (1.0f - t) + SMARTBOMB_WAVEPUSHMIN);
-				pObj->m_orient.fwd += pt;
+				pObj->Orientation.fwd += pt;
 			}
 		}
 	});
 
-	if(m_fAge > SMARTBOMB_LIFESPAN)
+	if(Age > SMARTBOMB_LIFESPAN)
 	{
-		m_bMortal = true;
-		m_fLifespan = 0.0f;
+		bMortal = true;
+		Lifespan = 0.0f;
 	}
 }
 
@@ -141,12 +141,12 @@ void Defcon::CSmartbomb::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 	}
 
 	CFPoint radius = m_range;
-	float t = FMath::Min(1.0f, m_fAge / SMARTBOMB_LIFESPAN);
+	float t = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
 	radius *= t;
 	float shockwave = radius.x;
 
 	CFRect r;
-	map.To(m_pos, r.LL);
+	map.To(Position, r.LL);
 	const FVector2D pt(r.LL.x, r.LL.y);
 	r.UR = r.LL;
 	r.Inflate(CFPoint(shockwave, shockwave * .5f));

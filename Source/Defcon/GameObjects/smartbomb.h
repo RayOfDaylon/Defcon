@@ -27,7 +27,7 @@ namespace Defcon
 			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
 
 			CFPoint					m_range;
-			I2DCoordMapper*			m_pMapper  = nullptr;
+			I2DCoordMapper*			MapperPtr  = nullptr;
 			CGameObjectCollection*	m_pTargets = nullptr;
 			CGameObjectCollection*	m_pDebris  = nullptr;
 

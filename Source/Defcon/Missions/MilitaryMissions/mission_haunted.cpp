@@ -21,9 +21,9 @@ void Defcon::CHaunted::Init()
 
 	JFactor = 0.1f;
 
-	AddEnemySpawnInfo({ ObjType::LANDER, { 10, 10, 10 } });
-	AddEnemySpawnInfo({ ObjType::DYNAMO, {  3,  5,  3 } });
-	AddEnemySpawnInfo({ ObjType::GHOST,  { 10, 15, 15 } });
+	AddEnemySpawnInfo({ EObjType::LANDER, { 10, 10, 10 } });
+	AddEnemySpawnInfo({ EObjType::DYNAMO, {  3,  5,  3 } });
+	AddEnemySpawnInfo({ EObjType::GHOST,  { 10, 15, 15 } });
 }
 
 

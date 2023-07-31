@@ -21,13 +21,13 @@ namespace Defcon
 {
 	class I2DCoordMapper;
 
-	enum class Message : uint8
+	enum class EMessage : uint8
 	{
-		takenaboard,
-		carrier_killed,
-		released,
-		human_killed,
-		human_takenaboard
+		TakenAboard,
+		CarrierKilled,
+		Released,
+		HumanKilled,
+		HumanTakenAboard
 	};
 
 
@@ -61,17 +61,17 @@ namespace Defcon
 			void                  SetPrev               (IGameObject* p);
 
 			// Identify stuff.
-			ObjType               GetParentType         () const;
-			ObjType               GetCreatorType        () const;
-			void                  SetCreatorType        (ObjType n);
-			ObjType               GetType               () const;
-			void                  SetType               (ObjType n);
+			EObjType              GetParentType         () const;
+			EObjType              GetCreatorType        () const;
+			void                  SetCreatorType        (EObjType n);
+			EObjType              GetType               () const;
+			void                  SetType               (EObjType n);
 								  
 			virtual void          Move                  (float DeltaTime);
 			virtual void          Draw                  (FPaintArguments&, const I2DCoordMapper&);
 			virtual void          DrawSmall             (FPaintArguments&, const I2DCoordMapper&, FSlateBrush& Brush);
 
-			virtual void          Notify                (Message, void*);
+			virtual void          Notify                (EMessage, void*);
 
 			virtual IGameObject*  CreateFireball        (CGameObjectCollection&, float&);
 			virtual bool          Fireballs             () const;
@@ -99,7 +99,7 @@ namespace Defcon
 			virtual void          GetInjurePt           (CFPoint&) const;
 			virtual bool          TestInjury            (const CFRect&) const;
 
-			virtual int32        GetPointValue         () const;
+			virtual int32         GetPointValue         () const;
 
 			bool                  ExternallyOwned       () const; // todo: smart pointers would be better for this
 			void                  SetExternalOwnership  (bool b);
@@ -107,7 +107,7 @@ namespace Defcon
 			bool                  IsMissionTarget       () const;
 			void                  SetAsMissionTarget    (bool b = true);
 
-			virtual void          CreateSprite          (ObjType Kind);
+			virtual void          CreateSprite          (EObjType Kind);
 			virtual void          InstallSprite         ();
 			virtual void          UninstallSprite       ();
 
@@ -115,55 +115,52 @@ namespace Defcon
 
 
 
-			Orient2D        m_orient;       // Way the object is pointing/facing.
-			CFPoint         m_pos;          // Arena coords.
-			CFPoint         m_inertia;      // Momentum vector (indicates direction and magnitude of travel during current frame).
-											// Computed manually in every object's Move function by comparing old vs. new m_pos.
+			Orient2D        Orientation;    // Way the object is pointing/facing.
+			CFPoint         Position;       // Arena coords.
+			CFPoint         Inertia;        // Momentum vector (indicates direction and magnitude of travel during current frame).
+											// Computed manually in every object's Move function by comparing old vs. new Position.
 											// todo: s/b able to drop this and use a temp var in upstream code.
-			CFPoint         m_bboxrad;
-			I2DCoordMapper* m_pMapper          = nullptr;
-			float           m_fLifespan        = 1.0f;    // Decremented by tick time, when zero, object is destroyed.
-			bool            m_bDrawSmall       = true;
-			bool            m_bMortal          = false;      // Set to true to use m_fLifespan.
-			UObject*        WorldContextObject = nullptr;
+			CFPoint         BboxRadius;
+			I2DCoordMapper* MapperPtr          = nullptr;
+			float           Lifespan           = 1.0f;       // Decremented by tick time, when zero, object is destroyed.
+			bool            bMortal            = false;      // Set to true to use Lifespan.
 
 			TSharedPtr<Daylon::SpritePlayObject2D> Sprite;
 
 			// Lifespan is great for temporary objects like weapons fire and 
 			// debris particles. The object processor will automatically lower the 
 			// lifespan and when it reaches or goes  below zero, the object 
-			// will be destroyed. Set m_bMortal to true to enable lifespan.
+			// will be destroyed. Set bMortal to true to enable lifespan.
 
 		protected:
 
-			IGameObject*    m_pPrev                 = nullptr;
-			IGameObject*    m_pNext                 = nullptr;
+			IGameObject*    PrevPtr                 = nullptr;
+			IGameObject*    NextPtr                 = nullptr;
 
-			bool            m_bExternallyOwned      = false;
+			EObjType        ParentType              = EObjType::UNKNOWN;
+			EObjType        Type                    = EObjType::UNKNOWN;
+			EObjType        CreatorType             = EObjType::UNKNOWN;
 
+			bool            bExternallyOwned        = false;
 
-			CFPoint         m_screensize; // todo: env data s/b obtained thru APIs? But cache coherency...
-			CFPoint         m_arenasize;
+			CFPoint         ScreenSize; // todo: env data s/b obtained thru APIs? But cache coherency...
+			CFPoint         ArenaSize;
 
-			float           m_fAge                  = 0.0f; // 0 = new
+			float           Age                     = 0.0f; // 0 = new
 
-			CFPoint         m_velocity; // arena coords per second.
-			float           m_fMass                 = 1.0f;
-			float           m_fDrag                 = 0.0f;
+			CFPoint         Velocity; // arena coords per second.
+			float           Mass                    = 1.0f;
+			float           Drag                    = 0.0f;
 
-			bool            m_bInjurious            = false;
-			bool            m_bCanBeInjured         = false;
-			bool            m_bIsCollisionInjurious = false;
+			bool            bInjurious              = false;
+			bool            bCanBeInjured           = false;
+			bool            bIsCollisionInjurious   = false;
 
-			ObjType         m_parentType            = ObjType::UNKNOWN;
-			ObjType         m_type                  = ObjType::UNKNOWN;
-			ObjType         m_creatorType           = ObjType::UNKNOWN;
-
-			FLinearColor    m_smallColor;
-			int32          m_pointValue            = 0;
-			float           m_fAnimSpeed            = 1.0f; // todo: will likely be dropped
-			bool            m_bMissionTarget        = false;
-			bool            m_grounded              = false;
+			FLinearColor    RadarColor;
+			int32           PointValue              = 0;
+			float           AnimSpeed               = 1.0f; // todo: will likely be dropped
+			bool            bMissionTarget          = false;
+			bool            bGrounded               = false;
 
 	}; // IGameObject 
 

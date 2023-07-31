@@ -26,20 +26,20 @@ Defcon::CTurret::CTurret()
 	:
 	m_freq(2.0f)
 {
-	m_type						= ObjType::TURRET;
-	m_grounded					= true;
-	m_pointValue				= SWARMER_VALUE; // todo: use TURRET_VALUE
-	m_bCanBeInjured				= true;
-	m_bIsCollisionInjurious		= true;
-	m_smallColor				= C_RED;
-	m_fAnimSpeed				= FRAND * 0.35f + 0.15f;
+	Type						= EObjType::TURRET;
+	bGrounded					= true;
+	PointValue				= SWARMER_VALUE; // todo: use TURRET_VALUE
+	bCanBeInjured				= true;
+	bIsCollisionInjurious		= true;
+	RadarColor				= C_RED;
+	AnimSpeed				= FRAND * 0.35f + 0.15f;
 	m_fTimeTargetWithinRange	= 0.0f;
 
-	m_inertia.Set(0.0f, 0.0f);
-	m_orient.fwd.Set(0.0f, 1.0f);
+	Inertia.Set(0.0f, 0.0f);
+	Orientation.fwd.Set(0.0f, 1.0f);
 
 	//CTrueBitmap& bmp = gBitmaps.GetBitmap(CBitmaps::turret);
-	//m_bboxrad.Set(bmp.GetWidth() / 2.0f, bmp.GetHeight() / 2.0f);
+	//BboxRadius.Set(bmp.GetWidth() / 2.0f, bmp.GetHeight() / 2.0f);
 
 	SetShieldStrength(10.0f); // can take ten laser hits
 
@@ -76,7 +76,7 @@ void Defcon::CTurret::Move(float fTime)
 	CEnemy::Move(fTime);
 
 
-	//m_inertia = m_pos;
+	//Inertia = Position;
 
 
 	IGameObject* pTarget = m_pTarget;
@@ -85,7 +85,7 @@ void Defcon::CTurret::Move(float fTime)
 		m_fTimeTargetWithinRange = 0.0f;
 	else
 	{
-		const bool bVis = gpArena->IsPointVisible(m_pos);
+		const bool bVis = gpArena->IsPointVisible(Position);
 
 		// Update target-within-range information.
 		if(m_fTimeTargetWithinRange > 0.0f)
@@ -105,52 +105,52 @@ void Defcon::CTurret::Move(float fTime)
 
 				//m_targetOffset.Set(
 				//	LERP(-100, 100, FRAND), 
-				//	LERP(50, 90, FRAND) * SGN(m_pos.y - pTarget->m_pos.y));
+				//	LERP(50, 90, FRAND) * SGN(Position.y - pTarget->Position.y));
 				//m_freq = LERP(6, 12, FRAND);
 				//m_amp = LERP(.33f, .9f, FRAND);
 			}
 		}
 
 		CFPoint dir;
-		float dist = gpArena->Direction(m_pos, pTarget->m_pos, dir);
+		float dist = gpArena->Direction(Position, pTarget->Position, dir);
 
 		/*if(m_fTimeTargetWithinRange > 0.25f)
 		{
-			if(dist > m_screensize.x * .4f)
+			if(dist > ScreenSize.x * .4f)
 			{
-				m_orient.fwd = dir;
-				m_orient.fwd.y = 0;
-				m_orient.fwd.Normalize();
+				Orientation.fwd = dir;
+				Orientation.fwd.y = 0;
+				Orientation.fwd.Normalize();
 			}
 		}*/
 		// todo: this is framerate dependant.
-		if(m_fTimeTargetWithinRange && m_fAge > 1.0f && FRAND <= 0.07f
-			/*&& SGN(m_orient.fwd.x) == SGN(dir.x)*/)
+		if(m_fTimeTargetWithinRange && Age > 1.0f && FRAND <= 0.07f
+			/*&& SGN(Orientation.fwd.x) == SGN(dir.x)*/)
 		{
-			gpArena->FireBullet(*this, m_pos, 1, 1);
+			gpArena->FireBullet(*this, Position, 1, 1);
 			//gpAudio->OutputSound(Defcon::snd_swarmer);
 		}
 	}
 
 
 #if 0
-	m_amp = LERP(0.33f, 1.0f, PSIN(m_yoff+m_fAge)) * 0.5f * m_screensize.y;
-	m_halfwayAltitude = (float)(sin((m_yoff+m_fAge)*0.6f) * 50 + (0.5f * m_screensize.y));
+	m_amp = LERP(0.33f, 1.0f, PSIN(m_yoff+Age)) * 0.5f * ScreenSize.y;
+	m_halfwayAltitude = (float)(sin((m_yoff+Age)*0.6f) * 50 + (0.5f * ScreenSize.y));
 
 	CFPoint pos;
-	if(m_fAge < 0.7f)
-		pos.x = m_pos.x + .2f * m_orient.fwd.x * m_xFreq * fTime * m_screensize.x * (FRAND * .05f + 0.25f);
+	if(Age < 0.7f)
+		pos.x = Position.x + .2f * Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 	else
-		pos.x = m_pos.x + m_orient.fwd.x * m_xFreq * fTime * m_screensize.x * (FRAND * .05f + 0.25f);
+		pos.x = Position.x + Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 	pos.y = 
-		(float)sin(m_freq * (m_yoff + m_fAge)) 
+		(float)sin(m_freq * (m_yoff + Age)) 
 		* m_amp + m_halfwayAltitude;
 
-	m_pos = pos;
-	if(m_fAge < 0.7f)
-		m_pos.y = LERP(m_posOrg.y, pos.y, m_fAge / 0.7f);
+	Position = pos;
+	if(Age < 0.7f)
+		Position.y = LERP(m_posOrg.y, pos.y, Age / 0.7f);
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 #endif
 }
 
@@ -163,10 +163,10 @@ void Defcon::CTurret::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapp
 		return;
 
 	CFPoint pt;
-	mapper.To(m_pos, pt);
+	mapper.To(Position, pt);
 
 
-	float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
+	float f = (float)fmod(Age, AnimSpeed) / AnimSpeed;
 	//f = (float)cos(f * PI) + 1.0f;
 	f *= 0;
 	
@@ -190,8 +190,8 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 #if 0
 	const int cby = CGameColors::red;
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	for(int32 i = 0; i < 100; i++)
@@ -203,10 +203,10 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 		pFlak->m_bCold			= true;
 		pFlak->m_fLargestSize	= FRAND * 15 + 2;
 		pFlak->m_bFade			= true;//bDieOff;
-		pFlak->m_fLifespan		= 1.0f;
+		pFlak->Lifespan		= 1.0f;
 
-		pFlak->m_pos			= m_pos;
-		pFlak->m_orient			= m_orient;
+		pFlak->Position			= Position;
+		pFlak->Orientation			= Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
@@ -214,18 +214,18 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)abs(sin(t)));
 
 #if 1
-		pFlak->m_orient.fwd.Set(0.0f, 0.0f);
+		pFlak->Orientation.fwd.Set(0.0f, 0.0f);
 
 		// Debris has at least the object's momentum.
-		//pFlak->m_orient.fwd = m_inertia;
+		//pFlak->Orientation.fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		//pFlak->m_orient.fwd *= FRAND * 12.0f + 20.0f;
+		//pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 600 + 100;
 
-		pFlak->m_orient.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.fwd.MulAdd(dir, speed);
 #endif
 		debris.Add(pFlak);
 	}

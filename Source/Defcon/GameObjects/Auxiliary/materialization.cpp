@@ -9,10 +9,10 @@
 
 Defcon::CMaterialization::CMaterialization()
 {
-	m_parentType = m_type;
-	m_type       = ObjType::MATERIALIZATION;
+	ParentType = Type;
+	Type       = EObjType::MATERIALIZATION;
 
-	m_bMortal    = true;
+	bMortal    = true;
 }
 
 
@@ -22,7 +22,7 @@ void Defcon::CMaterialization::InitMaterialization(const FMaterializationParams&
 
 	Params = InParams;
 
-	m_fLifespan = Params.Lifetime;
+	Lifespan = Params.Lifetime;
 
 	Particles.Reserve(Params.NumParticles);
 
@@ -42,9 +42,9 @@ void Defcon::CMaterialization::InitMaterialization(const FMaterializationParams&
 
 void Defcon::CMaterialization::Move(float DeltaTime)
 {
-	m_fAge += DeltaTime;
+	Age += DeltaTime;
 
-	const float T = m_fAge / Params.Lifetime;
+	const float T = Age / Params.Lifetime;
 
 	for(auto& Particle : Particles)
 	{

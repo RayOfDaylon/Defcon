@@ -31,13 +31,13 @@ namespace Defcon
 			virtual void ForEachUntil (TFunction<bool(IGameObject*)> Function) const;
 
 			virtual int32 Count      () const;
-			virtual int32 CountOf    (ObjType Kind) const;
+			virtual int32 CountOf    (EObjType Kind) const;
 									  
 			IGameObject* GetFirst     () const { return m_pFirst; }
-			IGameObject* Find         (ObjType Kind, IGameObject* SearchAfter = nullptr) const;
+			IGameObject* Find         (EObjType Kind, IGameObject* SearchAfter = nullptr) const;
 									  
 			virtual bool Process      (GameObjectProcessingParams&);
-			virtual void Notify       (Message Msg, IGameObject* Sender);
+			virtual void Notify       (EMessage Msg, IGameObject* Sender);
 
 		private:
 			IGameObject*    m_pFirst    = nullptr;

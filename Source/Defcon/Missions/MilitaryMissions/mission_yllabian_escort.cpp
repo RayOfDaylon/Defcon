@@ -23,12 +23,12 @@ void Defcon::CYllabianEscort::Init()
 
 	JFactor = 0.1f;
 
-	AddEnemySpawnInfo({ ObjType::GUPPY,   { 24, 30, 30, 30 } });
-	AddEnemySpawnInfo({ ObjType::SWARMER, {  3,  3,  3,  3 } });
-	AddEnemySpawnInfo({ ObjType::POD,     {  3,  3,  3,  0 } });
-	AddEnemySpawnInfo({ ObjType::DYNAMO,  { 10,  7,  4,  3 } });
-	AddEnemySpawnInfo({ ObjType::HUNTER,  {  3,  4,  4,  3 } });
-	AddEnemySpawnInfo({ ObjType::LANDER,  { 10, 12, 10,  5 } });
+	AddEnemySpawnInfo({ EObjType::GUPPY,   { 24, 30, 30, 30 } });
+	AddEnemySpawnInfo({ EObjType::SWARMER, {  3,  3,  3,  3 } });
+	AddEnemySpawnInfo({ EObjType::POD,     {  3,  3,  3,  0 } });
+	AddEnemySpawnInfo({ EObjType::DYNAMO,  { 10,  7,  4,  3 } });
+	AddEnemySpawnInfo({ EObjType::HUNTER,  {  3,  4,  4,  3 } });
+	AddEnemySpawnInfo({ EObjType::LANDER,  { 10, 12, 10,  5 } });
 }
 
 

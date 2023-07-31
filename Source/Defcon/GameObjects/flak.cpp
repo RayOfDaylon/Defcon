@@ -27,14 +27,14 @@ Defcon::CFlak::CFlak()
 	m_eColorbaseYoung(CGameColors::gray),
 	m_bCold(false)
 {
-	m_parentType = m_type;
-	m_type       = ObjType::FLAK;
+	ParentType = Type;
+	Type       = EObjType::FLAK;
 
-	m_bMortal       = true;
-	m_bInjurious    = false;
-	m_bCanBeInjured = false;
+	bMortal       = true;
+	bInjurious    = false;
+	bCanBeInjured = false;
 
-	m_maxAge = m_fLifespan = Daylon::FRandRange(0.5f, 2.0f);
+	m_maxAge = Lifespan = Daylon::FRandRange(0.5f, 2.0f);
 
 	BrushPtr = FRAND > 0.1f ? GameObjectResources.DebrisBrushRoundPtr : GameObjectResources.DebrisBrushSquarePtr;
 
@@ -61,9 +61,9 @@ void Defcon::CFlak::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper
 	// Determine a color, size, and shape for a debris piece.
 
 	CFPoint pt;
-	mapper.To(m_pos, pt);
+	mapper.To(Position, pt);
 
-	float fYouth = m_fLifespan / m_maxAge;
+	float fYouth = Lifespan / m_maxAge;
 
 	const int32 size = (int32)((FRAND * 0.5f + 0.5f) * fYouth * /*8*/	m_fLargestSize + 1);
 
@@ -125,7 +125,7 @@ void Defcon::CFlak::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper& m
 
 void Defcon::CFlak::Move(float fElapsedTime)
 {
-	m_pos.MulAdd(m_orient.fwd, fElapsedTime);
+	Position.MulAdd(Orientation.fwd, fElapsedTime);
 }
 
 
@@ -143,9 +143,9 @@ const char* Defcon::CGlowingFlak::GetClassname() const
 void Defcon::CGlowingFlak::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
 	CFPoint pt;
-	mapper.To(m_pos, pt);
+	mapper.To(Position, pt);
 
-	float fYouth = m_fLifespan / m_maxAge;
+	float fYouth = Lifespan / m_maxAge;
 
 	int size = (int)((FRAND * 0.5f + 0.5f) * fYouth * /*8*/	m_fLargestSize + 1);
 
@@ -245,9 +245,9 @@ Defcon::CPuff::CPuff()
 	:
 	m_fBrightest(1.0f)
 {
-	m_bMortal = true;
-	m_bInjurious = false;
-	m_bCanBeInjured = false;
+	bMortal = true;
+	bInjurious = false;
+	bCanBeInjured = false;
 
 }
 
@@ -272,9 +272,9 @@ void Defcon::CPuff::Draw
 )
 {
 	CFPoint pt;
-	mapper.To(m_pos, pt);
+	mapper.To(Position, pt);
 
-	float fYouth = m_fLifespan / m_maxAge;
+	float fYouth = Lifespan / m_maxAge;
 
 	// Make puff grow from small to large quickly 
 	// at the start, and then shrink to small slowly.
@@ -334,7 +334,7 @@ void Defcon::CPuff::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper& m
 
 void Defcon::CPuff::Move(float fElapsedTime)
 {
-	m_pos.MulAdd(m_orient.fwd, fElapsedTime);
+	Position.MulAdd(Orientation.fwd, fElapsedTime);
 }
 
 #endif

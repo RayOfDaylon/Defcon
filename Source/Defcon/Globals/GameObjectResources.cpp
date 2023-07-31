@@ -16,7 +16,7 @@ FGameObjectResources GameObjectResources;
 
 
 
-void FGameObjectResources::Add(Defcon::ObjType Kind, const FGameObjectInfo& Info)
+void FGameObjectResources::Add(Defcon::EObjType Kind, const FGameObjectInfo& Info)
 {
 	if(Data.Find(Kind))
 	{
@@ -27,7 +27,7 @@ void FGameObjectResources::Add(Defcon::ObjType Kind, const FGameObjectInfo& Info
 }
 
 
-const FGameObjectInfo& FGameObjectResources::Get(Defcon::ObjType Kind) const
+const FGameObjectInfo& FGameObjectResources::Get(Defcon::EObjType Kind) const
 {
 	static FGameObjectInfo NullGameObjectInfo;
 

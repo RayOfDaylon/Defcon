@@ -20,13 +20,13 @@ typedef enum
 	type_int,
 	type_float,
 	type_choice
-} VarType;
+} EVarType;
 
 
 class CChoiceNames
 {
 	public:
-		TArray<char*>	m_strings;
+		TArray<char*>	Strings;
 };
 
 
@@ -44,32 +44,24 @@ class CVarMetadata
 			char* pszName, 
 			char* pszDesc, 
 			char* pszUnits, 
-			VarType vtype, 
+			EVarType InVarType, 
 			float fmin, float fmax, 
 			CChoiceNames* pChoiceNames = nullptr)
 		{
-			m_pszName = pszName;
-			m_pszDesc = pszDesc;
-			m_pszUnits = pszUnits;
-			m_eVarType = vtype;
-			m_fMin = fmin;
-			m_fMax = fmax;
+			Name           = pszName;
+			m_pszDesc      = pszDesc;
+			m_pszUnits     = pszUnits;
+			VarType        = InVarType;
+			m_fMin         = fmin;
+			m_fMax         = fmax;
 			m_pChoiceNames = pChoiceNames;
 		}
 
-/*		enum { maxNameLen = 50 };
-		enum { maxDescLen = 150 };
-		enum { maxUnitsLen = 40 };
-
-		char			m_szName[maxNameLen];
-		char			m_szDesc[maxDescLen];
-		char			m_szUnits[maxUnitsLen];
-*/
-		FString			m_pszName;
+		FString			Name;
 		char*			m_pszDesc;
 		char*			m_pszUnits;
 
-		VarType			m_eVarType;
+		EVarType		VarType;
 		float			m_fMin, m_fMax;
 		CChoiceNames*	m_pChoiceNames;
 };
@@ -79,9 +71,9 @@ class CPrefVar
 {
 	public:
 		void Init(
-			float             v, 
+			float             InValue, 
 			char*             pszUnits, 
-			VarType           vtype, 
+			EVarType          VarType, 
 			float             fmin, 
 			float             fmax, 
 			char*             pszName, 
@@ -90,27 +82,27 @@ class CPrefVar
 			VARCHANGECALLBACK fnCB = nullptr,
 			void*             pvUser = nullptr)
 		{
-			m_fValue = v;
+			Value = InValue;
 			m_fnCB   = fnCB;
 			m_pvUser = pvUser;
 
-			m_metadata.Init(pszName, pszDesc, pszUnits, vtype, fmin, fmax, pChoiceNames);
+			m_metadata.Init(pszName, pszDesc, pszUnits, VarType, fmin, fmax, pChoiceNames);
 		}
 
 
-		float   GetValue        () const { return m_fValue; }
-		void    SetValue        (float val) { float f = m_fValue; m_fValue = val; this->InvokeCallback(f); }
+		float   GetValue        () const { return Value; }
+		void    SetValue        (float InValue) { const float f = Value; Value = InValue; InvokeCallback(f); }
 		char*   GetValueText    (char*) const;
-		int32  GetChoiceCount  () const { return m_metadata.m_pChoiceNames->m_strings.Num(); }
-		bool    Is              (const FString& psz) const	{ return (0 == psz.Compare(m_metadata.m_pszName, ESearchCase::IgnoreCase)); }
+		int32   GetChoiceCount  () const { return m_metadata.m_pChoiceNames->Strings.Num(); }
+		bool    Is              (const FString& Str) const	{ return (0 == Str.Compare(m_metadata.Name, ESearchCase::IgnoreCase)); }
 		bool    HasCallback     () const { return (m_fnCB != nullptr); }
 		void    InvokeCallback  (float f) { if(this->HasCallback()) { m_fnCB(*this, f, m_pvUser); } }
 
-		float               m_fValue;
+		float               Value;
 		VARCHANGECALLBACK   m_fnCB;
 		void*               m_pvUser;
 		CVarMetadata	    m_metadata;
 
-}; // CPrefVar
+};
 
 

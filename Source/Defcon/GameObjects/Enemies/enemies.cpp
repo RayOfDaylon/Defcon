@@ -35,11 +35,11 @@
 
 Defcon::CEnemy::CEnemy()
 {
-	m_type = ObjType::ENEMY;
-	m_fAge = 0;
+	Type = EObjType::ENEMY;
+	Age = 0;
 	//m_bBirthsoundPlayed = false;
-	m_bCanBeInjured = false;
-	m_bIsCollisionInjurious = false;
+	bCanBeInjured = false;
+	bIsCollisionInjurious = false;
 	m_fBrightness = FRAND * 0.33f + 0.66f;
 	//m_bMaterializes = true;
 }
@@ -63,10 +63,10 @@ void Defcon::CEnemy::Init(const CFPoint& size1, const CFPoint& size2)
 		u *= (float)TWO_PI;
 
 		float fRad = FRAND * ENEMY_BIRTHDEBRISDIST;
-		float fw = m_arenasize.x;
+		float fw = ArenaSize.x;
 				
 		m_birthDebrisLocsOrg[i].Set((float)cos(u) * fRad, (float)sin(u) * fRad * .66f);
-		m_birthDebrisLocsOrg[i] += m_pos;
+		m_birthDebrisLocsOrg[i] += Position;
 		if(m_birthDebrisLocsOrg[i].x < 0)
 			m_birthDebrisLocsOrg[i].x += fw;
 		else if(m_birthDebrisLocsOrg[i].x >= fw)
@@ -76,7 +76,7 @@ void Defcon::CEnemy::Init(const CFPoint& size1, const CFPoint& size2)
 }
 
 
-void Defcon::CEnemy::Notify(Defcon::Message msg, void* pObj)
+void Defcon::CEnemy::Notify(Defcon::EMessage msg, void* pObj)
 {
 	ILiveGameObject::Notify(msg, pObj);
 }
@@ -93,9 +93,9 @@ void Defcon::CEnemy::OnAboutToDie() {}
 
 void Defcon::CEnemy::Move(float f)
 {
-	CFPoint temp = m_inertia;
+	CFPoint temp = Inertia;
 	Super::Move(f);
-	m_inertia = temp;
+	Inertia = temp;
 }
 
 

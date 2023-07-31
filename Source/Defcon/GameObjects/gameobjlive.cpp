@@ -28,7 +28,7 @@ Defcon::ILiveGameObject::ILiveGameObject()
 	m_fThrustDuration_Forwards(0.0f),
 	m_fThrustDuration_Backwards(0.0f)
 {
-	m_fDrag = 0.1f;
+	Drag = 0.1f;
 
 	SetShieldStrength(1.0f);
 
@@ -46,7 +46,7 @@ bool Defcon::ILiveGameObject::RegisterImpact(float f)
   	m_fShields -= f;
 	const bool b = (m_fShields < 0.0f);
 	m_fShields = FMath::Max(0.0f, m_fShields);
-	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(m_type), ROUND(m_fShields * 100));
+	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(Type), ROUND(m_fShields * 100));
 	return b;
 }
 
@@ -54,14 +54,14 @@ bool Defcon::ILiveGameObject::RegisterImpact(float f)
 void Defcon::ILiveGameObject::SetShieldStrength(float f)	
 {
 	m_fShields = f; 
-	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(m_type), ROUND(m_fShields * 100));
+	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(Type), ROUND(m_fShields * 100));
 }
 
 
 void Defcon::ILiveGameObject::OnAboutToDie() {}
 
 
-void Defcon::ILiveGameObject::Notify(Defcon::Message msg, void* pObj)
+void Defcon::ILiveGameObject::Notify(Defcon::EMessage msg, void* pObj)
 {
 	IGameObject::Notify(msg, pObj);
 }
@@ -69,15 +69,15 @@ void Defcon::ILiveGameObject::Notify(Defcon::Message msg, void* pObj)
 
 void Defcon::ILiveGameObject::Move(float fElapsedTime)
 {
-	m_fAge += fElapsedTime;
+	Age += fElapsedTime;
 
-	m_inertia = m_pos;
+	Inertia = Position;
 
 	this->ComputeThrustTimings(fElapsedTime);
 	this->ComputeForces(fElapsedTime);
 	this->ImpartForces(fElapsedTime);
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 }
 
 
@@ -151,20 +151,20 @@ void Defcon::ILiveGameObject::ComputeForces(float frametime)
 
 	if(frametime > 0.0f)
 	{
-		m_thrustVector = m_orient.fwd;
+		m_thrustVector = Orientation.fwd;
 
-		if(m_orient.fwd.x > 0)
+		if(Orientation.fwd.x > 0)
 		{
 			m_thrustVector.Mul(m_fThrustDuration_Forwards * kHorzSpeedScaler);
-			m_thrustVector.MulAdd(m_orient.fwd, -m_fThrustDuration_Backwards * kHorzSpeedScaler);
+			m_thrustVector.MulAdd(Orientation.fwd, -m_fThrustDuration_Backwards * kHorzSpeedScaler);
 		}
 		else
 		{
 			m_thrustVector.Mul(m_fThrustDuration_Backwards * kHorzSpeedScaler);
-			m_thrustVector.MulAdd(m_orient.fwd, -m_fThrustDuration_Forwards * kHorzSpeedScaler);
+			m_thrustVector.MulAdd(Orientation.fwd, -m_fThrustDuration_Forwards * kHorzSpeedScaler);
 		}
 
-		m_thrustVector.MulAdd(m_orient.up, m_fThrustDuration_Vertical * kVertSpeedScaler);
+		m_thrustVector.MulAdd(Orientation.up, m_fThrustDuration_Vertical * kVertSpeedScaler);
 		m_thrustVector.Mul(m_maxThrust / frametime);
 	}
 }
@@ -172,14 +172,14 @@ void Defcon::ILiveGameObject::ComputeForces(float frametime)
 
 void Defcon::ILiveGameObject::ImpartForces(float DeltaTime)
 {
-	check(m_fMass > 0.0f);
+	check(Mass > 0.0f);
 
 	if(!m_bCanMove)
 	{
 		return;
 	}
 
-	check(m_fDrag > 0);
+	check(Drag > 0);
 
 	const float FT = DeltaTime;
 
@@ -189,20 +189,20 @@ void Defcon::ILiveGameObject::ImpartForces(float DeltaTime)
 	const double k = r / FT;
 
 	CFPoint accel = m_thrustVector;
-	accel.Div(m_fMass);
+	accel.Div(Mass);
 
 	while(count--)
 	{
-		m_velocity.Add(accel);
-		m_velocity.Mul(1.0f - m_fDrag);
+		Velocity.Add(accel);
+		Velocity.Mul(1.0f - Drag);
 	}
 
 	accel.Mul((float)k);
-	m_velocity.Add(accel);
-	m_velocity.Mul(1.0f - (float)k * m_fDrag);
+	Velocity.Add(accel);
+	Velocity.Mul(1.0f - (float)k * Drag);
 
 	// Now move the object.
-	m_pos.MulAdd(m_velocity, DeltaTime);
+	Position.MulAdd(Velocity, DeltaTime);
 }
 
 

@@ -26,8 +26,8 @@ void Defcon::CBringItOn::Init()
 		"otherwise you will be overwhelmed.\n"
 	;
 
-	AddEnemySpawnInfo({ ObjType::DYNAMO,   { 12, 0, 0, 0 }});
-	AddEnemySpawnInfo({ ObjType::REFORMER, {  6, 0, 0, 0 }});
+	AddEnemySpawnInfo({ EObjType::DYNAMO,   { 12, 0, 0, 0 }});
+	AddEnemySpawnInfo({ EObjType::REFORMER, {  6, 0, 0, 0 }});
 }
 
 

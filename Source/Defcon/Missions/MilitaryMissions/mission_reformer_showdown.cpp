@@ -23,8 +23,8 @@ void Defcon::CReformerShowdown::Init()
 		"Engage enemy forces and eliminate them."
 		;
 
-	AddEnemySpawnInfo({ ObjType::REFORMER, { 4, 2 } });
-	AddEnemySpawnInfo({ ObjType::SWARMER,  { 3, 3 } });
+	AddEnemySpawnInfo({ EObjType::REFORMER, { 4, 2 } });
+	AddEnemySpawnInfo({ EObjType::SWARMER,  { 3, 3 } });
 }
 
 

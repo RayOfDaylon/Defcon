@@ -62,7 +62,7 @@ void Defcon::CSwarm::DoIntroText(float fElapsed)
 void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 {
 	if(this->HostilesRemaining() > 0 
-		&& m_fAge >= 
+		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 3.5
 			)
@@ -81,8 +81,8 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 
 		const Wave waves[] = 
 		{
-			{ ObjType::SWARMER, { 30, 45, 80 } },
-			{ ObjType::GHOST, { 3, 4, 3 } },
+			{ EObjType::SWARMER, { 30, 45, 80 } },
+			{ EObjType::GHOST, { 3, 4, 3 } },
 		};
 
 
@@ -93,13 +93,13 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 			{
 				CCreateEnemyEvent* p = new CCreateEnemyEvent;
 				p->Init(gpArena);
-				p->m_objtype = waves[i].type;
-				p->m_when = GameTime() + FRAND * 0.1f * j;
+				p->EnemyType = waves[i].type;
+				p->When = GameTime() + FRAND * 0.1f * j;
 				float wp = gpArena->GetWidth();
 				float x = (FRAND - 0.5f) * 0.2f * gpArena->GetDisplayWidth() + wp/2;
 				x = (float)fmod(x, wp);
 				float y = (float)gpArena->GetHeight() * FRAND;
-				p->m_where.Set(x, y);
+				p->Where.Set(x, y);
 				this->AddEvent(p);
 			}
 		}

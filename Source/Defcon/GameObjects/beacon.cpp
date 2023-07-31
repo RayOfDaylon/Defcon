@@ -11,11 +11,11 @@
 
 Defcon::CBeacon::CBeacon()
 {
-	m_parentType = m_type;
-	m_type       = ObjType::BEACON;
-	m_bMortal    = false;
+	ParentType = Type;
+	Type       = EObjType::BEACON;
+	bMortal    = false;
 
-	CreateSprite(ObjType::BEACON);
+	CreateSprite(EObjType::BEACON);
 }
 
 
@@ -30,11 +30,11 @@ void Defcon::CBeacon::Move(float DeltaTime)
 
 	// Oscillate between yellow and brown.
 
-	m_fAge += DeltaTime;
+	Age += DeltaTime;
 
-	float T = (sin(m_fAge * PI * 2) + 1) * 0.5f;
+	float T = (sin(Age * PI * 2) + 1) * 0.5f;
 
-	LerpColor(C_YELLOW, C_BROWN, T, m_smallColor);
+	LerpColor(C_YELLOW, C_BROWN, T, RadarColor);
 }
 
 

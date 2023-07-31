@@ -58,7 +58,7 @@ bool Defcon::IMission::Update(float DeltaTime)
 {
 	Age += DeltaTime; 
 
-	Events.Process();
+	Events.Process(DeltaTime);
 
 	DoIntroText(DeltaTime);
 
@@ -105,7 +105,7 @@ void Defcon::IMission::AddHumanoids()
 		// If we're on wave 2 or higher, don't move the humans
 		// except to reset them vertically.
 		Human->InitHuman(CFPoint(
-			(gDefconGameInstance->GetScore() == 0) ? FRAND * gpArena->GetWidth() * HUMAN_DISTRIBUTION : Human->m_pos.x, 
+			(gDefconGameInstance->GetScore() == 0) ? FRAND * gpArena->GetWidth() * HUMAN_DISTRIBUTION : Human->Position.x, 
 			FRAND * 5 + 25));
 	}
 	);

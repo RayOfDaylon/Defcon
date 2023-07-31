@@ -66,7 +66,7 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const = 0;
 #endif
-			virtual void Notify	   (Message, void*);
+			virtual void Notify	   (EMessage, void*);
 			virtual void Move	   (float);
 			virtual void Draw	   (FPaintArguments&, const I2DCoordMapper&) = 0;
 

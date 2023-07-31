@@ -31,11 +31,11 @@
 
 Defcon::IGameObject::IGameObject()
 	:
-	m_smallColor(MakeColorFromComponents(255,255,255))
+	RadarColor(MakeColorFromComponents(255,255,255))
 {
-	m_orient.up.Set(0.0f, 1.0f);
-	m_orient.fwd.Set(1.0f, 0.0f);
-	m_bboxrad.Set(10, 10);
+	Orientation.up.Set(0.0f, 1.0f);
+	Orientation.fwd.Set(1.0f, 0.0f);
+	BboxRadius.Set(10, 10);
 }
 
 
@@ -53,7 +53,7 @@ Defcon::IGameObject::~IGameObject()
 }
 
 
-void Defcon::IGameObject::CreateSprite(ObjType Kind)
+void Defcon::IGameObject::CreateSprite(EObjType Kind)
 {
 	const auto& AtlasInfo = GameObjectResources.Get(Kind);
 
@@ -67,16 +67,16 @@ void Defcon::IGameObject::CreateSprite(ObjType Kind)
 
 bool Defcon::IGameObject::ReduceLifespanBy(float f)
 {
-	m_fLifespan = FMath::Max(0.0f, m_fLifespan - f);
+	Lifespan = FMath::Max(0.0f, Lifespan - f);
 
-	return (m_fLifespan <= 0.0f);
+	return (Lifespan <= 0.0f);
 }
 
 
 void Defcon::IGameObject::DrawSmall(FPaintArguments& FrameBuffer, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush)
 {
 	CFPoint pt;
-	CoordMapper.To(m_pos, pt);
+	CoordMapper.To(Position, pt);
 
 	const auto S = FVector2D(9, 9);
 
@@ -133,10 +133,10 @@ Defcon::IGameObject* Defcon::IGameObject::CreateFireblast(CGameObjectCollection&
 		pFireblast->Init(CBitmaps::explo0 + ex,
 			frames_per_blast, FRAND * 0.5f + 0.7f,
 			fBrightRange, fBrightBase);
-		pFireblast->m_pos = m_pos;
+		pFireblast->Position = Position;
 		const CTrueBitmap& fbb = gBitmaps.GetBitmap(CBitmaps::explo0);
-		pFireblast->m_pos -= CFPoint((float)fbb.GetWidth()/2, -0.5f * fbb.GetHeight());
-		pFireblast->m_orient = m_orient;
+		pFireblast->Position -= CFPoint((float)fbb.GetWidth()/2, -0.5f * fbb.GetHeight());
+		pFireblast->Orientation = Orientation;
 		debris.Add(pFireblast);
 		return pFireblast;
 	}
@@ -159,16 +159,16 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	// for a brief while. But that causes a lot of problems 
 	// too with object relationships.
 
-	m_pos.x = gpArena->WrapX(m_pos.x); //  to be safe
+	Position.x = gpArena->WrapX(Position.x); //  to be safe
 
 	// If the inertia is some crazy value, zero it.
-	if(ABS(m_inertia.x) > 2000)
+	if(ABS(Inertia.x) > 2000)
 	{
-		m_inertia.Set(0.0f, 0.0f);
+		Inertia.Set(0.0f, 0.0f);
 	}
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	//return;
@@ -192,7 +192,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	int cby = this->GetExplosionColorBase();
 	maxsize *= this->GetExplosionMass();
 	
-	if(this->GetType() != ObjType::HUMAN && IRAND(3) == 1)
+	if(this->GetType() != EObjType::HUMAN && IRAND(3) == 1)
 	{
 		//cby = CGameColors::gray;
 	}
@@ -210,30 +210,30 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 		pFlak->m_fLargestSize		= maxsize;
 		pFlak->m_bFade				= bDieOff;
 
-		pFlak->m_pos				= m_pos;
-		pFlak->m_orient				= m_orient;
+		pFlak->Position				= Position;
+		pFlak->Orientation				= Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
 		dir.Set((float)cos(t), (float)sin(t));
 
-		if(m_grounded)
+		if(bGrounded)
 		{
 			dir.y = abs(dir.y);
 		}
 
 		// Debris has at least the object's momentum.
-		pFlak->m_orient.fwd = m_inertia;
+		pFlak->Orientation.fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->m_orient.fwd *= FRAND * 12.0f + 30.0f;
+		pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
 		// Make the particle have a velocity vector
 		// as if it were standing still.
 		const float speed = FRAND * 180 + 90;
 
-		pFlak->m_orient.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -245,7 +245,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 		maxsize = FRAND * 4 + 8.0f;
 		//maxsize = FMath::Min(maxsize, 9.0f);
 
-		if(this->GetType() != ObjType::HUMAN && IRAND(3) == 1)
+		if(this->GetType() != EObjType::HUMAN && IRAND(3) == 1)
 		{
 			cby = CGameColors::gray;
 		}
@@ -261,24 +261,24 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 			pFlak->m_eColorbaseYoung = cby;
 			pFlak->m_fLargestSize = maxsize;
 			pFlak->m_bFade = bDieOff;
-			pFlak->m_bDrawSmall = false;
+			//pFlak->bDrawsOnRadar = false;
 
-			pFlak->m_pos = m_pos;
-			pFlak->m_orient = m_orient;
+			pFlak->Position = Position;
+			pFlak->Orientation = Orientation;
 
 			CFPoint dir;
 			double t = FRAND * TWO_PI;
 			
 			dir.Set((float)cos(t), (float)sin(t));
-			if(m_grounded)
+			if(bGrounded)
 				dir.y = abs(dir.y);
 
-			pFlak->m_orient.fwd = m_inertia;
+			pFlak->Orientation.fwd = Inertia;
 
-			pFlak->m_orient.fwd *= FRAND * 12.0f + 30.0f;
+			pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
 			float speed = FRAND * 45 + 22;
 
-			pFlak->m_orient.fwd.MulAdd(dir, speed);
+			pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 			debris.Add(pFlak);
 		}
@@ -301,29 +301,29 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 			else
 				pPuff->m_fLargestSize = (float)(maxsize/1.5f * (FRAND * .5f+ .5f));
 
-			pPuff->m_maxAge = pPuff->m_fLifespan = 
+			pPuff->m_maxAge = pPuff->Lifespan = 
 				fLife + SFRAND * 0.125f;
 				
 			pPuff->m_fBrightest = fBrightness + SFRAND*0.1f;
 
-			pPuff->m_pos = m_pos;
-			//pPuff->m_orient = m_orient;
+			pPuff->Position = Position;
+			//pPuff->Orientation = Orientation;
 
 			CFPoint dir;
 			double t = FRAND * TWO_PI;
 			
 			dir.Set((float)cos(t), (float)sin(t));
 
-			if(m_grounded)
+			if(bGrounded)
 				dir.y = abs(dir.y);
 
 			// Puff has at least the object's momentum.
-			//pPuff->m_orient.fwd = pObj->m_inertia;
-			pPuff->m_orient = pFireball->m_orient;
+			//pPuff->Orientation.fwd = pObj->Inertia;
+			pPuff->Orientation = pFireball->Orientation;
 
 			// Scale the momentum up a bit, otherwise 
 			// the explosion looks like it's standing still.
-			pPuff->m_orient.fwd *= FRAND * 2.0f + 3.0f;
+			pPuff->Orientation.fwd *= FRAND * 2.0f + 3.0f;
 			//ndir *= FRAND * 0.4f + 0.2f;
 			// Make the particle have a velocity vector
 			// as if it were standing still.
@@ -331,7 +331,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 
 			CFPoint speed_((FRAND*2+2)*speed, speed);
 
-			pPuff->m_orient.fwd.MulAdd(dir, speed_);
+			pPuff->Orientation.fwd.MulAdd(dir, speed_);
 
 
 			debris.Add(pPuff);
@@ -348,12 +348,12 @@ Defcon::IGameObject* Defcon::IGameObject::CreateFireball(CGameObjectCollection& 
 	if(this->Fireballs())
 	{
 		auto pFireball = new CBitmapDisplayer;
-		pFireball->SetType(ObjType::EXPLOSION);
-		pFireball->m_pos = m_pos;
-		pFireball->m_orient = m_orient;
+		pFireball->SetType(EObjType::EXPLOSION);
+		pFireball->Position = Position;
+		pFireball->Orientation = Orientation;
 
-		const auto& Info = GameObjectResources.Get(ObjType::EXPLOSION);
-		pFireball->m_fLifespan =  1.0f / Info.Atlas->Atlas.FrameRate * Info.Atlas->Atlas.NumCels;
+		const auto& Info = GameObjectResources.Get(EObjType::EXPLOSION);
+		pFireball->Lifespan =  1.0f / Info.Atlas->Atlas.FrameRate * Info.Atlas->Atlas.NumCels;
 
 		pFireball->Sprite = Daylon::SpawnSpritePlayObject2D(Info.Atlas->Atlas, Info.Size, Info.Radius);
 		pFireball->Sprite->FlipHorizontal = Daylon::RandBool();
@@ -388,10 +388,10 @@ Defcon::IGameObject* Defcon::IGameObject::CreateFireball(CGameObjectCollection& 
 		int32 ex = rand() % 3 * frames_per_blast;
 		pFireball->Init(CBitmaps::explo0 + ex,
 			frames_per_blast, FRAND * 0.5f + 0.7f, fBrightRange, fBrightBase);
-		pFireball->m_pos = m_pos;
+		pFireball->Position = Position;
 		const CTrueBitmap& fbb = gBitmaps.GetBitmap(CBitmaps::explo0);
-		pFireball->m_pos -= CFPoint(fbb.GetWidth() / 2.0f, -0.5f * fbb.GetHeight());
-		pFireball->m_orient = m_orient;
+		pFireball->Position -= CFPoint(fbb.GetWidth() / 2.0f, -0.5f * fbb.GetHeight());
+		pFireball->Orientation = Orientation;
 		debris.Add(pFireball);
 		return pFireball;
 	}
@@ -404,7 +404,7 @@ void Defcon::IGameObject::InstallSprite()
 {
 	if(Sprite) 
 	{
-		//UE_LOG(LogGame, Log, TEXT("Installing sprite for object class %s"), *ObjectTypeManager.GetName(m_type));
+		//UE_LOG(LogGame, Log, TEXT("Installing sprite for object class %s"), *ObjectTypeManager.GetName(Type));
 		Daylon::Install<SDaylonSprite>(Sprite, 0.5f); 
 	} 
 }
@@ -414,50 +414,50 @@ void Defcon::IGameObject::UninstallSprite()
 {
 	if(Sprite) 
 	{
-		//UE_LOG(LogGame, Log, TEXT("Uninstalling sprite for object class %s"), *ObjectTypeManager.GetName(m_type));
+		//UE_LOG(LogGame, Log, TEXT("Uninstalling sprite for object class %s"), *ObjectTypeManager.GetName(Type));
 		Daylon::Uninstall(Sprite); 
 	} 
 }
 
 
-void                 Defcon::IGameObject::Init(const CFPoint& ArenaSize, const CFPoint& ScreenSize)     { m_arenasize = ArenaSize; m_screensize = ScreenSize; }
+void                 Defcon::IGameObject::Init(const CFPoint& InArenaSize, const CFPoint& InScreenSize) { ArenaSize = InArenaSize; ScreenSize = InScreenSize; }
 void                 Defcon::IGameObject::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper) {}
 
 void                 Defcon::IGameObject::OnFinishedCreating()                 {}
 void                 Defcon::IGameObject::OnAboutToDie()                       {}
-void                 Defcon::IGameObject::Notify(Message, void*)               {}
+void                 Defcon::IGameObject::Notify(EMessage, void*)               {}
 void                 Defcon::IGameObject::GetInjurePt(CFPoint&) const          {}
 bool                 Defcon::IGameObject::TestInjury(const CFRect&) const      { return false; }
-Defcon::IGameObject* Defcon::IGameObject::GetNext()                            { return m_pNext; }
-Defcon::IGameObject* Defcon::IGameObject::GetPrev()                            { return m_pPrev; }
-void                 Defcon::IGameObject::SetNext(IGameObject* p)              { m_pNext = p; }
-void                 Defcon::IGameObject::SetPrev(IGameObject* p)              { m_pPrev = p; }
-Defcon::ObjType      Defcon::IGameObject::GetParentType() const                { return m_parentType; }
-Defcon::ObjType      Defcon::IGameObject::GetCreatorType() const               { return m_creatorType; }
-void                 Defcon::IGameObject::SetCreatorType(ObjType n)            { m_creatorType = n; }
-Defcon::ObjType      Defcon::IGameObject::GetType() const                      { return m_type; }
-void                 Defcon::IGameObject::SetType(ObjType n)                   { m_type = n; }
+Defcon::IGameObject* Defcon::IGameObject::GetNext()                            { return NextPtr; }
+Defcon::IGameObject* Defcon::IGameObject::GetPrev()                            { return PrevPtr; }
+void                 Defcon::IGameObject::SetNext(IGameObject* p)              { NextPtr = p; }
+void                 Defcon::IGameObject::SetPrev(IGameObject* p)              { PrevPtr = p; }
+Defcon::EObjType     Defcon::IGameObject::GetParentType() const                { return ParentType; }
+Defcon::EObjType     Defcon::IGameObject::GetCreatorType() const               { return CreatorType; }
+void                 Defcon::IGameObject::SetCreatorType(EObjType n)           { CreatorType = n; }
+Defcon::EObjType     Defcon::IGameObject::GetType() const                      { return Type; }
+void                 Defcon::IGameObject::SetType(EObjType n)                  { Type = n; }
 bool                 Defcon::IGameObject::OccursFrequently() const             { return false; }
 bool                 Defcon::IGameObject::Fireballs() const                    { return false; }
 float                Defcon::IGameObject::GetExplosionMass() const             { return 1.0f; }
 bool                 Defcon::IGameObject::Fireblasts() const                   { return false; }
-void                 Defcon::IGameObject::ZeroVelocity()                       { m_velocity.Set(0,0); }
-const CFPoint&       Defcon::IGameObject::GetVelocity() const                  { return m_velocity; }
-void                 Defcon::IGameObject::MakeHurtable(bool b)                 { m_bCanBeInjured = b; }
-bool                 Defcon::IGameObject::IsMortal() const                     { return m_bMortal; }
-void                 Defcon::IGameObject::MarkAsDead()                         { m_fLifespan = 0.0001f; m_bMortal = true; }
-bool                 Defcon::IGameObject::MarkedForDeath() const               { return (m_bMortal && m_fLifespan <= 0.0001f); }
+void                 Defcon::IGameObject::ZeroVelocity()                       { Velocity.Set(0,0); }
+const CFPoint&       Defcon::IGameObject::GetVelocity() const                  { return Velocity; }
+void                 Defcon::IGameObject::MakeHurtable(bool b)                 { bCanBeInjured = b; }
+bool                 Defcon::IGameObject::IsMortal() const                     { return bMortal; }
+void                 Defcon::IGameObject::MarkAsDead()                         { Lifespan = 0.0001f; bMortal = true; }
+bool                 Defcon::IGameObject::MarkedForDeath() const               { return (bMortal && Lifespan <= 0.0001f); }
 float                Defcon::IGameObject::GetCollisionForce() const            { return 0.01f * COLLISION_DAMAGE; } // todo: s/b a per-class value and multiply by the object's velocity.
-bool                 Defcon::IGameObject::IsCollisionInjurious() const         { return m_bIsCollisionInjurious; }
-void                 Defcon::IGameObject::SetCollisionInjurious(bool b)        { m_bIsCollisionInjurious = b; }
-bool                 Defcon::IGameObject::IsInjurious() const                  { return m_bInjurious; }
-bool                 Defcon::IGameObject::CanBeInjured() const                 { return m_bCanBeInjured; }
-int32               Defcon::IGameObject::GetPointValue() const                { return m_pointValue; }
-bool                 Defcon::IGameObject::ExternallyOwned() const              { return m_bExternallyOwned; }
-void                 Defcon::IGameObject::SetExternalOwnership(bool b)         { m_bExternallyOwned = b; }
-bool                 Defcon::IGameObject::IsMissionTarget() const              { return m_bMissionTarget; }
-void                 Defcon::IGameObject::SetAsMissionTarget(bool b)           { m_bMissionTarget = b; }
-const FLinearColor&  Defcon::IGameObject::GetRadarColor() const                { return m_smallColor; }
+bool                 Defcon::IGameObject::IsCollisionInjurious() const         { return bIsCollisionInjurious; }
+void                 Defcon::IGameObject::SetCollisionInjurious(bool b)        { bIsCollisionInjurious = b; }
+bool                 Defcon::IGameObject::IsInjurious() const                  { return bInjurious; }
+bool                 Defcon::IGameObject::CanBeInjured() const                 { return bCanBeInjured; }
+int32                Defcon::IGameObject::GetPointValue() const                { return PointValue; }
+bool                 Defcon::IGameObject::ExternallyOwned() const              { return bExternallyOwned; }
+void                 Defcon::IGameObject::SetExternalOwnership(bool b)         { bExternallyOwned = b; }
+bool                 Defcon::IGameObject::IsMissionTarget() const              { return bMissionTarget; }
+void                 Defcon::IGameObject::SetAsMissionTarget(bool b)           { bMissionTarget = b; }
+const FLinearColor&  Defcon::IGameObject::GetRadarColor() const                { return RadarColor; }
 int                  Defcon::IGameObject::GetExplosionColorBase() const        { return CGameColors::gray; }
 
 

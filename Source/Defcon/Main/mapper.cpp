@@ -19,9 +19,9 @@
 
 void Defcon::CArenaCoordMapper::Init(int w, int h, int circum)
 {
-	m_screensize.Set((float)w, (float)h);
-	m_planetCircumference = (float)circum;
-	m_offset.Set(0, 0);
+	ScreenSize.Set((float)w, (float)h);
+	PlanetCircumference = (float)circum;
+	Offset.Set(0, 0);
 }
 
 
@@ -39,70 +39,70 @@ void Defcon::CArenaCoordMapper::To(const CFPoint& in, CFPoint& out) const
 	// the arena. If offset is (1,1), for example, then 
 	// the arena's origin maps to the screen's cartesian (1,1).
 
-	if(m_offset.x >= m_planetCircumference - m_screensize.x)
+	if(Offset.x >= PlanetCircumference - ScreenSize.x)
 	{
 		// The screen has the arena origin.
 		float x = in.x;
 
-		if(x < m_screensize.x * 2)
-			x += m_planetCircumference;
+		if(x < ScreenSize.x * 2)
+			x += PlanetCircumference;
 
-		out.x = x - m_offset.x;
+		out.x = x - Offset.x;
 	}
 	else
 	{
 		// The screen is not showing the arena origin.
-		out.x = in.x - m_offset.x;
+		out.x = in.x - Offset.x;
 
-		if(m_offset.x > m_planetCircumference / 2 && in.x < m_screensize.x)
+		if(Offset.x > PlanetCircumference / 2 && in.x < ScreenSize.x)
 		{
-			out.x = in.x + m_planetCircumference - m_offset.x;
+			out.x = in.x + PlanetCircumference - Offset.x;
 		}
-		else if(m_offset.x < m_screensize.x && out.x > m_planetCircumference / 2)
+		else if(Offset.x < ScreenSize.x && out.x > PlanetCircumference / 2)
 		{
 			// rcg, july 3/04: we get arena coords that map 
 			// to large screen coords instead of negative screen coords.
-			out.x = in.x - m_planetCircumference - m_offset.x;
+			out.x = in.x - PlanetCircumference - Offset.x;
 		}
 	}
 	
-	out.y = m_screensize.y - in.y;
+	out.y = ScreenSize.y - in.y;
 }
 
 
 void Defcon::CArenaCoordMapper::From(const CFPoint& in, CFPoint& out) const
 {
 	// Map a point from screen space to arena space.
-	out.x = in.x + m_offset.x;
+	out.x = in.x + Offset.x;
 
 	if(out.x < 0)
-		out.x += m_planetCircumference;
-	else if(out.x >= m_planetCircumference)
-		out.x -= m_planetCircumference;
+		out.x += PlanetCircumference;
+	else if(out.x >= PlanetCircumference)
+		out.x -= PlanetCircumference;
 
-	out.y = m_screensize.y - in.y;
+	out.y = ScreenSize.y - in.y;
 }
 
 
 void Defcon::CArenaCoordMapper::SlideBy(float f)
 {
-	m_offset.x += f;
-	if(m_offset.x < 0)
-		 m_offset.x += m_planetCircumference;
-	else if(m_offset.x >= m_planetCircumference)
-		m_offset.x -= m_planetCircumference;
+	Offset.x += f;
+	if(Offset.x < 0)
+		 Offset.x += PlanetCircumference;
+	else if(Offset.x >= PlanetCircumference)
+		Offset.x -= PlanetCircumference;
 }
 
 // ------------------------------------------------------------------------------------
 
 void Defcon::CRadarCoordMapper::Init(int w, int h, int circum)
 {
-	m_screensize.Set((float)w, (float)h);
-	m_planetCircumference = (float)circum;
-	//m_offset.Set(0, 0);
+	ScreenSize.Set((float)w, (float)h);
+	PlanetCircumference = (float)circum;
+	//Offset.Set(0, 0);
 
-	m_scale = m_radarSize;
-	m_scale /= CFPoint((float)m_planetCircumference, (float)h);
+	Scale = m_radarSize;
+	Scale /= CFPoint((float)PlanetCircumference, (float)h);
 }
 
 
@@ -116,23 +116,23 @@ void Defcon::CRadarCoordMapper::To(const CFPoint& in, CFPoint& out) const
 
 	//if(pRadar != nullptr)
 	{
-		float x = m_pPlayer->m_pos.x;
-		x -= m_planetCircumference / 2;
+		float x = m_pPlayer->Position.x;
+		x -= PlanetCircumference / 2;
 
 		if(x < 0)
-			x += m_planetCircumference;
+			x += PlanetCircumference;
 
-		m_offset.x = x;
+		Offset.x = x;
 	}
-	// m_offset.x now has the point of arena space that 
+	// Offset.x now has the point of arena space that 
 	// starts on the left edge of the radar.
-	if(in.x < m_offset.x)
-		out.x = in.x + m_planetCircumference - m_offset.x;
+	if(in.x < Offset.x)
+		out.x = in.x + PlanetCircumference - Offset.x;
 	else
-		out.x = in.x - m_offset.x;
+		out.x = in.x - Offset.x;
 
 	out.y = in.y;
-	out *= m_scale;
+	out *= Scale;
 	
 	out.y = m_radarSize.y - out.y;
 }
@@ -149,45 +149,45 @@ void Defcon::CRadarCoordMapper::From(const CFPoint& in, CFPoint& out) const
 
 	//if(pRadar != nullptr)
 	{
-		float x = m_pPlayer->m_pos.x;
-		x -= m_planetCircumference / 2;
+		float x = m_pPlayer->Position.x;
+		x -= PlanetCircumference / 2;
 		if(x < 0)
-			x += m_planetCircumference;
-		m_offset.x = x;
+			x += PlanetCircumference;
+		Offset.x = x;
 	}
 
-	// m_offset.x now has the point of arena space that 
+	// Offset.x now has the point of arena space that 
 	// starts on the left edge of the radar.
-	out.x = in.x / m_scale.x + m_offset.x;
+	out.x = in.x / Scale.x + Offset.x;
 
 	if(out.x < 0)
-		out.x += m_planetCircumference;
-	else if(out.x >= m_planetCircumference)
-		out.x -= m_planetCircumference;
+		out.x += PlanetCircumference;
+	else if(out.x >= PlanetCircumference)
+		out.x -= PlanetCircumference;
 
-	out.y = (m_radarSize.y - in.y) / m_scale.y;
+	out.y = (m_radarSize.y - in.y) / Scale.y;
 
 
 #if 0	
-	out.x = in.x + m_offset.x;
+	out.x = in.x + Offset.x;
 
 	if(out.x < 0)
-		out.x += m_planetCircumference;
-	else if(out.x >= m_planetCircumference)
-		out.x -= m_planetCircumference;
+		out.x += PlanetCircumference;
+	else if(out.x >= PlanetCircumference)
+		out.x -= PlanetCircumference;
 
-	out.y = m_screensize.y - in.y;
+	out.y = ScreenSize.y - in.y;
 #endif
 }
 
 
 void Defcon::CRadarCoordMapper::SlideBy(float f)
 {
-	m_offset.x += f;
+	Offset.x += f;
 
-	if(m_offset.x < 0)
-		 m_offset.x += m_planetCircumference;
-	else if(m_offset.x >= m_planetCircumference)
-		m_offset.x -= m_planetCircumference;
+	if(Offset.x < 0)
+		 Offset.x += PlanetCircumference;
+	else if(Offset.x >= PlanetCircumference)
+		Offset.x -= PlanetCircumference;
 }
 

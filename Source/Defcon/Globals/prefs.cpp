@@ -125,19 +125,19 @@ void Defcon::CPrefs::Construct()
 
 
 	static CChoiceNames memcpy_choices;
-	memcpy_choices.m_strings.Add("stdlib memcpy");
-	memcpy_choices.m_strings.Add("FP registers");
-	memcpy_choices.m_strings.Add("MMX/SSE");
-	memcpy_choices.m_strings.Add("AMD");
+	memcpy_choices.Strings.Add("stdlib memcpy");
+	memcpy_choices.Strings.Add("FP registers");
+	memcpy_choices.Strings.Add("MMX/SSE");
+	memcpy_choices.Strings.Add("AMD");
 	INITPREF2(memcopy_method, 
 		0,
 		"", type_choice, 0, 0,
 		"Memory copy method", &memcpy_choices, nullptr, nullptr);
 
 	static CChoiceNames blur_choices;
-	blur_choices.m_strings.Add("Repeated two-sample");
-	blur_choices.m_strings.Add("One-time four-sample");
-	blur_choices.m_strings.Add("One-time eight-sample");
+	blur_choices.Strings.Add("Repeated two-sample");
+	blur_choices.Strings.Add("One-time four-sample");
+	blur_choices.Strings.Add("One-time eight-sample");
 	INITPREF2(display_blur_method, 
 		0,
 		"", type_choice, 0, 0,

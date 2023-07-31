@@ -211,8 +211,8 @@ int32 SDaylonStarfield::OnPaint
 			//CMaskMap& mask = gBitmaps.GetMask(ROUND(r.LL.Distance(r.UR)), 0);
 			//FLinearColor cf = MakeBlendedColor(C_BLACK, m_stars[i].m_colorFar, c);
 
-			/*if(m_bMorphColor && m_stars[i].m_pos.z <= 3.0f)
-				cf = MakeBlendedColor(m_stars[i].m_colorNear, cf, m_stars[i].m_pos.z / 3.0f);*/
+			/*if(m_bMorphColor && m_stars[i].Position.z <= 3.0f)
+				cf = MakeBlendedColor(m_stars[i].m_colorNear, cf, m_stars[i].Position.z / 3.0f);*/
 
 			//mask.ColorWith(cf, framebuf, ROUND(starproj.x), ROUND(starproj.y));
 		}

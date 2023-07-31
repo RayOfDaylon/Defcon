@@ -25,11 +25,11 @@
 
 Defcon::CStargate::CStargate()
 {
-	m_parentType = m_type;
-	m_type = ObjType::STARGATE;
-	m_smallColor.A = 0.0f;// we'll draw the gate in the radar screen ourselves   = C_BLUE;
-	m_bInjurious = false;
-	m_bCanBeInjured = false;
+	ParentType = Type;
+	Type = EObjType::STARGATE;
+	RadarColor.A = 0.0f;// we'll draw the gate in the radar screen ourselves   = C_BLUE;
+	bInjurious = false;
+	bCanBeInjured = false;
 
 
 
@@ -43,11 +43,11 @@ Defcon::CStargate::CStargate()
 			CGameColors::lightblue
 		};
 
-	m_bMortal = false;
+	bMortal = false;
 
-	CreateSprite(ObjType::STARGATE);
+	CreateSprite(EObjType::STARGATE);
 
-	m_bboxrad.Set(Sprite->GetActualSize().X / 2, Sprite->GetActualSize().Y / 2);
+	BboxRadius.Set(Sprite->GetActualSize().X / 2, Sprite->GetActualSize().Y / 2);
 }
 
 
@@ -63,7 +63,7 @@ const char* Defcon::CStargate::GetClassname() const
 
 void Defcon::CStargate::Move(float f)
 {
-	m_fAge += f;
+	Age += f;
 }
 
 
@@ -108,21 +108,21 @@ void Defcon::CStargate::DrawSmall(FPaintArguments& framebuf, const I2DCoordMappe
 
 	CFPoint TopLeft, BottomRight;
 
-	mapper.To(m_pos - m_bboxrad, TopLeft);
-	mapper.To(m_pos + m_bboxrad, BottomRight);
+	mapper.To(Position - BboxRadius, TopLeft);
+	mapper.To(Position + BboxRadius, BottomRight);
 
-	DrawSmallPart(framebuf, mapper, Brush, TopLeft, BottomRight, m_bboxrad);
+	DrawSmallPart(framebuf, mapper, Brush, TopLeft, BottomRight, BboxRadius);
 
 	// Draw small rect inside large one
-	auto box = m_bboxrad;
+	auto box = BboxRadius;
 	// Make a small box centered inside the large one
 	box *= CFPoint(0.3f, 0.375f);
-	auto TL = m_pos - box;
-	auto BR = m_pos + box;
+	auto TL = Position - box;
+	auto BR = Position + box;
 
 	// Shift the box over a bit.
-	TL.x -= m_bboxrad.x / 3;
-	BR.x -= m_bboxrad.x / 3;
+	TL.x -= BboxRadius.x / 3;
+	BR.x -= BboxRadius.x / 3;
 
 	mapper.To(TL, TopLeft);
 	mapper.To(BR, BottomRight);

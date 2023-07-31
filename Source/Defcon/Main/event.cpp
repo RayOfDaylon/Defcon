@@ -59,7 +59,7 @@ void Defcon::CEventQueue::Add(CEvent* pE)
 }
 
 
-void Defcon::CEventQueue::Process()
+void Defcon::CEventQueue::Process(float DeltaTime)
 {
 	const float now = GameTime();
 
@@ -67,7 +67,7 @@ void Defcon::CEventQueue::Process()
 	{
 		auto EvtPtr = Events[Index];
 
-		if(EvtPtr->m_when <= now)
+		if(EvtPtr->When <= now)
 		{
 			EvtPtr->Do();
 
@@ -125,56 +125,46 @@ void Defcon::CEndMissionEvent::Do()
 void Defcon::CCreateEnemyEvent::Do()
 {
 	// Create generic enemy.
-	CEnemy* pE = this->CreateEnemy(m_objtype, m_where);
+	CEnemy* pE = this->CreateEnemy(EnemyType, Where);
 
 	check(pE != nullptr);
 
 
 	// Specialize it.
-	switch(m_objtype)
+	switch(EnemyType)
 	{
-		case ObjType::GHOST:			this->SpecializeForGhost             (pE, m_where); break;
-		case ObjType::GHOSTPART:		this->SpecializeForGhostPart         (pE, m_where); break;
-		case ObjType::GUPPY:			this->SpecializeForGuppy             (pE, m_where); break;
-		case ObjType::HUNTER:			this->SpecializeForHunter            (pE, m_where); break;
-		case ObjType::LANDER:			this->SpecializeForLander            (pE, m_where); break;
-		case ObjType::BOMBER:			this->SpecializeForBomber            (pE, m_where); break;
-		case ObjType::FIREBOMBER_TRUE:  this->SpecializeForFirebomber        (pE, m_where); break;
-		case ObjType::FIREBOMBER_WEAK:  this->SpecializeForWeakFirebomber    (pE, m_where); break;
-		case ObjType::FIREBALL:			this->SpecializeForFireball          (pE, m_where); break;
-		case ObjType::DYNAMO:			this->SpecializeForDynamo            (pE, m_where); break;
-		case ObjType::SPACEHUM:			this->SpecializeForSpacehum          (pE, m_where); break;
-		case ObjType::BAITER:			this->SpecializeForBaiter            (pE, m_where); break;
-		case ObjType::POD:				this->SpecializeForPod               (pE, m_where); break;
-		case ObjType::SWARMER:			this->SpecializeForSwarmer           (pE, m_where); break;
-		case ObjType::REFORMER:			this->SpecializeForReformer          (pE, m_where); break;
-		case ObjType::REFORMERPART:		this->SpecializeForReformerPart      (pE, m_where); break;
-		case ObjType::BOUNCER_TRUE:		this->SpecializeForBouncer           (pE, m_where); break;
-		case ObjType::BOUNCER_WEAK:		this->SpecializeForWeakBouncer       (pE, m_where); break;
-		case ObjType::PHRED:			this->SpecializeForPhred             (pE, m_where); break;
-		case ObjType::BIGRED:			this->SpecializeForBigRed            (pE, m_where); break;
-		case ObjType::MUNCHIE:			this->SpecializeForMunchie           (pE, m_where); break;
-		case ObjType::TURRET:			this->SpecializeForTurret            (pE, m_where); break;
+		case EObjType::GHOST:           this->SpecializeForGhost             (pE, Where); break;
+		case EObjType::GHOSTPART:       this->SpecializeForGhostPart         (pE, Where); break;
+		case EObjType::GUPPY:           this->SpecializeForGuppy             (pE, Where); break;
+		case EObjType::HUNTER:          this->SpecializeForHunter            (pE, Where); break;
+		case EObjType::LANDER:          this->SpecializeForLander            (pE, Where); break;
+		case EObjType::BOMBER:          this->SpecializeForBomber            (pE, Where); break;
+		case EObjType::FIREBOMBER_TRUE: this->SpecializeForFirebomber        (pE, Where); break;
+		case EObjType::FIREBOMBER_WEAK: this->SpecializeForWeakFirebomber    (pE, Where); break;
+		case EObjType::FIREBALL:        this->SpecializeForFireball          (pE, Where); break;
+		case EObjType::DYNAMO:          this->SpecializeForDynamo            (pE, Where); break;
+		case EObjType::SPACEHUM:        this->SpecializeForSpacehum          (pE, Where); break;
+		case EObjType::BAITER:          this->SpecializeForBaiter            (pE, Where); break;
+		case EObjType::POD:             this->SpecializeForPod               (pE, Where); break;
+		case EObjType::SWARMER:         this->SpecializeForSwarmer           (pE, Where); break;
+		case EObjType::REFORMER:        this->SpecializeForReformer          (pE, Where); break;
+		case EObjType::REFORMERPART:    this->SpecializeForReformerPart      (pE, Where); break;
+		case EObjType::BOUNCER_TRUE:    this->SpecializeForBouncer           (pE, Where); break;
+		case EObjType::BOUNCER_WEAK:    this->SpecializeForWeakBouncer       (pE, Where); break;
+		case EObjType::PHRED:           this->SpecializeForPhred             (pE, Where); break;
+		case EObjType::BIGRED:          this->SpecializeForBigRed            (pE, Where); break;
+		case EObjType::MUNCHIE:         this->SpecializeForMunchie           (pE, Where); break;
+		case EObjType::TURRET:          this->SpecializeForTurret            (pE, Where); break;
 
 		default:
 			check(false);
 			break;
 	}
 	
-	pE->WorldContextObject = gpArena;
 	pE->InstallSprite();
-	pE->SetAsMissionTarget(m_bMissionTarget);
-
-	/*if(pE->IsMaterializing() && pE->Sprite)
-	{
-		pE->Sprite->Hide(); // Will be shown after materialization completes.
-	}*/
-
-	//if(!pE->IsMaterializing())
-	//{
-		pE->MakeHurtable();
-		pE->SetCollisionInjurious();
-	//}
+	pE->SetAsMissionTarget(bMissionTarget);
+	pE->MakeHurtable();
+	pE->SetCollisionInjurious();
 
 	gpArena->GetEnemies().Add(pE);
 
@@ -182,7 +172,7 @@ void Defcon::CCreateEnemyEvent::Do()
 }
 
 
-Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(ObjType kind, const CFPoint& where)
+Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(EObjType kind, const CFPoint& where)
 {
 	// Generic enemy game object creation routine.
 
@@ -190,35 +180,35 @@ Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(ObjType kind, const CFPoi
 
 	switch(kind)
 	{
-		case ObjType::LANDER:			pE = new CLander;			break;
-		case ObjType::GUPPY:			pE = new CGuppy;			break;
-		case ObjType::HUNTER:			pE = new CHunter;			break;
-		case ObjType::BOMBER:			pE = new CBomber;			break;
-		case ObjType::BAITER:			pE = new CBaiter;			break;
-		case ObjType::POD:				pE = new CPod;				break;
-		case ObjType::SWARMER:			pE = new CSwarmer;			break;
-		case ObjType::FIREBOMBER_TRUE:  pE = new CFirebomber;		break;
-		case ObjType::FIREBOMBER_WEAK:  pE = new CWeakFirebomber;	break;
-		case ObjType::FIREBALL:			pE = new CFireball;			break;
-		case ObjType::DYNAMO:			pE = new CDynamo;			break;
-		case ObjType::SPACEHUM:			pE = new CSpacehum;			break;
-		case ObjType::REFORMER:			pE = new CReformer;			break;
-		case ObjType::REFORMERPART:		pE = new CReformerPart;		break;
-		case ObjType::BOUNCER_TRUE:  	pE = new CBouncer;			break;
-		case ObjType::BOUNCER_WEAK:  	pE = new CWeakBouncer;		break;
-		case ObjType::PHRED:			pE = new CPhred;			break;
-		case ObjType::BIGRED:			pE = new CBigRed;			break;
-		case ObjType::MUNCHIE:			pE = new CMunchie;			break;
-		case ObjType::GHOST:			pE = new CGhost;			break;
-		case ObjType::GHOSTPART:		pE = new CGhostPart;		break;
-		//case ObjType::GHOSTPARTPRIMARY: pE = new CGhostPrimaryPart;	break;
-		case ObjType::TURRET:			pE = new CTurret;			break;
+		case EObjType::LANDER:			pE = new CLander;			break;
+		case EObjType::GUPPY:			pE = new CGuppy;			break;
+		case EObjType::HUNTER:			pE = new CHunter;			break;
+		case EObjType::BOMBER:			pE = new CBomber;			break;
+		case EObjType::BAITER:			pE = new CBaiter;			break;
+		case EObjType::POD:				pE = new CPod;				break;
+		case EObjType::SWARMER:			pE = new CSwarmer;			break;
+		case EObjType::FIREBOMBER_TRUE:  pE = new CFirebomber;		break;
+		case EObjType::FIREBOMBER_WEAK:  pE = new CWeakFirebomber;	break;
+		case EObjType::FIREBALL:			pE = new CFireball;			break;
+		case EObjType::DYNAMO:			pE = new CDynamo;			break;
+		case EObjType::SPACEHUM:			pE = new CSpacehum;			break;
+		case EObjType::REFORMER:			pE = new CReformer;			break;
+		case EObjType::REFORMERPART:		pE = new CReformerPart;		break;
+		case EObjType::BOUNCER_TRUE:  	pE = new CBouncer;			break;
+		case EObjType::BOUNCER_WEAK:  	pE = new CWeakBouncer;		break;
+		case EObjType::PHRED:			pE = new CPhred;			break;
+		case EObjType::BIGRED:			pE = new CBigRed;			break;
+		case EObjType::MUNCHIE:			pE = new CMunchie;			break;
+		case EObjType::GHOST:			pE = new CGhost;			break;
+		case EObjType::GHOSTPART:		pE = new CGhostPart;		break;
+		//case EObjType::GHOSTPARTPRIMARY: pE = new CGhostPrimaryPart;	break;
+		case EObjType::TURRET:			pE = new CTurret;			break;
 
 		default: throw 0; break;
 	}
 
-	pE->m_pMapper = &gpArena->GetMainAreaMapper();
-	pE->m_pos = where;
+	pE->MapperPtr = &gpArena->GetMainAreaMapper();
+	pE->Position = where;
 	float w = gpArena->GetDisplayWidth();
 
 	pE->Init(CFPoint((float)gpArena->GetWidth(), (float)gpArena->GetHeight()), CFPoint(w, (float)gpArena->GetHeight()));
@@ -228,19 +218,19 @@ Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(ObjType kind, const CFPoi
 
 
 
-#define SET_RANDOM_FWD_ORIENT   pE->m_orient.fwd.x = SBRAND;
+#define SET_RANDOM_FWD_ORIENT   pE->Orientation.fwd.x = SBRAND;
 #define SET_PLAYER_AS_TARGET    pE->SetTarget(&gpArena->GetPlayerShip());
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForBouncer(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	pE->m_orient.fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
+	pE->Orientation.fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForWeakBouncer(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	pE->m_orient.fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
+	pE->Orientation.fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
 }
 
 
@@ -342,7 +332,7 @@ void Defcon::CCreateEnemyEvent::SpecializeForFireball(Defcon::CEnemy* pE, const 
 
 void Defcon::CCreateEnemyEvent::SpecializeForDynamo(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	//pE->m_pos.y = FRANDRANGE(90, gpArena->GetHeight() - 90);
+	//pE->Position.y = FRANDRANGE(90, gpArena->GetHeight() - 90);
 	SET_RANDOM_FWD_ORIENT
 }
 
@@ -362,7 +352,7 @@ void Defcon::CCreateEnemyEvent::SpecializeForSwarmer(Defcon::CEnemy* pE, const C
 {
 	CSwarmer* p = static_cast<CSwarmer*>(pE);
 	SET_PLAYER_AS_TARGET
-	pE->m_orient.fwd.x = SBRAND;
+	pE->Orientation.fwd.x = SBRAND;
 	p->SetOriginalPosition(where);
 }
 

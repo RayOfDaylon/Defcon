@@ -53,7 +53,7 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 #define ADD_ATLAS(_ObjType, _Atlas) \
 	Check(_Atlas != nullptr); /* Did you forget to add Atlas asset to UUserWidget's texture list? */	\
 	_Atlas->Atlas.InitCache();	\
-	GameObjectResources.Add(Defcon::ObjType::_ObjType, { _Atlas, _Atlas->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f });
+	GameObjectResources.Add(Defcon::EObjType::_ObjType, { _Atlas, _Atlas->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f });
 
 	ADD_ATLAS(STARGATE,         StargateAtlas           );
 	ADD_ATLAS(DESTROYED_PLAYER, DestroyedPlayerAtlas    );
@@ -199,7 +199,7 @@ void UDefconPlayMainWidgetBase::UpdatePlayerShip(float DeltaTime)
 	}
 	
 	CFPoint pt;
-	CoordMapperPtr->To(PlayerShipPtr->m_pos, pt);
+	CoordMapperPtr->To(PlayerShipPtr->Position, pt);
 	PlayerShipPtr->Sprite->SetPosition(FVector2D(pt.x, pt.y));
 	PlayerShipPtr->Sprite->Update(DeltaTime);
 
@@ -214,7 +214,7 @@ void UDefconPlayMainWidgetBase::UpdatePlayerShip(float DeltaTime)
 
 		if(PlayerShipPtr && PlayerShipPtr->IsAlive())
 		{
-			ExhaustLength =  ABS(3.0f * PlayerShipPtr->m_inertia.x);
+			ExhaustLength =  ABS(3.0f * PlayerShipPtr->Inertia.x);
 		}
 
 		if(ExhaustLength == 0.0f)
@@ -223,7 +223,7 @@ void UDefconPlayMainWidgetBase::UpdatePlayerShip(float DeltaTime)
 		}
 		else
 		{
-			const bool IsFacingRight = (PlayerShipPtr->m_orient.fwd.x > 0);
+			const bool IsFacingRight = (PlayerShipPtr->Orientation.fwd.x > 0);
 			auto S = PlayerShipExhaustPtr->GetActualSize();
 			S.X = ExhaustLength;
 			PlayerShipExhaustPtr->FlipHorizontal = !IsFacingRight;
@@ -253,10 +253,10 @@ void UDefconPlayMainWidgetBase::UpdatePlayerShip(float DeltaTime)
 void UDefconPlayMainWidgetBase::DrawObjectBbox(Defcon::IGameObject* Object, FPaintArguments& FrameBuffer) const
 {
 	CFPoint pt;
-	CoordMapperPtr->To(Object->m_pos, pt);
+	CoordMapperPtr->To(Object->Position, pt);
 
 	CFRect r(pt);
-	r.Inflate(Object->m_bboxrad);
+	r.Inflate(Object->BboxRadius);
 
 	if(r.UR.x > 0 && r.LL.x < FrameBuffer.AllottedGeometry->GetLocalSize().X)
 	{
@@ -444,13 +444,13 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 		return;
 	}
 
-	auto Str = FString::Printf(TEXT("%d, %d"), (int32)PlayerShipPtr->m_pos.x, (int32)PlayerShipPtr->m_pos.y); 
+	auto Str = FString::Printf(TEXT("%d, %d"), (int32)PlayerShipPtr->Position.x, (int32)PlayerShipPtr->Position.y); 
 	Position->SetText(FText::FromString(Str));
 
-	Str = FString::Printf(TEXT("%d"), (int32)PlayerShipPtr->m_orient.fwd.x); 
+	Str = FString::Printf(TEXT("%d"), (int32)PlayerShipPtr->Orientation.fwd.x); 
 	OrientFwd->SetText(FText::FromString(Str));
 
-	Str = FString::Printf(TEXT("%.4f, %.4f"), PlayerShipPtr->m_velocity.x, PlayerShipPtr->m_velocity.y); 
+	Str = FString::Printf(TEXT("%.4f, %.4f"), PlayerShipPtr->Velocity.x, PlayerShipPtr->Velocity.y); 
 	Speed->SetText(FText::FromString(Str));
 
 	Str = FString::Printf(TEXT("%.4f, %.4f"), PlayerShipPtr->m_thrustVector.x, PlayerShipPtr->m_thrustVector.y);
@@ -504,7 +504,7 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 
 		Enemies->ForEach([&](Defcon::IGameObject* Object)
 			{
-				if(Object->m_pos.y < 0 || Object->m_pos.y > ArenaHeight)
+				if(Object->Position.y < 0 || Object->Position.y > ArenaHeight)
 				{
 					UE_LOG(LogGame, Error, TEXT("Enemy object %s is out of bounds"), *Defcon::ObjectTypeManager.GetName(Object->GetType()));
 					Count++;

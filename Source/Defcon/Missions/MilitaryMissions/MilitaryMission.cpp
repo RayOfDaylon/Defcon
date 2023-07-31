@@ -45,14 +45,14 @@ void Defcon::CMilitaryMission::Init()
 		{
 			//auto pEvt = new CCreateEnemyEvent;
 			pEvt->Init(p);
-			pEvt->m_objtype = ObjType::TURRET;
-			pEvt->m_when = GameTime();
+			pEvt->EnemyType = EObjType::TURRET;
+			pEvt->When = GameTime();
 			float wp = gpArena->GetWidth();
 			float x = FRAND * wp;
 			x = (float)fmod(x, wp);
 			float y = p->GetTerrainElev(x) - 10;
-			pEvt->m_where.Set(x, y);
-			pEvt->m_bMissionTarget = false; // can leave turrets alive w/o aborting mission
+			pEvt->Where.Set(x, y);
+			pEvt->bMissionTarget = false; // can leave turrets alive w/o aborting mission
 			pEvt->m_bMaterializes = false;
 			this->AddEvent(pEvt);
 		}
@@ -71,7 +71,7 @@ void Defcon::CMilitaryMission::AddEnemySpawnInfo(const FEnemySpawnCounts& EnemyS
 	{
 		NumHostilesRemaining += EnemyTypeCount;
 
-		if(EnemySpawnCounts.Kind == ObjType::LANDER)
+		if(EnemySpawnCounts.Kind == EObjType::LANDER)
 		{
 			NumLandersRemaining	+= EnemyTypeCount;
 		}
@@ -92,19 +92,19 @@ void Defcon::CMilitaryMission::AddStargate()
 	StargatePtr = new CStargate;
 	CFPoint pos(0.5f, 0.75f);
 	pos.Mul(CFPoint(gpArena->GetWidth(), gpArena->GetHeight()));
-	StargatePtr->m_pos = pos; 
+	StargatePtr->Position = pos; 
 	StargatePtr->InstallSprite();
 	gpArena->GetObjects().Add(StargatePtr);
 
 	// Since the stargate is stationary, cache its rectangle.
-	StargateRect.Set(StargatePtr->m_pos);
-	StargateRect.Inflate(StargatePtr->m_bboxrad);
+	StargateRect.Set(StargatePtr->Position);
+	StargateRect.Inflate(StargatePtr->BboxRadius);
 }
 
 
 bool Defcon::CMilitaryMission::PlayerInStargate() const
 {
-	return StargateRect.PtInside(gpArena->GetPlayerShip().m_pos);
+	return StargateRect.PtInside(gpArena->GetPlayerShip().Position);
 }
 
 
@@ -143,8 +143,8 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 			switch(EnemySpawnCountsArray[i].Kind)	
 			{	
 				// Make these enemies spawn high up
-				case ObjType::LANDER:	
-				case ObjType::BOUNCER:	
+				case EObjType::LANDER:	
+				case EObjType::BOUNCER:	
 					y = FRANDRANGE(0.85f, 1.0f);	
 					break;	
 					
@@ -186,10 +186,10 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 			{
 				auto Human = static_cast<CHuman*>(pObj);
 
-				if(Human->IsBeingCarried() && Human->GetCarrier()->GetType() == ObjType::PLAYER)
+				if(Human->IsBeingCarried() && Human->GetCarrier()->GetType() == EObjType::PLAYER)
 				{
 					Human->SetToNotCarried();
-					Human->m_pos.Set(FRANDRANGE(0.0f, gpArena->GetWidth() - 1), 0.04f * gpArena->GetHeight()); 
+					Human->Position.Set(FRANDRANGE(0.0f, gpArena->GetWidth() - 1), 0.04f * gpArena->GetHeight()); 
 				}
 			});
  			return false;
@@ -200,7 +200,7 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 
 	if(this->HostilesRemaining() > 0)
 	{
-		this->MakeTargets(DeltaTime, gpArena->GetPlayerShip().m_pos);
+		this->MakeTargets(DeltaTime, gpArena->GetPlayerShip().Position);
 	}
 
 	return true;
@@ -225,7 +225,7 @@ void Defcon::CMilitaryMission::AddMissionCleaner(const CFPoint& where)
 	// to throw in various nonmission hostiles at an increasing 
 	// frequency until the player wipes out the critical opponents.
 
-	const ObjType MunchieTypes[] = { ObjType::PHRED, ObjType::BIGRED, ObjType::MUNCHIE };
+	const EObjType MunchieTypes[] = { EObjType::PHRED, EObjType::BIGRED, EObjType::MUNCHIE };
 
 	if(Age - TimeLastCleanerSpawned >= CleanerFreq)
 	{
@@ -234,12 +234,12 @@ void Defcon::CMilitaryMission::AddMissionCleaner(const CFPoint& where)
 			CleanerFreq -= 0.5f;
 		}
 
-		this->AddNonMissionTarget(FRAND < BAITER_PROB ? ObjType::BAITER : MunchieTypes[IRAND(3)], where);
+		this->AddNonMissionTarget(FRAND < BAITER_PROB ? EObjType::BAITER : MunchieTypes[IRAND(3)], where);
 	}
 }
 
 
-void Defcon::CMilitaryMission::AddNonMissionTarget(ObjType objType, const CFPoint& where)
+void Defcon::CMilitaryMission::AddNonMissionTarget(EObjType objType, const CFPoint& where)
 {
 	TimeLastCleanerSpawned = Age;
 
@@ -261,7 +261,7 @@ void Defcon::CMilitaryMission::AddBaiter(const CFPoint& where)
 	x = (float)fmod(x, wp);
 	float y = FRANDRANGE(0.2f, 0.8f) * gpArena->GetHeight();
 
-	gpArena->CreateEnemy(ObjType::BAITER, CFPoint(x, y), 0.0f, true, false);
+	gpArena->CreateEnemy(EObjType::BAITER, CFPoint(x, y), 0.0f, true, false);
 }
 
 

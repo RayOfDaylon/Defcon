@@ -40,8 +40,8 @@ void Defcon::CYllabianDogfight::MakeTargets(float fElapsed, const CFPoint& where
 
 		const FEnemySpawnCounts waves[] = 
 		{
-			{ ObjType::GUPPY,   { 12, 15, 9, 0 } },
-			{ ObjType::SWARMER, {  6,  3, 6, 0 } }
+			{ EObjType::GUPPY,   { 12, 15, 9, 0 } },
+			{ EObjType::SWARMER, {  6,  3, 6, 0 } }
 		};
 
 

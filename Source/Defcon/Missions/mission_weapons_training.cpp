@@ -89,9 +89,9 @@ void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 		CBeacon* p = new CBeacon;
 		p->InstallSprite();
 
-		p->m_fLifespan = 2.0f;
+		p->Lifespan = 2.0f;
 		p->MakeHurtable();
-		p->m_pos.Set(
+		p->Position.Set(
 			MAP(i, 0, 6, gpArena->GetDisplayWidth()*.66f, gpArena->GetWidth() * 0.9f),
 			SFRAND * 0.33f * gpArena->GetHeight() + gpArena->GetHeight()/2);
 
@@ -104,7 +104,7 @@ void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 
 bool Defcon::CWeaponsTrainingMission::AreAllTargetsHit(float fElapsed)
 {
-	const int32 NumTargetsLeft = gpArena->GetObjects().CountOf(ObjType::BEACON);
+	const int32 NumTargetsLeft = gpArena->GetObjects().CountOf(EObjType::BEACON);
 	const int32 NumHit         = NumTargets - NumTargetsLeft;
 
 	if(NumHit != NumTargetsHit)
@@ -125,7 +125,7 @@ bool Defcon::CWeaponsTrainingMission::AreAllTargetsHit(float fElapsed)
 		gpArena->AddMessage(Str);
 	}
 
-	return (gpArena->GetObjects().Find(ObjType::BEACON, nullptr) == nullptr);
+	return (gpArena->GetObjects().Find(EObjType::BEACON, nullptr) == nullptr);
 }
 
 

@@ -42,18 +42,16 @@ namespace Defcon
 			virtual void To    (const CFPoint&, CFPoint&) const override;
 			virtual void From  (const CFPoint&, CFPoint&) const override;
 
-			void Init          (int, int, int);
-			void ScrollTo      (const CFPoint& pt) { m_offset = pt; }
+			void            Init       (int, int, int);
+			void            ScrollTo   (const CFPoint& pt) { Offset = pt; }
+			void            SlideBy    (float);
+			const CFPoint&  GetOffset  () const { return Offset; }
 
-			void SlideBy       (float);
-
-			const CFPoint& GetOffset() const { return m_offset; }
-
-			float	m_planetCircumference;
+			float	PlanetCircumference = 0.0f;
 
 		private:
-			CFPoint	m_offset;
-			CFPoint	m_screensize;
+			CFPoint	Offset;
+			CFPoint	ScreenSize;
 
 	};
 
@@ -66,21 +64,20 @@ namespace Defcon
 			virtual void To    (const CFPoint&, CFPoint&) const override;
 			virtual void From  (const CFPoint&, CFPoint&) const override;
 
-			void Init          (int, int, int);
-			void ScrollTo      (const CFPoint& pt) { m_offset = pt; }
-			void SlideBy       (float);
+			void            Init          (int, int, int);
+			void            ScrollTo      (const CFPoint& pt) { Offset = pt; }
+			void            SlideBy       (float);
+			const CFPoint&  GetOffset     () const { return Offset; }
+			const CFPoint&  GetScreenSize () const { return ScreenSize; }
 
-			const CFPoint& GetOffset     () const { return m_offset; }
-			const CFPoint& GetScreenSize () const { return m_screensize; }
-
-			float	    m_planetCircumference;
+			float	        PlanetCircumference = 0.0f;
 
 			CFPoint         m_radarSize;
-			IGameObject*    m_pPlayer;
+			IGameObject*    m_pPlayer = nullptr;
 
 		private:
-			mutable CFPoint	m_offset;
-			CFPoint	        m_screensize;
-			CFPoint         m_scale;
+			mutable CFPoint	Offset;
+			CFPoint	        ScreenSize;
+			CFPoint         Scale;
 	};
 }

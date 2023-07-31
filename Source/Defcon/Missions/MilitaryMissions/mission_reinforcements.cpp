@@ -24,8 +24,8 @@ void Defcon::CReinforcedMission::Init()
 		"Engage enemy forces and eliminate them."
 		;
 
-	AddEnemySpawnInfo({ ObjType::LANDER, { 4, 4, 4 } });
-	AddEnemySpawnInfo({ ObjType::DYNAMO, { 3, 2, 1 } });
+	AddEnemySpawnInfo({ EObjType::LANDER, { 4, 4, 4 } });
+	AddEnemySpawnInfo({ EObjType::DYNAMO, { 3, 2, 1 } });
 }
 
 

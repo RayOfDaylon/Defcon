@@ -22,12 +22,12 @@ void Defcon::CLaserWeapon::Fire(CGameObjectCollection& goc)
 	
 	pBeam->SetCreatorType(m_pObject->GetType());
 
-	CFPoint pos(m_pObject->m_pos);
+	CFPoint pos(m_pObject->Position);
 	pos += m_emissionPt;
 
-	pBeam->Create(pos, m_pObject->m_orient);
+	pBeam->Create(pos, m_pObject->Orientation);
 	pBeam->m_fArenawidth = m_fArenawidth;
-	pBeam->m_pMapper     = m_pObject->m_pMapper;
+	pBeam->MapperPtr     = m_pObject->MapperPtr;
 	
 	pBeam->SetMaxLength((int)(gpArena->GetDisplayWidth() * 0.75f));
 
@@ -40,18 +40,18 @@ Defcon::CLaserbeam::CLaserbeam()
 	:
 	m_fLength(0)
 {
-	m_parentType = m_type;
-	m_type = ObjType::LASERBEAM;
-	m_bInjurious = true;
-	m_bCanBeInjured = false;
+	ParentType = Type;
+	Type = EObjType::LASERBEAM;
+	bInjurious = true;
+	bCanBeInjured = false;
 
-	m_smallColor.A = 0.0f;
+	RadarColor.A = 0.0f;
 	m_color = MakeColorFromComponents(255, 0, 0);
-	m_bMortal = true;
-	m_fLifespan = MAX_LASERAGE;
+	bMortal = true;
+	Lifespan = MAX_LASERAGE;
 	m_fScale =  (FRAND * 0.65f + 0.85f);
-	m_fLifespan /= m_fScale;
-	m_maxAge = m_fLifespan;
+	Lifespan /= m_fScale;
+	m_maxAge = Lifespan;
 	m_fScale *= BEAM_MAXLEN;
 }
 
@@ -75,26 +75,26 @@ const char* Defcon::CLaserbeam::GetClassname() const
 
 void Defcon::CLaserbeam::Create(const CFPoint& where, const Orient2D& aim)
 {
-	m_pos = where;
-	m_orient = aim;
+	Position = where;
+	Orientation = aim;
 	float budge = FRAND;
 	budge -= 0.5f;
 	budge *= 3;	
-	m_pos.MulAdd(aim.up, budge);
+	Position.MulAdd(aim.up, budge);
 }
 
 
 void Defcon::CLaserbeam::Move(float fTime)
 {
 	// The length increases rapidly over time.
-	if(m_fLifespan > 0)
+	if(Lifespan > 0)
 	{
-		m_fLength = m_maxAge - m_fLifespan;
+		m_fLength = m_maxAge - Lifespan;
 		m_fLength /= m_maxAge; // 0..1
 
 		float f = m_fLength; 
-		m_posStart = m_pos;
-		m_posStart.MulAdd(m_orient.fwd, f * m_fScale);
+		m_posStart = Position;
+		m_posStart.MulAdd(Orientation.fwd, f * m_fScale);
 	}
 }
 
@@ -106,10 +106,10 @@ void Defcon::CLaserbeam::Draw(FPaintArguments& PaintArguments, const I2DCoordMap
 	// grayscale, then we can use them as masks so 
 	// that the color can still vary.
 
-	const float fAge = m_fLifespan / m_maxAge; // 0..1
+	const float fAge = Lifespan / m_maxAge; // 0..1
 
 	CFPoint ptEnd(m_posStart);
-	ptEnd.MulAdd(m_orient.fwd, m_fLength * m_fScale);
+	ptEnd.MulAdd(Orientation.fwd, m_fLength * m_fScale);
 
 	CFPoint p1, p2;
 	Mapper.To(m_posStart, p1);
@@ -176,14 +176,14 @@ void Defcon::CLaserbeam::DrawSmall(FPaintArguments&, const I2DCoordMapper&, FSla
 void Defcon::CLaserbeam::GetInjurePt(CFPoint& pt) const
 {
 	pt = m_posStart;
-	pt.MulAdd(m_orient.fwd, m_fLength * m_fScale);
+	pt.MulAdd(Orientation.fwd, m_fLength * m_fScale);
 }
 
 
 bool Defcon::CLaserbeam::TestInjury(const CFRect& r) const
 {
 	CFPoint ptEnd = m_posStart;
-	ptEnd.MulAdd(m_orient.fwd, m_fLength * m_fScale);
+	ptEnd.MulAdd(Orientation.fwd, m_fLength * m_fScale);
 
 	// No hit if beam is above or below the target.
 	if(m_posStart.y <= r.LL.y || m_posStart.y >= r.UR.y)
@@ -191,14 +191,14 @@ bool Defcon::CLaserbeam::TestInjury(const CFRect& r) const
 		return false;
 	}
 
-	check(m_pMapper != nullptr);
+	check(MapperPtr != nullptr);
 
 	// Check hit in screen space.
 	CFPoint beam1, beam2, target1, target2;
-	m_pMapper->To(m_posStart, beam1);
-	m_pMapper->To(ptEnd, beam2);
-	m_pMapper->To(r.LowerLeft(), target1);
-	m_pMapper->To(r.UpperRight(), target2);
+	MapperPtr->To(m_posStart, beam1);
+	MapperPtr->To(ptEnd, beam2);
+	MapperPtr->To(r.LowerLeft(), target1);
+	MapperPtr->To(r.UpperRight(), target2);
 
 	float t;
 	ORDER(beam1.x, beam2.x, t)

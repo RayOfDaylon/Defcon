@@ -7,7 +7,7 @@
 
 namespace Defcon
 {
-	enum class ObjType
+	enum class EObjType
 	{
 		PLAYER = 0,
 		DESTROYED_PLAYER,
@@ -82,11 +82,11 @@ namespace Defcon
 		public:
 
 		void Init();
-		const FString& GetName(ObjType Kind) { return TypeNames[Kind]; }
+		const FString& GetName(EObjType Kind) { return TypeNames[Kind]; }
 
 		protected:
 
-		TMap<ObjType, FString> TypeNames;
+		TMap<EObjType, FString> TypeNames;
 	};
 
 	extern FObjectTypeManager ObjectTypeManager;

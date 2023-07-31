@@ -63,7 +63,7 @@ void Defcon::CGameObjectCollection::ForEachUntil(TFunction<bool(IGameObject*)> F
 void Defcon::CGameObjectCollection::Add(IGameObject* p)
 {
 	check(p);
-	check(p->GetType() != ObjType::UNKNOWN);
+	check(p->GetType() != EObjType::UNKNOWN);
 
 	if(m_pFirst != nullptr)
 	{
@@ -144,7 +144,7 @@ int32 Defcon::CGameObjectCollection::Count() const
 }
 
 
-int32 Defcon::CGameObjectCollection::CountOf(ObjType Kind) const
+int32 Defcon::CGameObjectCollection::CountOf(EObjType Kind) const
 {
 	int32 Result = 0;
 
@@ -154,7 +154,7 @@ int32 Defcon::CGameObjectCollection::CountOf(ObjType Kind) const
 }
 
 
-Defcon::IGameObject* Defcon::CGameObjectCollection::Find(ObjType Kind, Defcon::IGameObject* p) const
+Defcon::IGameObject* Defcon::CGameObjectCollection::Find(EObjType Kind, Defcon::IGameObject* p) const
 {
 	if(p == nullptr)
 	{
@@ -179,7 +179,7 @@ Defcon::IGameObject* Defcon::CGameObjectCollection::Find(ObjType Kind, Defcon::I
 }
 
 
-void Defcon::CGameObjectCollection::Notify(Message Msg, IGameObject* Sender)
+void Defcon::CGameObjectCollection::Notify(EMessage Msg, IGameObject* Sender)
 {
 	ForEach([&](IGameObject* pObj) { pObj->Notify(Msg, Sender); });
 }
@@ -234,18 +234,18 @@ bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
 		pObj->Move(params.fElapsedTime);
 
 		// Handle wraparound onto planet.
-		pObj->m_pos.x = gpArena->WrapX(pObj->m_pos.x);
+		pObj->Position.x = gpArena->WrapX(pObj->Position.x);
 
 
 		// Lots of objects temporarily exist outside arena's vertical bounds.
-		//check(pObj->m_pos.y >= 0 && pObj->m_pos.y <= params.fArenaHeight);
+		//check(pObj->Position.y >= 0 && pObj->Position.y <= params.fArenaHeight);
 
 		// If the object has a visual, sync its position and update its animation.
 
 		if(pObj->Sprite)
 		{
 			CFPoint pt;
-			params.pMapper->To(pObj->m_pos, pt);
+			params.pMapper->To(pObj->Position, pt);
 			pObj->Sprite->SetPosition(FVector2D(pt.x, pt.y));
 			pObj->Sprite->Update(params.fElapsedTime);
 		}

@@ -24,14 +24,14 @@
 
 Defcon::CGhost::CGhost()
 {
-	m_parentType = m_type;
-	m_type       = ObjType::GHOST;
+	ParentType = Type;
+	Type       = EObjType::GHOST;
 
-	m_pointValue = GHOST_VALUE;
-	m_orient.fwd.Set(1.0f, 0.0f);
-	m_smallColor = MakeColorFromComponents(192, 192, 192);
+	PointValue = GHOST_VALUE;
+	Orientation.fwd.Set(1.0f, 0.0f);
+	RadarColor = MakeColorFromComponents(192, 192, 192);
 	// Our size is the size of a part x 3.
-	m_fAnimSpeed = FRAND * 0.35f + 0.65f;
+	AnimSpeed = FRAND * 0.35f + 0.65f;
 	m_xFreq = FRAND * 0.5f + 1.0f;
 	m_bWaits = BRAND;
 	m_numParts = IRAND(4) + 4;
@@ -40,8 +40,8 @@ Defcon::CGhost::CGhost()
 	m_fSpinVelMax = FRAND * 4.0f + 1.0f;
 	DispersalCountdown = 0.0f;
 
-	const auto& Info = GameObjectResources.Get(ObjType::GHOSTPART);
-	m_bboxrad.Set(Info.Size.X * 1.5f, Info.Size.Y * 1.5f);
+	const auto& Info = GameObjectResources.Get(EObjType::GHOSTPART);
+	BboxRadius.Set(Info.Size.X * 1.5f, Info.Size.Y * 1.5f);
 }
 
 
@@ -71,16 +71,16 @@ void Defcon::CGhost::Move(float fTime)
 	// We are in normal form (not dispersed).
 
 	CEnemy::Move(fTime);
-	m_inertia = m_pos;
+	Inertia = Position;
 
-	m_orient.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + m_fAge)); 
+	Orientation.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
 
 
 	//float diff = (float)UDefconUtils::GetGameInstance(gpArena)->GetScore() / 50000;
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 
 	if(m_bWaits)
-		diff *= (float)(ABS(sin(m_fAge * PI)));
+		diff *= (float)(ABS(sin(Age * PI)));
 
 	diff = FMath::Min(diff, 1.5f);
 
@@ -89,17 +89,17 @@ void Defcon::CGhost::Move(float fTime)
 		if(FRAND <= 0.05f * diff
 			&& this->CanBeInjured()
 			&& gpArena->GetPlayerShip().IsAlive()
-			&& gpArena->IsPointVisible(m_pos))
+			&& gpArena->IsPointVisible(Position))
 		{
-			gpArena->FireBullet(*this, m_pos, 1, 1);
+			gpArena->FireBullet(*this, Position, 1, 1);
 		}
 	}
 
-	m_fSpinVel = 1.0f;//sin(m_fAge * PI * m_fSpinVelMax);
+	m_fSpinVel = 1.0f;//sin(Age * PI * m_fSpinVelMax);
 	m_fSpinAngle += (m_fSpinVel * fTime);
 
-	m_pos.MulAdd(m_orient.fwd, fTime * 50.0f);
-	m_inertia = m_pos - m_inertia;
+	Position.MulAdd(Orientation.fwd, fTime * 50.0f);
+	Inertia = Position - Inertia;
 
 	// See if we need to disperse (player ship got too close).
 
@@ -108,7 +108,7 @@ void Defcon::CGhost::Move(float fTime)
 	if(pTarget->IsAlive() && !this->MarkedForDeath())
 	{
 		CFPoint dir;
-		const float dist = gpArena->Direction(m_pos, pTarget->m_pos, dir);
+		const float dist = gpArena->Direction(Position, pTarget->Position, dir);
 
 		if(dist < GHOST_PLAYER_DIST_MIN) // todo: use pref value instead of constant 200
 		{
@@ -124,7 +124,7 @@ void Defcon::CGhost::Move(float fTime)
 			CFPoint newloc;
 
 			// Choose somewhere else on the screen.
-			newloc.x = m_pos.x + SFRAND * gpArena->GetDisplayWidth() / 1.5f;
+			newloc.x = Position.x + SFRAND * gpArena->GetDisplayWidth() / 1.5f;
 			newloc.y = (FRAND * 0.75f + 0.125f) * gpArena->GetHeight();
 
 			// Don't modulate newloc; it will cause wrong path animation if path cross x-origin.
@@ -132,18 +132,18 @@ void Defcon::CGhost::Move(float fTime)
 
 			for(int32 i = 1; i < m_numParts; i++)
 			{
-				CGhostPart* p = (CGhostPart*)gpArena->CreateEnemyNow(ObjType::GHOSTPART, m_partLocs[i], false, false);
+				CGhostPart* p = (CGhostPart*)gpArena->CreateEnemyNow(EObjType::GHOSTPART, m_partLocs[i], false, false);
 
 				p->SetCollisionInjurious(false);
 				p->SetFlightDuration(flighttime);
-				p->SetFlightPath(m_pos, newloc);
+				p->SetFlightPath(Position, newloc);
 			}
 
-			// Now move ourselves. Do this last because we use our original m_pos as the 
+			// Now move ourselves. Do this last because we use our original Position as the 
 			// source position of the dispersal in the above loop.
 
-			m_pos = newloc;
-			m_pos.x = gpArena->WrapX(m_pos.x);
+			Position = newloc;
+			Position.x = gpArena->WrapX(Position.x);
 		
 			gpAudio->OutputSound(snd_ghostflight);
 		}
@@ -160,10 +160,10 @@ void Defcon::CGhost::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mappe
 		return;
 	}
 
-	m_partLocs[0] = m_pos;
+	m_partLocs[0] = Position;
 
-	float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
-		//(float)m_fAge / m_fAnimSpeed;
+	float f = (float)fmod(Age, AnimSpeed) / AnimSpeed;
+		//(float)Age / AnimSpeed;
 
 
 	// Draw the parts in a circle around a central part.
@@ -174,9 +174,9 @@ void Defcon::CGhost::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mappe
 		const float t = (float)(TWO_PI * i / n + ((m_fSpinAngle + FRAND*0.1f) * TWO_PI));
 		CFPoint pt2((float)cos(t), (float)sin(t));
 		float r = (float)(sin((f + FRAND*3) * PI) * 5 + 10);
-		m_bboxrad.Set(r, r);
+		BboxRadius.Set(r, r);
 		pt2 *= r;
-		pt2 += m_pos;
+		pt2 += Position;
 		m_partLocs[i+1] = pt2;
 	}
 
@@ -193,14 +193,14 @@ void Defcon::CGhost::DrawPart(FPaintArguments& framebuf, const CFPoint& where)
 {
 	const CFPoint pt = where;
 
-	auto& Info = GameObjectResources.Get(ObjType::GHOSTPART);
+	auto& Info = GameObjectResources.Get(EObjType::GHOSTPART);
 
 	const int w = Info.Size.X;
 
 	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
 	{
 		const int32 NumCels = Info.Atlas->Atlas.NumCels;
-		const float f = (NumCels - 1) * PSIN(PI * fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed);
+		const float f = (NumCels - 1) * PSIN(PI * fmod(Age, AnimSpeed) / AnimSpeed);
 
 		const float Usize = 1.0f / NumCels;
 
@@ -229,7 +229,7 @@ void Defcon::CGhost::OnAboutToDie()
 /*
 	for(int i = 0; i < m_numParts; i++)
 	{
-		gpGame->CreateEnemy(ObjType::GHOSTPART, m_partLocs[i], false, false);
+		gpGame->CreateEnemy(EObjType::GHOSTPART, m_partLocs[i], false, false);
 	}
 */
 }
@@ -239,8 +239,8 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 {
 	//CEnemy::Explode(debris);
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	// Create an explosion by making
@@ -275,8 +275,8 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 		pFlak->m_fLargestSize = maxsize;
 		pFlak->m_bFade = bDieOff;
 
-		pFlak->m_pos = m_pos;
-		pFlak->m_orient = m_orient;
+		pFlak->Position = Position;
+		pFlak->Orientation = Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
@@ -284,17 +284,17 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->m_orient.fwd = m_inertia;
+		pFlak->Orientation.fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->m_orient.fwd *= FRAND * 12.0f + 30.0f;
+		pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
 		// Make the particle have a velocity vector
 		// as if it were standing still.
 		float speed = FRAND * 180 + 90;
 
 
-		pFlak->m_orient.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -317,22 +317,21 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 			pFlak->m_eColorbaseYoung = cby;
 			pFlak->m_fLargestSize = maxsize;
 			pFlak->m_bFade = bDieOff;
-			pFlak->m_bDrawSmall = false;
 
-			pFlak->m_pos = m_pos;
-			pFlak->m_orient = m_orient;
+			pFlak->Position = Position;
+			pFlak->Orientation = Orientation;
 
 			CFPoint dir;
 			double t = FRAND * TWO_PI;
 			
 			dir.Set((float)cos(t), (float)sin(t));
 
-			pFlak->m_orient.fwd = m_inertia;
+			pFlak->Orientation.fwd = Inertia;
 
-			pFlak->m_orient.fwd *= FRAND * 12.0f + 30.0f;
+			pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
 			float speed = FRAND * 45 + 22;
 
-			pFlak->m_orient.fwd.MulAdd(dir, speed);
+			pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 			debris.Add(pFlak);
 		}
@@ -352,8 +351,8 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 		pFlak->m_fLargestSize = 4;
 		pFlak->m_bFade = true;//bDieOff;
 
-		pFlak->m_pos = m_pos;
-		pFlak->m_orient = m_orient;
+		pFlak->Position = Position;
+		pFlak->Orientation = Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
@@ -361,15 +360,15 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->m_orient.fwd = m_inertia;
+		pFlak->Orientation.fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->m_orient.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->m_orient.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -381,18 +380,18 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 
 Defcon::CGhostPart::CGhostPart()
 {
-	m_parentType = m_type;
-	m_type = ObjType::GHOSTPART;
-	m_pointValue = 0;
-	m_orient.fwd.Set(1.0f, 0.0f);
-	m_smallColor = C_WHITE;
-	m_fAnimSpeed = FRAND * 0.35f + 0.15f;
-	m_bCanBeInjured = false;
-	m_bIsCollisionInjurious = false;
+	ParentType = Type;
+	Type = EObjType::GHOSTPART;
+	PointValue = 0;
+	Orientation.fwd.Set(1.0f, 0.0f);
+	RadarColor = C_WHITE;
+	AnimSpeed = FRAND * 0.35f + 0.15f;
+	bCanBeInjured = false;
+	bIsCollisionInjurious = false;
 
-	CreateSprite(m_type);
-	const auto& Info = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(Info.Size.X / 2, Info.Size.Y / 2);
+	CreateSprite(Type);
+	const auto& Info = GameObjectResources.Get(Type);
+	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 
 
@@ -432,10 +431,10 @@ void Defcon::CGhostPart::Move(float fTime)
 
 	// We're moving along a spline, so determine our normalized distance along it.
 
-	if(m_fAge < m_fMaxAge)
+	if(Age < m_fMaxAge)
 	{
-		m_path.CalcPt(powf(m_fAge / m_fMaxAge, 0.75f), m_pos);
-		m_pos.x = gpArena->WrapX(m_pos.x);
+		m_path.CalcPt(powf(Age / m_fMaxAge, 0.75f), Position);
+		Position.x = gpArena->WrapX(Position.x);
 		return;
 	}
 

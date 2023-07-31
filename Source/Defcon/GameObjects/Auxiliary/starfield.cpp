@@ -32,9 +32,9 @@ constexpr float kSpeedRot	= 3.0f;
 
 Defcon::CStarfield::CStarfield()
 {
-	m_fAge = 0;
-	m_bCanBeInjured = false;
-	m_bIsCollisionInjurious = false;
+	Age = 0;
+	bCanBeInjured = false;
+	bIsCollisionInjurious = false;
 
 	m_count = array_size(m_stars);
 }
@@ -62,7 +62,7 @@ void Defcon::CStarfield::InitStarfield(int32 w, int32 h, float fRange, bool bMor
 
 	for(int32 i = 0; i < n; i++)
 	{
-		m_stars[i].m_pos.Set(SFRAND * 4000, SFRAND * 4000, kBackplane - FRAND * fRange);
+		m_stars[i].Position.Set(SFRAND * 4000, SFRAND * 4000, kBackplane - FRAND * fRange);
 		m_stars[i].m_colorFar = colors[IRAND(array_size(colors))];
 		
 		if(m_bMorphColor)
@@ -73,17 +73,17 @@ void Defcon::CStarfield::InitStarfield(int32 w, int32 h, float fRange, bool bMor
 
 void Defcon::CStarfield::Move(float f)
 {
-	m_fAge += f;
+	Age += f;
 
 	// Bring the stars closer.
 	const int32 n = array_size(m_stars);
 
 	for(int32 i = 0; i < n; i++)
 	{
-		m_stars[i].m_pos.z -= (f * kSpeed * m_fSpeedMul);
+		m_stars[i].Position.z -= (f * kSpeed * m_fSpeedMul);
 		// If too close, wrap it back.
-		if(m_stars[i].m_pos.z < kForeplane)
-			m_stars[i].m_pos.Set(SFRAND * 2000, SFRAND * 2000, kBackplane - FRAND*7);
+		if(m_stars[i].Position.z < kForeplane)
+			m_stars[i].Position.Set(SFRAND * 2000, SFRAND * 2000, kBackplane - FRAND*7);
 	}
 
 	m_fAngle += (f * kSpeedRot * m_fSpeedRotMul);
@@ -93,12 +93,12 @@ void Defcon::CStarfield::Move(float f)
 
 void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-	// The location of the field has m_pos as our center,
-	// so m_pos - w/2, h/2 to m_pos + (w/2,h/2) is the 
+	// The location of the field has Position as our center,
+	// so Position - w/2, h/2 to Position + (w/2,h/2) is the 
 	// part of the framebuf we draw on.
 
 	CFPoint pt;
-	mapper.To(m_pos, pt);
+	mapper.To(Position, pt);
 
 	const int32 n = this->GetNumStars();
 
@@ -117,8 +117,8 @@ void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 		// Project 3D star location to 2D.
 		CFPoint starproj;
 
-		starproj.Set(m_stars[i].m_pos.x / m_stars[i].m_pos.z,
-					m_stars[i].m_pos.y / m_stars[i].m_pos.z);
+		starproj.Set(m_stars[i].Position.x / m_stars[i].Position.z,
+					m_stars[i].Position.y / m_stars[i].Position.z);
 
 		starproj.mul(scale);
 		starproj.rotate(m_fAngle);
@@ -133,13 +133,13 @@ void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 			c = 0.25f;//C_DARKER;
 
 
-			if(m_stars[i].m_pos.z < 4.0f)
+			if(m_stars[i].Position.z < 4.0f)
 			{
 				r.UR += inc;
 				c = BRAND ? 0.5f/*C_DARK*/ : 0.75f/*C_LIGHT*/;
 			}
 
-			if(m_stars[i].m_pos.z < 2.0f)
+			if(m_stars[i].Position.z < 2.0f)
 			{
 				r.UR += inc;
 				c = BRAND ? 0.875f/*C_BRIGHT*/ : 1.0f/*C_WHITE*/;
@@ -157,9 +157,9 @@ void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 			CMaskMap& mask = gBitmaps.GetMask(ROUND(r.LL.Distance(r.UR)), 0);
 			FLinearColor cf = MakeBlendedColor(C_BLACK, m_stars[i].m_colorFar, c);
 
-			if(m_bMorphColor && m_stars[i].m_pos.z <= 3.0f)
+			if(m_bMorphColor && m_stars[i].Position.z <= 3.0f)
 				cf = MakeBlendedColor(m_stars[i].m_colorNear, cf,
-					m_stars[i].m_pos.z / 3.0f);
+					m_stars[i].Position.z / 3.0f);
 
 			mask.ColorWith(cf, framebuf, ROUND(starproj.x), ROUND(starproj.y));
 		}

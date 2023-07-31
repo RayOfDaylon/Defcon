@@ -29,24 +29,24 @@ Defcon::CSwarmer::CSwarmer()
 	m_xFreq(1.0f),
 	CountdownToMakeSound(Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX))
 {
-	m_parentType = m_type;
-	m_type = ObjType::SWARMER;
-	m_pointValue = SWARMER_VALUE;
+	ParentType = Type;
+	Type = EObjType::SWARMER;
+	PointValue = SWARMER_VALUE;
 
-	m_orient.fwd.Set(1.0f, 0.0f);
-	m_smallColor = C_ORANGE;
+	Orientation.fwd.Set(1.0f, 0.0f);
+	RadarColor = C_ORANGE;
 	
-	m_fAnimSpeed = FRAND * 0.35f + 0.15f;
+	AnimSpeed = FRAND * 0.35f + 0.15f;
 	m_xFreq = 2.0f * FRANDRANGE(0.5f, 1.5f);
-	m_bCanBeInjured = true;
-	m_bIsCollisionInjurious = true;
+	bCanBeInjured = true;
+	bIsCollisionInjurious = true;
 	m_yoff = (float)(FRAND * PI);
 	m_fTimeTargetWithinRange = 0.0f;
 
-	CreateSprite(m_type);
+	CreateSprite(Type);
 
-	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 
@@ -69,7 +69,7 @@ void Defcon::CSwarmer::Move(float fTime)
 	// Move in slightly perturbed sine wave pattern.
 
 	CEnemy::Move(fTime);
-	m_inertia = m_pos;
+	Inertia = Position;
 
 
 	IGameObject* pTarget = m_pTarget;
@@ -78,7 +78,7 @@ void Defcon::CSwarmer::Move(float fTime)
 		m_fTimeTargetWithinRange = 0.0f;
 	else
 	{
-		const bool bVis = gpArena->IsPointVisible(m_pos);
+		const bool bVis = gpArena->IsPointVisible(Position);
 
 		// Update target-within-range information.
 		if(m_fTimeTargetWithinRange > 0.0f)
@@ -98,27 +98,27 @@ void Defcon::CSwarmer::Move(float fTime)
 
 				//m_targetOffset.Set(
 				//	LERP(-100, 100, FRAND), 
-				//	LERP(50, 90, FRAND) * SGN(m_pos.y - pTarget->m_pos.y));
+				//	LERP(50, 90, FRAND) * SGN(Position.y - pTarget->Position.y));
 				//m_freq = LERP(6, 12, FRAND);
 				//m_amp = LERP(.33f, .9f, FRAND);
 			}
 		}
 
 		CFPoint dir;
-		float dist = gpArena->Direction(m_pos, pTarget->m_pos, dir);
+		float dist = gpArena->Direction(Position, pTarget->Position, dir);
 
 		if(m_fTimeTargetWithinRange > 0.75f)
 		{
-			if(dist > m_screensize.x * .4f)
+			if(dist > ScreenSize.x * .4f)
 			{
-				m_orient.fwd = dir;
-				m_orient.fwd.y = 0;
-				m_orient.fwd.Normalize();
+				Orientation.fwd = dir;
+				Orientation.fwd.y = 0;
+				Orientation.fwd.Normalize();
 			}
 		}
 
 
-		if(m_fTimeTargetWithinRange	&& m_fAge > 1.0f)
+		if(m_fTimeTargetWithinRange	&& Age > 1.0f)
 		{
 			CountdownToMakeSound -= fTime;
 
@@ -128,32 +128,32 @@ void Defcon::CSwarmer::Move(float fTime)
 				CountdownToMakeSound = Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX);
 			}
 
-			if(FRAND <= 0.007f && SGN(m_orient.fwd.x) == SGN(dir.x))
+			if(FRAND <= 0.007f && SGN(Orientation.fwd.x) == SGN(dir.x))
 			{
-				gpArena->FireBullet(*this, m_pos, 1, 1);
+				gpArena->FireBullet(*this, Position, 1, 1);
 			}
 		}
 	}
 
 
-	m_amp = LERP(0.33f, 1.0f, PSIN(m_yoff+m_fAge)) * 0.5f * m_screensize.y;
-	m_halfwayAltitude = (float)(sin((m_yoff+m_fAge)*0.6f) * 50 + (0.5f * m_screensize.y));
+	m_amp = LERP(0.33f, 1.0f, PSIN(m_yoff+Age)) * 0.5f * ScreenSize.y;
+	m_halfwayAltitude = (float)(sin((m_yoff+Age)*0.6f) * 50 + (0.5f * ScreenSize.y));
 
 	CFPoint pos;
-	if(m_fAge < 0.7f)
-		pos.x = m_pos.x + .2f * m_orient.fwd.x * m_xFreq * fTime * m_screensize.x * (FRAND * .05f + 0.25f);
+	if(Age < 0.7f)
+		pos.x = Position.x + .2f * Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 	else
-		pos.x = m_pos.x + m_orient.fwd.x * m_xFreq * fTime * m_screensize.x * (FRAND * .05f + 0.25f);
+		pos.x = Position.x + Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 
 	pos.y = 
-		(float)sin(m_freq * (m_yoff + m_fAge)) 
+		(float)sin(m_freq * (m_yoff + Age)) 
 		* m_amp + m_halfwayAltitude;
 
-	m_pos = pos;
-	if(m_fAge < 0.7f)
-		m_pos.y = LERP(m_posOrg.y, pos.y, m_fAge / 0.7f);
+	Position = pos;
+	if(Age < 0.7f)
+		Position.y = LERP(m_posOrg.y, pos.y, Age / 0.7f);
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 }
 
 
@@ -166,8 +166,8 @@ void Defcon::CSwarmer::Explode(CGameObjectCollection& debris)
 {
 	const int cby = CGameColors::red;
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	for(int32 i = 0; i < 20; i++)
@@ -179,8 +179,8 @@ void Defcon::CSwarmer::Explode(CGameObjectCollection& debris)
 		pFlak->m_fLargestSize = 4;
 		pFlak->m_bFade = true;//bDieOff;
 
-		pFlak->m_pos = m_pos;
-		pFlak->m_orient = m_orient;
+		pFlak->Position = Position;
+		pFlak->Orientation = Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
@@ -188,15 +188,15 @@ void Defcon::CSwarmer::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->m_orient.fwd = m_inertia;
+		pFlak->Orientation.fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->m_orient.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->m_orient.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

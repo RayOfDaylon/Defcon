@@ -82,7 +82,7 @@ void Defcon::CFlightTrainingMission::DoMakeTargets(float fElapsed)
 
 		p->InstallSprite();
 
-		p->m_pos.Set(
+		p->Position.Set(
 			MAP(i, 0, 6, gpArena->GetDisplayWidth()*.66f, gpArena->GetWidth() * 0.9f),
 			SFRAND * 0.33f * gpArena->GetHeight() + gpArena->GetHeight() / 2);
 
@@ -97,15 +97,15 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float fElapsed)
 
 	while(ObjPtr != nullptr)
 	{
-		if(ObjPtr->GetType() == ObjType::BEACON)
+		if(ObjPtr->GetType() == EObjType::BEACON)
 		{
 			auto BeaconPtr = static_cast<CBeacon*>(ObjPtr);
 			CFRect rPlayer, rBeacon;
 
-			rPlayer.Set(gpArena->GetPlayerShip().m_pos);
-			rPlayer.Inflate(gpArena->GetPlayerShip().m_bboxrad);
-			rBeacon.Set(BeaconPtr->m_pos);
-			rBeacon.Inflate(BeaconPtr->m_bboxrad);
+			rPlayer.Set(gpArena->GetPlayerShip().Position);
+			rPlayer.Inflate(gpArena->GetPlayerShip().BboxRadius);
+			rBeacon.Set(BeaconPtr->Position);
+			rBeacon.Inflate(BeaconPtr->BboxRadius);
 		
 			if(rPlayer.Intersect(rBeacon))
 			{
@@ -113,7 +113,7 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float fElapsed)
 				ObjPtr->UninstallSprite();
 				gpArena->GetObjects().Delete(ObjPtr);
 
-				const int32 TargetsLeft = gpArena->GetObjects().CountOf(ObjType::BEACON);
+				const int32 TargetsLeft = gpArena->GetObjects().CountOf(EObjType::BEACON);
 
 				// Show message.
 				FString Str;
@@ -143,6 +143,6 @@ bool Defcon::CFlightTrainingMission::AreAllTargetsHit(float fElapsed)
 {
 	this->CheckTargetHit(fElapsed);
 
-	return (gpArena->GetObjects().Find(ObjType::BEACON, nullptr) == nullptr);
+	return (gpArena->GetObjects().Find(EObjType::BEACON, nullptr) == nullptr);
 }
 

@@ -23,23 +23,23 @@
 
 Defcon::CSpacehum::CSpacehum()
 {
-	m_parentType = m_type;
-	m_type = ObjType::SPACEHUM;
-	m_pointValue = SPACEHUM_VALUE;
-	m_orient.fwd.Set(1.0f, 0.0f);
-	m_smallColor = C_LIGHT;
+	ParentType = Type;
+	Type = EObjType::SPACEHUM;
+	PointValue = SPACEHUM_VALUE;
+	Orientation.fwd.Set(1.0f, 0.0f);
+	RadarColor = C_LIGHT;
 
-	m_fAnimSpeed = FRAND * 0.05f + 0.15f;
-	m_bCanBeInjured = true;
-	m_bIsCollisionInjurious = true;
+	AnimSpeed = FRAND * 0.05f + 0.15f;
+	bCanBeInjured = true;
+	bIsCollisionInjurious = true;
 	m_fBrightness = FRANDRANGE(0.9f, 1.0f);
 
 	m_fSpeed = (float)gDefconGameInstance->GetScore() / 250;
 	m_fSpeed *= FRANDRANGE(0.9f, 1.33f);
 
-	CreateSprite(m_type);
-	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	CreateSprite(Type);
+	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 
@@ -57,27 +57,27 @@ void Defcon::CSpacehum::Move(float fTime)
 	// Just float around drifting horizontally.
 
 	CEnemy::Move(fTime);
-	m_inertia = m_pos;
+	Inertia = Position;
 
 	CPlayer* pTarget = &gpArena->GetPlayerShip();
 
 	if(pTarget->IsAlive())
 	{
-		gpArena->Direction(m_pos, pTarget->m_pos, m_orient.fwd);
+		gpArena->Direction(Position, pTarget->Position, Orientation.fwd);
 		CFPoint budge((float)sin(FRAND * PI * 2), (float)cos(FRAND * PI * 2));
 
-		if(m_fAge < 2.0f)
+		if(Age < 2.0f)
 		{
 			budge.x *= 0.1f;
-			m_orient.fwd.x *= 0.1f;
+			Orientation.fwd.x *= 0.1f;
 		}
 
 		budge *= SFRAND * 200.0f * fTime;
-		m_pos.MulAdd(m_orient.fwd, fTime * m_fSpeed);
-		m_pos += budge;
+		Position.MulAdd(Orientation.fwd, fTime * m_fSpeed);
+		Position += budge;
 	}
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 }
 
 
@@ -90,8 +90,8 @@ void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 {
 	const int cby = CGameColors::gray;
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	for(int32 i = 0; i < 10; i++)
@@ -101,8 +101,8 @@ void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 		pFlak->m_fLargestSize = 4;
 		pFlak->m_bFade = true;//bDieOff;
 
-		pFlak->m_pos = m_pos;
-		pFlak->m_orient = m_orient;
+		pFlak->Position = Position;
+		pFlak->Orientation = Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
@@ -110,15 +110,15 @@ void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->m_orient.fwd = m_inertia;
+		pFlak->Orientation.fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->m_orient.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->m_orient.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

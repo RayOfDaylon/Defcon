@@ -39,9 +39,9 @@ const float MaxTerrainLineLength = 120.0f;
 
 Defcon::CTerrain::CTerrain()
 {
-	m_fAge          = 0.0f;
-	m_bMortal       = false;
-	m_bCanBeInjured = false;
+	Age          = 0.0f;
+	bMortal       = false;
+	bCanBeInjured = false;
 	m_width         = m_maxheight = 0;
 	m_firsttime     = true;
 	m_deltas        = nullptr;
@@ -201,7 +201,7 @@ float Defcon::CTerrain::GetElev(float x) const
 
 void Defcon::CTerrain::Move(float f)
 {
-	m_fAge += f;
+	Age += f;
 }
 
 

@@ -31,8 +31,8 @@ namespace Defcon
 			virtual void	Init				() override;
 			virtual bool	Update				(float);
 			virtual void	MakeTargets			(float, const CFPoint&) = 0;
-			virtual void	HostileDestroyed	(ObjType Kind) { NumHostilesRemaining--; if(Kind == ObjType::LANDER) { NumLandersRemaining--; } }
-			virtual void	AddNonMissionTarget	(ObjType, const CFPoint&);
+			virtual void	HostileDestroyed	(EObjType Kind) { NumHostilesRemaining--; if(Kind == EObjType::LANDER) { NumLandersRemaining--; } }
+			virtual void	AddNonMissionTarget	(EObjType, const CFPoint&);
 			virtual bool	IsCompleted			() const override { return (HostilesRemaining() == 0); }
 			virtual int32	HostilesRemaining	() const;
 			virtual int32	HostilesInPlay		() const;
@@ -226,28 +226,28 @@ namespace Defcon
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
 
-			TArray<ObjType> ChosenEnemyTypes;
+			TArray<EObjType> ChosenEnemyTypes;
 
 			int32 IdxEnemyTypes = 0;
 
 
-			ObjType EnemyTypes[15] = 
+			EObjType EnemyTypes[15] = 
 			{
-				ObjType::LANDER,
-				ObjType::LANDER,
-				ObjType::LANDER,
-				ObjType::HUNTER,
-				ObjType::GUPPY,
-				ObjType::GUPPY,
-				ObjType::BOMBER,
-				ObjType::POD,
-				ObjType::SWARMER,
-				ObjType::FIREBOMBER_TRUE,
-				ObjType::FIREBOMBER_WEAK,
-				ObjType::DYNAMO,
-				ObjType::DYNAMO,
-				ObjType::REFORMER,
-				ObjType::GHOST
+				EObjType::LANDER,
+				EObjType::LANDER,
+				EObjType::LANDER,
+				EObjType::HUNTER,
+				EObjType::GUPPY,
+				EObjType::GUPPY,
+				EObjType::BOMBER,
+				EObjType::POD,
+				EObjType::SWARMER,
+				EObjType::FIREBOMBER_TRUE,
+				EObjType::FIREBOMBER_WEAK,
+				EObjType::DYNAMO,
+				EObjType::DYNAMO,
+				EObjType::REFORMER,
+				EObjType::GHOST
 			};
 	};
 
@@ -432,8 +432,8 @@ namespace Defcon
 			float y;	\
 			switch(waves[i].type)	\
 			{	\
-				case ObjType::LANDER:	\
-				case ObjType::BOUNCER:	\
+				case EObjType::LANDER:	\
+				case EObjType::BOUNCER:	\
 					y = FRANDRANGE(0.85f, 1.0f);	\
 					break;	\
 					\

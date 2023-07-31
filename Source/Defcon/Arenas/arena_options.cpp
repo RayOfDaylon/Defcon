@@ -164,7 +164,7 @@ void Defcon::COptionsArena::Init
 	m_eState = State::viewing;
 	m_bLaunching = false;
 	m_fLaunchAge = 0.0f;
-	m_fAge = 0.0f;
+	Age = 0.0f;
 	m_topItem = 0;
 
 	m_pParams = &(Defcon::ArenaParams&)params;
@@ -332,8 +332,8 @@ void Defcon::COptionsArena::OnDisplaySizeChanged(int32 w , int32 h)
 	// Set up item text displayers.
 	for(i = 0; i < array_size(m_items); i++)
 	{
-		m_items[i].m_pos.Set(textleft, texttop + i * leading);
-		m_values[i].m_pos.Set(m_valueLeft, m_items[i].m_pos.y);
+		m_items[i].Position.Set(textleft, texttop + i * leading);
+		m_values[i].Position.Set(m_valueLeft, m_items[i].Position.y);
 	}
 
 	m_box.Set(w/2, h/2 - leading/4);
@@ -341,10 +341,10 @@ void Defcon::COptionsArena::OnDisplaySizeChanged(int32 w , int32 h)
 		CFPoint(0.5f*w - textleft+100, 
 		leading + 0.5f * array_size(m_items) * leading));
 
-	m_title.m_pos.set(w/2, m_items[0].m_pos.y - leading * 3);
+	m_title.Position.set(w/2, m_items[0].Position.y - leading * 3);
 
-	m_desc.m_pos.Set(
-		w/2, m_items[array_size(m_items)-1].m_pos.y + leading * 3);
+	m_desc.Position.Set(
+		w/2, m_items[array_size(m_items)-1].Position.y + leading * 3);
 
 	if(m_eState == State::editing)
 	{
@@ -355,8 +355,8 @@ void Defcon::COptionsArena::OnDisplaySizeChanged(int32 w , int32 h)
 		{
 			case type_int:
 			case type_float:
-				m_slider.m_pos.Set(m_valueLeft + SLIDER_LEN/2, 
-					m_items[i].m_pos.y - 
+				m_slider.Position.Set(m_valueLeft + SLIDER_LEN/2, 
+					m_items[i].Position.y - 
 					(1.25f * m_items[i].GetLeading()));
 				break;
 		}
@@ -409,7 +409,7 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 	if(fElapsedTime == 0)
 		return;
 
-	m_fAge += fElapsedTime;
+	Age += fElapsedTime;
 
 
 	// Move and draw our objects.
@@ -442,7 +442,7 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 	}
 	else
 	{
-		float t = fabs(sin(m_fAge * PI*2));
+		float t = fabs(sin(Age * PI*2));
 		FLinearColor c = MakeBlendedColor(C_SELECTEDDARK, C_SELECTED, t);
 		m_items[itemid].SetColor(c);
 		c = MakeBlendedColor(C_SELECTEDDARK, C_SELECTEDVALUE, t);
@@ -495,7 +495,7 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 
 		CFRect r;
 		int32 i = sCurrentItem_arena_optons - m_topItem;
-		r.UR = r.LL = m_items[i].m_pos;
+		r.UR = r.LL = m_items[i].Position;
 		r.UR += CFPoint(-20, -(int)m_items[i].GetLeading()*2);
 		r.LL += CFPoint(540, 10);
 		r.order();
@@ -509,8 +509,8 @@ void Defcon::COptionsArena::Update(float fElapsedTime)
 		m_values[i].SetColor(C_WHITE);
 		m_values[i].Draw(m_virtualScreen, m_coordMapper);
 
-		m_edittitle.m_pos = m_items[i].m_pos;
-		m_edittitle.m_pos.y -= m_items[i].GetLeading();
+		m_edittitle.Position = m_items[i].Position;
+		m_edittitle.Position.y -= m_items[i].GetLeading();
 		m_edittitle.Draw(m_virtualScreen, m_coordMapper);
 
 		if(m_pEditor != nullptr)
@@ -686,8 +686,8 @@ void Defcon::COptionsArena::StartEditing()
 				var.m_fValue, 
 				var.m_metadata.m_fMin,
 				var.m_metadata.m_fMax, fInc, fPage);
-			m_slider.m_pos.Set(m_valueLeft + SLIDER_LEN/2, 
-						m_items[i].m_pos.y - (1.25f * m_items[i].GetLeading()));
+			m_slider.Position.Set(m_valueLeft + SLIDER_LEN/2, 
+						m_items[i].Position.y - (1.25f * m_items[i].GetLeading()));
 
 			m_pEditor = &m_slider;
 		}

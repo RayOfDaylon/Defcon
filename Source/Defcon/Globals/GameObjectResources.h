@@ -33,10 +33,10 @@ struct FGameObjectResources
 	FSlateBrush*   DebrisBrushRoundPtr    = nullptr;
 	FSlateBrush*   DebrisBrushSquarePtr   = nullptr;
 
-	TMap<Defcon::ObjType, FGameObjectInfo> Data;
+	TMap<Defcon::EObjType, FGameObjectInfo> Data;
 
-	void                    Add  (Defcon::ObjType Kind, const FGameObjectInfo& Info);
-	const FGameObjectInfo&  Get  (Defcon::ObjType Kind) const;
+	void                    Add  (Defcon::EObjType Kind, const FGameObjectInfo& Info);
+	const FGameObjectInfo&  Get  (Defcon::EObjType Kind) const;
 };
 
 

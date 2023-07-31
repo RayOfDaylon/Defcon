@@ -23,9 +23,9 @@ void Defcon::CFirebomberShowdown::Init()
 		"Engage enemy forces and eliminate them.\n"
 		;
 
-	AddEnemySpawnInfo({ ObjType::FIREBOMBER_TRUE, { 3, 3, 0, 0 } });
-	AddEnemySpawnInfo({ ObjType::FIREBOMBER_WEAK, { 3, 3, 0, 0 } });
-	AddEnemySpawnInfo({ ObjType::DYNAMO,          { 3, 3, 0, 0 } });
+	AddEnemySpawnInfo({ EObjType::FIREBOMBER_TRUE, { 3, 3, 0, 0 } });
+	AddEnemySpawnInfo({ EObjType::FIREBOMBER_WEAK, { 3, 3, 0, 0 } });
+	AddEnemySpawnInfo({ EObjType::DYNAMO,          { 3, 3, 0, 0 } });
 }
 
 

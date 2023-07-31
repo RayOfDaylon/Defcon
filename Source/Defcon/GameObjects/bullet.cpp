@@ -19,15 +19,15 @@
 
 Defcon::IBullet::IBullet()
 {
-	m_parentType = m_type;
-	m_type = ObjType::BULLET;
-	m_bInjurious = true;
-	m_bCanBeInjured = false;
+	ParentType = Type;
+	Type = EObjType::BULLET;
+	bInjurious = true;
+	bCanBeInjured = false;
 
-	m_smallColor.A = 0.0f;
+	RadarColor.A = 0.0f;
 	m_color = MakeColorFromComponents(255, 255, 255);
-	m_bMortal = true;
-	m_fOrgLifespan = m_fLifespan = FRANDRANGE(MIN_BULLETAGE, MAX_BULLETAGE);
+	bMortal = true;
+	m_fOrgLifespan = Lifespan = FRANDRANGE(MIN_BULLETAGE, MAX_BULLETAGE);
 	m_fRadius = 5;
 	m_fSpeed = FRAND * 300 + 352;
 }
@@ -42,7 +42,7 @@ void Defcon::IBullet::Move(float fTime)
 	}
 
 	// Self-destruct if we pass out of the vertical bounds.
-	if(m_pos.y < 0 || m_pos.y > gpArena->GetHeight())
+	if(Position.y < 0 || Position.y > gpArena->GetHeight())
 	{
 		this->MarkAsDead();
 	}
@@ -52,40 +52,40 @@ void Defcon::IBullet::Move(float fTime)
 	// it could do that in a single frame, so if we use xpos here we have to wrap it.
 	if(BULLETS_HIT_TERRAIN)
 	{
-		WRAP(m_pos.x, 0, gpArena->GetWidth());
-		check(m_pos.x >= 0.0f && m_pos.x < gpArena->GetWidth());
-		if(m_pos.y <= gpArena->GetTerrainElev(m_pos.x))
+		WRAP(Position.x, 0, gpArena->GetWidth());
+		check(Position.x >= 0.0f && Position.x < gpArena->GetWidth());
+		if(Position.y <= gpArena->GetTerrainElev(Position.x))
 		{
 			this->MarkAsDead();
 		}
 	}
 
-	m_pos.MulAdd(m_orient.fwd, fTime * m_fSpeed);
+	Position.MulAdd(Orientation.fwd, fTime * m_fSpeed);
 }
 
 
 void Defcon::IBullet::GetInjurePt(CFPoint& pt) const
 {
-	pt = m_pos;
+	pt = Position;
 }
 
 
 bool Defcon::IBullet::TestInjury(const CFRect& r) const
 {
-	return r.PtInside(m_pos);
+	return r.PtInside(Position);
 }
 
 // ------------------------------------------------------------------
 
 Defcon::CBullet::CBullet()
 {
-	m_parentType = m_type;
-	m_type = ObjType::BULLET_ROUND;
+	ParentType = Type;
+	Type = EObjType::BULLET_ROUND;
 
-	CreateSprite(m_type);
+	CreateSprite(Type);
 	Sprite->IsStatic = true;
 
-	NumSpriteCels = GameObjectResources.Get(m_type).Atlas->Atlas.NumCels;
+	NumSpriteCels = GameObjectResources.Get(Type).Atlas->Atlas.NumCels;
 }
 
 
@@ -102,13 +102,13 @@ const char* Defcon::CBullet::GetClassname() const
 
 Defcon::CThinBullet::CThinBullet()
 {
-	m_parentType = m_type;
-	m_type = ObjType::BULLET_THIN;
+	ParentType = Type;
+	Type = EObjType::BULLET_THIN;
 
-	CreateSprite(m_type);
+	CreateSprite(Type);
 	Sprite->IsStatic = true;
 
-	NumSpriteCels = GameObjectResources.Get(m_type).Atlas->Atlas.NumCels;
+	NumSpriteCels = GameObjectResources.Get(Type).Atlas->Atlas.NumCels;
 }
 
 

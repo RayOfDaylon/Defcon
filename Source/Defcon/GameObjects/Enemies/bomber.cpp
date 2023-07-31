@@ -39,18 +39,18 @@ Defcon::CBomber::CBomber()
 	m_freq(2.0f),
 	m_xFreq(1.0f)
 {
-	m_parentType = m_type;
-	m_type = ObjType::BOMBER;
-	m_pointValue = BOMBER_VALUE;
-	m_orient.fwd.Set(1.0f, 0.0f);
-	m_smallColor = MakeColorFromComponents(64, 0, 255);
+	ParentType = Type;
+	Type = EObjType::BOMBER;
+	PointValue = BOMBER_VALUE;
+	Orientation.fwd.Set(1.0f, 0.0f);
+	RadarColor = MakeColorFromComponents(64, 0, 255);
 	
-	m_fAnimSpeed = FRAND * 0.35f + 0.15f;
+	AnimSpeed = FRAND * 0.35f + 0.15f;
 	m_xFreq = FRAND * 0.5f + 1.0f;
 
-	CreateSprite(m_type);
-	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	CreateSprite(Type);
+	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 
 	m_secondsPerPath = Daylon::FRandRange(SECONDS_PER_PATH_MIN, SECONDS_PER_PATH_MAX);
 }
@@ -71,27 +71,27 @@ void Defcon::CBomber::OnFinishedCreating()
 {
 	Super::OnFinishedCreating();
 
-	if(m_orient.fwd.x < 0)
+	if(Orientation.fwd.x < 0)
 	{
 		// Use left-facing texture atlas.
-		const auto& SpriteInfo = GameObjectResources.Get(ObjType::BOMBER_LEFT);
+		const auto& SpriteInfo = GameObjectResources.Get(EObjType::BOMBER_LEFT);
 		Sprite->SetAtlas(SpriteInfo.Atlas->Atlas);
 	}
 
 
-	m_posPrev = m_pos;
+	m_posPrev = Position;
 
 	float VDir = SBRAND;
 
 	// Make a spline we will march along
 
-	m_currentPath.m_pt[0] = m_pos;
+	m_currentPath.m_pt[0] = Position;
 
-	m_currentPath.m_pt[3] = m_pos + CFPoint(m_orient.fwd.x * Daylon::FRandRange(SPLINE_WIDTH_MIN, SPLINE_WIDTH_MAX), VDir * (float)Daylon::FRandRange(m_arenasize.y / 5, m_arenasize.y / 2));
-	m_currentPath.m_pt[3].y = CLAMP(m_currentPath.m_pt[3].y, 0.0f, m_arenasize.y);
+	m_currentPath.m_pt[3] = Position + CFPoint(Orientation.fwd.x * Daylon::FRandRange(SPLINE_WIDTH_MIN, SPLINE_WIDTH_MAX), VDir * (float)Daylon::FRandRange(ArenaSize.y / 5, ArenaSize.y / 2));
+	m_currentPath.m_pt[3].y = CLAMP(m_currentPath.m_pt[3].y, 0.0f, ArenaSize.y);
 
 	// If we make the control points meet up x-wise, the curve will mimic a sine wave.
-	m_currentPath.m_pt[1] = CFPoint((m_pos.x + m_currentPath.m_pt[3].x) / 2, m_pos.y); 
+	m_currentPath.m_pt[1] = CFPoint((Position.x + m_currentPath.m_pt[3].x) / 2, Position.y); 
 	m_currentPath.m_pt[2] = CFPoint(m_currentPath.m_pt[1].x, m_currentPath.m_pt[3].y); 
 }
 
@@ -101,11 +101,11 @@ void Defcon::CBomber::Move(float fTime)
 	// Move in slightly perturbed sine wave pattern.
 
 	// Our explosions looked bad near the world origin because
-	// although we don't wrap m_pos.x here, it does get wrapped 
+	// although we don't wrap Position.x here, it does get wrapped 
 	// during object processing right after Move(), and then 
-	// our default m_inertia = m_pos, m_pos = new pos,  m_inertia = m_pos - m_inertia fails because 
-	// we do not increment m_pos, we compute it fresh from our current path which can be an unwrapped version.
-	// This was fixed by tracking m_pos into m_posPrev and basing inertia on their difference,
+	// our default Inertia = Position, Position = new pos,  Inertia = Position - Inertia fails because 
+	// we do not increment Position, we compute it fresh from our current path which can be an unwrapped version.
+	// This was fixed by tracking Position into m_posPrev and basing inertia on their difference,
 	// thus keeping the computation always in unwrapped space.
 
 	CEnemy::Move(fTime);
@@ -117,14 +117,14 @@ void Defcon::CBomber::Move(float fTime)
 			m_fLayingMines -= fTime;
 			if(FRAND < 0.2f)
 			{
-				gpArena->LayMine(*this, m_pos, 1, 1);
+				gpArena->LayMine(*this, Position, 1, 1);
 			}
 		}
 		else if(
 			FRAND <= 0.01f 
 			&& this->CanBeInjured()
-			&& gpArena->IsPointVisible(m_pos)
-			&& SGN(m_orient.fwd.x) == SGN(gpArena->GetPlayerShip().m_orient.fwd.x))
+			&& gpArena->IsPointVisible(Position)
+			&& SGN(Orientation.fwd.x) == SGN(gpArena->GetPlayerShip().Orientation.fwd.x))
 		{
 			m_fLayingMines = FRAND * .15f + 0.33f;
 		}
@@ -136,7 +136,7 @@ void Defcon::CBomber::Move(float fTime)
 
 	T = CLAMP(T, 0.0f, 1.0f);
 
-	m_currentPath.CalcPt(T, m_pos);
+	m_currentPath.CalcPt(T, Position);
 
 	m_pathTravelTime += fTime;
 
@@ -153,36 +153,36 @@ void Defcon::CBomber::Move(float fTime)
 
 		m_currentPath.m_pt[0] = m_currentPath.m_pt[3];
 
-		m_currentPath.m_pt[3] = m_currentPath.m_pt[0] + CFPoint(m_orient.fwd.x * Daylon::FRandRange(SPLINE_WIDTH_MIN, SPLINE_WIDTH_MAX), VDir * (float)Daylon::FRandRange(m_arenasize.y / 5, m_arenasize.y / 2));
-		m_currentPath.m_pt[3].y = CLAMP(m_currentPath.m_pt[3].y, 0.0f, m_arenasize.y);
+		m_currentPath.m_pt[3] = m_currentPath.m_pt[0] + CFPoint(Orientation.fwd.x * Daylon::FRandRange(SPLINE_WIDTH_MIN, SPLINE_WIDTH_MAX), VDir * (float)Daylon::FRandRange(ArenaSize.y / 5, ArenaSize.y / 2));
+		m_currentPath.m_pt[3].y = CLAMP(m_currentPath.m_pt[3].y, 0.0f, ArenaSize.y);
 
 		// If we make the control points meet up x-wise, the curve will mimic a sine wave.
-		m_currentPath.m_pt[1] = CFPoint((m_currentPath.m_pt[0].x + m_currentPath.m_pt[3].x) / 2, m_pos.y); 
+		m_currentPath.m_pt[1] = CFPoint((m_currentPath.m_pt[0].x + m_currentPath.m_pt[3].x) / 2, Position.y); 
 		m_currentPath.m_pt[2] = CFPoint(m_currentPath.m_pt[1].x, m_currentPath.m_pt[3].y); 
 	}
 
 #if 0
-	m_amp = LERP(0.33f, 1.0f, PSIN(m_yoff + m_fAge)) * 0.5f * m_screensize.y;
-	m_halfwayAltitude = sinf((m_yoff + m_fAge) * 0.6f) * 50 + (0.5f * m_screensize.y);
+	m_amp = LERP(0.33f, 1.0f, PSIN(m_yoff + Age)) * 0.5f * ScreenSize.y;
+	m_halfwayAltitude = sinf((m_yoff + Age) * 0.6f) * 50 + (0.5f * ScreenSize.y);
 
-	//m_pos.x += m_orient.fwd.x * m_xFreq * fTime * m_screensize.x * + (FRAND * .05f + 0.25f);
-	//m_pos.y = (float)sin(m_freq * (m_yoff + m_fAge + fTime)) * m_screensize.y * 0.4f + m_screensize.y * 0.5f;
+	//Position.x += Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * + (FRAND * .05f + 0.25f);
+	//Position.y = (float)sin(m_freq * (m_yoff + Age + fTime)) * ScreenSize.y * 0.4f + ScreenSize.y * 0.5f;
 
-	//const float xinc = m_orient.fwd.x * m_xFreq * fTime * m_screensize.x * + (FRAND * .05f + 0.25f);
+	//const float xinc = Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * + (FRAND * .05f + 0.25f);
 
-	const float y = sinf(m_freq * (m_yoff + m_fAge)) * m_amp + m_halfwayAltitude;
+	const float y = sinf(m_freq * (m_yoff + Age)) * m_amp + m_halfwayAltitude;
 
 	// Don't start moving until we're close enough to our desired position.
 	if(ABS(y - m_orgY) < 10.0f)
 	{
-		m_pos.x += m_orient.fwd.x * m_xFreq * fTime * m_screensize.x * + (FRAND * .05f + 0.25f);
-		m_pos.y = y;
-		m_orgY = m_pos.y; // Force all subsequent comparisons to succeed so we keep moving.
+		Position.x += Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * + (FRAND * .05f + 0.25f);
+		Position.y = y;
+		m_orgY = Position.y; // Force all subsequent comparisons to succeed so we keep moving.
 	}
 #endif
 
-	m_inertia = m_pos - m_posPrev;
-	m_posPrev = m_pos;
+	Inertia = Position - m_posPrev;
+	m_posPrev = Position;
 }
 
 

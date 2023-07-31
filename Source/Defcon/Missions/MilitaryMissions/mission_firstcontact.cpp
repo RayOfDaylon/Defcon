@@ -30,7 +30,7 @@ void Defcon::CFirstContactMission::Init()
 		"Engage enemy forces and eliminate them."
 	;
 
-	AddEnemySpawnInfo({ObjType::LANDER, { 4, 3, 2, 0 }});
+	AddEnemySpawnInfo({EObjType::LANDER, { 4, 3, 2, 0 }});
 }
 
 

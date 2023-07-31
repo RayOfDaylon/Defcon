@@ -14,7 +14,7 @@ namespace Defcon
 			CLander();
 			virtual ~CLander();
 
-			virtual void Notify(Defcon::Message, void*);
+			virtual void Notify(Defcon::EMessage, void*);
 
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;

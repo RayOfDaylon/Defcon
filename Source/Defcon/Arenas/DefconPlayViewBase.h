@@ -102,7 +102,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	void OnPlayerShipDestroyed  ();
 	void DestroyPlayerShip      ();
 
-	void SpecializeMaterialization(Defcon::FMaterializationParams& Params, Defcon::ObjType ObjectType);
+	void SpecializeMaterialization(Defcon::FMaterializationParams& Params, Defcon::EObjType ObjectType);
 
 
 	// todo: do we need these?
@@ -189,10 +189,10 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	bool                 IsEnding             () const { return m_bArenaDying; }
 	void                 ExplodeObject        (Defcon::IGameObject* pObj);
 	void                 IncreaseScore        (int32 Points, bool bVis, const CFPoint* pPos);
-	void                 CreateEnemy          (Defcon::ObjType kind, const CFPoint& where, float When, bool bMaterializes, bool bTarget);
-	Defcon::CEnemy*      CreateEnemyNow       (Defcon::ObjType kind, const CFPoint& where, bool bMaterializes, bool bTarget);
+	void                 CreateEnemy          (Defcon::EObjType kind, const CFPoint& where, float When, bool bMaterializes, bool bTarget);
+	Defcon::CEnemy*      CreateEnemyNow       (Defcon::EObjType kind, const CFPoint& where, bool bMaterializes, bool bTarget);
 	Defcon::IGameObject* FindHuman            (float x) const;
-	Defcon::IGameObject* FindEnemy            (Defcon::ObjType t, Defcon::IGameObject* p = nullptr) const { return m_enemies.Find(t, p); }
+	Defcon::IGameObject* FindEnemy            (Defcon::EObjType t, Defcon::IGameObject* p = nullptr) const { return m_enemies.Find(t, p); }
 	void                 CheckIfObjectsGotHit (Defcon::CGameObjectCollection& Objects);
 	void                 ShieldBonk           (Defcon::IGameObject* pObj, float Force);
 	void                 ProcessWeaponsHits   ();

@@ -46,9 +46,9 @@ void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 
 		/*const Wave waves[] =
 		{
-			{ ObjType::FIREBOMBER_TRUE, { 10, 3, 0, 0 } },
-			{ ObjType::FIREBOMBER_WEAK, { 10, 3, 0, 0 } },
-			{ ObjType::DYNAMO,          { 10, 5, 0, 0 } }
+			{ EObjType::FIREBOMBER_TRUE, { 10, 3, 0, 0 } },
+			{ EObjType::FIREBOMBER_WEAK, { 10, 3, 0, 0 } },
+			{ EObjType::DYNAMO,          { 10, 5, 0, 0 } }
 		};*/
 
 
@@ -61,7 +61,7 @@ void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 			x = (float)fmod(x, wp);
 			float y = FRANDRANGE(0.25f, 0.85f) * gpArena->GetHeight();
 
-			gpArena->CreateEnemy((i & 1) == 1 ? ObjType::FIREBOMBER_TRUE : ObjType::FIREBOMBER_WEAK, 
+			gpArena->CreateEnemy((i & 1) == 1 ? EObjType::FIREBOMBER_TRUE : EObjType::FIREBOMBER_WEAK, 
 					CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), true, true);
 		}
 
@@ -72,7 +72,7 @@ void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 			x = (float)fmod(x, wp);
 			float y = FRANDRANGE(0.25f, 0.85f) * gpArena->GetHeight();
 
-			gpArena->CreateEnemy(ObjType::DYNAMO, CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), true, true);
+			gpArena->CreateEnemy(EObjType::DYNAMO, CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), true, true);
 		}
 		WaveIndex++;
 	}

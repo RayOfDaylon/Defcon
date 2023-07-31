@@ -29,7 +29,7 @@ namespace Defcon
 			virtual ~CEnemy();
 
 			virtual	void	Init					(const CFPoint& ArenaSize, const CFPoint& ScreenSize) override;
-			virtual void	Notify					(Message, void*);
+			virtual void	Notify					(EMessage, void*);
 
 			virtual void	Move					(float);
 			virtual void	Draw					(FPaintArguments&, const I2DCoordMapper&);

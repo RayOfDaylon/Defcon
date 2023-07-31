@@ -86,8 +86,8 @@ void UDefconGameInstance::Init()
 	HumanAtlas          ->Atlas.InitCache();
 	PlayerShipAtlas     ->Atlas.InitCache();
 
-	GameObjectResources.Add(Defcon::ObjType::HUMAN,    { HumanAtlas,      HumanAtlas      ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f });
-	GameObjectResources.Add(Defcon::ObjType::PLAYER,   { PlayerShipAtlas, PlayerShipAtlas ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f } );
+	GameObjectResources.Add(Defcon::EObjType::HUMAN,    { HumanAtlas,      HumanAtlas      ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f });
+	GameObjectResources.Add(Defcon::EObjType::PLAYER,   { PlayerShipAtlas, PlayerShipAtlas ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f } );
 
 	PlayerShipPtr = new Defcon::CPlayer;
 }
@@ -301,7 +301,7 @@ void UDefconGameInstance::OnSpawnEnemy()
 	}
 
 	
-	const FString Str = FString::Printf(TEXT("Spawning lander at player's position %d, %d"), (int32)PlayerShipPtr->m_pos.x, (int32)PlayerShipPtr->m_pos.y);
+	const FString Str = FString::Printf(TEXT("Spawning lander at player's position %d, %d"), (int32)PlayerShipPtr->Position.x, (int32)PlayerShipPtr->Position.y);
 
 	View->AddMessage(Str, 0.5f);
 

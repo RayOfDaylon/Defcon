@@ -28,17 +28,17 @@ Defcon::CPod::CPod()
 	m_freq(2.0f),
 	m_xFreq(1.0f)
 {
-	m_parentType = m_type;
-	m_type = ObjType::POD;
-	m_pointValue = POD_VALUE;
-	m_orient.fwd.Set(1.0f, 0.0f);
-	m_smallColor = C_MAGENTA;
-	m_fAnimSpeed = FRAND * 0.35f + 0.65f;
+	ParentType = Type;
+	Type = EObjType::POD;
+	PointValue = POD_VALUE;
+	Orientation.fwd.Set(1.0f, 0.0f);
+	RadarColor = C_MAGENTA;
+	AnimSpeed = FRAND * 0.35f + 0.65f;
 	m_xFreq = FRAND * 0.5f + 1.0f;
 
-	CreateSprite(m_type);
-	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	CreateSprite(Type);
+	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 
@@ -61,24 +61,24 @@ void Defcon::CPod::Move(float fTime)
 	// Just float around drifting horizontally.
 
 	CEnemy::Move(fTime);
-	m_inertia = m_pos;
+	Inertia = Position;
 
-	//UE_LOG(LogGame, Log, TEXT("%S: Pod is at %d, %d"), __FUNCTION__, (int32)m_pos.x, (int32)m_pos.y);
+	//UE_LOG(LogGame, Log, TEXT("%S: Pod is at %d, %d"), __FUNCTION__, (int32)Position.x, (int32)Position.y);
 
-	m_orient.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + m_fAge)); 
+	Orientation.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
 
 	// Cause radar blip to blink
-	//float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
-	float f = 0.5f * (sin(m_fAge * PI * 2) + 1.0f);
+	//float f = (float)fmod(Age, AnimSpeed) / AnimSpeed;
+	float f = 0.5f * (sin(Age * PI * 2) + 1.0f);
 	//f *= 1;
-	LerpColor(C_RED, C_BLUE, f, m_smallColor);
+	LerpColor(C_RED, C_BLUE, f, RadarColor);
 
 
-	m_pos.MulAdd(m_orient.fwd, fTime * 50.0f);
+	Position.MulAdd(Orientation.fwd, fTime * 50.0f);
 
-	//UE_LOG(LogGame, Log, TEXT("%S: Pod now at %d, %d"), __FUNCTION__, (int32)m_pos.x, (int32)m_pos.y);
+	//UE_LOG(LogGame, Log, TEXT("%S: Pod now at %d, %d"), __FUNCTION__, (int32)Position.x, (int32)Position.y);
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 }
 
 
@@ -93,7 +93,7 @@ void Defcon::CPod::OnAboutToDie()
 
 	for(int32 i = 0; i < SWARMERS_PER_POD; i++)
 	{
-		gpArena->CreateEnemy(ObjType::SWARMER, m_pos, 0.0f, false, false);
+		gpArena->CreateEnemy(EObjType::SWARMER, Position, 0.0f, false, false);
 	}
 }
 
@@ -104,8 +104,8 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 	// but in a pod intersection, even more so because 
 	// all the swarmers are biting it.
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	int n = (int)(FRAND * 30 + 30);
@@ -137,8 +137,8 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 		pFlak->m_bFade = bDieOff;
 		pFlak->m_bCold = true;
 
-		pFlak->m_pos = m_pos;
-		pFlak->m_orient = m_orient;
+		pFlak->Position = Position;
+		pFlak->Orientation = Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
@@ -146,17 +146,17 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->m_orient.fwd = m_inertia;
+		pFlak->Orientation.fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->m_orient.fwd *= FRAND * 12.0f + 30.0f;
+		pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
 		// Make the particle have a velocity vector
 		// as if it were standing still.
 		float speed = FRAND * 180 + 90;
 
 
-		pFlak->m_orient.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -176,23 +176,23 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 			pFlak->m_eColorbaseOld = cby;
 			pFlak->m_fLargestSize = maxsize;
 			pFlak->m_bFade = bDieOff;
-			pFlak->m_bDrawSmall = false;
+			//pFlak->bDrawsOnRadar = false;
 			pFlak->m_bCold = true;
 
-			pFlak->m_pos = m_pos;
-			pFlak->m_orient = m_orient;
+			pFlak->Position = Position;
+			pFlak->Orientation = Orientation;
 
 			CFPoint dir;
 			double t = FRAND * TWO_PI;
 			
 			dir.Set((float)cos(t), (float)sin(t));
 
-			pFlak->m_orient.fwd = m_inertia;
+			pFlak->Orientation.fwd = Inertia;
 
-			pFlak->m_orient.fwd *= FRAND * 12.0f + 30.0f;
+			pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
 			float speed = FRAND * 45 + 22;
 
-			pFlak->m_orient.fwd.MulAdd(dir, speed);
+			pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 			debris.Add(pFlak);
 		}

@@ -22,9 +22,9 @@
 
 Defcon::CHunter::CHunter()
 {
-	m_parentType = m_type;
-	m_type = ObjType::HUNTER;
-	m_pointValue = HUNTER_VALUE;
+	ParentType = Type;
+	Type = EObjType::HUNTER;
+	PointValue = HUNTER_VALUE;
 	m_eState = lounging;
 	m_pTarget = nullptr;
 	float speed = FRANDRANGE(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX);
@@ -32,18 +32,18 @@ Defcon::CHunter::CHunter()
 	{
 		speed *= -1;
 	}
-	m_orient.fwd.Set(speed, 0);
+	Orientation.fwd.Set(speed, 0);
 	m_personalSpace = FRAND * 60 + 20;
-	m_smallColor = C_ORANGE;
-	//m_bboxrad.Set(15, 15);
-	m_fAnimSpeed = FRAND * 0.6f + 0.4f;
+	RadarColor = C_ORANGE;
+	//BboxRadius.Set(15, 15);
+	AnimSpeed = FRAND * 0.6f + 0.4f;
 	m_fBrightness = 1.0f;
 	m_fTimeTargetWithinRange = 0.0f;
 	m_amp = FRANDRANGE(0.33f, 0.9f);
 
-	CreateSprite(m_type);
-	const auto& Info = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(Info.Size.X / 2, Info.Size.Y / 2);
+	CreateSprite(Type);
+	const auto& Info = GameObjectResources.Get(Type);
+	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 
 
@@ -66,23 +66,17 @@ const char* Defcon::CHunter::GetClassname() const
 #endif
 
 
-void Defcon::CHunter::Notify(Defcon::Message msg, void* pObj)
-{
-	CEnemy::Notify(msg, pObj);
-}
-
-
 void Defcon::CHunter::Move(float fTime)
 {
 	CEnemy::Move(fTime);
 
 	// todo: set current sprite cel accordingly.
 	// The left-facing cels are from 0-5, the right-facing cels are from 6-11.
-	//int32 CelBase = m_fAge / 
+	//int32 CelBase = Age / 
 
 	const auto SecondsPerFrame = 1.0f / 15.0f; // assume 15 fps
 
-	//Sprite->SetCurrentCel(m_orient.fwd.x < 0 ? 0 : 6 + ((FMath::RoundToInt(m_fAge / SecondsPerFrame)) % 6) /* numcels/2*/);
+	//Sprite->SetCurrentCel(Orientation.fwd.x < 0 ? 0 : 6 + ((FMath::RoundToInt(Age / SecondsPerFrame)) % 6) /* numcels/2*/);
 
 	//CurrentAge += DeltaTime;
 
@@ -97,7 +91,7 @@ void Defcon::CHunter::Move(float fTime)
 
 	// Move towards target.
 
-	m_inertia = m_pos;
+	Inertia = Position;
 	
 	IGameObject* pTarget = m_pTarget;
 
@@ -105,7 +99,7 @@ void Defcon::CHunter::Move(float fTime)
 		m_fTimeTargetWithinRange = 0.0f;
 	else
 	{
-		const bool bVis = gpArena->IsPointVisible(m_pos);
+		const bool bVis = gpArena->IsPointVisible(Position);
 
 		// Update target-within-range information.
 		if(m_fTimeTargetWithinRange > 0.0f)
@@ -125,7 +119,7 @@ void Defcon::CHunter::Move(float fTime)
 
 				m_targetOffset.Set(
 					FRANDRANGE(-100, 100), 
-					FRANDRANGE(50, 90) * SGN(m_pos.y - pTarget->m_pos.y));
+					FRANDRANGE(50, 90) * SGN(Position.y - pTarget->Position.y));
 				m_freq = FRANDRANGE(6, 12);
 				m_amp = FRANDRANGE(0.33f, 0.9f);
 			}
@@ -143,11 +137,11 @@ void Defcon::CHunter::Move(float fTime)
 			else if(pTarget != nullptr)
 			{
 				CFPoint pt;
-				gpArena->Direction(m_pos, pTarget->m_pos, m_orient.fwd);
+				gpArena->Direction(Position, pTarget->Position, Orientation.fwd);
 
-				//m_orient.fwd.Set(SGN(this->m_targetOffset.y), 0);
-				m_orient.fwd.y += (float)(m_amp * sin(m_fAge * m_freq));
-				m_pos.MulAdd(m_orient.fwd, fTime * HUNTER_SPEEDMIN/2);
+				//Orientation.fwd.Set(SGN(this->m_targetOffset.y), 0);
+				Orientation.fwd.y += (float)(m_amp * sin(Age * m_freq));
+				Position.MulAdd(Orientation.fwd, fTime * HUNTER_SPEEDMIN/2);
 			}
 			break;
 
@@ -156,20 +150,20 @@ void Defcon::CHunter::Move(float fTime)
 		{
 			if(pTarget != nullptr)
 			{
-				float vd = m_pos.y - pTarget->m_pos.y;
-				if(ABS(vd) > m_bboxrad.y || 
-					SGN(pTarget->m_orient.fwd.x) == 
-					SGN(m_orient.fwd.x))
+				float vd = Position.y - pTarget->Position.y;
+				if(ABS(vd) > BboxRadius.y || 
+					SGN(pTarget->Orientation.fwd.x) == 
+					SGN(Orientation.fwd.x))
 					m_eState = fighting;
 				else
 				{
-					m_orient.fwd.y = SGN(vd)*0.5f;
-					//if(m_orient.fwd.y == 0)
-					//	m_orient.fwd.y = SFRAND;
+					Orientation.fwd.y = SGN(vd)*0.5f;
+					//if(Orientation.fwd.y == 0)
+					//	Orientation.fwd.y = SFRAND;
 					CFPoint pt;
-					gpArena->Direction(m_pos, pTarget->m_pos, pt);
-					m_orient.fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
-					m_pos.MulAdd(m_orient.fwd, fTime * AVG(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX));
+					gpArena->Direction(Position, pTarget->Position, pt);
+					Orientation.fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
+					Position.MulAdd(Orientation.fwd, fTime * AVG(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX));
 				}
 			}
 			
@@ -185,11 +179,11 @@ void Defcon::CHunter::Move(float fTime)
 			{
 				check(pTarget != nullptr);
 
-				float dist = gpArena->Direction(m_pos, pTarget->m_pos, m_orient.fwd);
-				float vd = m_pos.y - pTarget->m_pos.y;
-				if(ABS(vd) < m_bboxrad.y
-					&& SGN(pTarget->m_orient.fwd.x) != 
-					SGN(m_orient.fwd.x))
+				float dist = gpArena->Direction(Position, pTarget->Position, Orientation.fwd);
+				float vd = Position.y - pTarget->Position.y;
+				if(ABS(vd) < BboxRadius.y
+					&& SGN(pTarget->Orientation.fwd.x) != 
+					SGN(Orientation.fwd.x))
 				{
 					// We can be hit by player. 
 					// Take evasive action.
@@ -197,8 +191,8 @@ void Defcon::CHunter::Move(float fTime)
 				}
 				else
 				{
-					CFPoint pt = pTarget->m_pos + m_targetOffset;
-					gpArena->Direction(m_pos, pt, m_orient.fwd);
+					CFPoint pt = pTarget->Position + m_targetOffset;
+					gpArena->Direction(Position, pt, Orientation.fwd);
 
 					float speed;
 
@@ -208,13 +202,13 @@ void Defcon::CHunter::Move(float fTime)
 					else
 						speed = MAP(dist, 0.0f, 0.8f, HUNTER_SPEEDMIN, HUNTER_SPEEDMAX);
 
-					m_orient.fwd.y += (float)(m_amp * sin(m_fAge * m_freq));
-					m_pos.MulAdd(m_orient.fwd, fTime * speed);
+					Orientation.fwd.y += (float)(m_amp * sin(Age * m_freq));
+					Position.MulAdd(Orientation.fwd, fTime * speed);
 
 					if(this->CanBeInjured() 
 						&& pTarget->CanBeInjured()
 						&& speed < 400 && FRAND <= 0.07f)
-						gpArena->FireBullet(*this, m_pos, 1, 1);
+						gpArena->FireBullet(*this, Position, 1, 1);
 
 				}
 			}
@@ -222,12 +216,12 @@ void Defcon::CHunter::Move(float fTime)
 			break;
 	} // switch(state)
 
-	Sprite->FlipHorizontal = (m_orient.fwd.x < 0);
+	Sprite->FlipHorizontal = (Orientation.fwd.x < 0);
 
 	// Constrain vertically.
-	m_pos.y = CLAMP(m_pos.y, 0, gpArena->GetHeight());
+	Position.y = CLAMP(Position.y, 0, gpArena->GetHeight());
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 }
 
 

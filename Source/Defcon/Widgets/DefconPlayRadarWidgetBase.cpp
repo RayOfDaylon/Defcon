@@ -82,39 +82,11 @@ void UDefconPlayRadarWidgetBase::DrawObjects(const Defcon::CGameObjectCollection
 	{
 		Object->DrawSmall(const_cast<FPaintArguments&>(PaintArguments), CoordMapper, const_cast<FSlateColorBrush&>(RadarBrush));
 #if 0
-		const auto& ObjColor = Object->GetRadarColor();
-
-		if(ObjColor.A == 0.0f) // todo: use a switch(Object->RadarDrawStyle) { drawDefault, drawNothing, drawCustom } and move draw code below into default DrawSmall method.
-		{
-			return; // todo: should call Object->DrawSmall; if it doesn't draw anything it can just override with an empty implementation.
-		}
-
-		CFPoint pt;
-		CoordMapper.To(Object->m_pos, pt);
-
-		const auto S = FVector2D(9, 9);
-
-#if 0
 		// Quantize location. -- no, makes screen jitter too much unless we quantize coord mapper
 		pt.x = ROUND(pt.x / 9) * 9;
 		pt.y = ROUND(pt.y / 9) * 9;
 #endif
-
-		const FSlateLayoutTransform Translation(FVector2D(pt.x, pt.y) - S / 2);
-
-		const auto Geometry = FrameBuffer.AllottedGeometry->MakeChild(S, Translation);
-
-		FSlateDrawElement::MakeBox(
-			*FrameBuffer.OutDrawElements,
-			FrameBuffer.LayerId,
-			Geometry.ToPaintGeometry(),
-			&RadarBrush,
-			ESlateDrawEffect::None,
-			Object->GetRadarColor() * FrameBuffer.RenderOpacity * FrameBuffer.InWidgetStyle->GetColorAndOpacityTint().A);
-
-#endif
-	}
-	);
+	});
 }
 
 

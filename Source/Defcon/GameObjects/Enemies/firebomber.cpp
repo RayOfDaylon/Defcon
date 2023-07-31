@@ -31,13 +31,13 @@
 
 Defcon::IFirebomber::IFirebomber()
 {
-	m_parentType = m_type;
-	m_type = ObjType::FIREBOMBER;
-	m_pointValue = FIREBOMBER_VALUE;
+	ParentType = Type;
+	Type = EObjType::FIREBOMBER;
+	PointValue = FIREBOMBER_VALUE;
 
-	m_smallColor = C_WHITE;
+	RadarColor = C_WHITE;
 	
-	m_fAnimSpeed = FRAND * 0.05f + 0.12f;
+	AnimSpeed = FRAND * 0.05f + 0.12f;
 	m_bAbsSin = false;
 	m_sgn = 1;
 	m_bWaits = BRAND;
@@ -46,11 +46,11 @@ Defcon::IFirebomber::IFirebomber()
 
 	m_travelCountdown = 1.0f;
 
-	m_orient.fwd.Set(SBRAND, SBRAND);
-	m_ourInertia = m_orient.fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
+	Orientation.fwd.Set(SBRAND, SBRAND);
+	m_ourInertia = Orientation.fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
 
-	const auto& Info = GameObjectResources.Get(ObjType::FIREBOMBER_TRUE);
-	m_bboxrad.Set(Info.Size.X / 2, Info.Size.Y / 2);
+	const auto& Info = GameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
+	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 
 
@@ -72,15 +72,15 @@ void Defcon::IFirebomber::Move(float fTime)
 	// Just float around drifting horizontally.
 
 	Super::Move(fTime);
-	m_inertia = m_pos;
+	Inertia = Position;
 
 	m_travelCountdown -= fTime;
 
 	if(m_travelCountdown <= 0.0f)
 	{
 		// We've finished traveling, so define a new direction and travel length.
-		m_orient.fwd.Set(SBRAND, SBRAND);
-		m_ourInertia      = m_orient.fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
+		Orientation.fwd.Set(SBRAND, SBRAND);
+		m_ourInertia      = Orientation.fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
 
 		if(IRAND(3) == 1)
 		{
@@ -90,17 +90,17 @@ void Defcon::IFirebomber::Move(float fTime)
 		m_travelCountdown = Daylon::FRandRange(FIREBOMBER_TRAVEL_TIME_MIN, FIREBOMBER_TRAVEL_TIME_MAX);
 	}
 
-	m_pos += m_ourInertia * fTime;
+	Position += m_ourInertia * fTime;
 
 
-	WRAP(m_pos.y, 0, m_screensize.y);
+	WRAP(Position.y, 0, ScreenSize.y);
 
-	if(gpArena->IsPointVisible(m_pos))
+	if(gpArena->IsPointVisible(Position))
 	{
 		m_firingCountdown -= fTime;
 	}
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 }
 
 
@@ -113,8 +113,8 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 {
 	// Explode in a thick symmetrical pattern.
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	float fBrightBase;
@@ -135,14 +135,14 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 			pFlak->m_fLargestSize = MAP(i, 0, 9, largest, 4);
 			pFlak->m_bFade = true;
 
-			pFlak->m_pos = m_pos;
+			pFlak->Position = Position;
 
 			float angle = MAP(a, 0, 7, 0, 5.5f);
 			angle += off + SFRAND * 0.05f;
-			pFlak->m_orient.fwd.Set(sinf(angle), cosf(angle));
+			pFlak->Orientation.fwd.Set(sinf(angle), cosf(angle));
 			
-			pFlak->m_orient.fwd *= (SFRAND*15+30) * (i+2);
-			pFlak->m_orient.fwd += m_inertia;
+			pFlak->Orientation.fwd *= (SFRAND*15+30) * (i+2);
+			pFlak->Orientation.fwd += Inertia;
 
 			debris.Add(pFlak);
 		}
@@ -161,14 +161,14 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 				pFlak->m_fLargestSize = MAP(i, 0, 9, largest, 4);
 				pFlak->m_bFade = true;
 
-				pFlak->m_pos = m_pos;
+				pFlak->Position = Position;
 
 				float angle = MAP(a, 0, 7, 0, 5.5f);
 				angle += off2 + SFRAND * 0.05f;
-				pFlak->m_orient.fwd.Set(sinf(angle), cosf(angle));
+				pFlak->Orientation.fwd.Set(sinf(angle), cosf(angle));
 				
-				pFlak->m_orient.fwd *= (SFRAND*5+6) * (i+2);
-				pFlak->m_orient.fwd += m_inertia;
+				pFlak->Orientation.fwd *= (SFRAND*5+6) * (i+2);
+				pFlak->Orientation.fwd += Inertia;
 
 				debris.Add(pFlak);
 			}
@@ -180,10 +180,10 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 
 Defcon::CFirebomber::CFirebomber()
 {
-	m_parentType = m_type;
-	m_type = ObjType::FIREBOMBER_TRUE;
+	ParentType = Type;
+	Type = EObjType::FIREBOMBER_TRUE;
 
-	CreateSprite(m_type);
+	CreateSprite(Type);
 }
 
 
@@ -196,14 +196,14 @@ void Defcon::CFirebomber::Move(float fTime)
 {
 	Super::Move(fTime);
 
-	if(!(this->CanBeInjured() && gpArena->GetPlayerShip().IsAlive() && gpArena->IsPointVisible(m_pos)))
+	if(!(this->CanBeInjured() && gpArena->GetPlayerShip().IsAlive() && gpArena->IsPointVisible(Position)))
 	{
 		return;
 	}
 
 	if(m_firingCountdown <= 0.0f)
 	{
-		gpArena->CreateEnemy(ObjType::FIREBALL, m_pos, 0.0f, false, false);
+		gpArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, false, false);
 
 		// The time to fire goes down as the player XP increases.
 
@@ -228,10 +228,10 @@ Defcon::CWeakFirebomber::~CWeakFirebomber()
 
 Defcon::CWeakFirebomber::CWeakFirebomber()
 {
-	m_parentType = m_type;
-	m_type = ObjType::FIREBOMBER_WEAK;
+	ParentType = Type;
+	Type = EObjType::FIREBOMBER_WEAK;
 
-	CreateSprite(m_type);
+	CreateSprite(Type);
 }
 
 
@@ -241,14 +241,14 @@ void Defcon::CWeakFirebomber::Move(float fTime)
 
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 	if(m_bWaits)
-		diff *= (float)(ABS(sin(m_fAge * PI)));
+		diff *= (float)(ABS(sin(Age * PI)));
 	diff = FMath::Min(diff, 1.5f);
 
 	if(FRAND <= 0.05f * diff
 		&& this->CanBeInjured()
 		&& gpArena->GetPlayerShip().IsAlive()
-		&& gpArena->IsPointVisible(m_pos))
+		&& gpArena->IsPointVisible(Position))
 	{
-		gpArena->FireBullet(*this, m_pos, 1, 1);
+		gpArena->FireBullet(*this, Position, 1, 1);
 	}
 }

@@ -53,8 +53,8 @@ namespace Defcon
 			void DrawStats(FPaintArguments&, int, int);
 #endif
 
-			void FaceLeft   () { m_orient.fwd.x = -1.0f; }
-			void FaceRight  () { m_orient.fwd.x = 1.0f; }
+			void FaceLeft   () { Orientation.fwd.x = -1.0f; }
+			void FaceRight  () { Orientation.fwd.x = 1.0f; }
 
 			void FireLaserWeapon     (CGameObjectCollection&);
 			bool IsSolid             () const;
@@ -62,7 +62,7 @@ namespace Defcon
 			bool DebarkOnePassenger  (CGameObjectCollection&);
 			const CFPoint& GetPickupRadBox() const { return m_bboxradPickup; }
 
-			virtual bool IsMaterializing() const { return false; }// (m_bMaterializes && m_fAge < PLAYER_BIRTHDURATION); }
+			virtual bool IsMaterializing() const { return false; }// (m_bMaterializes && Age < PLAYER_BIRTHDURATION); }
 
 			FSlateBrush     RadarBrush;
 

@@ -34,11 +34,11 @@
 
 Defcon::CPlayer::CPlayer()
 {
-	m_type = ObjType::PLAYER;
+	Type = EObjType::PLAYER;
 
 	// Start off invincible, switch after birth finished.
-	m_bMortal = false;
-	m_bCanBeInjured = false;//true;
+	bMortal = false;
+	bCanBeInjured = false;//true;
 	//m_bBirthsoundPlayed = false;
 
 	m_laserWeapon.MountOnto(*this, CFPoint(0,0));
@@ -46,10 +46,10 @@ Defcon::CPlayer::CPlayer()
 
 	this->SetShieldStrength(1.0f);
 
-	CreateSprite(m_type);
+	CreateSprite(Type);
 
-	const auto& Info = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(Info.Size.X * 0.25f, Info.Size.Y * 0.25f);
+	const auto& Info = GameObjectResources.Get(Type);
+	BboxRadius.Set(Info.Size.X * 0.25f, Info.Size.Y * 0.25f);
 
 	// Make our "pickup human" bboxrad more generous than hitbox.
 	m_bboxradPickup.Set(Info.Size.X * 0.4f, Info.Size.Y * 0.4f);
@@ -58,9 +58,9 @@ Defcon::CPlayer::CPlayer()
 
 void Defcon::CPlayer::InitPlayer(float fw)
 {
-	m_fDrag     = PLAYER_DRAG;//0.1f;
+	Drag     = PLAYER_DRAG;//0.1f;
 	m_maxThrust = PLAYER_MAXTHRUST;
-	m_fMass     = PLAYER_MASS;
+	Mass     = PLAYER_MASS;
 
 	m_laserWeapon.m_fArenawidth = fw;
 
@@ -80,7 +80,7 @@ void Defcon::CPlayer::InitPlayer(float fw)
 		float fRad = FRAND * PLAYER_BIRTHDEBRISDIST;
 		
 		m_birthDebrisLocsOrg[i].Set((float)cos(u) * fRad, (float)sin(u) * fRad * .33f);
-		m_birthDebrisLocsOrg[i] += m_pos;
+		m_birthDebrisLocsOrg[i] += Position;
 
 		if(m_birthDebrisLocsOrg[i].x < 0)
 		{
@@ -141,7 +141,7 @@ void Defcon::CPlayer::OnAboutToDie()
 		CHuman& Human = (CHuman&)*pObj;
 		if(Human.GetCarrier() == this)
 		{
-			pObj->Notify(Message::carrier_killed, this);
+			pObj->Notify(EMessage::CarrierKilled, this);
 		}
 	});
 }
@@ -154,7 +154,7 @@ bool Defcon::CPlayer::EmbarkPassenger(IGameObject* pObj, CGameObjectCollection& 
 		return false;
 	}
 
-	pObj->Notify(Message::takenaboard, this);
+	pObj->Notify(EMessage::TakenAboard, this);
 #ifdef _DEBUG
 	char sz[100];
 	MySprintf(sz, "Human picked up by player.\n");
@@ -180,7 +180,7 @@ bool Defcon::CPlayer::DebarkOnePassenger(CGameObjectCollection& humans)
 			MySprintf(sz, "Human released by player\n");
 			OutputDebugString(sz);
 #endif
-			pObj->Notify(Message::released, this);
+			pObj->Notify(EMessage::Released, this);
 			return true;
 		}
 		pObj = pObj->GetNext();
@@ -192,7 +192,7 @@ bool Defcon::CPlayer::DebarkOnePassenger(CGameObjectCollection& humans)
 
 bool Defcon::CPlayer::IsSolid() const 
 {
-	return (m_fAge > PLAYER_BIRTHDURATION);
+	return (Age > PLAYER_BIRTHDURATION);
 }
 
 
@@ -204,8 +204,8 @@ void Defcon::CPlayer::Move(float fElapsedTime)
 		CFPoint in, out, final;
 		for(in.x = -50; in.x < 50; in.x++)
 		{
-			m_pMapper->To(in, out);
-			m_pMapper->From(out, final);
+			MapperPtr->To(in, out);
+			MapperPtr->From(out, final);
 			int inx = ROUND(in.x);
 			int fx = ROUND(final.x);
 			if(inx != fx)
@@ -220,7 +220,7 @@ void Defcon::CPlayer::Move(float fElapsedTime)
 	ILiveGameObject::Move(fElapsedTime);
 
 #if 0
-	if(!m_bBirthsoundPlayed && m_fAge > PLAYER_BIRTHDURATION * .66f)
+	if(!m_bBirthsoundPlayed && Age > PLAYER_BIRTHDURATION * .66f)
 	{
 		gpAudio->OutputSound(snd_ship_materialize);
 		m_bBirthsoundPlayed = true;
@@ -229,10 +229,10 @@ void Defcon::CPlayer::Move(float fElapsedTime)
 
 #if 0
 	// todo: visualize materialization
-	if(m_fAge < PLAYER_BIRTHDURATION)
+	if(Age < PLAYER_BIRTHDURATION)
 	{
 		// Bring in birth debris.
-		float t = m_fAge / PLAYER_BIRTHDURATION;
+		float t = Age / PLAYER_BIRTHDURATION;
 		int n = array_size(m_birthDebrisLocs);
 
 		CFPoint pt;
@@ -241,7 +241,7 @@ void Defcon::CPlayer::Move(float fElapsedTime)
 
 		for(int i = 0; i < n; i++)
 		{
-			m_birthDebrisLocsOrg[i] += m_inertia * (FRAND * 0.9f + 0.1f);
+			m_birthDebrisLocsOrg[i] += Inertia * (FRAND * 0.9f + 0.1f);
 
 			if(m_birthDebrisLocsOrg[i].x < 0)
 				m_birthDebrisLocsOrg[i].x += fw;
@@ -253,20 +253,20 @@ void Defcon::CPlayer::Move(float fElapsedTime)
 #if 1
 			gpArena->Lerp(
 				m_birthDebrisLocsOrg[i],  
-				m_pos, 
+				Position, 
 				m_birthDebrisLocs[i],
 				(float)pow(ft, m_debrisPow[i]));
 #else
-			m_pMapper->To(m_birthDebrisLocsOrg[i], pt);
+			MapperPtr->To(m_birthDebrisLocsOrg[i], pt);
 			pt.lerp(shipLoc, (float)pow(ft, m_debrisPow[i]));
-			m_pMapper->From(pt, m_birthDebrisLocs[i]);
+			MapperPtr->From(pt, m_birthDebrisLocs[i]);
 #endif
 		}
 	}
 	else
 #endif
 	{
-		m_bCanBeInjured = true;
+		bCanBeInjured = true;
 	}
 
 	float fs = this->GetShieldStrength();
@@ -277,7 +277,7 @@ void Defcon::CPlayer::Move(float fElapsedTime)
 		this->SetShieldStrength(fs);
 	}
 
-	Sprite->FlipHorizontal = (m_orient.fwd.x < 0);
+	Sprite->FlipHorizontal = (Orientation.fwd.x < 0);
 }
 
 
@@ -286,7 +286,7 @@ void Defcon::CPlayer::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper&
 	// Draw a white 5 x 5 px diamond.
 	CFPoint pt;
 
-	mapper.To(m_pos, pt);
+	mapper.To(Position, pt);
 
 	const auto S = FVector2D(12, 12);// RadarBrush.GetImageSize();
 
@@ -312,32 +312,32 @@ void Defcon::CPlayer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapp
 void Defcon::CPlayer::FireLaserWeapon(CGameObjectCollection& goc)
 {
 	m_laserWeapon.Fire(goc);
-	if(m_velocity.y != 0 && FRAND <= LASER_MULTI_PROB)
+	if(Velocity.y != 0 && FRAND <= LASER_MULTI_PROB)
 	{
 		// Fire extra bolts in the vthrust dir.
 		for(int32 i = 0; i < LASER_EXTRA_COUNT; i++)
 		{
-			CFPoint off(0.0f, m_velocity.y > 0 ? 1.0f : -1.0f);
+			CFPoint off(0.0f, Velocity.y > 0 ? 1.0f : -1.0f);
 			if(FRAND > 0.5f)
 				off *= 2;
-			CFPoint backup(m_pos);
-			m_pos += off;
+			CFPoint backup(Position);
+			Position += off;
 			m_laserWeapon.Fire(goc);
-			m_pos = backup;
+			Position = backup;
 		}
 	}
 #if 0
 	m_laserWeapon.Fire(goc);
-	if(m_velocity.y != 0 && FRAND > 0.75f)
+	if(Velocity.y != 0 && FRAND > 0.75f)
 	{
 		// Fire another bolt 2 pixels in the vthrust dir.
-		CFPoint off(0.0f, m_velocity.y > 0 ? 1.0f : -1.0f);
+		CFPoint off(0.0f, Velocity.y > 0 ? 1.0f : -1.0f);
 		if(FRAND > 0.5f)
 			off *= 2;
-		CFPoint backup(m_pos);
-		m_pos += off;
+		CFPoint backup(Position);
+		Position += off;
 		m_laserWeapon.Fire(goc);
-		m_pos = backup;
+		Position = backup;
 	}
 #endif
 }
@@ -366,12 +366,12 @@ void Defcon::CPlayer::ImpartForces(float frameTime)
 	if(m_navCtls[ctlUp].bActive)
 	{
 		const float timeHeld = GameTime() - m_navCtls[ctlUp].fTimeDown;
-		m_pos.MulAdd({ 0.0f, FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
+		Position.MulAdd({ 0.0f, FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
 	}
 	else if(m_navCtls[ctlDown].bActive)
 	{
 		const float timeHeld = GameTime() - m_navCtls[ctlDown].fTimeDown;
-		m_pos.MulAdd({ 0.0f, -FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
+		Position.MulAdd({ 0.0f, -FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
 	}
 }
 
@@ -394,8 +394,8 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 	// for a brief while. But that causes a lot of problems 
 	// too with object relationships.
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	// Create an explosion by making
@@ -415,7 +415,7 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 	int cby = this->GetExplosionColorBase();
 	maxsize *= this->GetExplosionMass();
 	
-	if(this->GetType() != ObjType::HUMAN && IRAND(3) == 1)
+	if(this->GetType() != EObjType::HUMAN && IRAND(3) == 1)
 		cby = CGameColors::gray;
 
 	bool bDieOff = (FRAND >= 0.25f);
@@ -443,11 +443,11 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 		pFireball->Init(CBitmaps::explo0 + ex,
 			frames_per_blast, FRAND * 0.5f + 0.7f,
 			fBrightRange, fBrightBase);
-		pFireball->m_pos = m_pos;
+		pFireball->Position = Position;
 		const CTrueBitmap& fbb = gBitmaps.GetBitmap(CBitmaps::explo0);
-		pFireball->m_pos -= CFPoint(
+		pFireball->Position -= CFPoint(
 			(float)fbb.GetWidth()/2, -0.5f * fbb.GetHeight());
-		pFireball->m_orient = m_orient;
+		pFireball->Orientation = Orientation;
 		debris.Add(pFireball);
 	}
 #endif
@@ -460,8 +460,8 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 		pFlak->m_fLargestSize = maxsize;
 		pFlak->m_bFade = bDieOff;
 
-		pFlak->m_pos = m_pos;
-		pFlak->m_orient = m_orient;
+		pFlak->Position = Position;
+		pFlak->Orientation = Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
@@ -469,17 +469,17 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->m_orient.fwd = m_inertia;
+		pFlak->Orientation.fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->m_orient.fwd *= FRAND * 12.0f + 30.0f;
+		pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
 		// Make the particle have a velocity vector
 		// as if it were standing still.
 		float speed = FRAND * 180 + 90;
 
 
-		pFlak->m_orient.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

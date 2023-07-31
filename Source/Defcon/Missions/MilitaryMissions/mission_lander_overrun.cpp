@@ -26,8 +26,8 @@ void Defcon::CLanderOverrun::Init()
 		"Engage enemy forces and eliminate."
 		;
 
-	AddEnemySpawnInfo({ ObjType::LANDER, { 50, 50 } });
-	AddEnemySpawnInfo({ ObjType::DYNAMO, {  6,  6 } });
+	AddEnemySpawnInfo({ EObjType::LANDER, { 50, 50 } });
+	AddEnemySpawnInfo({ EObjType::DYNAMO, {  6,  6 } });
 }
 
 

@@ -23,16 +23,16 @@
 
 Defcon::CDynamo::CDynamo()
 {
-	m_parentType = m_type;
-	m_type = ObjType::DYNAMO;
-	m_pointValue = DYNAMO_VALUE;
-	m_orient.fwd.Set(1.0f, 0.0f);
-	m_smallColor = C_LIGHT;
-	m_fAnimSpeed = FRAND * 0.05f + 0.15f;
+	ParentType = Type;
+	Type = EObjType::DYNAMO;
+	PointValue = DYNAMO_VALUE;
+	Orientation.fwd.Set(1.0f, 0.0f);
+	RadarColor = C_LIGHT;
+	AnimSpeed = FRAND * 0.05f + 0.15f;
 
-	CreateSprite(m_type);
-	const auto& SpriteInfo = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	CreateSprite(Type);
+	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 }
 
 
@@ -54,7 +54,7 @@ void Defcon::CDynamo::Move(float fTime)
 	// Just float around drifting horizontally.
 
 	CEnemy::Move(fTime);
-	m_inertia = m_pos;
+	Inertia = Position;
 
 
 	m_SpawnSpacehumCountdown -= fTime;
@@ -62,9 +62,9 @@ void Defcon::CDynamo::Move(float fTime)
 	if(m_SpawnSpacehumCountdown <= 0.0f 
 		&& this->CanBeInjured()
 		&& gpArena->GetPlayerShip().IsAlive()
-		&& gpArena->IsPointVisible(m_pos))
+		&& gpArena->IsPointVisible(Position))
 	{
-		gpArena->CreateEnemy(ObjType::SPACEHUM, m_pos, 0.0f, false, false);
+		gpArena->CreateEnemy(EObjType::SPACEHUM, Position, 0.0f, false, false);
 
 		const auto XP = gDefconGameInstance->GetScore();
 		float T = NORM_(XP, 0.0f, 50000.0f);
@@ -77,16 +77,16 @@ void Defcon::CDynamo::Move(float fTime)
 	}
 
 
-	if(m_fAge < 1.0f)
-		m_orgY = m_pos.y;
+	if(Age < 1.0f)
+		m_orgY = Position.y;
 
-	m_pos.x += (float)sin(5.0f * m_fAge) * 1.0f;
-	float sn = (float)sin(1.0f * m_fAge) * 1.0f;
-	m_pos.y = m_orgY + sn;
+	Position.x += (float)sin(5.0f * Age) * 1.0f;
+	float sn = (float)sin(1.0f * Age) * 1.0f;
+	Position.y = m_orgY + sn;
 
-	m_pos.y = CLAMP(m_pos.y, 0, gpArena->GetHeight()-1);
+	Position.y = CLAMP(Position.y, 0, gpArena->GetHeight()-1);
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 }
 
 

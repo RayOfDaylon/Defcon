@@ -27,13 +27,13 @@ Defcon::CReformer::CReformer()
 	m_freq(2.0f),
 	m_xFreq(1.0f)
 {
-	m_parentType = m_type;
-	m_type = ObjType::REFORMER;
-	m_pointValue = REFORMER_VALUE;
-	m_orient.fwd.Set(1.0f, 0.0f);
-	m_smallColor = MakeColorFromComponents(191, 33, 33);
-	m_bboxrad.Set(10, 10); // todo: why so explicit?//(float)bmp.GetWidth()/2, (float)bmp.GetHeight()/2);
-	m_fAnimSpeed = FRAND * 0.35f + 0.65f;
+	ParentType = Type;
+	Type = EObjType::REFORMER;
+	PointValue = REFORMER_VALUE;
+	Orientation.fwd.Set(1.0f, 0.0f);
+	RadarColor = MakeColorFromComponents(191, 33, 33);
+	BboxRadius.Set(10, 10); // todo: why so explicit?//(float)bmp.GetWidth()/2, (float)bmp.GetHeight()/2);
+	AnimSpeed = FRAND * 0.35f + 0.65f;
 	m_xFreq = FRAND * 0.5f + 1.0f;
 	m_bWaits = BRAND;
 	m_numParts = IRAND(4) + 4;
@@ -62,14 +62,14 @@ void Defcon::CReformer::Move(float fTime)
 	// Just float around drifting horizontally.
 
 	CEnemy::Move(fTime);
-	m_inertia = m_pos;
+	Inertia = Position;
 
-	m_orient.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + m_fAge)); 
+	Orientation.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
 
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 
 	if(m_bWaits)
-		diff *= (float)(ABS(sin(m_fAge*PI)));
+		diff *= (float)(ABS(sin(Age*PI)));
 	diff = FMath::Min(diff, 1.5f);
 
 	if(true/*m_bFiresBullets*/)
@@ -77,17 +77,17 @@ void Defcon::CReformer::Move(float fTime)
 		if(FRAND <= 0.05f * diff
 			&& this->CanBeInjured()
 			&& gpArena->GetPlayerShip().IsAlive()
-			&& gpArena->IsPointVisible(m_pos))
-			gpArena->FireBullet(*this, m_pos, 1, 1);
+			&& gpArena->IsPointVisible(Position))
+			gpArena->FireBullet(*this, Position, 1, 1);
 	}
 
 
-	m_fSpinVel = (float)(sin(m_fAge * PI * m_fSpinVelMax));
+	m_fSpinVel = (float)(sin(Age * PI * m_fSpinVelMax));
 	m_fSpinAngle += (m_fSpinVel * fTime);
 
-	m_pos.MulAdd(m_orient.fwd, fTime * 50.0f);
+	Position.MulAdd(Orientation.fwd, fTime * 50.0f);
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 }
 
 
@@ -96,9 +96,9 @@ void Defcon::CReformer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& ma
 	CEnemy::Draw(framebuf, mapper);
 
 
-	m_partLocs[0] = m_pos;
+	m_partLocs[0] = Position;
 
-	float f = (float)fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed;
+	float f = (float)fmod(Age, AnimSpeed) / AnimSpeed;
 
 
 	// Draw the parts in a circle around a central part.
@@ -109,9 +109,9 @@ void Defcon::CReformer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& ma
 		const float t = (float)(TWO_PI * i / n + (m_fSpinAngle * TWO_PI));
 		CFPoint pt2((float)cos(t), (float)sin(t));
 		float r = (float)(sin(f * PI) * 5 + 10);
-		m_bboxrad.Set(r, r);
+		BboxRadius.Set(r, r);
 		pt2 *= r;
-		pt2 += m_pos;
+		pt2 += Position;
 		m_partLocs[i+1] = pt2;
 	}
 
@@ -126,7 +126,7 @@ void Defcon::CReformer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& ma
 
 void Defcon::CReformer::DrawPart(FPaintArguments& framebuf, const CFPoint& where)
 {
-	auto& Info = GameObjectResources.Get(ObjType::REFORMERPART);
+	auto& Info = GameObjectResources.Get(EObjType::REFORMERPART);
 
 	CFPoint pt = where;
 	const int w = Info.Size.X;
@@ -134,7 +134,7 @@ void Defcon::CReformer::DrawPart(FPaintArguments& framebuf, const CFPoint& where
 	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
 	{
 		const int32 NumCels = Info.Atlas->Atlas.NumCels;
-		const float f = (NumCels - 1) * PSIN(PI * fmod(m_fAge, m_fAnimSpeed) / m_fAnimSpeed);
+		const float f = (NumCels - 1) * PSIN(PI * fmod(Age, AnimSpeed) / AnimSpeed);
 
 		const float Usize = 1.0f / NumCels;
 
@@ -163,7 +163,7 @@ void Defcon::CReformer::OnAboutToDie()
 
 	for(int32 i = 0; i < m_numParts; i++)
 	{
-		gpArena->CreateEnemy(ObjType::REFORMERPART, m_partLocs[i], 0.0f, false, false);
+		gpArena->CreateEnemy(EObjType::REFORMERPART, m_partLocs[i], 0.0f, false, false);
 	}
 }
 
@@ -174,8 +174,8 @@ void Defcon::CReformer::Explode(CGameObjectCollection& debris)
 	// but in a pod intersection, even more so because 
 	// all the swarmers are biting it.
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 
@@ -192,8 +192,8 @@ void Defcon::CReformer::Explode(CGameObjectCollection& debris)
 		pFlak->m_fLargestSize = 4;
 		pFlak->m_bFade = true;//bDieOff;
 
-		pFlak->m_pos = m_pos;
-		pFlak->m_orient = m_orient;
+		pFlak->Position = Position;
+		pFlak->Orientation = Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
@@ -201,15 +201,15 @@ void Defcon::CReformer::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->m_orient.fwd = m_inertia;
+		pFlak->Orientation.fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->m_orient.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->m_orient.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -224,22 +224,22 @@ Defcon::CReformerPart::CReformerPart()
 	m_freq(2.0f),
 	m_xFreq(1.0f)
 {
-	m_parentType = m_type;
-	m_type = ObjType::REFORMERPART;
-	m_pointValue = REFORMERPART_VALUE;
-	m_orient.fwd.Set(1.0f, 0.0f);
-	m_smallColor = C_RED;
-	m_fAnimSpeed = FRAND * 0.35f + 0.15f;
+	ParentType = Type;
+	Type = EObjType::REFORMERPART;
+	PointValue = REFORMERPART_VALUE;
+	Orientation.fwd.Set(1.0f, 0.0f);
+	RadarColor = C_RED;
+	AnimSpeed = FRAND * 0.35f + 0.15f;
 	m_xFreq = 2.0f * FRANDRANGE(0.5f, 1.5f);
-	m_bCanBeInjured = true;
-	m_bIsCollisionInjurious = true;
+	bCanBeInjured = true;
+	bIsCollisionInjurious = true;
 	m_yoff = (float)(FRAND * PI);
 	m_fTimeTargetWithinRange = 0.0f;
 	m_fMergeTime = 0.0f;
 
-	CreateSprite(m_type);
-	const auto& Info = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(Info.Size.X / 2, Info.Size.Y / 2);
+	CreateSprite(Type);
+	const auto& Info = GameObjectResources.Get(Type);
+	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 
 
@@ -262,14 +262,14 @@ void Defcon::CReformerPart::Move(float fTime)
 	// Move in slightly perturbed sine wave pattern.
 
 	CEnemy::Move(fTime);
-	m_inertia = m_pos;
+	Inertia = Position;
 
 	// todo: if neighbouring parts are within visual range, 
 	// then move towards them. If close enough and 
 	// maximum number reached or other parts are too distant,
 	// generate a reformer and delete the parts. 
 
-	bool bMerging = (m_fAge >= 2.0f);
+	bool bMerging = (Age >= 2.0f);
 
 
 	IGameObject* pClosest = nullptr;
@@ -292,7 +292,7 @@ void Defcon::CReformerPart::Move(float fTime)
 
 
 			CFPoint dir;
-			float dist = gpArena->Direction(m_pos, pNeighbour->m_pos, dir);
+			float dist = gpArena->Direction(Position, pNeighbour->Position, dir);
 			if(dist < bestdist)
 			{
 				pClosest = pNeighbour;
@@ -311,7 +311,7 @@ void Defcon::CReformerPart::Move(float fTime)
 			m_fTimeTargetWithinRange = 0.0f;
 		else
 		{
-			const bool bVis = gpArena->IsPointVisible(m_pos);
+			const bool bVis = gpArena->IsPointVisible(Position);
 
 			// Update target-within-range information.
 			if(m_fTimeTargetWithinRange > 0.0f)
@@ -331,55 +331,55 @@ void Defcon::CReformerPart::Move(float fTime)
 
 					//m_targetOffset.Set(
 					//	LERP(-100, 100, FRAND), 
-					//	LERP(50, 90, FRAND) * SGN(m_pos.y - pTarget->m_pos.y));
+					//	LERP(50, 90, FRAND) * SGN(Position.y - pTarget->Position.y));
 					//m_freq = LERP(6, 12, FRAND);
 					//m_amp = LERP(.33f, .9f, FRAND);
 				}
 			}
 
 			CFPoint dir;
-			float dist = gpArena->Direction(m_pos, pTarget->m_pos, dir);
+			float dist = gpArena->Direction(Position, pTarget->Position, dir);
 
 			if(m_fTimeTargetWithinRange > 0.75f)
 			{
-				if(dist > m_screensize.x * .4f)
+				if(dist > ScreenSize.x * .4f)
 				{
-					m_orient.fwd = dir;
-					m_orient.fwd.y = 0;
-					m_orient.fwd.Normalize();
+					Orientation.fwd = dir;
+					Orientation.fwd.y = 0;
+					Orientation.fwd.Normalize();
 				}
 			}
 
 			if(m_fTimeTargetWithinRange
-				&& m_fAge > 1.0f 
+				&& Age > 1.0f 
 				&& FRAND <= 0.007f
-				&& SGN(m_orient.fwd.x) == SGN(dir.x))
+				&& SGN(Orientation.fwd.x) == SGN(dir.x))
 			{
-				gpArena->FireBullet(*this, m_pos, 1, 1);
+				gpArena->FireBullet(*this, Position, 1, 1);
 				gpAudio->OutputSound(Defcon::snd_swarmer);
 			}
 		}
 
-		m_amp = LERP(0.33f, 1.0f, PSIN(m_yoff+m_fAge)) * 0.5f * m_screensize.y;
-		m_halfwayAltitude = (float)(sin((m_yoff+m_fAge)*0.6f) * 50 + (0.5f * m_screensize.y));
+		m_amp = LERP(0.33f, 1.0f, PSIN(m_yoff+Age)) * 0.5f * ScreenSize.y;
+		m_halfwayAltitude = (float)(sin((m_yoff+Age)*0.6f) * 50 + (0.5f * ScreenSize.y));
 
 		CFPoint pos;
-		if(m_fAge < 0.7f)
-			pos.x = m_pos.x + .2f * m_orient.fwd.x * m_xFreq * fTime * m_screensize.x * (FRAND * .05f + 0.25f);
+		if(Age < 0.7f)
+			pos.x = Position.x + .2f * Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 		else
-			pos.x = m_pos.x + m_orient.fwd.x * m_xFreq * fTime * m_screensize.x * (FRAND * .05f + 0.25f);
+			pos.x = Position.x + Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 		pos.y = 
-			(float)sin(m_freq * (m_yoff + m_fAge)) 
+			(float)sin(m_freq * (m_yoff + Age)) 
 			* m_amp + m_halfwayAltitude;
 
-		m_pos = pos;
-		if(m_fAge < 0.7f)
-			m_pos.y = LERP(m_posOrg.y, pos.y, m_fAge / 0.7f);
+		Position = pos;
+		if(Age < 0.7f)
+			Position.y = LERP(m_posOrg.y, pos.y, Age / 0.7f);
 	}
 	else
 	{
 		if(bestdist > 15.0f) 
-			m_pos = m_inertia + (bestdir * (FRAND*50+150) * fTime);
+			Position = Inertia + (bestdir * (FRAND*50+150) * fTime);
 		else
 		{
 			// If we have been at rest for longer than 
@@ -389,13 +389,13 @@ void Defcon::CReformerPart::Move(float fTime)
 			{
 				this->MarkAsDead();
 				pClosest->MarkAsDead();
-				m_pos.Avg(pClosest->m_pos);
-				gpArena->CreateEnemy(ObjType::REFORMER, m_pos, 0.0f, false, false);
+				Position.Avg(pClosest->Position);
+				gpArena->CreateEnemy(EObjType::REFORMER, Position, 0.0f, false, false);
 			}
 		}
 	}
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 }
 
 
@@ -408,8 +408,8 @@ void Defcon::CReformerPart::Explode(CGameObjectCollection& debris)
 {
 	const int cby = CGameColors::gray;
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	for(int32 i = 0; i < 20; i++)
@@ -421,8 +421,8 @@ void Defcon::CReformerPart::Explode(CGameObjectCollection& debris)
 		pFlak->m_fLargestSize = 4;
 		pFlak->m_bFade = true;//bDieOff;
 
-		pFlak->m_pos = m_pos;
-		pFlak->m_orient = m_orient;
+		pFlak->Position = Position;
+		pFlak->Orientation = Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
@@ -430,15 +430,15 @@ void Defcon::CReformerPart::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->m_orient.fwd = m_inertia;
+		pFlak->Orientation.fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->m_orient.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->m_orient.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

@@ -27,17 +27,17 @@
 
 Defcon::IBouncer::IBouncer()
 {
-	m_parentType = m_type;
-	m_type = ObjType::BOUNCER;
-	m_pointValue = BOUNCER_VALUE;
-	m_orient.fwd.Set(1.0f, 0.0f);
-	m_smallColor = C_WHITE;
-	m_fAnimSpeed = FRAND * 0.05f + 0.12f;
-	m_orient.fwd.y = 0.0; 
+	ParentType = Type;
+	Type = EObjType::BOUNCER;
+	PointValue = BOUNCER_VALUE;
+	Orientation.fwd.Set(1.0f, 0.0f);
+	RadarColor = C_WHITE;
+	AnimSpeed = FRAND * 0.05f + 0.12f;
+	Orientation.fwd.y = 0.0; 
 	m_fGravity = FRAND * 10.0f + 5.0f;
 
-	const auto& Info = GameObjectResources.Get(ObjType::FIREBOMBER_TRUE);
-	m_bboxrad.Set(Info.Size.X / 2, Info.Size.Y / 2);
+	const auto& Info = GameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
+	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 
 
@@ -57,33 +57,33 @@ const char* Defcon::IBouncer::GetClassname() const
 void Defcon::IBouncer::Move(float fElapsedTime)
 {
 	CEnemy::Move(fElapsedTime);
-	m_inertia = m_pos;
+	Inertia = Position;
 
 	// Check if terrain hit.
-	WRAP(m_pos.x, 0, gpArena->GetWidth());
-	const float h = gpArena->GetTerrainElev(m_pos.x);
-	if(m_pos.y < h)
+	WRAP(Position.x, 0, gpArena->GetWidth());
+	const float h = gpArena->GetTerrainElev(Position.x);
+	if(Position.y < h)
 	{
-		m_orient.fwd.y *= -1;
-		m_pos.y = h;
-		m_orient.fwd.x = SGN(m_orient.fwd.x) * (FRAND * 15 + 5);
+		Orientation.fwd.y *= -1;
+		Position.y = h;
+		Orientation.fwd.x = SGN(Orientation.fwd.x) * (FRAND * 15 + 5);
 		// todo: switch sign of x depending on surface normal
 		// at terrain impact point.
 	}
 
 	// Have gravity pull bouncer down.
-	//float speed = ABS(m_orient.fwd.y);
-	m_orient.fwd.y -= m_fGravity * fElapsedTime;
+	//float speed = ABS(Orientation.fwd.y);
+	Orientation.fwd.y -= m_fGravity * fElapsedTime;
 
-	m_pos.MulAdd(m_orient.fwd, fElapsedTime * 40);
+	Position.MulAdd(Orientation.fwd, fElapsedTime * 40);
 
 
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 	//if(m_bWaits)
-	//	diff *= ABS(sin(m_fAge*PI));
+	//	diff *= ABS(sin(Age*PI));
 	diff = FMath::Min(diff, 1.5f);
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 }
 
 
@@ -96,8 +96,8 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 {
 	// Explode in a thick symmetrical pattern.
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	float fBrightBase;
@@ -118,14 +118,14 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 			pFlak->m_fLargestSize = MAP(i, 0, 9, largest, 4);
 			pFlak->m_bFade = true;
 
-			pFlak->m_pos = m_pos;
+			pFlak->Position = Position;
 
 			float angle = MAP(a, 0, 7, 0, 5.5f);
 			angle += off + SFRAND * 0.05f;
-			pFlak->m_orient.fwd.Set(sinf(angle), cosf(angle));
+			pFlak->Orientation.fwd.Set(sinf(angle), cosf(angle));
 			
-			pFlak->m_orient.fwd *= (SFRAND*15+30) * (i+2);
-			pFlak->m_orient.fwd += m_inertia;
+			pFlak->Orientation.fwd *= (SFRAND*15+30) * (i+2);
+			pFlak->Orientation.fwd += Inertia;
 
 			debris.Add(pFlak);
 		}
@@ -144,15 +144,15 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 				pFlak->m_fLargestSize = MAP(i, 0, 9, largest, 4);
 				pFlak->m_bFade = true;
 
-				pFlak->m_pos = m_pos;
+				pFlak->Position = Position;
 
 				float angle = MAP(a, 0, 7, 0, 5.5f);
 				angle += off2 + SFRAND * 0.05f;
-				pFlak->m_orient.fwd.Set(
+				pFlak->Orientation.fwd.Set(
 					sinf(angle), cosf(angle));
 				
-				pFlak->m_orient.fwd *= (SFRAND*5+6) * (i+2);
-				pFlak->m_orient.fwd += m_inertia;
+				pFlak->Orientation.fwd *= (SFRAND*5+6) * (i+2);
+				pFlak->Orientation.fwd += Inertia;
 
 				debris.Add(pFlak);
 			}
@@ -164,10 +164,10 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 
 Defcon::CBouncer::CBouncer()
 {
-	m_parentType = m_type;
-	m_type = ObjType::BOUNCER_TRUE;
+	ParentType = Type;
+	Type = EObjType::BOUNCER_TRUE;
 
-	CreateSprite(ObjType::FIREBOMBER_TRUE);
+	CreateSprite(EObjType::FIREBOMBER_TRUE);
 }
 
 
@@ -183,16 +183,16 @@ void Defcon::CBouncer::Move(float fElapsedTime)
 	// todo: Is the firing time based on fps or on time?
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 	//if(m_bWaits)
-		//diff *= (float)(ABS(sin(m_fAge * PI)));
+		//diff *= (float)(ABS(sin(Age * PI)));
 	diff = FMath::Min(diff, 1.5f);
 
 	if(FRAND <= 0.25f * diff
 		&& !gpArena->IsEnding()
 		&& this->CanBeInjured()
 		&& gpArena->GetPlayerShip().IsAlive()
-		&& gpArena->IsPointVisible(m_pos))
+		&& gpArena->IsPointVisible(Position))
 	{
-		gpArena->CreateEnemy(ObjType::FIREBALL, m_pos, 0.0f, false, false);
+		gpArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, false, false);
 	}
 }
 
@@ -201,10 +201,10 @@ void Defcon::CBouncer::Move(float fElapsedTime)
 
 Defcon::CWeakBouncer::CWeakBouncer()
 {
-	m_parentType = m_type;
-	m_type = ObjType::BOUNCER_WEAK;
+	ParentType = Type;
+	Type = EObjType::BOUNCER_WEAK;
 
-	CreateSprite(ObjType::FIREBOMBER_WEAK);
+	CreateSprite(EObjType::FIREBOMBER_WEAK);
 }
 
 
@@ -220,15 +220,15 @@ void Defcon::CWeakBouncer::Move(float fElapsedTime)
 	// todo: Is the firing time based on fps or on time?
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 	//if(m_bWaits)
-		//diff *= (float)(ABS(sin(m_fAge * PI)));
+		//diff *= (float)(ABS(sin(Age * PI)));
 	diff = FMath::Min(diff, 1.5f);
 
 	if(FRAND <= 0.05f * diff
 		&& !gpArena->IsEnding()
 		&& this->CanBeInjured()
 		&& gpArena->GetPlayerShip().IsAlive()
-		&& gpArena->IsPointVisible(m_pos))
+		&& gpArena->IsPointVisible(Position))
 	{
-		gpArena->FireBullet(*this, m_pos, 1, 1);
+		gpArena->FireBullet(*this, Position, 1, 1);
 	}
 }

@@ -20,8 +20,8 @@ namespace Defcon
 			virtual ~CEvent() {}
 			virtual void Init() {}
 
-			float	m_when = 0.0f; // todo: s/b a countdown value instead of an absolute timestamp
-			CFPoint m_where;
+			float	When = 0.0f; // todo: s/b a countdown value instead of an absolute timestamp
+			CFPoint Where;
 
 			virtual void Do() = 0;
 	};
@@ -29,14 +29,13 @@ namespace Defcon
 
 	class CEventQueue
 	{
-		// This class holds events to be posted  
-		// at some time in the future.
+		// This class holds event tasks to be run at some time in the future.
 
 		public:
 			virtual ~CEventQueue();
 
 			void  Add       (CEvent*);
-			void  Process   (); // todo: needs to take DeltaTime arg
+			void  Process   (float DeltaTime);
 			void  DeleteAll ();
 
 		private:
@@ -63,19 +62,16 @@ namespace Defcon
 	{
 		public:
 
-			CCreateEnemyEvent() 
-				:
-				m_bMissionTarget(true)
-				{}
+			CCreateEnemyEvent() {}
 
-			ObjType	m_objtype;
-			bool	m_bMissionTarget;
+			EObjType  EnemyType      = EObjType::UNKNOWN;
+			bool      bMissionTarget = true;
 
 			virtual void Do() override;
 
 		protected:
 
-			CEnemy* CreateEnemy                 (ObjType, const CFPoint&);
+			CEnemy* CreateEnemy                 (EObjType, const CFPoint&);
 
 			void SpecializeForLander			(CEnemy*, const CFPoint&);
 			void SpecializeForGuppy				(CEnemy*, const CFPoint&);

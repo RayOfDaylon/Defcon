@@ -27,7 +27,7 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 
-			virtual void InitHuman     (const CFPoint& pt) { m_pos = pt; m_pCarrier = nullptr; m_fAge = 0.0f; }
+			virtual void InitHuman     (const CFPoint& pt) { Position = pt; m_pCarrier = nullptr; Age = 0.0f; }
 
 			virtual void Move          (float);
 			virtual void Draw          (FPaintArguments&, const I2DCoordMapper&);
@@ -37,7 +37,7 @@ namespace Defcon
 			bool         IsOnGround    () const { return !(this->IsFalling() || this->IsBeingCarried()); }
 			void         SetToNotCarried () { m_pCarrier = nullptr; }
 
-			void         Notify        (Message, void*);
+			void         Notify        (EMessage, void*);
 			bool         Fireballs     () const { return false; }
 
 			CGameObjectCollection*	m_pObjects;

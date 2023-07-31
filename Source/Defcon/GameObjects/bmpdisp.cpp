@@ -16,15 +16,15 @@ Defcon::CBitmapDisplayer::CBitmapDisplayer()
 {
 	UE_LOG(LogGame, Log, TEXT("Instancing bitmap displayer"));
 
-	m_type = ObjType::TEXTURE;
-	m_orient.fwd.Set(0.0f, 0.0f);
-	m_bMortal = true;
-	m_bCanBeInjured = false;
-	m_fLifespan = 100.0f;
+	Type = EObjType::TEXTURE;
+	Orientation.fwd.Set(0.0f, 0.0f);
+	bMortal = true;
+	bCanBeInjured = false;
+	Lifespan = 100.0f;
 	m_nFrame = 0;
 	m_nFrameCount = 0;
 	m_nBaseID = 0;
-	m_fAge = 0.0f;
+	Age = 0.0f;
 	m_fAlphaScale = 0.0f;
 	m_fAlphaMin = 1.0f;
 }
@@ -57,7 +57,7 @@ void Defcon::CBitmapDisplayer::InitBitmapDisplayer
 {
 	m_nBaseID = base;
 	m_nFrameCount = count;
-	m_fLifespan = m_fOrgLifespan = lifetime;
+	Lifespan = m_fOrgLifespan = lifetime;
 	m_fAlphaScale = fAlphaScale;
 	m_fAlphaMin = fAlphaMin;
 }
@@ -75,6 +75,6 @@ void Defcon::CBitmapDisplayer::DrawSmall(FPaintArguments& framebuf, const I2DCoo
 
 void Defcon::CBitmapDisplayer::Move(float fElapsedTime)
 {
-	m_fAge += fElapsedTime;
-	m_pos.MulAdd(m_orient.fwd, fElapsedTime);
+	Age += fElapsedTime;
+	Position.MulAdd(Orientation.fwd, fElapsedTime);
 }

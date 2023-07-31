@@ -23,14 +23,14 @@ void Defcon::CApexOffensive::Init()
 		"to minimize humanoid losses."
 		;
 
-	AddEnemySpawnInfo({ ObjType::LANDER,          { 3, 6, 5, 4 } });
-	AddEnemySpawnInfo({ ObjType::GUPPY,           { 4, 4, 3, 2 } });
-	AddEnemySpawnInfo({ ObjType::HUNTER,          { 0, 1, 2, 1 } });
-	AddEnemySpawnInfo({ ObjType::FIREBOMBER_TRUE, { 2, 1, 2, 1 } });
-	AddEnemySpawnInfo({ ObjType::FIREBOMBER_WEAK, { 2, 1, 2, 1 } });
-	AddEnemySpawnInfo({ ObjType::DYNAMO,          { 3, 3, 2, 1 } });
-	AddEnemySpawnInfo({ ObjType::POD,             { 3, 1, 0, 0 } });
-	AddEnemySpawnInfo({ ObjType::BOMBER,          { 2, 2, 2, 2 } });
+	AddEnemySpawnInfo({ EObjType::LANDER,          { 3, 6, 5, 4 } });
+	AddEnemySpawnInfo({ EObjType::GUPPY,           { 4, 4, 3, 2 } });
+	AddEnemySpawnInfo({ EObjType::HUNTER,          { 0, 1, 2, 1 } });
+	AddEnemySpawnInfo({ EObjType::FIREBOMBER_TRUE, { 2, 1, 2, 1 } });
+	AddEnemySpawnInfo({ EObjType::FIREBOMBER_WEAK, { 2, 1, 2, 1 } });
+	AddEnemySpawnInfo({ EObjType::DYNAMO,          { 3, 3, 2, 1 } });
+	AddEnemySpawnInfo({ EObjType::POD,             { 3, 1, 0, 0 } });
+	AddEnemySpawnInfo({ EObjType::BOMBER,          { 2, 2, 2, 2 } });
 }
 
 

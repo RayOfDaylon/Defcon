@@ -21,20 +21,20 @@
 
 Defcon::CHuman::CHuman()
 {
-	m_parentType = m_type;
-	m_type = ObjType::HUMAN;
+	ParentType = Type;
+	Type = EObjType::HUMAN;
 
 	m_pObjects = nullptr;
 	m_pCarrier = nullptr;
-	m_fAge = FRAND * 10;
-	m_smallColor = C_MAGENTA;
+	Age = FRAND * 10;
+	RadarColor = C_MAGENTA;
 	m_fSwitchTime = FRAND * 3 + 1;
-	m_bCanBeInjured = true;
-	m_bIsCollisionInjurious = false;
-	m_bboxrad.Set(4, 10);
+	bCanBeInjured = true;
+	bIsCollisionInjurious = false;
+	BboxRadius.Set(4, 10);
 
 	UE_LOG(LogGame, Log, TEXT("Creating human sprite"));
-	CreateSprite(ObjType::HUMAN);
+	CreateSprite(EObjType::HUMAN);
 }
 
 
@@ -47,7 +47,7 @@ bool Defcon::CHuman::IsFalling() const
 {
 	check(gpArena != nullptr);
 
-	return (!this->IsBeingCarried() && m_pos.y > gpArena->GetTerrainElev(m_pos.x));
+	return (!this->IsBeingCarried() && Position.y > gpArena->GetTerrainElev(Position.x));
 }
 
 
@@ -59,8 +59,8 @@ void Defcon::CHuman::OnAboutToDie()
 	// If we have an abductor, he'll get told too.
 	check(m_pObjects != nullptr);
 
-	m_pObjects ->Notify(Defcon::Message::human_killed, this);
-	m_pObjects2->Notify(Defcon::Message::human_killed, this);
+	m_pObjects ->Notify(Defcon::EMessage::HumanKilled, this);
+	m_pObjects2->Notify(Defcon::EMessage::HumanKilled, this);
 }
 
 
@@ -73,24 +73,24 @@ const char* Defcon::CHuman::GetClassname() const
 #endif
 
 
-void Defcon::CHuman::Notify(Defcon::Message msg, void* pObj)
+void Defcon::CHuman::Notify(Defcon::EMessage msg, void* pObj)
 {
 	switch(msg)
 	{
-		case Defcon::Message::takenaboard:
+		case Defcon::EMessage::TakenAboard:
 		{
 			check(m_pCarrier == nullptr);
 			m_pCarrier = (IGameObject*)pObj;
 			check(m_pCarrier != nullptr);
 			
 			// Tell everyone what happened.
-			m_pObjects ->Notify(Defcon::Message::human_takenaboard, this);
-			m_pObjects2->Notify(Defcon::Message::human_takenaboard, this);
+			m_pObjects ->Notify(Defcon::EMessage::HumanTakenAboard, this);
+			m_pObjects2->Notify(Defcon::EMessage::HumanTakenAboard, this);
 		}
 			break;
 
-		case Defcon::Message::carrier_killed:
-		case Defcon::Message::released:
+		case Defcon::EMessage::CarrierKilled:
+		case Defcon::EMessage::Released:
 			check(m_pCarrier != nullptr);
 			m_pCarrier = nullptr;
 			break;
@@ -103,38 +103,38 @@ void Defcon::CHuman::Notify(Defcon::Message msg, void* pObj)
 void Defcon::CHuman::Move(float fElapsedTime)
 {
 	// Humans walk around mostly horizontally.
-	m_fAge += fElapsedTime;
+	Age += fElapsedTime;
 
 	if(this->IsBeingCarried())
 	{
 		// Stay underneath the abductor.
 		IGameObject* pCarrier = this->GetCarrier();
 		// todo: this check failed after player died. We need to ensure that carrier is nulled out
-		check(pCarrier->GetType() == ObjType::LANDER || pCarrier->GetType() == ObjType::PLAYER);
-		m_pos = pCarrier->m_pos;
-		m_pos.y -= 27.0f;
+		check(pCarrier->GetType() == EObjType::LANDER || pCarrier->GetType() == EObjType::PLAYER);
+		Position = pCarrier->Position;
+		Position.y -= 27.0f;
 
 		// Init momentum for possible fall.
-		m_orient.fwd.y = -2.0f;
+		Orientation.fwd.y = -2.0f;
 	}
 	else
 	{
-		float h = gpArena->GetTerrainElev(m_pos.x);
+		float h = gpArena->GetTerrainElev(Position.x);
 
-		if(m_pos.y >= h)
+		if(Position.y >= h)
 		{
 			// We're above the ground, so we must be 
 			// falling from a killed abductor.
-			m_orient.fwd.Set(
+			Orientation.fwd.Set(
 				0.0f, 
-				m_orient.fwd.y +  m_orient.fwd.y * 1.5f * fElapsedTime);
+				Orientation.fwd.y +  Orientation.fwd.y * 1.5f * fElapsedTime);
 				
-			m_pos.MulAdd(m_orient.fwd, fElapsedTime);
+			Position.MulAdd(Orientation.fwd, fElapsedTime);
 
-			if(m_pos.y < h)
+			if(Position.y < h)
 			{
 				// We fall to the ground.
-				if(m_orient.fwd.y < -HUMAN_TERMINALVELOCITY)
+				if(Orientation.fwd.y < -HUMAN_TERMINALVELOCITY)
 				{
 					// We landed too hard, so we're toast.
 					gpArena->ExplodeObject(this);
@@ -142,7 +142,7 @@ void Defcon::CHuman::Move(float fElapsedTime)
 				else
 				{
 					// We landed okay. Give the player 250.
-					gpArena->IncreaseScore((int32)HUMAN_VALUE_LIBERATED, true, &m_pos);
+					gpArena->IncreaseScore((int32)HUMAN_VALUE_LIBERATED, true, &Position);
 				}
 			}
 		}
@@ -151,22 +151,22 @@ void Defcon::CHuman::Move(float fElapsedTime)
 			// Casually roam the terrain.
 			// todo: we seem to have a 'bug' where the 
 			// person likes to ascend hills.
-			float f = (float)fmod(m_fAge, 10.0f) / 10.0f;
+			float f = (float)fmod(Age, 10.0f) / 10.0f;
 			f = (float)sin(f * TWO_PI);
 			float fy = (float)cos(f * TWO_PI);
 			CFPoint motion(f+(FRAND-0.5f), fy + (FRAND - 0.5f));
 			//motion.Mul(CFPoint(1.0f, 0.75f));
 			motion.Mul(fElapsedTime * 10.0f);
 
-			m_pos += motion;
-			m_pos.y = FMath::Min(m_pos.y, h-5);
-			m_pos.y = FMath::Max(m_pos.y, 20);
+			Position += motion;
+			Position.y = FMath::Min(Position.y, h-5);
+			Position.y = FMath::Max(Position.y, 20);
 		}
 	}
 	// todo: switch to a different atlas cel every now and then
 	// or based on our orientation.
 	check(m_fSwitchTime != 0.0f);
-	float f = (float)fmod(m_fAge, m_fSwitchTime) / m_fSwitchTime;
+	float f = (float)fmod(Age, m_fSwitchTime) / m_fSwitchTime;
 	f = (float)cos(f * PI) + 1.0f;
 	f /= 2;
 	//Sprite->SetCurrentCel(ROUND(f));

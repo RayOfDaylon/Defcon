@@ -23,8 +23,8 @@ void Defcon::CBomberShowdown::Init()
 		"Engage enemy forces and eliminate them."
 		;
 
-	AddEnemySpawnInfo({ ObjType::BOMBER, { 9, 9, 0, 0 } });
-	AddEnemySpawnInfo({ ObjType::POD,    { 3, 3, 0, 0 } });
+	AddEnemySpawnInfo({ EObjType::BOMBER, { 9, 9, 0, 0 } });
+	AddEnemySpawnInfo({ EObjType::POD,    { 3, 3, 0, 0 } });
 }
 
 

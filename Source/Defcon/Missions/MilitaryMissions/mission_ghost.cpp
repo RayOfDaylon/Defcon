@@ -26,9 +26,9 @@ void Defcon::CGhostMission::Init()
 
 	JFactor = 0.1f;
 
-	AddEnemySpawnInfo({ ObjType::DYNAMO,   {  2,  5,  2 } });
-	AddEnemySpawnInfo({ ObjType::GHOST,    { 10, 15, 15 } });
-	AddEnemySpawnInfo({ ObjType::REFORMER, {  3,  2,  1 } });
+	AddEnemySpawnInfo({ EObjType::DYNAMO,   {  2,  5,  2 } });
+	AddEnemySpawnInfo({ EObjType::GHOST,    { 10, 15, 15 } });
+	AddEnemySpawnInfo({ EObjType::REFORMER, {  3,  2,  1 } });
 }
 
 

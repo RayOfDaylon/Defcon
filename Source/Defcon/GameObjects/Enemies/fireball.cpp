@@ -36,14 +36,14 @@ Defcon::CFireball::CFireball()
 	:
 	m_bFirstTime(true)
 {
-	m_parentType = m_type;
-	m_type = ObjType::FIREBALL;
-	m_pointValue = FIREBALL_VALUE;
-	//m_bInjurious = true;
-	m_bCanBeInjured = true;
+	ParentType = Type;
+	Type = EObjType::FIREBALL;
+	PointValue = FIREBALL_VALUE;
+	//bInjurious = true;
+	bCanBeInjured = true;
 
-	m_smallColor = C_ORANGE;
-	m_orient.fwd.y = -1.0f;
+	RadarColor = C_ORANGE;
+	Orientation.fwd.y = -1.0f;
 	m_fSpeed = 0; // the shooter sets the speed.
 	// Depending on accuracy, the shooter takes gravity 
 	// into account so that the fireball will hit the 
@@ -51,13 +51,13 @@ Defcon::CFireball::CFireball()
 	// current position or be lead.
 
 	//m_bMaterializes = false;
-	m_bIsCollisionInjurious = true;
+	bIsCollisionInjurious = true;
 
-	CreateSprite(m_type);
+	CreateSprite(Type);
 
 	//CTrueBitmap& bmp = gBitmaps.GetBitmap(CBitmaps::fireball0);
-	const auto& Info = GameObjectResources.Get(m_type);
-	m_bboxrad.Set(Info.Size.X / 2, Info.Size.Y / 2);
+	const auto& Info = GameObjectResources.Get(Type);
+	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 
 
@@ -91,17 +91,17 @@ void Defcon::CFireball::Move(float fTime)
 		else
 		{
 			CFPoint dir;
-			m_fSpeed = (FRAND * 0.5f + 1.0f) * gpArena->Direction(m_pos, pTarget->m_pos, dir);
-			m_orient.fwd.x = (float)(SGN(dir.x));
-			m_orient.fwd.y = (float)(SGN(dir.y));
+			m_fSpeed = (FRAND * 0.5f + 1.0f) * gpArena->Direction(Position, pTarget->Position, dir);
+			Orientation.fwd.x = (float)(SGN(dir.x));
+			Orientation.fwd.y = (float)(SGN(dir.y));
 		}
 	}
 
 	CEnemy::Move(fTime);
-	m_inertia = m_pos;
+	Inertia = Position;
 
 	// Self-destruct if we pass below ground.
-	if(m_pos.y < 0)
+	if(Position.y < 0)
 	{
 		this->MarkAsDead();
 		return;
@@ -109,8 +109,8 @@ void Defcon::CFireball::Move(float fTime)
 
 	if(BULLETS_HIT_TERRAIN)
 	{
-		WRAP(m_pos.x, 0, gpArena->GetWidth());
-		if(m_pos.y <= gpArena->GetTerrainElev(m_pos.x))
+		WRAP(Position.x, 0, gpArena->GetWidth());
+		if(Position.y <= gpArena->GetTerrainElev(Position.x))
 		{
 			this->MarkAsDead();
 			return;
@@ -118,13 +118,13 @@ void Defcon::CFireball::Move(float fTime)
 	}
 
 		
-	CFPoint motion(m_orient.fwd);
+	CFPoint motion(Orientation.fwd);
 	motion.x *= m_fSpeed * fTime;
-	motion.y -= m_fAge * m_fAge;
+	motion.y -= Age * Age;
 
-	m_pos += motion;
+	Position += motion;
 
-	m_inertia = m_pos - m_inertia;
+	Inertia = Position - Inertia;
 }
 
 
@@ -135,7 +135,7 @@ void Defcon::CFireball::Draw(FPaintArguments& framebuf, const I2DCoordMapper& ma
 	int h = framebuf.GetHeight();
 
 	CFPoint pt;
-	mapper.To(m_pos, pt);
+	mapper.To(Position, pt);
 
 	CTrueBitmap& bmp = gBitmaps.GetBitmap(
 		BRAND
@@ -172,8 +172,8 @@ void Defcon::CFireball::Explode(CGameObjectCollection& debris)
 {
 	const int cby = BRAND ? CGameColors::yellow : CGameColors::orange;
 
-	m_bMortal = true;
-	m_fLifespan = 0.0f;
+	bMortal = true;
+	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	for(int32 i = 0; i < 20; i++)
@@ -185,8 +185,8 @@ void Defcon::CFireball::Explode(CGameObjectCollection& debris)
 		pFlak->m_fLargestSize = 5;
 		pFlak->m_bFade = true;//bDieOff;
 
-		pFlak->m_pos = m_pos;
-		pFlak->m_orient = m_orient;
+		pFlak->Position = Position;
+		pFlak->Orientation = Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
@@ -194,15 +194,15 @@ void Defcon::CFireball::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->m_orient.fwd = m_inertia;
+		pFlak->Orientation.fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->m_orient.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->m_orient.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
