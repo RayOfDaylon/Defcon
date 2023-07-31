@@ -21,7 +21,7 @@ namespace Defcon
 #endif
 			virtual void Move(float);
 			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual int GetExplosionColorBase() const;
+			virtual EColor GetExplosionColorBase  () const override;
 
 
 		private:
@@ -41,7 +41,7 @@ namespace Defcon
 #endif
 			virtual void Move(float);
 			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual int GetExplosionColorBase() const;
+			virtual EColor GetExplosionColorBase  () const override;
 
 
 		private:
@@ -61,7 +61,7 @@ namespace Defcon
 #endif
 			virtual void Move(float);
 			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual int GetExplosionColorBase() const;
+			virtual EColor GetExplosionColorBase  () const override;
 			float GetExplosionMass() const { return 0.6f; }
 
 

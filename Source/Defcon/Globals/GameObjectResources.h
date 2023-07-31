@@ -28,7 +28,6 @@ struct FGameObjectInfo
 
 struct FGameObjectResources
 {
-	// todo: put brushes in their own manager object, or rename this type to FGameObjectResources
 	FSlateBrush*   SmartbombBrushPtr      = nullptr;
 	FSlateBrush*   DebrisBrushRoundPtr    = nullptr;
 	FSlateBrush*   DebrisBrushSquarePtr   = nullptr;

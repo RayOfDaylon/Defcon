@@ -129,7 +129,7 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 		for(i = 0; i < 10; i++)
 		{
 			CFlak* pFlak = new CFlak;
-			pFlak->m_eColorbaseYoung = BRAND ? CGameColors::gray : CGameColors::yellow;
+			pFlak->m_eColorbaseYoung = BRAND ? EColor::gray : EColor::yellow;
 
 			float largest = FRAND * 6 + 5;
 			pFlak->m_fLargestSize = MAP(i, 0, 9, largest, 4);
@@ -155,7 +155,7 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 			for(i = 0; i < 10; i++)
 			{
 				CFlak* pFlak = new CFlak;
-				pFlak->m_eColorbaseYoung = BRAND ? CGameColors::gray : CGameColors::yellow;
+				pFlak->m_eColorbaseYoung = BRAND ? EColor::gray : EColor::yellow;
 
 				float largest = FRAND * 6 + 5;
 				pFlak->m_fLargestSize = MAP(i, 0, 9, largest, 4);

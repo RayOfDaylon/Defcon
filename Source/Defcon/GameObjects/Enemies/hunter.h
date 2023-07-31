@@ -22,7 +22,7 @@ namespace Defcon
 #endif
 			virtual void Move(float);
 			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual int GetExplosionColorBase() const;
+			virtual EColor GetExplosionColorBase  () const override;
 			virtual float GetExplosionMass() const;
 
 			float					m_personalSpace;

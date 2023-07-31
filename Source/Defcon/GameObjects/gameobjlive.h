@@ -39,18 +39,16 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const = 0;
 #endif
-			virtual void Notify                  (EMessage, void*) override;
-			virtual void Move                    (float DeltaTime) override;
-			virtual void Draw                    (FPaintArguments&, const I2DCoordMapper&) override = 0;
+			virtual void   Notify                (EMessage, void*) override;
+			virtual void   Move                  (float DeltaTime) override;
 
-			virtual bool Fireballs               () const { return true; }
+			virtual bool   Fireballs             () const { return true; }
 
 			virtual void   ChangeThrust          (const CFPoint&);
 			void           EnableInput           (bool b = true) { bCanMove = b; }
 			bool           IsInputEnabled        () const { return bCanMove; }
 			bool           IsAlive               () const { return bAlive; }
 			virtual void   SetIsAlive            (bool b) { bAlive = b; }
-
 
 			void           ZeroThrust            ()   { ThrustVector.Set(0,0); }
 			void           ZeroMotion            ()   { this->ZeroVelocity(); this->ZeroThrust(); }

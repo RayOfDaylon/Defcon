@@ -145,7 +145,7 @@ void Defcon::CGhost::Move(float fTime)
 			Position = newloc;
 			Position.x = gpArena->WrapX(Position.x);
 		
-			gpAudio->OutputSound(snd_ghostflight);
+			gpAudio->OutputSound(ghostflight);
 		}
 	}
 }
@@ -153,8 +153,6 @@ void Defcon::CGhost::Move(float fTime)
 
 void Defcon::CGhost::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-	CEnemy::Draw(framebuf, mapper);
-
 	if(DispersalCountdown > 0.0f)
 	{
 		return;
@@ -256,11 +254,13 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 */
 
 	// Define which color to make the debris.
-	int cby = this->GetExplosionColorBase();
+	auto cby = this->GetExplosionColorBase();
 	maxsize *= this->GetExplosionMass();
 	
 	if(IRAND(3) == 1)
-		cby = CGameColors::gray;
+	{
+		cby = EColor::gray;
+	}
 
 	bool bDieOff = (FRAND >= 0.25f);
 	int i;
@@ -307,9 +307,13 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 		//maxsize = FMath::Min(maxsize, 9.0f);
 
 		if(IRAND(3) == 1)
-			cby = CGameColors::gray;
+		{
+			cby = EColor::gray;
+		}
 		else
+		{
 			cby = this->GetExplosionColorBase();
+		}
 
 		for(i = 0; i < n; i++)
 		{
@@ -339,7 +343,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 
 
 #if 1
-	cby = CGameColors::gray;
+	cby = EColor::gray;
 
 
 	for(i = 0; i < 20; i++)

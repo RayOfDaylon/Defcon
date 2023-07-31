@@ -33,7 +33,7 @@ Defcon::CLander::CLander()
 	Type				= EObjType::LANDER;
 	PointValue		= LANDER_VALUE;
 	m_eState			= State::descending;
-	m_pTarget			= nullptr;
+	TargetPtr			= nullptr;
 	m_pHuman			= nullptr;
 	m_pTrackedHuman		= nullptr;
 	float speed			= (FRAND * .75f + 0.25f) * (FRAND > 0.5f ? -1 : 1);
@@ -300,7 +300,7 @@ void Defcon::CLander::Move(float fTime)
 					// them have been tracking him, they will
 					// stop doing so.
 					m_pHuman->Notify(Defcon::EMessage::TakenAboard, this);
-					gpAudio->OutputSound(snd_human_abducted);
+					gpAudio->OutputSound(human_abducted);
 				}
 			}
 		}
@@ -359,7 +359,7 @@ void Defcon::CLander::Move(float fTime)
 
 			float speed = m_maxSpeed * 0.33f;
 
-			IGameObject* pTarget = m_pTarget;
+			IGameObject* pTarget = TargetPtr;
 			if(pTarget == nullptr)
 			{
 				// No target, just coast.
@@ -427,9 +427,9 @@ void Defcon::CLander::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapp
 }
 
 
-int Defcon::CLander::GetExplosionColorBase() const
+Defcon::EColor Defcon::CLander::GetExplosionColorBase() const
 {
-	//return CGameColors::lightyellow;
- 	//return CGameColors::yellow;
-	return CGameColors::green;
+	//return EColor::lightyellow;
+ 	//return EColor::yellow;
+	return EColor::green;
 }

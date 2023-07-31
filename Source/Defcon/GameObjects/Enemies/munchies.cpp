@@ -36,7 +36,7 @@ Defcon::CPhred::CPhred()
 	Mass = PLAYER_MASS * 20;
 	bIsCollisionInjurious = true;
 	m_bPreferTargetUnderside = FRAND >= 0.5f;
-	m_fBrightness = FRAND * 0.1f + 0.4f;
+	Brightness = FRAND * 0.1f + 0.4f;
 	m_fSquakTime = 0;
 	//m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
 
@@ -66,7 +66,7 @@ void Defcon::CPhred::Move(float fTime)
 	//this->DoPhysics2(fTime);
 	CFPoint orgpos = Position;
 
-	IGameObject* pTarget = m_pTarget;
+	IGameObject* pTarget = TargetPtr;
 	if(pTarget != nullptr)
 	{
 		const float xd = gpArena->HorzDistance(Position, pTarget->Position);
@@ -118,9 +118,9 @@ void Defcon::CPhred::Move(float fTime)
 						: ILiveGameObject::ctlBack;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = GameTime();
+					ControlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
-					m_ctlStartTime[ctl]);
+					ControlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
 			}
 			else
@@ -145,9 +145,9 @@ void Defcon::CPhred::Move(float fTime)
 						: ILiveGameObject::ctlDown;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = GameTime();
+					ControlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
-					m_ctlStartTime[ctl]);
+					ControlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
 			}
 			else
@@ -168,7 +168,7 @@ void Defcon::CPhred::Move(float fTime)
 			if(xd < 350 && FRAND < 0.02 && m_fSquakTime == 0.0f)
 			{
 				m_fSquakTime = 0.0001f;
-				gpAudio->OutputSound(snd_phred);
+				gpAudio->OutputSound(phred);
 			}
 			if(m_fSquakTime != 0.0f)
 			{
@@ -187,9 +187,9 @@ void Defcon::CPhred::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mappe
 }
 
 
-int Defcon::CPhred::GetExplosionColorBase() const
+Defcon::EColor Defcon::CPhred::GetExplosionColorBase() const
 {
-	return CGameColors::gray;
+	return EColor::gray;
 }
 
 
@@ -208,7 +208,7 @@ Defcon::CMunchie::CMunchie()
 	Mass = PLAYER_MASS * 18;
 	bIsCollisionInjurious = true;
 	m_bPreferTargetUnderside = FRAND >= 0.5f;
-	m_fBrightness = FRAND * 0.1f + 0.4f;
+	Brightness = FRAND * 0.1f + 0.4f;
 	m_fSquakTime = 0;
 	//m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
 
@@ -238,7 +238,7 @@ void Defcon::CMunchie::Move(float fTime)
 	//this->DoPhysics2(fTime);
 	CFPoint orgpos = Position;
 
-	IGameObject* pTarget = m_pTarget;
+	IGameObject* pTarget = TargetPtr;
 	if(pTarget != nullptr)
 	{
 		const float xd = gpArena->HorzDistance(Position, pTarget->Position);
@@ -290,9 +290,9 @@ void Defcon::CMunchie::Move(float fTime)
 						: ILiveGameObject::ctlBack;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = GameTime();
+					ControlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
-					m_ctlStartTime[ctl]);
+					ControlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
 			}
 			else
@@ -317,9 +317,9 @@ void Defcon::CMunchie::Move(float fTime)
 						: ILiveGameObject::ctlDown;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = GameTime();
+					ControlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
-					m_ctlStartTime[ctl]);
+					ControlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
 			}
 			else
@@ -339,7 +339,7 @@ void Defcon::CMunchie::Move(float fTime)
 			if(xd < 350 && FRAND < 0.02 && m_fSquakTime == 0.0f)
 			{
 				m_fSquakTime = 0.0001f;
-				gpAudio->OutputSound(snd_munchie);
+				gpAudio->OutputSound(munchie);
 			}
 			if(m_fSquakTime != 0.0f)
 			{
@@ -358,9 +358,9 @@ void Defcon::CMunchie::Draw(FPaintArguments& framebuf, const I2DCoordMapper& map
 }
 
 
-int Defcon::CMunchie::GetExplosionColorBase() const
+Defcon::EColor Defcon::CMunchie::GetExplosionColorBase() const
 {
-	return CGameColors::green;
+	return EColor::green;
 }
 
 
@@ -379,7 +379,7 @@ Defcon::CBigRed::CBigRed()
 	Mass = PLAYER_MASS * 22;
 	bIsCollisionInjurious = true;
 	m_bPreferTargetUnderside = FRAND >= 0.5f;
-	m_fBrightness = FRAND * 0.1f + 0.4f;
+	Brightness = FRAND * 0.1f + 0.4f;
 	m_fSquakTime = 0;
 	//m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
 
@@ -409,7 +409,7 @@ void Defcon::CBigRed::Move(float fTime)
 	//this->DoPhysics2(fTime);
 	CFPoint orgpos = Position;
 
- 	IGameObject* pTarget = m_pTarget;
+ 	IGameObject* pTarget = TargetPtr;
 
 	if(pTarget != nullptr)
 	{
@@ -461,9 +461,9 @@ void Defcon::CBigRed::Move(float fTime)
 						: ILiveGameObject::ctlBack;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = GameTime();
+					ControlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
-					m_ctlStartTime[ctl]);
+					ControlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
 			}
 			else
@@ -488,9 +488,9 @@ void Defcon::CBigRed::Move(float fTime)
 						: ILiveGameObject::ctlDown;
 
 				if(this->NavControl_Duration(ctl) == 0)
-					m_ctlStartTime[ctl] = GameTime();
+					ControlStartTime[ctl] = GameTime();
 				this->SetNavControl(ctl, true, 
-					m_ctlStartTime[ctl]);
+					ControlStartTime[ctl]);
 				this->SetNavControl(ctl2, false, 0);
 			}
 			else
@@ -510,7 +510,7 @@ void Defcon::CBigRed::Move(float fTime)
 			if(xd < 350 && FRAND < 0.02 && m_fSquakTime == 0.0f)
 			{
 				m_fSquakTime = 0.0001f;
-				gpAudio->OutputSound(snd_bigred);
+				gpAudio->OutputSound(bigred);
 			}
 			if(m_fSquakTime != 0.0f)
 			{
@@ -529,7 +529,7 @@ void Defcon::CBigRed::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapp
 }
 
 
-int Defcon::CBigRed::GetExplosionColorBase() const
+Defcon::EColor Defcon::CBigRed::GetExplosionColorBase() const
 {
-	return CGameColors::red;
+	return EColor::red;
 }

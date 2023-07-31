@@ -120,7 +120,7 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 
 	// Define which color to make the debris.
 
-	int	cby = CGameColors::purple;
+	const auto cby = EColor::purple;
 	maxsize *= 1.5f;
 
 
@@ -132,8 +132,8 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 	{
 		CFlak* pFlak = new CFlak;
 		pFlak->m_eColorbaseYoung = cby;
-		pFlak->m_eColorbaseOld = cby;
-		pFlak->m_fLargestSize = maxsize;
+		pFlak->m_eColorbaseOld   = cby;
+		pFlak->m_fLargestSize    = maxsize;
 		pFlak->m_bFade = bDieOff;
 		pFlak->m_bCold = true;
 

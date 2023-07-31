@@ -18,7 +18,7 @@ namespace Defcon
 {
 	class CEnemy : public ILiveGameObject
 	{
-		// Base class for all hostile enemy objects.
+		// Base class for all enemy objects.
 
 		typedef ILiveGameObject Super;
 
@@ -28,28 +28,18 @@ namespace Defcon
 			CEnemy();
 			virtual ~CEnemy();
 
-			virtual	void	Init					(const CFPoint& ArenaSize, const CFPoint& ScreenSize) override;
-			virtual void	Notify					(EMessage, void*);
+			virtual void   Move          (float) override;
 
-			virtual void	Move					(float);
-			virtual void	Draw					(FPaintArguments&, const I2DCoordMapper&);
-			virtual void	OnAboutToDie			();
-
-			virtual void	Explode					(CGameObjectCollection& goc) { Super::Explode(goc); }
-			virtual int		GetExplosionColorBase	() const { return Super::GetExplosionColorBase(); }
-			virtual float	GetExplosionMass		() const { return Super::GetExplosionMass(); }
-
-			virtual void	SetTarget				(IGameObject* p)	{ m_pTarget = p; }
-
-			virtual bool	Fireballs				() const { return true; }
+			virtual void   SetTarget     (IGameObject* p)    { TargetPtr = p; }
+			virtual bool   Fireballs     () const override   { return true; }
 
 
 		protected:
 
-			IGameObject*	m_pTarget = nullptr;
+			IGameObject*    TargetPtr = nullptr;
 
-			float			m_fBrightness;
-			float			m_ctlStartTime[Super::numCtls];
+			float           Brightness;
+			float           ControlStartTime[Super::numCtls];
 	};
 }
 

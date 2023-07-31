@@ -191,9 +191,9 @@ void Defcon::CBomber::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapp
 }
 
 
-int Defcon::CBomber::GetExplosionColorBase() const
+Defcon::EColor Defcon::CBomber::GetExplosionColorBase() const
 {
-	return CGameColors::lightblue;
+	return EColor::lightblue;
 }
 
 

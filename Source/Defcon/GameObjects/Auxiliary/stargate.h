@@ -27,7 +27,7 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move      (float) override;
+			//virtual void Move      (float) override;
 			virtual void Draw      (FPaintArguments&, const I2DCoordMapper&) override;
 			virtual void DrawSmall (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
 			

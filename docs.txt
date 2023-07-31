@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-July 29, 2023
+July 30, 2023
 
 Chapters:
 
@@ -119,6 +119,9 @@ to using a TArray). As time goes by, these things will be addressed.
 Memory usage: the original code uses operator new/delete. Someday we 
 might have all dynamic objects derive from UObject to use UE's garbage collector, 
 but new/delete is actually very fast.
+
+Each UUserWidget C++ class usually ends with the word "Base". This is to 
+help distinguish it from the Blueprint widget which subclasses it.
 
 The arenas from the Win32 game are now full-screen UUserWidgets (views) which are 
 managed by the game instance. As the player navigates the UI and starts/completes 

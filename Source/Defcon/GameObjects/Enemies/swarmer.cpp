@@ -72,7 +72,7 @@ void Defcon::CSwarmer::Move(float fTime)
 	Inertia = Position;
 
 
-	IGameObject* pTarget = m_pTarget;
+	IGameObject* pTarget = TargetPtr;
 
 	if(pTarget == nullptr)
 		m_fTimeTargetWithinRange = 0.0f;
@@ -124,7 +124,7 @@ void Defcon::CSwarmer::Move(float fTime)
 
 			if(CountdownToMakeSound <= 0.0f)
 			{
-				gpAudio->OutputSound(Defcon::snd_swarmer);
+				gpAudio->OutputSound(Defcon::swarmer);
 				CountdownToMakeSound = Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX);
 			}
 
@@ -164,7 +164,7 @@ void Defcon::CSwarmer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& map
 
 void Defcon::CSwarmer::Explode(CGameObjectCollection& debris)
 {
-	const int cby = CGameColors::red;
+	const auto cby = EColor::red;
 
 	bMortal = true;
 	Lifespan = 0.0f;

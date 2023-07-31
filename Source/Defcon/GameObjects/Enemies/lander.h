@@ -21,7 +21,7 @@ namespace Defcon
 #endif
 			virtual void Move(float);
 			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual int GetExplosionColorBase() const;
+			virtual EColor GetExplosionColorBase  () const override;
 
 			void SetDoChaseHumans(bool b) { m_bChaseNearestHuman = b; }
 

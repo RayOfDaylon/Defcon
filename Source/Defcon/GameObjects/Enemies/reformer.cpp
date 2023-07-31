@@ -93,9 +93,6 @@ void Defcon::CReformer::Move(float fTime)
 
 void Defcon::CReformer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
 {
-	CEnemy::Draw(framebuf, mapper);
-
-
 	m_partLocs[0] = Position;
 
 	float f = (float)fmod(Age, AnimSpeed) / AnimSpeed;
@@ -180,7 +177,7 @@ void Defcon::CReformer::Explode(CGameObjectCollection& debris)
 
 
 #if 1
-	const int cby = CGameColors::gray;
+	const auto cby = EColor::gray;
 
 
 	for(int32 i = 0; i < 20; i++)
@@ -305,7 +302,7 @@ void Defcon::CReformerPart::Move(float fTime)
 
 	if(pClosest == nullptr)
 	{
-		IGameObject* pTarget = m_pTarget;
+		IGameObject* pTarget = TargetPtr;
 
 		if(pTarget == nullptr)
 			m_fTimeTargetWithinRange = 0.0f;
@@ -356,7 +353,7 @@ void Defcon::CReformerPart::Move(float fTime)
 				&& SGN(Orientation.Fwd.x) == SGN(dir.x))
 			{
 				gpArena->FireBullet(*this, Position, 1, 1);
-				gpAudio->OutputSound(Defcon::snd_swarmer);
+				gpAudio->OutputSound(Defcon::swarmer);
 			}
 		}
 
@@ -406,7 +403,7 @@ void Defcon::CReformerPart::Draw(FPaintArguments& framebuf, const I2DCoordMapper
 
 void Defcon::CReformerPart::Explode(CGameObjectCollection& debris)
 {
-	const int cby = CGameColors::gray;
+	const auto cby = EColor::gray;
 
 	bMortal = true;
 	Lifespan = 0.0f;

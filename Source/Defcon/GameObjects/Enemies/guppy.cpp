@@ -27,7 +27,7 @@ Defcon::CGuppy::CGuppy()
 	Type = EObjType::GUPPY;
 	PointValue = GUPPY_VALUE;
 	State = lounging;
-	m_pTarget = nullptr;
+	TargetPtr = nullptr;
 	float speed = FRANDRANGE(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
 	if(FRAND > 0.5f) 
 		speed *= -1;
@@ -36,7 +36,7 @@ Defcon::CGuppy::CGuppy()
 	RadarColor = C_ORANGE;
 
 	AnimSpeed = FRAND * 0.6f + 0.6f;
-	m_fBrightness = 1.0f;
+	Brightness = 1.0f;
 	TimeTargetWithinRange = 0.0f;
 	Amplitude = FRANDRANGE(0.25f, 0.4f);
 	FiringCountdown = 1.0f;
@@ -69,7 +69,7 @@ void Defcon::CGuppy::Move(float fTime)
 
 	Inertia = Position;
 	
-	IGameObject* pTarget = m_pTarget;
+	IGameObject* pTarget = TargetPtr;
 
 	if(pTarget == nullptr)
 	{
@@ -231,9 +231,9 @@ void Defcon::CGuppy::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mappe
 }
 
 
-int Defcon::CGuppy::GetExplosionColorBase() const
+Defcon::EColor Defcon::CGuppy::GetExplosionColorBase() const
 {
-	return CGameColors::magenta;
+	return EColor::magenta;
 }
 
 
@@ -245,7 +245,7 @@ float Defcon::CGuppy::GetExplosionMass() const
 
 void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
 {
-	const int cby = CGameColors::magenta;
+	const auto cby = EColor::magenta;
 
 	bMortal = true;
 	Lifespan = 0.0f;
@@ -254,8 +254,8 @@ void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
 	for(int32 i = 0; i < 20; i++)
 	{
 		CFlak* pFlak = new CFlak;
-		pFlak->m_eColorbaseYoung = BRAND ? CGameColors::magenta : CGameColors::red;
-		pFlak->m_eColorbaseOld = BRAND ? CGameColors::magenta : CGameColors::orange;
+		pFlak->m_eColorbaseYoung = BRAND ? EColor::magenta : EColor::red;
+		pFlak->m_eColorbaseOld = BRAND ? EColor::magenta : EColor::orange;
 		pFlak->m_bCold = true;
 		pFlak->m_fLargestSize = 6;
 		pFlak->m_bFade = true;//bDieOff;

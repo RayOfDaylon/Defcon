@@ -12,7 +12,7 @@
 
 
 
-#define DEBUG_MODULE      1
+#define DEBUG_MODULE      0
 
 #if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
@@ -36,9 +36,6 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 
 	Daylon::SetRootCanvas(RootCanvas);
 	Daylon::SetWidgetTree(WidgetTree);
-
-	//PlayerShipRightAtlas ->Atlas.InitCache();
-	//PlayerShipLeftAtlas  ->Atlas.InitCache();
 
 	// Load up the GameObjectResources global.
 

@@ -23,7 +23,7 @@ namespace Defcon
 			virtual bool  Fireballs             () const override { return false; }
 			virtual void  Explode               (CGameObjectCollection&) override;
 			virtual float GetExplosionMass      () const override;
-			virtual int   GetExplosionColorBase () const override;
+			virtual EColor GetExplosionColorBase  () const override;
 
 			float					TimeTargetWithinRange;
 			CFPoint					TargetOffset;

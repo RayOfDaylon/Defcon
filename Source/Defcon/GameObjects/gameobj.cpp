@@ -189,12 +189,12 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 */
 
 	// Define which color to make the debris.
-	int cby = this->GetExplosionColorBase();
+	auto cby = this->GetExplosionColorBase();
 	maxsize *= this->GetExplosionMass();
 	
 	if(this->GetType() != EObjType::HUMAN && IRAND(3) == 1)
 	{
-		//cby = CGameColors::gray;
+		//cby = EColor::gray;
 	}
 
 	bool bDieOff = (FRAND >= 0.25f);
@@ -247,7 +247,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 
 		if(this->GetType() != EObjType::HUMAN && IRAND(3) == 1)
 		{
-			cby = CGameColors::gray;
+			cby = EColor::gray;
 		}
 		else
 		{
@@ -458,7 +458,7 @@ void                 Defcon::IGameObject::SetExternalOwnership(bool b)         {
 bool                 Defcon::IGameObject::IsMissionTarget() const              { return bMissionTarget; }
 void                 Defcon::IGameObject::SetAsMissionTarget(bool b)           { bMissionTarget = b; }
 const FLinearColor&  Defcon::IGameObject::GetRadarColor() const                { return RadarColor; }
-int                  Defcon::IGameObject::GetExplosionColorBase() const        { return CGameColors::gray; }
+Defcon::EColor       Defcon::IGameObject::GetExplosionColorBase() const        { return EColor::gray; }
 
 
 

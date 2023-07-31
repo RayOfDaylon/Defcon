@@ -23,8 +23,8 @@
 
 Defcon::CFlak::CFlak()
 	:
-	m_eColorbaseOld(CGameColors::red),
-	m_eColorbaseYoung(CGameColors::gray),
+	m_eColorbaseOld(EColor::red),
+	m_eColorbaseYoung(EColor::gray),
 	m_bCold(false)
 {
 	ParentType = Type;
@@ -93,14 +93,14 @@ void Defcon::CFlak::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper
 		{
 			// flak piece is old.
 
-			Color = IRAND(4) != 0 ? gGameColors.GetColor(m_eColorbaseOld, fYouth) : gGameColors.GetColor(CGameColors::red, fYouth);
+			Color = IRAND(4) != 0 ? gGameColors.GetColor(m_eColorbaseOld, fYouth) : gGameColors.GetColor(EColor::red, fYouth);
 		}
 		else
 		{
 			// flak piece is young.
 			Color = IRAND(4) != 0 ? 
 				(BRAND ? C_WHITE : gGameColors.GetColor(m_eColorbaseYoung /*m_eColorbaseOld*/, fYouth))
-				: gGameColors.GetColor(IRAND(3), fYouth);
+				: gGameColors.GetColor((Defcon::EColor)IRAND(3), fYouth);
 		}
 
 		const auto S = FVector2D(r.Width(), r.Height());
@@ -197,7 +197,7 @@ void Defcon::CGlowingFlak::Draw(FPaintArguments& framebuf, const I2DCoordMapper&
 				color = (
 					rand()%4 ? 
 					gGameColors.GetColor(m_eColorbaseOld, fYouth) :
-					gGameColors.GetColor(CGameColors::red, fYouth));
+					gGameColors.GetColor(EColor::red, fYouth));
 
 			}
 			else
@@ -313,7 +313,7 @@ void Defcon::CPuff::Draw
 		
 		orgbr = (HBRUSH_)SelectGdiObject_(
 			dc, 
-			gGameColors.GetBrush(CGameColors::gray, m_fBrightest*fYouth*0.5f));		
+			gGameColors.GetBrush(EColor::gray, m_fBrightest*fYouth*0.5f));		
 
 		Ellipse_(dc, r.left, r.top, r.right, r.bottom);
 

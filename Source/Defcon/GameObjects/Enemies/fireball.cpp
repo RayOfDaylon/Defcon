@@ -156,9 +156,9 @@ void Defcon::CFireball::Draw(FPaintArguments& framebuf, const I2DCoordMapper& ma
 }
 
 
-int Defcon::CFireball::GetExplosionColorBase() const
+Defcon::EColor Defcon::CFireball::GetExplosionColorBase() const
 {
-	return CGameColors::red;
+	return EColor::red;
 }
 
 
@@ -170,7 +170,7 @@ float Defcon::CFireball::GetExplosionMass() const
 
 void Defcon::CFireball::Explode(CGameObjectCollection& debris)
 {
-	const int cby = BRAND ? CGameColors::yellow : CGameColors::orange;
+	const auto cby = BRAND ? EColor::yellow : EColor::orange;
 
 	bMortal = true;
 	Lifespan = 0.0f;
@@ -180,7 +180,7 @@ void Defcon::CFireball::Explode(CGameObjectCollection& debris)
 	{
 		CFlak* pFlak = new CFlak;
 		pFlak->m_eColorbaseYoung = cby;
-		pFlak->m_eColorbaseOld = BRAND ? CGameColors::yellow : CGameColors::red;
+		pFlak->m_eColorbaseOld = BRAND ? EColor::yellow : EColor::red;
 		pFlak->m_bCold = true;
 		pFlak->m_fLargestSize = 5;
 		pFlak->m_bFade = true;//bDieOff;

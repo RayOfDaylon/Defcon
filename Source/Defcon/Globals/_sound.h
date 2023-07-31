@@ -15,38 +15,38 @@ namespace Defcon
 {
 	enum EAudioTrack 
 	{
-		snd_invalid_selection,
-		snd_focus_changed,
-		snd_player_dying,
-		snd_ship_exploding,
-		snd_ship_exploding_small,
-		snd_ship_exploding_medium,
-		snd_ship_exploding2,			
-		snd_ship_exploding2a,			
-		snd_ship_exploding2b,			
-		snd_ship_exploding_small2,		// not used
-		snd_smartbomb,
-		snd_laserfire, 
-		snd_laserfire_alt,
-		snd_mission_chosen,
-		snd_wave_start, 
-		snd_wave_end,
-		snd_ship_materialize,
-		snd_human_abducted,
-		snd_extra_ship,
-		snd_shieldbonk,
-		snd_swarmer,
-		snd_bullet,
-		snd_bullet2,
-		snd_bullet3,
-		snd_select,
-		snd_ghostflight,
-		snd_phred, //munchie,
-		snd_munchie, // munchie2
-		snd_bigred, // munchie3
-		snd_warp,
-		snd_playership_thrust,
-		snd_gulp,
+		invalid_selection,
+		focus_changed,
+		player_dying,
+		ship_exploding,
+		ship_exploding_small,
+		ship_exploding_medium,
+		ship_exploding2,			
+		ship_exploding2a,			
+		ship_exploding2b,			
+		ship_exploding_small2,		// not used
+		smartbomb,
+		laserfire, 
+		laserfire_alt,
+		mission_chosen,
+		wave_start, 
+		wave_end,
+		ship_materialize,
+		human_abducted,
+		extra_ship,
+		shieldbonk,
+		swarmer,
+		bullet,
+		bullet2,
+		bullet3,
+		select,
+		ghostflight,
+		phred, //munchie,
+		munchie, // munchie2
+		bigred, // munchie3
+		warp,
+		playership_thrust,
+		gulp,
 
 		numSounds
 	};
@@ -62,24 +62,8 @@ namespace Defcon
 			CAudioManager(UObject* InWorldContextObject);
 			virtual ~CAudioManager();
 
-			void AddTrack(EAudioTrack Track, USoundBase* Asset)
-			{
-				if(!Tracks.Find(Track))
-				{
-					Tracks.Add(Track, Asset);
-				}
-			}
-
-			USoundBase* GetTrack(EAudioTrack Track)
-			{
-				auto p = Tracks.Find(Track);
-				if(p == nullptr)
-				{
-					return nullptr;
-				}
-
-				return *p;
-			}
+			void                 AddTrack(EAudioTrack Track, USoundBase* Asset);
+			USoundBase*          GetTrack(EAudioTrack Track);
 
 		    bool                 CreateSoundObjects   ();
 			void                 DestroySoundObjects  ();

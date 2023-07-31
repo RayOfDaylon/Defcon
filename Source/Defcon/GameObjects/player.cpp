@@ -222,7 +222,7 @@ void Defcon::CPlayer::Move(float DeltaTime)
 #if 0
 	if(!m_bBirthsoundPlayed && Age > PLAYER_BIRTHDURATION * .66f)
 	{
-		gpAudio->OutputSound(snd_ship_materialize);
+		gpAudio->OutputSound(ship_materialize);
 		m_bBirthsoundPlayed = true;
 	}
 #endif
@@ -383,7 +383,7 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 		return;
 	}
 
-	gpAudio->OutputSound(Defcon::snd_player_dying);
+	gpAudio->OutputSound(Defcon::player_dying);
 	//time_wait(250);
  
 
@@ -412,11 +412,13 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 */
 
 	// Define which color to make the debris.
-	int cby = this->GetExplosionColorBase();
+	auto cby = this->GetExplosionColorBase();
 	maxsize *= this->GetExplosionMass();
 	
 	if(this->GetType() != EObjType::HUMAN && IRAND(3) == 1)
-		cby = CGameColors::gray;
+	{
+		cby = EColor::gray;
+	}
 
 	bool bDieOff = (FRAND >= 0.25f);
 	int i;

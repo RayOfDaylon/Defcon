@@ -74,5 +74,4 @@ class DEFCON_API UDefconViewBase : public UUserWidget
 	
 	float Age = 0.0f;
 	mutable bool bDoneActivating = false;
-	//mutable bool bPaintingOccurring = false;
 };

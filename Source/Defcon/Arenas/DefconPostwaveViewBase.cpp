@@ -74,7 +74,7 @@ void UDefconPostwaveViewBase::OnFinishActivating()
 	});
 
 
-	gpAudio->OutputSound(Defcon::EAudioTrack::snd_warp);
+	gpAudio->OutputSound(Defcon::EAudioTrack::warp);
 
 	// Start by collapsing the dead human images at the right edge of the box.
 	// and hiding (NOT collapsing) all the other human images. 
@@ -127,8 +127,6 @@ void UDefconPostwaveViewBase::NativeTick(const FGeometry& MyGeometry, float Delt
 	
 	Daylon::Hide(Starfield);
 
-	//auto GI = UDefconUtils::GetGameInstance(this);
-
 	if(!Subtitle->GetText().IsEmpty()) // current mission is already the next one, we need the state for the mission prior.
 	{
 		Daylon::Show(HumansRemainingGraph);
@@ -136,7 +134,7 @@ void UDefconPostwaveViewBase::NativeTick(const FGeometry& MyGeometry, float Delt
 		if(!bPlayedWaveEndSound)
 		{
 			bPlayedWaveEndSound = true;
-			gpAudio->OutputSound(Defcon::EAudioTrack::snd_wave_end);
+			gpAudio->OutputSound(Defcon::EAudioTrack::wave_end);
 		}
 
 		// Populate the HumansRemainingGraph box, at one human per 1/8 second.

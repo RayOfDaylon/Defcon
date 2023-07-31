@@ -9,6 +9,7 @@
 #include "Globals/prefs.h"
 #include "Common/util_geom.h"
 #include "Common/util_color.h"
+#include "Globals/GameColors.h"
 #include "Globals/GameObjectResources.h"
 
 //#define LIFESPAN_DEAD 0.0001f
@@ -76,7 +77,7 @@ namespace Defcon
 			virtual IGameObject*  CreateFireball        (CGameObjectCollection&, float&);
 			virtual bool          Fireballs             () const;
 			virtual void          Explode               (CGameObjectCollection&);
-			virtual int           GetExplosionColorBase () const;
+			virtual EColor        GetExplosionColorBase () const;
 			virtual float         GetExplosionMass      () const;
 			IGameObject*          CreateFireblast       (CGameObjectCollection& debris, float& fBrightBase);
 			virtual bool          Fireblasts            () const;

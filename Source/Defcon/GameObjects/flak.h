@@ -38,8 +38,8 @@ namespace Defcon
 			float	m_fLargestSize = 6;
 			bool	m_bFade = true;
 
-			int		m_eColorbaseOld;
-			int		m_eColorbaseYoung;
+			EColor	m_eColorbaseOld;
+			EColor	m_eColorbaseYoung;
 			bool	m_bCold;
 
 		protected:

@@ -89,7 +89,7 @@ void UDefconMainMenuViewBase::UpdateMenuReadout()
 
 void UDefconMainMenuViewBase::NavigateMenu(Daylon::EListNavigationDirection Direction)
 {
-	gpAudio->OutputSound(Defcon::EAudioTrack::snd_focus_changed);
+	gpAudio->OutputSound(Defcon::EAudioTrack::focus_changed);
 
 	CurrentItem += (int32)Direction;
 	

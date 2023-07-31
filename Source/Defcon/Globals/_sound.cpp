@@ -87,3 +87,25 @@ bool Defcon::CAudioManager::IsSoundPlaying() const
 void Defcon::CAudioManager::StopPlayingSound()
 {
 }
+
+
+void Defcon::CAudioManager::AddTrack(EAudioTrack Track, USoundBase* Asset)
+{
+	if(!Tracks.Find(Track))
+	{
+		Tracks.Add(Track, Asset);
+	}
+}
+
+
+USoundBase* Defcon::CAudioManager::GetTrack(EAudioTrack Track)
+{
+	auto Sound = Tracks.Find(Track);
+
+	if(Sound == nullptr)
+	{
+		return nullptr;
+	}
+
+	return *Sound;
+}

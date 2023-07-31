@@ -32,7 +32,7 @@ Defcon::CSpacehum::CSpacehum()
 	AnimSpeed = FRAND * 0.05f + 0.15f;
 	bCanBeInjured = true;
 	bIsCollisionInjurious = true;
-	m_fBrightness = FRANDRANGE(0.9f, 1.0f);
+	Brightness = FRANDRANGE(0.9f, 1.0f);
 
 	m_fSpeed = (float)gDefconGameInstance->GetScore() / 250;
 	m_fSpeed *= FRANDRANGE(0.9f, 1.33f);
@@ -88,7 +88,7 @@ void Defcon::CSpacehum::Draw(FPaintArguments& framebuf, const I2DCoordMapper& ma
 
 void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 {
-	const int cby = CGameColors::gray;
+	const auto cby = EColor::gray;
 
 	bMortal = true;
 	Lifespan = 0.0f;

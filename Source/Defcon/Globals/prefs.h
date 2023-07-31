@@ -172,137 +172,141 @@ namespace Defcon
 
 extern Defcon::CPrefs	gPrefs;
 
-#define CONTROLLER_EXPLICIT_REVERSE	\
-	(bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::controller_explicit_reverse].Value)
 
+#define PREFVAL(_key)                  gPrefs.m_pref[Defcon::CPrefs::Pref::_key].Value
+#define FPREFVAL(_key)                 PREFVAL(_key)
+#define IPREFVAL(_key)                 (int32)PREFVAL(_key)
+#define BPREFVAL(_key)                 (bool)(1.0f == PREFVAL(_key))
 
-#define PLANET_TO_SCREEN_RATIO      gPrefs.m_pref[Defcon::CPrefs::Pref::planet_to_screen_ratio].Value
+#define CONTROLLER_EXPLICIT_REVERSE    BPREFVAL(controller_explicit_reverse)
 
-#define PLAYER_REBIRTH_DELAY        gPrefs.m_pref[Defcon::CPrefs::Pref::player_rebirth_delay].Value
-#define PLAYER_BIRTHDURATION        gPrefs.m_pref[Defcon::CPrefs::Pref::player_birthduration].Value
-#define PLAYER_BIRTHDEBRISDIST      gPrefs.m_pref[Defcon::CPrefs::Pref::player_birthdebrisdist].Value
-#define PLAYER_REWARD_POINTS        (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::player_reward_points].Value
-#define PLAYER_POSMARGIN            gPrefs.m_pref[Defcon::CPrefs::Pref::player_posmargin].Value
-#define PLAYER_MARGINSETTLESPEED    gPrefs.m_pref[Defcon::CPrefs::Pref::player_marginsettlespeed].Value
-#define PLAYER_MAXTHRUST            gPrefs.m_pref[Defcon::CPrefs::Pref::player_maxthrust].Value
-#define PLAYER_MASS                 gPrefs.m_pref[Defcon::CPrefs::Pref::player_mass].Value
-#define PLAYER_DRAG                 gPrefs.m_pref[Defcon::CPrefs::Pref::player_drag].Value
+#define PLANET_TO_SCREEN_RATIO      PREFVAL(planet_to_screen_ratio)
 
-#define SMARTBOMB_INITIAL           (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::smartbomb_initial].Value
-#define SMARTBOMB_VALUE             (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::smartbomb_value].Value
-#define SMARTBOMB_RESUPPLY          (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::smartbomb_resupply].Value
-#define SMARTBOMB_LIFESPAN          gPrefs.m_pref[Defcon::CPrefs::Pref::smartbomb_lifespan].Value
-#define SMARTBOMB_WAVEPUSH          gPrefs.m_pref[Defcon::CPrefs::Pref::smartbomb_wavepush].Value//200.0f
-#define SMARTBOMB_WAVEPUSHMIN       gPrefs.m_pref[Defcon::CPrefs::Pref::smartbomb_wavepushmin].Value//100.0f
-#define SMARTBOMB_MAX_FLASHSCREEN   (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::smartbomb_max_flashscreen].Value
+#define PLAYER_REBIRTH_DELAY        PREFVAL(player_rebirth_delay)
+#define PLAYER_BIRTHDURATION        PREFVAL(player_birthduration)
+#define PLAYER_BIRTHDEBRISDIST      PREFVAL(player_birthdebrisdist)
+#define PLAYER_REWARD_POINTS        IPREFVAL(player_reward_points)
+#define PLAYER_POSMARGIN            PREFVAL(player_posmargin)
+#define PLAYER_MARGINSETTLESPEED    PREFVAL(player_marginsettlespeed)
+#define PLAYER_MAXTHRUST            PREFVAL(player_maxthrust)
+#define PLAYER_MASS                 PREFVAL(player_mass)
+#define PLAYER_DRAG                 PREFVAL(player_drag)
 
-#define HUMANS_COUNT                (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::humans_count].Value
-#define HUMAN_WITHINRANGE           gPrefs.m_pref[Defcon::CPrefs::Pref::human_withinrange].Value
-#define HUMAN_DISTRIBUTION          gPrefs.m_pref[Defcon::CPrefs::Pref::human_distribution].Value
-#define HUMAN_TERMINALVELOCITY      gPrefs.m_pref[Defcon::CPrefs::Pref::human_terminalvelocity].Value
-#define HUMAN_BONUS_VALUE           (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::human_bonus_value].Value
+#define SMARTBOMB_INITIAL           IPREFVAL(smartbomb_initial)
+#define SMARTBOMB_VALUE             IPREFVAL(smartbomb_value)
+#define SMARTBOMB_RESUPPLY          IPREFVAL(smartbomb_resupply)
+#define SMARTBOMB_LIFESPAN          PREFVAL(smartbomb_lifespan)
+#define SMARTBOMB_WAVEPUSH          PREFVAL(smartbomb_wavepush)//200.0f
+#define SMARTBOMB_WAVEPUSHMIN       PREFVAL(smartbomb_wavepushmin)//100.0f
+#define SMARTBOMB_MAX_FLASHSCREEN   IPREFVAL(smartbomb_max_flashscreen)
+
+#define HUMANS_COUNT                IPREFVAL(humans_count)
+#define HUMAN_WITHINRANGE           PREFVAL(human_withinrange)
+#define HUMAN_DISTRIBUTION          PREFVAL(human_distribution)
+#define HUMAN_TERMINALVELOCITY      PREFVAL(human_terminalvelocity)
+#define HUMAN_BONUS_VALUE           IPREFVAL(human_bonus_value)
 
 
 // When mission starts or enemies run low, 
 // how much time before (more) enemies appear.
-#define DELAY_BEFORE_ATTACK         gPrefs.m_pref[Defcon::CPrefs::Pref::delay_before_attack].Value
+#define DELAY_BEFORE_ATTACK         PREFVAL(delay_before_attack)
 
 // When enemies plentiful, how much time 
 // before more enemies appear.
-#define DELAY_BETWEEN_REATTACK      gPrefs.m_pref[Defcon::CPrefs::Pref::delay_between_reattack].Value
+#define DELAY_BETWEEN_REATTACK      PREFVAL(delay_between_reattack)
 
-#define LANDER_DESCENT_SPEED        gPrefs.m_pref[Defcon::CPrefs::Pref::lander_descent_speed].Value
-
-/*
-#define LANDERS_PER_ATTACK          (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::landers_per_attack].Value
-#define BOMBERS_PER_ATTACK          (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::bombers_per_attack].Value
-#define HUNTERS_PER_ATTACK          (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::hunters_per_attack].Value
-#define BAITERS_PER_ATTACK          (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::baiters_per_attack].Value
-#define FIREBOMBERS_PER_ATTACK      (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::firebombers_per_attack].Value
-#define DYNAMOS_PER_ATTACK          (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::dynamos_per_attack].Value
-#define PODS_PER_ATTACK             (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::pods_per_attack].Value
-*/
-#define ATTACK_INITIALDISTANCE      gPrefs.m_pref[Defcon::CPrefs::Pref::attack_initialdistance].Value
+#define LANDER_DESCENT_SPEED        PREFVAL(lander_descent_speed)
 
 /*
-#define LANDERS_IN_FIRST_WAVE       (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::landers_in_first_wave].Value
-#define HUNTERS_IN_FIRST_WAVE       (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::hunters_in_first_wave].Value
-#define BOMBERS_IN_FIRST_WAVE       (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::bombers_in_first_wave].Value
-#define BAITERS_IN_FIRST_WAVE       (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::baiters_in_first_wave].Value
-#define FIREBOMBERS_IN_FIRST_WAVE   (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::firebombers_in_first_wave].Value
-#define DYNAMOS_IN_FIRST_WAVE       (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::dynamos_in_first_wave].Value
-#define PODS_IN_FIRST_WAVE          (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::pods_in_first_wave].Value
+#define LANDERS_PER_ATTACK          IPREFVAL(landers_per_attack)
+#define BOMBERS_PER_ATTACK          IPREFVAL(bombers_per_attack)
+#define HUNTERS_PER_ATTACK          IPREFVAL(hunters_per_attack)
+#define BAITERS_PER_ATTACK          IPREFVAL(baiters_per_attack)
+#define FIREBOMBERS_PER_ATTACK      IPREFVAL(firebombers_per_attack)
+#define DYNAMOS_PER_ATTACK          IPREFVAL(dynamos_per_attack)
+#define PODS_PER_ATTACK             IPREFVAL(pods_per_attack)
+*/
+#define ATTACK_INITIALDISTANCE      PREFVAL(attack_initialdistance)
+
+/*
+#define LANDERS_IN_FIRST_WAVE       IPREFVAL(landers_in_first_wave)
+#define HUNTERS_IN_FIRST_WAVE       IPREFVAL(hunters_in_first_wave)
+#define BOMBERS_IN_FIRST_WAVE       IPREFVAL(bombers_in_first_wave)
+#define BAITERS_IN_FIRST_WAVE       IPREFVAL(baiters_in_first_wave)
+#define FIREBOMBERS_IN_FIRST_WAVE   IPREFVAL(firebombers_in_first_wave)
+#define DYNAMOS_IN_FIRST_WAVE       IPREFVAL(dynamos_in_first_wave)
+#define PODS_IN_FIRST_WAVE          IPREFVAL(pods_in_first_wave)
 */
 
 
-#define ARENA_BOGDOWN              (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::arena_bogdown].Value)
-#define BAITER_PROB                gPrefs.m_pref[Defcon::CPrefs::Pref::baiter_prob].Value
-#define BAITER_SPAWN_FREQUENCY     gPrefs.m_pref[Defcon::CPrefs::Pref::baiter_spawn_frequency].Value
-#define BAITER_VALUE               (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::baiter_value].Value
-#define BIGRED_VALUE               (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::bigred_value].Value
-#define BOMBER_VALUE               (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::bomber_value].Value
-#define BOUNCER_VALUE              (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::bouncer_value].Value
-#define BULLET_DAMAGE              (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::bullet_damage].Value
-#define BULLETS_HIT_TERRAIN        (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::bullets_hit_terrain].Value)
-#define COLLISION_DAMAGE           (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::collision_damage].Value
-#define DEBRIS_DRAWRADAR           (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::debris_drawradar].Value)
-#define DEBRIS_DUAL_PROB           gPrefs.m_pref[Defcon::CPrefs::Pref::debris_dual_prob].Value
-#define DEBRIS_SMOKE               (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::debris_smoke].Value)
-#define DISPLAY_BLUR               (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::display_blur].Value
-#define DISPLAY_BLUR_METHOD        ((int)gPrefs.m_pref[Defcon::CPrefs::Pref::display_blur_method].Value)
-#define DISPLAY_FULLSCREEN         (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::display_fullscreen].Value)
-#define DISPLAY_HEIGHT             (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::display_height].Value
-#define DISPLAY_HIDEWINDOWFRAME    (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::display_hidewindowframe].Value)
-#define DISPLAY_INTERLACE          (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::display_interlace].Value)
-#define DISPLAY_WIDTH              (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::display_width].Value
-#define DYNAMO_VALUE               (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::dynamo_value].Value
-#define ENEMIES_CANTHURTEACHOTHER  (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::enemies_canthurteachother].Value)
-#define ENEMIES_MINESDONTHURT      (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::enemies_minesdonthurt].Value)
-#define ENEMY_BIRTHDEBRISDIST      gPrefs.m_pref[Defcon::CPrefs::Pref::enemy_birthdebrisdist].Value
-#define ENEMY_BIRTHDURATION        gPrefs.m_pref[Defcon::CPrefs::Pref::enemy_birthduration].Value
-#define FIREBALL_VALUE             (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::fireball_value].Value
+#define ARENA_BOGDOWN              BPREFVAL(arena_bogdown)
+#define BAITER_PROB                PREFVAL(baiter_prob)
+#define BAITER_SPAWN_FREQUENCY     PREFVAL(baiter_spawn_frequency)
+#define BAITER_VALUE               IPREFVAL(baiter_value)
+#define BIGRED_VALUE               IPREFVAL(bigred_value)
+#define BOMBER_VALUE               IPREFVAL(bomber_value)
+#define BOUNCER_VALUE              IPREFVAL(bouncer_value)
+#define BULLET_DAMAGE              IPREFVAL(bullet_damage)
+#define BULLETS_HIT_TERRAIN        BPREFVAL(bullets_hit_terrain)
+#define COLLISION_DAMAGE           IPREFVAL(collision_damage)
+#define DEBRIS_DRAWRADAR           BPREFVAL(debris_drawradar)
+#define DEBRIS_DUAL_PROB           PREFVAL(debris_dual_prob)
+#define DEBRIS_SMOKE               BPREFVAL(debris_smoke)
+#define DISPLAY_BLUR               IPREFVAL(display_blur)
+#define DISPLAY_BLUR_METHOD        IPREFVAL(display_blur_method)
+#define DISPLAY_FULLSCREEN         BPREFVAL(display_fullscreen)
+#define DISPLAY_HEIGHT             IPREFVAL(display_height)
+#define DISPLAY_HIDEWINDOWFRAME    BPREFVAL(display_hidewindowframe)
+#define DISPLAY_INTERLACE          BPREFVAL(display_interlace)
+#define DISPLAY_WIDTH              IPREFVAL(display_width)
+#define DYNAMO_VALUE               IPREFVAL(dynamo_value)
+#define ENEMIES_CANTHURTEACHOTHER  BPREFVAL(enemies_canthurteachother)
+#define ENEMIES_MINESDONTHURT      BPREFVAL(enemies_minesdonthurt)
+#define ENEMY_BIRTHDEBRISDIST      PREFVAL(enemy_birthdebrisdist)
+#define ENEMY_BIRTHDURATION        PREFVAL(enemy_birthduration)
+#define FIREBALL_VALUE             IPREFVAL(fireball_value)
 
-#define FIREBOMBER_SPEED_MIN       gPrefs.m_pref[Defcon::CPrefs::Pref::firebomber_speed_min].Value
-#define FIREBOMBER_SPEED_MAX       gPrefs.m_pref[Defcon::CPrefs::Pref::firebomber_speed_max].Value
-#define FIREBOMBER_TRAVEL_TIME_MIN gPrefs.m_pref[Defcon::CPrefs::Pref::firebomber_travel_time_min].Value
-#define FIREBOMBER_TRAVEL_TIME_MAX gPrefs.m_pref[Defcon::CPrefs::Pref::firebomber_travel_time_max].Value
+#define FIREBOMBER_SPEED_MIN       PREFVAL(firebomber_speed_min)
+#define FIREBOMBER_SPEED_MAX       PREFVAL(firebomber_speed_max)
+#define FIREBOMBER_TRAVEL_TIME_MIN PREFVAL(firebomber_travel_time_min)
+#define FIREBOMBER_TRAVEL_TIME_MAX PREFVAL(firebomber_travel_time_max)
 
-#define FIREBOMBER_VALUE           (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::firebomber_value].Value
+#define FIREBOMBER_VALUE           IPREFVAL(firebomber_value)
 
 
-#define GHOST_PLAYER_DIST_MIN      (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::ghost_player_dist_min].Value 
-#define GHOST_VALUE                (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::ghost_value].Value 
-#define GUPPY_SPEEDMAX             gPrefs.m_pref[Defcon::CPrefs::Pref::guppy_speedmax].Value
-#define GUPPY_SPEEDMIN             gPrefs.m_pref[Defcon::CPrefs::Pref::guppy_speedmin].Value
-#define GUPPY_VALUE                (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::guppy_value].Value
-#define HUMAN_VALUE_DEBARKED       (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::human_value_debarked].Value
-#define HUMAN_VALUE_EMBARKED       (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::human_value_embarked].Value
-#define HUMAN_VALUE_LIBERATED      (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::human_value_liberated].Value
-#define HUNTER_SPEEDMAX            gPrefs.m_pref[Defcon::CPrefs::Pref::hunter_speedmax].Value
-#define HUNTER_SPEEDMIN            gPrefs.m_pref[Defcon::CPrefs::Pref::hunter_speedmin].Value
-#define HUNTER_VALUE               (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::hunter_value].Value
-#define LANDER_ABDUCTODDS          gPrefs.m_pref[Defcon::CPrefs::Pref::lander_abductodds].Value
-#define LANDER_ASCENTRATE          gPrefs.m_pref[Defcon::CPrefs::Pref::lander_ascentrate].Value
-#define LANDER_MATURE              gPrefs.m_pref[Defcon::CPrefs::Pref::lander_mature].Value
-#define LANDER_VALUE               (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::lander_value].Value
-#define LASER_EXTRA_COUNT          (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::laser_extra_count].Value
-#define LASER_MULTI_PROB           gPrefs.m_pref[Defcon::CPrefs::Pref::laser_multi_prob].Value
-#define MEMCOPY_METHOD             (MemcopyMethod)((int)gPrefs.m_pref[Defcon::CPrefs::Pref::memcopy_method].Value)
-#define MENUTEXT_UPPERCASE         (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::menutext_uppercase].Value)
-#define MINE_DAMAGE                (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::mine_damage].Value
-#define MINE_LIFESPAN              gPrefs.m_pref[Defcon::CPrefs::Pref::mine_lifespan].Value
-#define MISSIONNAME_UPPERCASE      (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::missionname_uppercase].Value)
-#define MUNCHIE_VALUE              (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::munchie_value].Value
-#define OBJECT_DRAWBBOX            (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::object_drawbbox].Value)
-#define PHRED_VALUE                (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::phred_value].Value
-#define POD_VALUE                  (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::pod_value].Value
-#define REFORMER_VALUE             (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::reformer_value].Value 
-#define REFORMERPART_VALUE         (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::reformerpart_value].Value 
-#define SCORETIPS_SHOWENEMYPOINTS  (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::scoretips_showenemypoints].Value)
-#define SOUND_ACTIVE               (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::sound_active].Value)
-#define SPACEHUM_VALUE             (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::spacehum_value].Value
-#define STARS_COUNT                (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::stars_count].Value
-#define SWARMER_VALUE              (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::swarmer_value].Value
-#define SWARMERS_PER_POD           (int32)gPrefs.m_pref[Defcon::CPrefs::Pref::swarmers_per_pod].Value
-#define TIME_PRECISE               (bool)(1.0f == gPrefs.m_pref[Defcon::CPrefs::Pref::time_precise].Value)
+#define GHOST_PLAYER_DIST_MIN      IPREFVAL(ghost_player_dist_min) 
+#define GHOST_VALUE                IPREFVAL(ghost_value) 
+#define GUPPY_SPEEDMAX             PREFVAL(guppy_speedmax)
+#define GUPPY_SPEEDMIN             PREFVAL(guppy_speedmin)
+#define GUPPY_VALUE                IPREFVAL(guppy_value)
+#define HUMAN_VALUE_DEBARKED       IPREFVAL(human_value_debarked)
+#define HUMAN_VALUE_EMBARKED       IPREFVAL(human_value_embarked)
+#define HUMAN_VALUE_LIBERATED      IPREFVAL(human_value_liberated)
+#define HUNTER_SPEEDMAX            PREFVAL(hunter_speedmax)
+#define HUNTER_SPEEDMIN            PREFVAL(hunter_speedmin)
+#define HUNTER_VALUE               IPREFVAL(hunter_value)
+#define LANDER_ABDUCTODDS          PREFVAL(lander_abductodds)
+#define LANDER_ASCENTRATE          PREFVAL(lander_ascentrate)
+#define LANDER_MATURE              PREFVAL(lander_mature)
+#define LANDER_VALUE               IPREFVAL(lander_value)
+#define LASER_EXTRA_COUNT          IPREFVAL(laser_extra_count)
+#define LASER_MULTI_PROB           PREFVAL(laser_multi_prob)
+#define MEMCOPY_METHOD             (MemcopyMethod)((int)PREFVAL(memcopy_method))
+#define MENUTEXT_UPPERCASE         BPREFVAL(menutext_uppercase)
+#define MINE_DAMAGE                IPREFVAL(mine_damage)
+#define MINE_LIFESPAN              PREFVAL(mine_lifespan)
+#define MISSIONNAME_UPPERCASE      BPREFVAL(missionname_uppercase)
+#define MUNCHIE_VALUE              IPREFVAL(munchie_value)
+#define OBJECT_DRAWBBOX            BPREFVAL(object_drawbbox)
+#define PHRED_VALUE                IPREFVAL(phred_value)
+#define POD_VALUE                  IPREFVAL(pod_value)
+#define REFORMER_VALUE             IPREFVAL(reformer_value) 
+#define REFORMERPART_VALUE         IPREFVAL(reformerpart_value) 
+#define SCORETIPS_SHOWENEMYPOINTS  BPREFVAL(scoretips_showenemypoints)
+#define SOUND_ACTIVE               BPREFVAL(sound_active)
+#define SPACEHUM_VALUE             IPREFVAL(spacehum_value)
+#define STARS_COUNT                IPREFVAL(stars_count)
+#define SWARMER_VALUE              IPREFVAL(swarmer_value)
+#define SWARMERS_PER_POD           IPREFVAL(swarmers_per_pod)
+#define TIME_PRECISE               BPREFVAL(time_precise)
 

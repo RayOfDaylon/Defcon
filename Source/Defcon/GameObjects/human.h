@@ -27,25 +27,26 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 
-			virtual void InitHuman     (const CFPoint& pt) { Position = pt; m_pCarrier = nullptr; Age = 0.0f; }
+			virtual void   InitHuman              (const CFPoint& pt) { Position = pt; m_pCarrier = nullptr; Age = 0.0f; }
+						   				          
+			virtual void   Move                   (float);
+			virtual void   Draw                   (FPaintArguments&, const I2DCoordMapper&);
+			IGameObject*   GetCarrier             () const { return m_pCarrier; }
+			bool           IsBeingCarried         () const { return (this->GetCarrier() != nullptr); }
+			bool           IsFalling              () const;
+			bool           IsOnGround             () const { return !(this->IsFalling() || this->IsBeingCarried()); }
+			void           SetToNotCarried        () { m_pCarrier = nullptr; }
+						   
+			void           Notify                 (EMessage, void*);
+			bool           Fireballs              () const { return false; }
 
-			virtual void Move          (float);
-			virtual void Draw          (FPaintArguments&, const I2DCoordMapper&);
-			IGameObject* GetCarrier    () const { return m_pCarrier; }
-			bool         IsBeingCarried() const { return (this->GetCarrier() != nullptr); }
-			bool         IsFalling     () const;
-			bool         IsOnGround    () const { return !(this->IsFalling() || this->IsBeingCarried()); }
-			void         SetToNotCarried () { m_pCarrier = nullptr; }
-
-			void         Notify        (EMessage, void*);
-			bool         Fireballs     () const { return false; }
+			virtual void   OnAboutToDie           ();
+			virtual EColor GetExplosionColorBase  () const override;
+			virtual float  GetExplosionMass       () const;
 
 			CGameObjectCollection*	Objects;
 			CGameObjectCollection*	Objects2;
 
-			virtual void  OnAboutToDie          ();
-			virtual int   GetExplosionColorBase () const;
-			virtual float GetExplosionMass      () const;
 
 		private:
 			float			m_fSwitchTime;

@@ -76,7 +76,7 @@ void Defcon::options_arena_inputs::process(const ControllerEvent& evt)
 	switch(evt.what)
 	{
 		case Defcon::EventType::navigate_up:
-			gpAudio->OutputSound(snd_select);
+			gpAudio->OutputSound(select);
 			if(gpArena->State == Defcon::COptionsArena::State::viewing)
 			{
 				if(sCurrentItem_arena_optons == 0)
@@ -88,7 +88,7 @@ void Defcon::options_arena_inputs::process(const ControllerEvent& evt)
 
 
 		case Defcon::EventType::navigate_down:
-			gpAudio->OutputSound(snd_select);
+			gpAudio->OutputSound(select);
 			if(gpArena->State == Defcon::COptionsArena::State::viewing)
 			{
 				if(sCurrentItem_arena_optons == array_size(gPrefs.m_pref)-1)
@@ -536,7 +536,7 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 {
 	m_keys[key].fTimeLastFired = gettime_secs();
 
-	gpAudio->OutputSound(snd_select);
+	gpAudio->OutputSound(select);
 
 	switch(key)
 	{

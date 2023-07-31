@@ -11,39 +11,34 @@
 
 namespace Defcon
 {
+	enum class EColor
+	{
+		gray,
+		yellow,
+		lightyellow,
+		red,
+		blue,
+		lightblue,
+		purple,
+		magenta,
+		orange,
+		green,
+		numbases
+	};
+
+	// gray, yellow, and lightyellow need to be the top three.
+
 	class CGameColors
 	{
 		public:
 			CGameColors();
 			virtual ~CGameColors();
 
-			enum 
-			{ 
-				gray,
-				yellow,
-				lightyellow,
-				red,
-				blue,
-				lightblue,
-				purple,
-				magenta,
-				orange,
-				green,
-				numbases
-			};
-
-			FLinearColor GetColor(int c, float f) const
-				{
-					f = FMath::Max(0, f);
-					f = FMath::Min(1.0f, f);
-					int n = ROUND(f * (array_size(m_c[0])-1));
-					return m_c[c][n];
-				}
+			FLinearColor GetColor(EColor Color, float Brightness) const;
 
 		private:
-			FLinearColor	m_c[numbases][128];
-	}; // CGameColors
-
+			FLinearColor	Colors[(int32)EColor::numbases][32];
+	};
 }
 
 extern Defcon::CGameColors	gGameColors;

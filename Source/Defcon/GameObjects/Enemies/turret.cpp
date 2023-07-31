@@ -63,9 +63,9 @@ const char* Defcon::CTurret::GetClassname() const
 #endif
 
 
-int Defcon::CTurret::GetExplosionColorBase() const
+Defcon::EColor Defcon::CTurret::GetExplosionColorBase() const
 {
-	return CGameColors::lightyellow;
+	return EColor::lightyellow;
 }
 
 
@@ -79,7 +79,7 @@ void Defcon::CTurret::Move(float fTime)
 	//Inertia = Position;
 
 
-	IGameObject* pTarget = m_pTarget;
+	IGameObject* pTarget = TargetPtr;
 
 	if(pTarget == nullptr)
 		m_fTimeTargetWithinRange = 0.0f;
@@ -128,7 +128,7 @@ void Defcon::CTurret::Move(float fTime)
 			/*&& SGN(Orientation.Fwd.x) == SGN(dir.x)*/)
 		{
 			gpArena->FireBullet(*this, Position, 1, 1);
-			//gpAudio->OutputSound(Defcon::snd_swarmer);
+			//gpAudio->OutputSound(Defcon::swarmer);
 		}
 	}
 
@@ -178,7 +178,7 @@ void Defcon::CTurret::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapp
 		bmp.BlitAlphaBrighten(
 			framebuf, ROUND(pt.x), ROUND(pt.y), 
 			w, bmp.GetHeight(), 
-			0, 0, /*m_fBrightness * */ (FRAND * 0.1f + 0.9f));
+			0, 0, /*Brightness * */ (FRAND * 0.1f + 0.9f));
 	}
 #endif
 }
@@ -188,7 +188,7 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 {
 	Super::Explode(debris);
 #if 0
-	const int cby = CGameColors::red;
+	const int cby = EColor::red;
 
 	bMortal = true;
 	Lifespan = 0.0f;
@@ -198,7 +198,7 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 	{
 		CFlak* pFlak = new CFlak;
 
-		pFlak->m_eColorbaseYoung = CGameColors::lightyellow;
+		pFlak->m_eColorbaseYoung = EColor::lightyellow;
 		pFlak->m_eColorbaseOld	= cby;
 		pFlak->m_bCold			= true;
 		pFlak->m_fLargestSize	= FRAND * 15 + 2;

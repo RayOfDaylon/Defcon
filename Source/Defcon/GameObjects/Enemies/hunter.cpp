@@ -26,7 +26,7 @@ Defcon::CHunter::CHunter()
 	Type = EObjType::HUNTER;
 	PointValue = HUNTER_VALUE;
 	m_eState = lounging;
-	m_pTarget = nullptr;
+	TargetPtr = nullptr;
 	float speed = FRANDRANGE(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX);
 	if(FRAND > 0.5f)
 	{
@@ -37,7 +37,7 @@ Defcon::CHunter::CHunter()
 	RadarColor = C_ORANGE;
 	//BboxRadius.Set(15, 15);
 	AnimSpeed = FRAND * 0.6f + 0.4f;
-	m_fBrightness = 1.0f;
+	Brightness = 1.0f;
 	m_fTimeTargetWithinRange = 0.0f;
 	m_amp = FRANDRANGE(0.33f, 0.9f);
 
@@ -93,7 +93,7 @@ void Defcon::CHunter::Move(float fTime)
 
 	Inertia = Position;
 	
-	IGameObject* pTarget = m_pTarget;
+	IGameObject* pTarget = TargetPtr;
 
 	if(pTarget == nullptr)
 		m_fTimeTargetWithinRange = 0.0f;
@@ -230,9 +230,9 @@ void Defcon::CHunter::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapp
 }
 
 
-int Defcon::CHunter::GetExplosionColorBase() const
+Defcon::EColor Defcon::CHunter::GetExplosionColorBase() const
 {
-	return CGameColors::yellow;
+	return EColor::yellow;
 }
 
 

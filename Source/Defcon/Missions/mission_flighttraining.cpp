@@ -102,7 +102,7 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float DeltaTime)
 		
 			if(rPlayer.Intersect(rBeacon))
 			{
-				gpAudio->OutputSound(Defcon::snd_gulp);
+				gpAudio->OutputSound(Defcon::gulp);
 				ObjPtr->UninstallSprite();
 				gpArena->GetObjects().Delete(ObjPtr);
 				NumTargets--;

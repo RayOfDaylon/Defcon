@@ -24,7 +24,7 @@ namespace Defcon
 			virtual void Move					(float) override;
 			virtual void Draw					(FPaintArguments&, const I2DCoordMapper&) override;
 			virtual float GetExplosionMass		() const override { return 1.25f; }
-			virtual int	  GetExplosionColorBase	() const override;
+			virtual EColor GetExplosionColorBase  () const override;
 
 
 			virtual bool Fireballs		() const override { return false; }

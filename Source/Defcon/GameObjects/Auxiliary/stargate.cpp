@@ -33,14 +33,14 @@ Defcon::CStargate::CStargate()
 
 
 
-	const int cby[] = 
+	const EColor cby[] = 
 		{
-			CGameColors::gray, 
-			CGameColors::red,
-			CGameColors::yellow,
-			CGameColors::blue,
-			CGameColors::lightyellow,
-			CGameColors::lightblue
+			EColor::gray, 
+			EColor::red,
+			EColor::yellow,
+			EColor::blue,
+			EColor::lightyellow,
+			EColor::lightblue
 		};
 
 	bMortal = false;
@@ -59,12 +59,6 @@ const char* Defcon::CStargate::GetClassname() const
 }
 #endif
 
-
-
-void Defcon::CStargate::Move(float f)
-{
-	Age += f;
-}
 
 
 void Defcon::CStargate::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)

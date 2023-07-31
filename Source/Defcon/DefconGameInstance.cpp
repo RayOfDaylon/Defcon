@@ -44,36 +44,36 @@ void UDefconGameInstance::Init()
 	gpAudio->AddTrack(_track, _asset);	\
 	gpAudio->OutputSound(_track, 0.01f); // Force sound to preload.
 
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_focus_changed,         FocusChangedSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_invalid_selection,     InvalidSelectionSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_mission_chosen,        MissionChosenSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::focus_changed,         FocusChangedSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::invalid_selection,     InvalidSelectionSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::mission_chosen,        MissionChosenSound);
 
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_wave_start,            WaveStartSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_ship_materialize,      MaterializationSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_laserfire,             LaserSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_ship_exploding,        Explosion1Sound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_ship_exploding2,       Explosion2Sound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_ship_exploding2a,      Explosion2ASound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_ship_exploding2b,      Explosion2BSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_ship_exploding_medium, ExplosionMediumSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_ship_exploding_small,  ExplosionSmallSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_ship_exploding_small2, ExplosionSmall2Sound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_playership_thrust,     ThrustSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_gulp,                  GulpSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_warp,                  WarpSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_phred,                 PhredSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_bigred,                BigRedSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_munchie,               MunchieSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_ghostflight,           GhostFlightSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_smartbomb,             SmartbombSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_wave_end,              WaveEndSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_player_dying,          PlayerDyingSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_shieldbonk,            ShieldBonkSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_bullet,                BulletSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_bullet2,               Bullet2Sound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_bullet3,               Bullet3Sound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_human_abducted,        AbductionSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::snd_swarmer,               SwarmerSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::wave_start,            WaveStartSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::ship_materialize,      MaterializationSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::laserfire,             LaserSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::ship_exploding,        Explosion1Sound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::ship_exploding2,       Explosion2Sound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::ship_exploding2a,      Explosion2ASound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::ship_exploding2b,      Explosion2BSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::ship_exploding_medium, ExplosionMediumSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::ship_exploding_small,  ExplosionSmallSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::ship_exploding_small2, ExplosionSmall2Sound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::playership_thrust,     ThrustSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::gulp,                  GulpSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::warp,                  WarpSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::phred,                 PhredSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::bigred,                BigRedSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::munchie,               MunchieSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::ghostflight,           GhostFlightSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::smartbomb,             SmartbombSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::wave_end,              WaveEndSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::player_dying,          PlayerDyingSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::shieldbonk,            ShieldBonkSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::bullet,                BulletSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::bullet2,               Bullet2Sound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::bullet3,               Bullet3Sound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::human_abducted,        AbductionSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::swarmer,               SwarmerSound);
 
 #undef ADD_AUDIO_TRACK
 
@@ -489,7 +489,7 @@ int32 UDefconGameInstance::AdvanceScore(int32 Amount)
 	{
 		//m_nPlayerLivesLeft++;
 		gpAudio->StopPlayingSound();
-		gpAudio->OutputSound(CAudioManager::snd_extra_ship);
+		gpAudio->OutputSound(CAudioManager::extra_ship);
 	}
 #endif
 

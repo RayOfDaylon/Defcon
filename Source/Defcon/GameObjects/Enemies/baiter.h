@@ -20,13 +20,13 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual int GetExplosionColorBase() const;
+			virtual void   Move                   (float) override;
+			virtual EColor GetExplosionColorBase  () const override;
 
 
 		private:
-			bool m_bPreferTargetUnderside;
+			bool  bPreferTargetUnderside;
+			float FireWeaponCountdown = 0.0f;
 
 	};
 }

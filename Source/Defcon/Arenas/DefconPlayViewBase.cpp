@@ -146,7 +146,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 	m_bArenaDying = false;
 	Daylon::Hide(Fader);
 
-	ShipThrustSoundLoop = gpAudio->CreateLoopedSound(Defcon::snd_playership_thrust);
+	ShipThrustSoundLoop = gpAudio->CreateLoopedSound(Defcon::playership_thrust);
 	WasShipUnderThrust = false;
 
 	PlayAreaMain->ClearMessages();
@@ -200,7 +200,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	GetPlayerShip().EnableInput();
 
-	gpAudio->OutputSound(Defcon::EAudioTrack::snd_wave_start);
+	gpAudio->OutputSound(Defcon::EAudioTrack::wave_start);
 }
 
 
@@ -653,7 +653,7 @@ class CDestroyedPlayerShip : public Defcon::ILiveGameObject
 					UninstallSprite();
 					Sprite.Reset();
 
-					gpAudio->OutputSound(Defcon::EAudioTrack::snd_ship_exploding2b);
+					gpAudio->OutputSound(Defcon::EAudioTrack::ship_exploding2b);
 				}
 
 				// Move the particle groups.
@@ -763,7 +763,7 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 
 	m_objects.Add(pShip);
 
-	gpAudio->OutputSound(Defcon::snd_player_dying);
+	gpAudio->OutputSound(Defcon::player_dying);
 
 	PlayerShip.OnAboutToDie();
 }
@@ -1297,9 +1297,9 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 				GetPlayerShip().FireLaserWeapon(m_objects);
 
 				if(true/*BRAND*/)
-					gpAudio->OutputSound(Defcon::EAudioTrack::snd_laserfire);
+					gpAudio->OutputSound(Defcon::EAudioTrack::laserfire);
 				else
-					gpAudio->OutputSound(Defcon::snd_laserfire_alt);
+					gpAudio->OutputSound(Defcon::laserfire_alt);
 			}
 
 		break;
@@ -1517,7 +1517,7 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 	// but that would deny interesting friendly fire.
 	pBullet->Position = from + pBullet->Orientation.Fwd * (2 * FMath::Max(obj.BboxRadius.x, obj.BboxRadius.y));
 
-	gpAudio->OutputSound((Defcon::EAudioTrack)(soundid - 1 + (int32)Defcon::EAudioTrack::snd_bullet));
+	gpAudio->OutputSound((Defcon::EAudioTrack)(soundid - 1 + (int32)Defcon::EAudioTrack::bullet));
 
 	m_objects.Add(pBullet);
 
@@ -1587,7 +1587,7 @@ void UDefconPlayViewBase::ExplodeObject(Defcon::IGameObject* pObj)
 
 	if(GetPlayerShip().IsAlive() && GetPlayerShip().IsSolid() /*&& m_debris.Count() < 800*/)
 	{
-		//gpAudio->OutputSound(Defcon::snd_ship_exploding);
+		//gpAudio->OutputSound(Defcon::ship_exploding);
 
 		const float em = pObj->GetExplosionMass();
 
@@ -1597,21 +1597,21 @@ void UDefconPlayViewBase::ExplodeObject(Defcon::IGameObject* pObj)
 		{
 			const Defcon::EAudioTrack LargeExplosionSounds[] =
 			{
-				Defcon::EAudioTrack::snd_ship_exploding,
-				Defcon::EAudioTrack::snd_ship_exploding2,
-				Defcon::EAudioTrack::snd_ship_exploding2a,
-				Defcon::EAudioTrack::snd_ship_exploding2b
+				Defcon::EAudioTrack::ship_exploding,
+				Defcon::EAudioTrack::ship_exploding2,
+				Defcon::EAudioTrack::ship_exploding2a,
+				Defcon::EAudioTrack::ship_exploding2b
 			};
 
 			track = LargeExplosionSounds[IRAND(array_size(LargeExplosionSounds))] ;
 		}
 		else if(em >= 0.3f)
 		{
-			track = Defcon::snd_ship_exploding_medium;
+			track = Defcon::ship_exploding_medium;
 		}
 		else
 		{
-			track = Defcon::snd_ship_exploding_small;
+			track = Defcon::ship_exploding_small;
 		}
 
 		gpAudio->OutputSound(track);
@@ -1787,7 +1787,7 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 	// an object's shields have been struck by 
 	// a certain force.
 
-	const int cby = Defcon::CGameColors::gray;
+	const auto cby = Defcon::EColor::gray;
 
 	for(int32 i = 0; i < 10; i++)
 	{
@@ -1819,7 +1819,7 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 	}
 	m_fRadarFritzed = FMath::Max(1.5f, fForce*10);//MAX_RADARFRITZ;
 
-	gpAudio->OutputSound(Defcon::snd_shieldbonk);
+	gpAudio->OutputSound(Defcon::shieldbonk);
 }
 
 
@@ -1907,7 +1907,7 @@ void UDefconPlayViewBase::FireSmartbomb()
 {
 	if(GetPlayerShip().IsAlive() )
 	{
-		gpAudio->OutputSound(Defcon::snd_smartbomb);
+		gpAudio->OutputSound(Defcon::smartbomb);
 
 		auto pBomb = new Defcon::CSmartbomb;
 
@@ -1944,7 +1944,7 @@ namespace Defcon
 
 				if(gpArena->IsPointVisible(Params.P)) // todo: maybe check extents of materialization field i.e. if player gets even a partial glimpse
 				{
-					gpAudio->OutputSound(snd_ship_materialize);
+					gpAudio->OutputSound(ship_materialize);
 				}
 			}
 	};
