@@ -43,7 +43,7 @@ Defcon::CFireball::CFireball()
 	bCanBeInjured = true;
 
 	RadarColor = C_ORANGE;
-	Orientation.fwd.y = -1.0f;
+	Orientation.Fwd.y = -1.0f;
 	m_fSpeed = 0; // the shooter sets the speed.
 	// Depending on accuracy, the shooter takes gravity 
 	// into account so that the fireball will hit the 
@@ -92,8 +92,8 @@ void Defcon::CFireball::Move(float fTime)
 		{
 			CFPoint dir;
 			m_fSpeed = (FRAND * 0.5f + 1.0f) * gpArena->Direction(Position, pTarget->Position, dir);
-			Orientation.fwd.x = (float)(SGN(dir.x));
-			Orientation.fwd.y = (float)(SGN(dir.y));
+			Orientation.Fwd.x = (float)(SGN(dir.x));
+			Orientation.Fwd.y = (float)(SGN(dir.y));
 		}
 	}
 
@@ -118,7 +118,7 @@ void Defcon::CFireball::Move(float fTime)
 	}
 
 		
-	CFPoint motion(Orientation.fwd);
+	CFPoint motion(Orientation.Fwd);
 	motion.x *= m_fSpeed * fTime;
 	motion.y -= Age * Age;
 
@@ -194,15 +194,15 @@ void Defcon::CFireball::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.fwd = Inertia;
+		pFlak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

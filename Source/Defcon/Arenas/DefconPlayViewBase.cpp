@@ -280,7 +280,7 @@ void UDefconPlayViewBase::InitPlayerShip()
 	// Sprite installation for player ship happens in DefconPlayMainWidgetBase
 	PlayerShip.SetIsAlive(true);
 
-	PlayerShip.Orientation.fwd.x = 1.0f;
+	PlayerShip.Orientation.Fwd.x = 1.0f;
 
 	AllStopPlayerShip();
 }
@@ -339,7 +339,7 @@ void UDefconPlayViewBase::TransportPlayerShip()
 		{
 			DistanceFactor += 0.1f;
 
-			PlayerShip.Position.x = WrapX(pt.x - (PlayerShip.Orientation.fwd.x * GetDisplayWidth() * DistanceFactor));
+			PlayerShip.Position.x = WrapX(pt.x - (PlayerShip.Orientation.Fwd.x * GetDisplayWidth() * DistanceFactor));
 
 		} while(Mission->PlayerInStargate());
 	}
@@ -366,7 +366,7 @@ void UDefconPlayViewBase::TransportPlayerShip()
 
 	const float kMargin = PLAYER_POSMARGIN;
 
-	if(PlayerShip.Orientation.fwd.x > 0)
+	if(PlayerShip.Orientation.Fwd.x > 0)
 	{
 		// Player facing right.
 		const float dx = ScreenPt.x - kMargin;
@@ -407,7 +407,7 @@ void UDefconPlayViewBase::SettlePlayer(float DeltaTime)
 	CFPoint ScreenPt;
 	MainAreaMapper.To(PlayerShip.Position, ScreenPt);
 
-	if(PlayerShip.Orientation.fwd.x > 0)
+	if(PlayerShip.Orientation.Fwd.x > 0)
 	{
 		// Player facing right.
 		const float dx = ScreenPt.x - kMargin;
@@ -430,10 +430,10 @@ void UDefconPlayViewBase::UpdatePlayerShipInputs()
 
 	auto& PlayerShip = GetPlayerShip();
 
-	PlayerShip.SetNavControl(Defcon::ILiveGameObject::ctlFwd,  MoveShipRightState.bActive, MoveShipRightState.fTimeDown);
-	PlayerShip.SetNavControl(Defcon::ILiveGameObject::ctlBack, MoveShipLeftState.bActive,  MoveShipLeftState.fTimeDown);
-	PlayerShip.SetNavControl(Defcon::ILiveGameObject::ctlUp,   MoveShipUpState.bActive,    MoveShipUpState.fTimeDown);
-	PlayerShip.SetNavControl(Defcon::ILiveGameObject::ctlDown, MoveShipDownState.bActive,  MoveShipDownState.fTimeDown);
+	PlayerShip.SetNavControl(Defcon::ILiveGameObject::ctlFwd,  MoveShipRightState.bActive, MoveShipRightState.TimeDown);
+	PlayerShip.SetNavControl(Defcon::ILiveGameObject::ctlBack, MoveShipLeftState.bActive,  MoveShipLeftState.TimeDown);
+	PlayerShip.SetNavControl(Defcon::ILiveGameObject::ctlUp,   MoveShipUpState.bActive,    MoveShipUpState.TimeDown);
+	PlayerShip.SetNavControl(Defcon::ILiveGameObject::ctlDown, MoveShipDownState.bActive,  MoveShipDownState.TimeDown);
 }
 
 
@@ -467,7 +467,7 @@ void UDefconPlayViewBase::IncreaseScore(int32 Points, bool bVis, const CFPoint* 
 		pScore->Position = *pPos;
 		pScore->Position.x += (FRAND - 0.5f) * 30;
 		pScore->Position.y += 30;
-		pScore->Orientation.fwd.Set((FRAND - 0.5f)*100, 50.0f);
+		pScore->Orientation.Fwd.Set((FRAND - 0.5f)*100, 50.0f);
 		pScore->Init((int)points);
 		this->AddDebris(pScore);
 #endif
@@ -755,9 +755,9 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 	pShip->InitDestroyedPlayer(PlayerShip.Position, PlayerShip.BboxRadius, DESTROYED_PLAYER_PARTICLE_SPEED, DESTROYED_PLAYER_PARTICLE_MIN_LIFETIME, DESTROYED_PLAYER_PARTICLE_MAX_LIFETIME);
 
 	pShip->Position        = PlayerShip.Position;
-	pShip->Orientation.fwd = PlayerShip.Orientation.fwd;
+	pShip->Orientation.Fwd = PlayerShip.Orientation.Fwd;
 
-	pShip->Sprite->FlipHorizontal = (pShip->Orientation.fwd.x < 0);
+	pShip->Sprite->FlipHorizontal = (pShip->Orientation.Fwd.x < 0);
 
 	pShip->InstallSprite();
 
@@ -1041,24 +1041,9 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 
 	m_objects.Process(gop);
-
-#if 0
-	// Make visible any enemies that have finished materializing.
-	// todo: would be nice to not do this every frame.
-	gop.fnOnEvery = [](Defcon::IGameObject* pObj, void* pv)
-	{
-		auto EnemyPtr = (Defcon::CEnemy*)pObj;
-		if(!EnemyPtr->IsMaterializing() && EnemyPtr->Sprite)
-		{
-			EnemyPtr->Sprite->Show();
-		}
-	};
-#endif
 	m_enemies.Process(gop);
 
-
 	// ------------------------------------------------------
-
 
 	const int32 w  = MainAreaSize.X;
 	const int32 h  = MainAreaSize.Y;
@@ -1283,7 +1268,7 @@ void UDefconPlayViewBase::OnPawnNavEvent(EDefconPawnNavigationEvent Event, bool 
 	
 	if(EventBecameActive) 
 	{
-		InputStatePtr->fTimeDown = GameTime(); 
+		InputStatePtr->TimeDown = GameTime(); 
 	}
 }
 
@@ -1439,7 +1424,7 @@ void UDefconPlayViewBase::LayMine(Defcon::IGameObject& obj, const CFPoint& from,
 	auto p = new Defcon::CMine;
 
 	p->InstallSprite();
-	p->Position = obj.Position - obj.Orientation.fwd * (2 * FMath::Max(obj.BboxRadius.x, obj.BboxRadius.y));
+	p->Position = obj.Position - obj.Orientation.Fwd * (2 * FMath::Max(obj.BboxRadius.x, obj.BboxRadius.y));
 
 	m_objects.Add(p);
 }
@@ -1527,13 +1512,13 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 			break;
 	}
 
-	pBullet->Orientation.fwd = dir;
+	pBullet->Orientation.Fwd = dir;
 	// Place bullet just outside shooter, otherwise 
 	// shooter will shoot himself. We could also solve 
 	// this by making the shooter (or all members of 
 	// the shooter's class) impervious to the bullet, 
 	// but that would deny interesting friendly fire.
-	pBullet->Position = from + pBullet->Orientation.fwd * (2 * FMath::Max(obj.BboxRadius.x, obj.BboxRadius.y));
+	pBullet->Position = from + pBullet->Orientation.Fwd * (2 * FMath::Max(obj.BboxRadius.x, obj.BboxRadius.y));
 
 	gpAudio->OutputSound((Defcon::EAudioTrack)(soundid - 1 + (int32)Defcon::EAudioTrack::snd_bullet));
 
@@ -1823,15 +1808,15 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.fwd = pObj->Inertia;
+		pFlak->Orientation.Fwd = pObj->Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 		m_debris.Add(pFlak);
 	}
@@ -2136,7 +2121,7 @@ void UDefconPlayViewBase::OnSpawnEnemy()
 	static int Index = 0;
 
 	auto pt = GetPlayerShip().Position;
-	pt.x = WrapX(pt.x + 300 * SGN(GetPlayerShip().Orientation.fwd.x));
+	pt.x = WrapX(pt.x + 300 * SGN(GetPlayerShip().Orientation.Fwd.x));
 
 	CreateEnemy(Types[Index], pt, 0.0f, true, false);
 

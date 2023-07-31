@@ -59,7 +59,7 @@ Defcon::CPlayer::CPlayer()
 void Defcon::CPlayer::InitPlayer(float fw)
 {
 	Drag     = PLAYER_DRAG;//0.1f;
-	m_maxThrust = PLAYER_MAXTHRUST;
+	MaxThrust = PLAYER_MAXTHRUST;
 	Mass     = PLAYER_MASS;
 
 	m_laserWeapon.m_fArenawidth = fw;
@@ -277,7 +277,7 @@ void Defcon::CPlayer::Move(float fElapsedTime)
 		this->SetShieldStrength(fs);
 	}
 
-	Sprite->FlipHorizontal = (Orientation.fwd.x < 0);
+	Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
 }
 
 
@@ -351,26 +351,26 @@ void Defcon::CPlayer::ImpartForces(float frameTime)
 		return;
 	}
 
-	if(!m_bCanMove)
+	if(!bCanMove)
 	{
 		return;
 	}
 
 	// Let parent class handle horizontal forces.
-	m_thrustVector.y = 0.0f;
+	ThrustVector.y = 0.0f;
 	Super::ImpartForces(frameTime);
 
 	// Now handle vertical force in our way.
 	const float kVertMotionPxPerSec = 300.0f;
 
-	if(m_navCtls[ctlUp].bActive)
+	if(NavControls[ctlUp].bActive)
 	{
-		const float timeHeld = GameTime() - m_navCtls[ctlUp].fTimeDown;
+		const float timeHeld = GameTime() - NavControls[ctlUp].TimeDown;
 		Position.MulAdd({ 0.0f, FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
 	}
-	else if(m_navCtls[ctlDown].bActive)
+	else if(NavControls[ctlDown].bActive)
 	{
-		const float timeHeld = GameTime() - m_navCtls[ctlDown].fTimeDown;
+		const float timeHeld = GameTime() - NavControls[ctlDown].TimeDown;
 		Position.MulAdd({ 0.0f, -FMath::Min((kVertMotionPxPerSec * timeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, frameTime);
 	}
 }
@@ -469,17 +469,17 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.fwd = Inertia;
+		pFlak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
+		pFlak->Orientation.Fwd *= FRAND * 12.0f + 30.0f;
 		// Make the particle have a velocity vector
 		// as if it were standing still.
 		float speed = FRAND * 180 + 90;
 
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

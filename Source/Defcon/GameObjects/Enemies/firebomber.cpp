@@ -46,8 +46,8 @@ Defcon::IFirebomber::IFirebomber()
 
 	m_travelCountdown = 1.0f;
 
-	Orientation.fwd.Set(SBRAND, SBRAND);
-	m_ourInertia = Orientation.fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
+	Orientation.Fwd.Set(SBRAND, SBRAND);
+	m_ourInertia = Orientation.Fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
 
 	const auto& Info = GameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
 	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
@@ -79,8 +79,8 @@ void Defcon::IFirebomber::Move(float fTime)
 	if(m_travelCountdown <= 0.0f)
 	{
 		// We've finished traveling, so define a new direction and travel length.
-		Orientation.fwd.Set(SBRAND, SBRAND);
-		m_ourInertia      = Orientation.fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
+		Orientation.Fwd.Set(SBRAND, SBRAND);
+		m_ourInertia      = Orientation.Fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
 
 		if(IRAND(3) == 1)
 		{
@@ -139,10 +139,10 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 
 			float angle = MAP(a, 0, 7, 0, 5.5f);
 			angle += off + SFRAND * 0.05f;
-			pFlak->Orientation.fwd.Set(sinf(angle), cosf(angle));
+			pFlak->Orientation.Fwd.Set(sinf(angle), cosf(angle));
 			
-			pFlak->Orientation.fwd *= (SFRAND*15+30) * (i+2);
-			pFlak->Orientation.fwd += Inertia;
+			pFlak->Orientation.Fwd *= (SFRAND*15+30) * (i+2);
+			pFlak->Orientation.Fwd += Inertia;
 
 			debris.Add(pFlak);
 		}
@@ -165,10 +165,10 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 
 				float angle = MAP(a, 0, 7, 0, 5.5f);
 				angle += off2 + SFRAND * 0.05f;
-				pFlak->Orientation.fwd.Set(sinf(angle), cosf(angle));
+				pFlak->Orientation.Fwd.Set(sinf(angle), cosf(angle));
 				
-				pFlak->Orientation.fwd *= (SFRAND*5+6) * (i+2);
-				pFlak->Orientation.fwd += Inertia;
+				pFlak->Orientation.Fwd *= (SFRAND*5+6) * (i+2);
+				pFlak->Orientation.Fwd += Inertia;
 
 				debris.Add(pFlak);
 			}

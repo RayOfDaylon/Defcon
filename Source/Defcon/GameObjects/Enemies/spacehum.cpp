@@ -26,7 +26,7 @@ Defcon::CSpacehum::CSpacehum()
 	ParentType = Type;
 	Type = EObjType::SPACEHUM;
 	PointValue = SPACEHUM_VALUE;
-	Orientation.fwd.Set(1.0f, 0.0f);
+	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = C_LIGHT;
 
 	AnimSpeed = FRAND * 0.05f + 0.15f;
@@ -63,17 +63,17 @@ void Defcon::CSpacehum::Move(float fTime)
 
 	if(pTarget->IsAlive())
 	{
-		gpArena->Direction(Position, pTarget->Position, Orientation.fwd);
+		gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
 		CFPoint budge((float)sin(FRAND * PI * 2), (float)cos(FRAND * PI * 2));
 
 		if(Age < 2.0f)
 		{
 			budge.x *= 0.1f;
-			Orientation.fwd.x *= 0.1f;
+			Orientation.Fwd.x *= 0.1f;
 		}
 
 		budge *= SFRAND * 200.0f * fTime;
-		Position.MulAdd(Orientation.fwd, fTime * m_fSpeed);
+		Position.MulAdd(Orientation.Fwd, fTime * m_fSpeed);
 		Position += budge;
 	}
 
@@ -110,15 +110,15 @@ void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.fwd = Inertia;
+		pFlak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

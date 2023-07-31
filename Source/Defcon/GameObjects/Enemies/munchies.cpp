@@ -32,13 +32,13 @@ Defcon::CPhred::CPhred()
 	AnimSpeed = FRAND * 0.35f + 0.15f;
 
 	Drag = PLAYER_DRAG * 0.15f;
-	m_maxThrust = PLAYER_MAXTHRUST * 9.0f;
+	MaxThrust = PLAYER_MAXTHRUST * 9.0f;
 	Mass = PLAYER_MASS * 20;
 	bIsCollisionInjurious = true;
 	m_bPreferTargetUnderside = FRAND >= 0.5f;
 	m_fBrightness = FRAND * 0.1f + 0.4f;
 	m_fSquakTime = 0;
-	m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
+	//m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
 
 	CreateSprite(Type);
 	const auto& SpriteInfo = GameObjectResources.Get(Type);
@@ -102,11 +102,11 @@ void Defcon::CPhred::Move(float fTime)
 			const float vsign = m_bPreferTargetUnderside ? -1.0f : 1.0f;
 
 			target += CFPoint(
-				(float)cos(Age) * 300.0f * SGN(pTarget->Orientation.fwd.x),
+				(float)cos(Age) * 300.0f * SGN(pTarget->Orientation.Fwd.x),
 				vsign * (float)fabs(sin(Age)) * 50.0f + vsign * 50.0f);
 
 			float xd = gpArena->Direction(Position, target, delta);
-			bool bMoveTowards = (xd > 150 || SGN(Orientation.fwd.x) != SGN(pTarget->Orientation.fwd.x));
+			bool bMoveTowards = (xd > 150 || SGN(Orientation.Fwd.x) != SGN(pTarget->Orientation.Fwd.x));
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.x < 0)	
@@ -133,7 +133,7 @@ void Defcon::CPhred::Move(float fTime)
 			}
 
 			// Vertical.
-			bMoveTowards = (xd > 50/* && SGN(Orientation.fwd.y) != SGN(pTarget->Orientation.fwd.y)*/);
+			bMoveTowards = (xd > 50/* && SGN(Orientation.Fwd.y) != SGN(pTarget->Orientation.Fwd.y)*/);
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.y < 0)	
@@ -204,13 +204,13 @@ Defcon::CMunchie::CMunchie()
 	AnimSpeed = FRAND * 0.35f + 0.15f;
 
 	Drag = PLAYER_DRAG * 0.15f;
-	m_maxThrust = PLAYER_MAXTHRUST * 9.0f;
+	MaxThrust = PLAYER_MAXTHRUST * 9.0f;
 	Mass = PLAYER_MASS * 18;
 	bIsCollisionInjurious = true;
 	m_bPreferTargetUnderside = FRAND >= 0.5f;
 	m_fBrightness = FRAND * 0.1f + 0.4f;
 	m_fSquakTime = 0;
-	m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
+	//m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
 
 	CreateSprite(Type);
 	const auto& SpriteInfo = GameObjectResources.Get(Type);
@@ -274,11 +274,11 @@ void Defcon::CMunchie::Move(float fTime)
 			const float vsign = m_bPreferTargetUnderside ? -1.0f : 1.0f;
 
 			target += CFPoint(
-				(float)cos(Age) * 300.0f * SGN(pTarget->Orientation.fwd.x),
+				(float)cos(Age) * 300.0f * SGN(pTarget->Orientation.Fwd.x),
 				vsign * (float)fabs(sin(Age)) * 50.0f + vsign * 50.0f);
 
 			float xd = gpArena->Direction(Position, target, delta);
-			bool bMoveTowards = (xd > 150 || SGN(Orientation.fwd.x) != SGN(pTarget->Orientation.fwd.x));
+			bool bMoveTowards = (xd > 150 || SGN(Orientation.Fwd.x) != SGN(pTarget->Orientation.Fwd.x));
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.x < 0)	
@@ -305,7 +305,7 @@ void Defcon::CMunchie::Move(float fTime)
 			}
 
 			// Vertical.
-			bMoveTowards = (xd > 50/* && SGN(Orientation.fwd.y) != SGN(pTarget->Orientation.fwd.y)*/);
+			bMoveTowards = (xd > 50/* && SGN(Orientation.Fwd.y) != SGN(pTarget->Orientation.Fwd.y)*/);
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.y < 0)	
@@ -375,13 +375,13 @@ Defcon::CBigRed::CBigRed()
 	AnimSpeed = FRAND * 0.35f + 0.15f;
 
 	Drag = PLAYER_DRAG * 0.15f;
-	m_maxThrust = PLAYER_MAXTHRUST * 9.0f;
+	MaxThrust = PLAYER_MAXTHRUST * 9.0f;
 	Mass = PLAYER_MASS * 22;
 	bIsCollisionInjurious = true;
 	m_bPreferTargetUnderside = FRAND >= 0.5f;
 	m_fBrightness = FRAND * 0.1f + 0.4f;
 	m_fSquakTime = 0;
-	m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
+	//m_fBirthDuration = (FRAND * 0.25f + 0.25f) * ENEMY_BIRTHDURATION;
 
 	CreateSprite(Type);
 	const auto& SpriteInfo = GameObjectResources.Get(Type);
@@ -432,7 +432,7 @@ void Defcon::CBigRed::Move(float fTime)
 	Sprite->FlipHorizontal = (m_bFacingLeft);
 
 	// Don't move until after materialization is complete.
-	if(Age > m_fBirthDuration)
+	//if(Age > m_fBirthDuration)
 	{
 		// Thrust in a way that will take us towards 
 		// the player. Only thrust vertically if we 
@@ -445,11 +445,11 @@ void Defcon::CBigRed::Move(float fTime)
 			const float vsign = m_bPreferTargetUnderside ? -1.0f : 1.0f;
 
 			target += CFPoint(
-				(float)cos(Age) * 300.0f * SGN(pTarget->Orientation.fwd.x),
+				(float)cos(Age) * 300.0f * SGN(pTarget->Orientation.Fwd.x),
 				vsign * (float)fabs(sin(Age)) * 50.0f + vsign * 50.0f);
 
 			float xd = gpArena->Direction(Position, target, delta);
-			bool bMoveTowards = (xd > 150 || SGN(Orientation.fwd.x) != SGN(pTarget->Orientation.fwd.x));
+			bool bMoveTowards = (xd > 150 || SGN(Orientation.Fwd.x) != SGN(pTarget->Orientation.Fwd.x));
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.x < 0)	
@@ -476,7 +476,7 @@ void Defcon::CBigRed::Move(float fTime)
 			}
 
 			// Vertical.
-			bMoveTowards = (xd > 50/* && SGN(Orientation.fwd.y) != SGN(pTarget->Orientation.fwd.y)*/);
+			bMoveTowards = (xd > 50/* && SGN(Orientation.Fwd.y) != SGN(pTarget->Orientation.Fwd.y)*/);
 			if(bMoveTowards)
 			{
 				int32 ctl = (delta.y < 0)	

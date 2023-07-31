@@ -13,36 +13,33 @@
 #include "gameobj.h"
 
 
-typedef float (*TerrainElevFunc)(float, void*);
-typedef Defcon::IGameObject* (*HumanFinderFunc)(float, void*);
 
-
-typedef struct
+struct FNavControl
 {
-	float	fTimeDown;
+	float	TimeDown;
 	bool	bActive;
-} NavControl;
+};
 
 
 // Return the shortest position delta from p1 to p2 given a modulus range aw.
-inline void pos_delta(CFPoint& result, const CFPoint& p1, const CFPoint& p2, float aw)
+inline void PositionDelta(CFPoint& Result, const CFPoint& P1, const CFPoint& P2, float ArenaWidth)
 {
-	result = p2;
-	result.Sub(p1);
+	Result = P2;
+	Result.Sub(P1);
 
-	const float d1    = ABS(result.x);
-	const float tail1 = aw - p1.x;
-	const float tail2 = aw - p2.x;
-	const float d2    = FMath::Min(p1.x + tail2, p2.x + tail1);
+	const float D1    = ABS(Result.x);
+	const float Tail1 = ArenaWidth - P1.x;
+	const float Tail2 = ArenaWidth - P2.x;
+	const float D2    = FMath::Min(P1.x + Tail2, P2.x + Tail1);
 
-	if(d2 < d1)
+	if(D2 < D1)
 	{
 		// The shortest distance lies across the origin.
-		result.x = d2;
+		Result.x = D2;
 
-		if(p2.x > p1.x)
+		if(P2.x > P1.x)
 		{
-			result.x *= -1;
+			Result.x *= -1;
 		}
 	}
 }
@@ -56,7 +53,7 @@ namespace Defcon
 		// has shields, weapons, and is autonomously moveable.
 		// Normally when an object dies it is deleted, but 
 		// in cases where an object remains in memory (like the player ship),
-		// the m_bAlive flag can be used.
+		// the bAlive flag can be used.
 
 		typedef IGameObject Super;
 
@@ -66,58 +63,57 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const = 0;
 #endif
-			virtual void Notify	   (EMessage, void*);
-			virtual void Move	   (float);
-			virtual void Draw	   (FPaintArguments&, const I2DCoordMapper&) = 0;
+			virtual void Notify                  (EMessage, void*) override;
+			virtual void Move                    (float DeltaTime) override;
+			virtual void Draw                    (FPaintArguments&, const I2DCoordMapper&) override = 0;
 
-			virtual bool  Fireballs	() const { return true; }
+			virtual bool Fireballs               () const { return true; }
 
-			virtual void ChangeThrust	(const CFPoint&);
-			void		 EnableInput	(bool b = true) { m_bCanMove = b; }
-			bool		 IsInputEnabled	() const { return m_bCanMove; }
-			bool         IsAlive        () const { return m_bAlive; }
-			virtual void SetIsAlive     (bool b) { m_bAlive = b; }
+			virtual void   ChangeThrust          (const CFPoint&);
+			void           EnableInput           (bool b = true) { bCanMove = b; }
+			bool           IsInputEnabled        () const { return bCanMove; }
+			bool           IsAlive               () const { return bAlive; }
+			virtual void   SetIsAlive            (bool b) { bAlive = b; }
 
 
-			void ZeroThrust()	{ m_thrustVector.Set(0,0); }
-			void ZeroMotion()	{ this->ZeroVelocity(); this->ZeroThrust();	}
-			void ZeroInput()	{ for(auto& Ctl : m_navCtls) { Ctl.bActive = false; } }
+			void           ZeroThrust            ()   { ThrustVector.Set(0,0); }
+			void           ZeroMotion            ()   { this->ZeroVelocity(); this->ZeroThrust(); }
+			void           ZeroInput             ()    { for(auto& Ctl : NavControls) { Ctl.bActive = false; } }
 
-			virtual void ComputeThrustTimings	(float);
-			virtual void ComputeForces			(float);
-			virtual void ImpartForces			(float);
+			virtual void   ComputeThrustTimings  (float);
+			virtual void   ComputeForces         (float);
+			virtual void   ImpartForces          (float);
 
-			const CFPoint& GetThrustVector() const { return m_thrustVector; }
+			const CFPoint& GetThrustVector       () const { return ThrustVector; }
 
-			virtual float NavControl_Duration(int) const;
+			virtual float  NavControl_Duration   (int) const;
+
+			void           SetNavControl         (int, bool, float);
+
+			virtual void   OnAboutToDie          ();
+
+			virtual float  GetShieldStrength     () const    { return ShieldStrength; }
+			virtual void   SetShieldStrength     (float f);
+			virtual bool   RegisterImpact        (float f);
+			void           BindToShieldValue     (TFunction<void(const float& Val)> Delegate) { ShieldStrength.Bind(Delegate); }
 
 			enum { ctlUp, ctlDown, ctlFwd, ctlBack, numCtls };
-			void SetNavControl(int, bool, float);
-
-			virtual void OnAboutToDie();
-
-			virtual float GetShieldStrength	() const	{ return m_fShields; }
-			virtual void  SetShieldStrength	(float f);
-			virtual bool  RegisterImpact    (float f);
-			void          BindToShieldValue (TFunction<void(const float& Val)> Delegate) { m_fShields.Bind(Delegate); }
 
 
 		protected:
 
-			bool		m_bCanMove;
-			CFPoint		m_thrustVector;
-			float		m_maxThrust;
+			bool        bCanMove;
+			CFPoint     ThrustVector;
+			float       MaxThrust;
 
-			float		m_fBirthDuration;
+			float       ThrustDurationVertical;
+			float       ThrustDurationForwards;
+			float       ThrustDurationBackwards;
 
-			float		m_fThrustDuration_Vertical;
-			float		m_fThrustDuration_Forwards;
-			float		m_fThrustDuration_Backwards;
-
-			NavControl	m_navCtls[numCtls];
+			FNavControl NavControls[numCtls];
 
 		private:
-			Daylon::TBindableValue<float> m_fShields; // 0..1 value
-			bool                          m_bAlive = true;
+			Daylon::TBindableValue<float> ShieldStrength; // 0..1 value
+			bool                          bAlive = true;
 	};
 }

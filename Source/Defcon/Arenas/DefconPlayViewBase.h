@@ -24,7 +24,7 @@ namespace Defcon
 struct FDefconInputState
 {
 	bool    bActive   = false;
-	double  fTimeDown = 0.0;
+	double  TimeDown = 0.0;
 };
 
 /*

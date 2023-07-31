@@ -32,7 +32,7 @@ Defcon::CHunter::CHunter()
 	{
 		speed *= -1;
 	}
-	Orientation.fwd.Set(speed, 0);
+	Orientation.Fwd.Set(speed, 0);
 	m_personalSpace = FRAND * 60 + 20;
 	RadarColor = C_ORANGE;
 	//BboxRadius.Set(15, 15);
@@ -76,7 +76,7 @@ void Defcon::CHunter::Move(float fTime)
 
 	const auto SecondsPerFrame = 1.0f / 15.0f; // assume 15 fps
 
-	//Sprite->SetCurrentCel(Orientation.fwd.x < 0 ? 0 : 6 + ((FMath::RoundToInt(Age / SecondsPerFrame)) % 6) /* numcels/2*/);
+	//Sprite->SetCurrentCel(Orientation.Fwd.x < 0 ? 0 : 6 + ((FMath::RoundToInt(Age / SecondsPerFrame)) % 6) /* numcels/2*/);
 
 	//CurrentAge += DeltaTime;
 
@@ -137,11 +137,11 @@ void Defcon::CHunter::Move(float fTime)
 			else if(pTarget != nullptr)
 			{
 				CFPoint pt;
-				gpArena->Direction(Position, pTarget->Position, Orientation.fwd);
+				gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
 
-				//Orientation.fwd.Set(SGN(this->m_targetOffset.y), 0);
-				Orientation.fwd.y += (float)(m_amp * sin(Age * m_freq));
-				Position.MulAdd(Orientation.fwd, fTime * HUNTER_SPEEDMIN/2);
+				//Orientation.Fwd.Set(SGN(this->m_targetOffset.y), 0);
+				Orientation.Fwd.y += (float)(m_amp * sin(Age * m_freq));
+				Position.MulAdd(Orientation.Fwd, fTime * HUNTER_SPEEDMIN/2);
 			}
 			break;
 
@@ -152,18 +152,18 @@ void Defcon::CHunter::Move(float fTime)
 			{
 				float vd = Position.y - pTarget->Position.y;
 				if(ABS(vd) > BboxRadius.y || 
-					SGN(pTarget->Orientation.fwd.x) == 
-					SGN(Orientation.fwd.x))
+					SGN(pTarget->Orientation.Fwd.x) == 
+					SGN(Orientation.Fwd.x))
 					m_eState = fighting;
 				else
 				{
-					Orientation.fwd.y = SGN(vd)*0.5f;
-					//if(Orientation.fwd.y == 0)
-					//	Orientation.fwd.y = SFRAND;
+					Orientation.Fwd.y = SGN(vd)*0.5f;
+					//if(Orientation.Fwd.y == 0)
+					//	Orientation.Fwd.y = SFRAND;
 					CFPoint pt;
 					gpArena->Direction(Position, pTarget->Position, pt);
-					Orientation.fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
-					Position.MulAdd(Orientation.fwd, fTime * AVG(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX));
+					Orientation.Fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
+					Position.MulAdd(Orientation.Fwd, fTime * AVG(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX));
 				}
 			}
 			
@@ -179,11 +179,11 @@ void Defcon::CHunter::Move(float fTime)
 			{
 				check(pTarget != nullptr);
 
-				float dist = gpArena->Direction(Position, pTarget->Position, Orientation.fwd);
+				float dist = gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
 				float vd = Position.y - pTarget->Position.y;
 				if(ABS(vd) < BboxRadius.y
-					&& SGN(pTarget->Orientation.fwd.x) != 
-					SGN(Orientation.fwd.x))
+					&& SGN(pTarget->Orientation.Fwd.x) != 
+					SGN(Orientation.Fwd.x))
 				{
 					// We can be hit by player. 
 					// Take evasive action.
@@ -192,7 +192,7 @@ void Defcon::CHunter::Move(float fTime)
 				else
 				{
 					CFPoint pt = pTarget->Position + m_targetOffset;
-					gpArena->Direction(Position, pt, Orientation.fwd);
+					gpArena->Direction(Position, pt, Orientation.Fwd);
 
 					float speed;
 
@@ -202,8 +202,8 @@ void Defcon::CHunter::Move(float fTime)
 					else
 						speed = MAP(dist, 0.0f, 0.8f, HUNTER_SPEEDMIN, HUNTER_SPEEDMAX);
 
-					Orientation.fwd.y += (float)(m_amp * sin(Age * m_freq));
-					Position.MulAdd(Orientation.fwd, fTime * speed);
+					Orientation.Fwd.y += (float)(m_amp * sin(Age * m_freq));
+					Position.MulAdd(Orientation.Fwd, fTime * speed);
 
 					if(this->CanBeInjured() 
 						&& pTarget->CanBeInjured()
@@ -216,7 +216,7 @@ void Defcon::CHunter::Move(float fTime)
 			break;
 	} // switch(state)
 
-	Sprite->FlipHorizontal = (Orientation.fwd.x < 0);
+	Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
 
 	// Constrain vertically.
 	Position.y = CLAMP(Position.y, 0, gpArena->GetHeight());

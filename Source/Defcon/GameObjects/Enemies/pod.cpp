@@ -31,7 +31,7 @@ Defcon::CPod::CPod()
 	ParentType = Type;
 	Type = EObjType::POD;
 	PointValue = POD_VALUE;
-	Orientation.fwd.Set(1.0f, 0.0f);
+	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = C_MAGENTA;
 	AnimSpeed = FRAND * 0.35f + 0.65f;
 	m_xFreq = FRAND * 0.5f + 1.0f;
@@ -65,7 +65,7 @@ void Defcon::CPod::Move(float fTime)
 
 	//UE_LOG(LogGame, Log, TEXT("%S: Pod is at %d, %d"), __FUNCTION__, (int32)Position.x, (int32)Position.y);
 
-	Orientation.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
+	Orientation.Fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
 
 	// Cause radar blip to blink
 	//float f = (float)fmod(Age, AnimSpeed) / AnimSpeed;
@@ -74,7 +74,7 @@ void Defcon::CPod::Move(float fTime)
 	LerpColor(C_RED, C_BLUE, f, RadarColor);
 
 
-	Position.MulAdd(Orientation.fwd, fTime * 50.0f);
+	Position.MulAdd(Orientation.Fwd, fTime * 50.0f);
 
 	//UE_LOG(LogGame, Log, TEXT("%S: Pod now at %d, %d"), __FUNCTION__, (int32)Position.x, (int32)Position.y);
 
@@ -146,17 +146,17 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.fwd = Inertia;
+		pFlak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
+		pFlak->Orientation.Fwd *= FRAND * 12.0f + 30.0f;
 		// Make the particle have a velocity vector
 		// as if it were standing still.
 		float speed = FRAND * 180 + 90;
 
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -187,12 +187,12 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 			
 			dir.Set((float)cos(t), (float)sin(t));
 
-			pFlak->Orientation.fwd = Inertia;
+			pFlak->Orientation.Fwd = Inertia;
 
-			pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
+			pFlak->Orientation.Fwd *= FRAND * 12.0f + 30.0f;
 			float speed = FRAND * 45 + 22;
 
-			pFlak->Orientation.fwd.MulAdd(dir, speed);
+			pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 			debris.Add(pFlak);
 		}

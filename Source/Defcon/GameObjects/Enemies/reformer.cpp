@@ -30,7 +30,7 @@ Defcon::CReformer::CReformer()
 	ParentType = Type;
 	Type = EObjType::REFORMER;
 	PointValue = REFORMER_VALUE;
-	Orientation.fwd.Set(1.0f, 0.0f);
+	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = MakeColorFromComponents(191, 33, 33);
 	BboxRadius.Set(10, 10); // todo: why so explicit?//(float)bmp.GetWidth()/2, (float)bmp.GetHeight()/2);
 	AnimSpeed = FRAND * 0.35f + 0.65f;
@@ -64,7 +64,7 @@ void Defcon::CReformer::Move(float fTime)
 	CEnemy::Move(fTime);
 	Inertia = Position;
 
-	Orientation.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
+	Orientation.Fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
 
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 
@@ -85,7 +85,7 @@ void Defcon::CReformer::Move(float fTime)
 	m_fSpinVel = (float)(sin(Age * PI * m_fSpinVelMax));
 	m_fSpinAngle += (m_fSpinVel * fTime);
 
-	Position.MulAdd(Orientation.fwd, fTime * 50.0f);
+	Position.MulAdd(Orientation.Fwd, fTime * 50.0f);
 
 	Inertia = Position - Inertia;
 }
@@ -201,15 +201,15 @@ void Defcon::CReformer::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.fwd = Inertia;
+		pFlak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -227,7 +227,7 @@ Defcon::CReformerPart::CReformerPart()
 	ParentType = Type;
 	Type = EObjType::REFORMERPART;
 	PointValue = REFORMERPART_VALUE;
-	Orientation.fwd.Set(1.0f, 0.0f);
+	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = C_RED;
 	AnimSpeed = FRAND * 0.35f + 0.15f;
 	m_xFreq = 2.0f * FRANDRANGE(0.5f, 1.5f);
@@ -344,16 +344,16 @@ void Defcon::CReformerPart::Move(float fTime)
 			{
 				if(dist > ScreenSize.x * .4f)
 				{
-					Orientation.fwd = dir;
-					Orientation.fwd.y = 0;
-					Orientation.fwd.Normalize();
+					Orientation.Fwd = dir;
+					Orientation.Fwd.y = 0;
+					Orientation.Fwd.Normalize();
 				}
 			}
 
 			if(m_fTimeTargetWithinRange
 				&& Age > 1.0f 
 				&& FRAND <= 0.007f
-				&& SGN(Orientation.fwd.x) == SGN(dir.x))
+				&& SGN(Orientation.Fwd.x) == SGN(dir.x))
 			{
 				gpArena->FireBullet(*this, Position, 1, 1);
 				gpAudio->OutputSound(Defcon::snd_swarmer);
@@ -365,9 +365,9 @@ void Defcon::CReformerPart::Move(float fTime)
 
 		CFPoint pos;
 		if(Age < 0.7f)
-			pos.x = Position.x + .2f * Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
+			pos.x = Position.x + .2f * Orientation.Fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 		else
-			pos.x = Position.x + Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
+			pos.x = Position.x + Orientation.Fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 		pos.y = 
 			(float)sin(m_freq * (m_yoff + Age)) 
 			* m_amp + m_halfwayAltitude;
@@ -430,15 +430,15 @@ void Defcon::CReformerPart::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.fwd = Inertia;
+		pFlak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

@@ -26,7 +26,7 @@ Defcon::CDynamo::CDynamo()
 	ParentType = Type;
 	Type = EObjType::DYNAMO;
 	PointValue = DYNAMO_VALUE;
-	Orientation.fwd.Set(1.0f, 0.0f);
+	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = C_LIGHT;
 	AnimSpeed = FRAND * 0.05f + 0.15f;
 

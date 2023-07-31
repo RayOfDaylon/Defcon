@@ -36,7 +36,7 @@ Defcon::CTurret::CTurret()
 	m_fTimeTargetWithinRange	= 0.0f;
 
 	Inertia.Set(0.0f, 0.0f);
-	Orientation.fwd.Set(0.0f, 1.0f);
+	Orientation.Fwd.Set(0.0f, 1.0f);
 
 	//CTrueBitmap& bmp = gBitmaps.GetBitmap(CBitmaps::turret);
 	//BboxRadius.Set(bmp.GetWidth() / 2.0f, bmp.GetHeight() / 2.0f);
@@ -118,14 +118,14 @@ void Defcon::CTurret::Move(float fTime)
 		{
 			if(dist > ScreenSize.x * .4f)
 			{
-				Orientation.fwd = dir;
-				Orientation.fwd.y = 0;
-				Orientation.fwd.Normalize();
+				Orientation.Fwd = dir;
+				Orientation.Fwd.y = 0;
+				Orientation.Fwd.Normalize();
 			}
 		}*/
 		// todo: this is framerate dependant.
 		if(m_fTimeTargetWithinRange && Age > 1.0f && FRAND <= 0.07f
-			/*&& SGN(Orientation.fwd.x) == SGN(dir.x)*/)
+			/*&& SGN(Orientation.Fwd.x) == SGN(dir.x)*/)
 		{
 			gpArena->FireBullet(*this, Position, 1, 1);
 			//gpAudio->OutputSound(Defcon::snd_swarmer);
@@ -139,9 +139,9 @@ void Defcon::CTurret::Move(float fTime)
 
 	CFPoint pos;
 	if(Age < 0.7f)
-		pos.x = Position.x + .2f * Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
+		pos.x = Position.x + .2f * Orientation.Fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 	else
-		pos.x = Position.x + Orientation.fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
+		pos.x = Position.x + Orientation.Fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 	pos.y = 
 		(float)sin(m_freq * (m_yoff + Age)) 
 		* m_amp + m_halfwayAltitude;
@@ -214,18 +214,18 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)abs(sin(t)));
 
 #if 1
-		pFlak->Orientation.fwd.Set(0.0f, 0.0f);
+		pFlak->Orientation.Fwd.Set(0.0f, 0.0f);
 
 		// Debris has at least the object's momentum.
-		//pFlak->Orientation.fwd = Inertia;
+		//pFlak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		//pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
+		//pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 600 + 100;
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 #endif
 		debris.Add(pFlak);
 	}

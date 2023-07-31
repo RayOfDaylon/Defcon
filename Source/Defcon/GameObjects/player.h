@@ -53,25 +53,19 @@ namespace Defcon
 			void DrawStats(FPaintArguments&, int, int);
 #endif
 
-			void FaceLeft   () { Orientation.fwd.x = -1.0f; }
-			void FaceRight  () { Orientation.fwd.x = 1.0f; }
+			void FaceLeft   () { Orientation.Fwd.x = -1.0f; }
+			void FaceRight  () { Orientation.Fwd.x = 1.0f; }
 
-			void FireLaserWeapon     (CGameObjectCollection&);
-			bool IsSolid             () const;
-			bool EmbarkPassenger     (IGameObject*, CGameObjectCollection&);
-			bool DebarkOnePassenger  (CGameObjectCollection&);
-			const CFPoint& GetPickupRadBox() const { return m_bboxradPickup; }
-
-			virtual bool IsMaterializing() const { return false; }// (m_bMaterializes && Age < PLAYER_BIRTHDURATION); }
+			void FireLaserWeapon           (CGameObjectCollection&);
+			bool IsSolid                   () const;
+			bool EmbarkPassenger           (IGameObject*, CGameObjectCollection&);
+			bool DebarkOnePassenger        (CGameObjectCollection&);
+			const CFPoint& GetPickupRadBox () const { return m_bboxradPickup; }
 
 			FSlateBrush     RadarBrush;
 
 		private:
 			CLaserWeapon	m_laserWeapon;
-			//CFPoint			m_birthDebrisLocs[400];
-			//CFPoint			m_birthDebrisLocsOrg[400];
-			//float			m_debrisPow[400];
-			//bool			m_bBirthsoundPlayed;
 			CFPoint         m_bboxradPickup;
 
 	}; // CPlayer

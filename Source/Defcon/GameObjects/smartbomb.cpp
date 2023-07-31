@@ -118,7 +118,7 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 				pt.Normalize();
 				pt.y *= -1;
 				pt.Mul(SMARTBOMB_WAVEPUSH * (1.0f - t) + SMARTBOMB_WAVEPUSHMIN);
-				pObj->Orientation.fwd += pt;
+				pObj->Orientation.Fwd += pt;
 			}
 		}
 	});

@@ -28,7 +28,7 @@ Defcon::CGhost::CGhost()
 	Type       = EObjType::GHOST;
 
 	PointValue = GHOST_VALUE;
-	Orientation.fwd.Set(1.0f, 0.0f);
+	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = MakeColorFromComponents(192, 192, 192);
 	// Our size is the size of a part x 3.
 	AnimSpeed = FRAND * 0.35f + 0.65f;
@@ -73,7 +73,7 @@ void Defcon::CGhost::Move(float fTime)
 	CEnemy::Move(fTime);
 	Inertia = Position;
 
-	Orientation.fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
+	Orientation.Fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
 
 
 	//float diff = (float)UDefconUtils::GetGameInstance(gpArena)->GetScore() / 50000;
@@ -98,7 +98,7 @@ void Defcon::CGhost::Move(float fTime)
 	m_fSpinVel = 1.0f;//sin(Age * PI * m_fSpinVelMax);
 	m_fSpinAngle += (m_fSpinVel * fTime);
 
-	Position.MulAdd(Orientation.fwd, fTime * 50.0f);
+	Position.MulAdd(Orientation.Fwd, fTime * 50.0f);
 	Inertia = Position - Inertia;
 
 	// See if we need to disperse (player ship got too close).
@@ -284,17 +284,17 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.fwd = Inertia;
+		pFlak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
+		pFlak->Orientation.Fwd *= FRAND * 12.0f + 30.0f;
 		// Make the particle have a velocity vector
 		// as if it were standing still.
 		float speed = FRAND * 180 + 90;
 
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -326,12 +326,12 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 			
 			dir.Set((float)cos(t), (float)sin(t));
 
-			pFlak->Orientation.fwd = Inertia;
+			pFlak->Orientation.Fwd = Inertia;
 
-			pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
+			pFlak->Orientation.Fwd *= FRAND * 12.0f + 30.0f;
 			float speed = FRAND * 45 + 22;
 
-			pFlak->Orientation.fwd.MulAdd(dir, speed);
+			pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 			debris.Add(pFlak);
 		}
@@ -360,15 +360,15 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.fwd = Inertia;
+		pFlak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -383,7 +383,7 @@ Defcon::CGhostPart::CGhostPart()
 	ParentType = Type;
 	Type = EObjType::GHOSTPART;
 	PointValue = 0;
-	Orientation.fwd.Set(1.0f, 0.0f);
+	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = C_WHITE;
 	AnimSpeed = FRAND * 0.35f + 0.15f;
 	bCanBeInjured = false;
@@ -413,12 +413,12 @@ void Defcon::CGhostPart::SetFlightPath(const CFPoint& from, const CFPoint& to)
 {
 	// from and to must be unmodulated.
 
-	m_path.m_pt[0] = m_path.m_pt[1] = from;
-	m_path.m_pt[2] = m_path.m_pt[3] = to;
+	m_path.Pts[0] = m_path.Pts[1] = from;
+	m_path.Pts[2] = m_path.Pts[3] = to;
 
 	// Make the control points match their anchor but with a random offset.
-	m_path.m_pt[1] += CFPoint(SFRAND * IRAND(300), SFRAND * IRAND(300));
-	m_path.m_pt[2] += CFPoint(SFRAND * IRAND(300), SFRAND * IRAND(300));
+	m_path.Pts[1] += CFPoint(SFRAND * IRAND(300), SFRAND * IRAND(300));
+	m_path.Pts[2] += CFPoint(SFRAND * IRAND(300), SFRAND * IRAND(300));
 }
 
 

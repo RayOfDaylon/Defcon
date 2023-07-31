@@ -44,7 +44,7 @@ Defcon::CLander::CLander()
 	m_fHoverAltitude	= FRAND * 20 + 40;
 	AnimSpeed		= FRAND * 0.66f + 0.33f;
 
-	Orientation.fwd.Set(speed, 0);
+	Orientation.Fwd.Set(speed, 0);
 	//BboxRadius.Set(11, 11); // todo: s/b based on sprite size?
 
 	// With increasing probability over 10,000 pts,
@@ -175,8 +175,8 @@ void Defcon::CLander::Move(float fTime)
 			else
 			{
 				// Lower ourself.
-				Orientation.fwd.y = -1.0f;
-				Position.MulAdd(Orientation.fwd, fTime * m_fSpeed * LANDER_DESCENT_SPEED);
+				Orientation.Fwd.y = -1.0f;
+				Position.MulAdd(Orientation.Fwd, fTime * m_fSpeed * LANDER_DESCENT_SPEED);
 			}
 			break;
 
@@ -215,15 +215,15 @@ void Defcon::CLander::Move(float fTime)
 			{
 				// Normal hovering; just move ahead.
 				target = Position;
-				target += Orientation.fwd;
+				target += Orientation.Fwd;
 			}
 
 			// Move towards target.
-			check(Orientation.fwd.Length() != 0.0f);
+			check(Orientation.Fwd.Length() != 0.0f);
 
-			pos_delta(Orientation.fwd, Position, target, ArenaSize.x);
-			float dist = Orientation.fwd.Length();
-			Orientation.fwd.Normalize();
+			PositionDelta(Orientation.Fwd, Position, target, ArenaSize.x);
+			float dist = Orientation.Fwd.Length();
+			Orientation.Fwd.Normalize();
 
 			// Take terrain into account.
 			//float fAltDelta = Position.y - m_fnTerrainEval(Position.x, m_pvUserTerrainEval);
@@ -231,11 +231,11 @@ void Defcon::CLander::Move(float fTime)
 			fAltDelta -= m_fHoverAltitude;
 			// If fAltDelta is +, we want to go down.
 			// Go down slower than up.
-			Orientation.fwd.y = fAltDelta * (fAltDelta > 0 ? -0.01f : -0.03f);
-			Orientation.fwd.y = FMath::Min(Orientation.fwd.y, 1.25f);
-			Orientation.fwd.y = FMath::Max(Orientation.fwd.y, -1.25f);
+			Orientation.Fwd.y = fAltDelta * (fAltDelta > 0 ? -0.01f : -0.03f);
+			Orientation.Fwd.y = FMath::Min(Orientation.Fwd.y, 1.25f);
+			Orientation.Fwd.y = FMath::Max(Orientation.Fwd.y, -1.25f);
 
-			Position.MulAdd(Orientation.fwd, fTime * ScreenSize.x * speed);
+			Position.MulAdd(Orientation.Fwd, fTime * ScreenSize.x * speed);
 
 			// If we are near a human, and the odds 
 			// say so or we've been around for more than 
@@ -270,12 +270,12 @@ void Defcon::CLander::Move(float fTime)
 				CFPoint target;
 				target = m_pTrackedHuman->Position;
 				target.y += 27.0f; // Don't center lander with human!
-				pos_delta(Orientation.fwd, Position, target, ArenaSize.x);
-				float dist = Orientation.fwd.Length();
-				Orientation.fwd.Normalize();
+				PositionDelta(Orientation.Fwd, Position, target, ArenaSize.x);
+				float dist = Orientation.Fwd.Length();
+				Orientation.Fwd.Normalize();
 				float speed = m_maxSpeed * 0.33f;
 				float motion = FMath::Min(fTime * ScreenSize.x * speed, dist);
-				Position.MulAdd(Orientation.fwd, /*fTime * 80.0f*/motion);
+				Position.MulAdd(Orientation.Fwd, /*fTime * 80.0f*/motion);
 
 				// If we've docked, switch to ascent mode.
 
@@ -293,7 +293,7 @@ void Defcon::CLander::Move(float fTime)
 					m_bAscendStraight = (FRAND >= 0.5f);
 					if(!m_bAscendStraight)
 					{
-						Orientation.fwd.x *= FRAND;
+						Orientation.Fwd.x *= FRAND;
 					}
 					// The human will notify our siblings 
 					// that we've abducted him, thus if any of
@@ -321,10 +321,10 @@ void Defcon::CLander::Move(float fTime)
 			{
 				// Got the human, proceed to orbit.
 				if(m_bAscendStraight)
-					Orientation.fwd.x = 0.0f;
+					Orientation.Fwd.x = 0.0f;
 
-				Orientation.fwd.y = 1.0f;
-				Position.MulAdd(Orientation.fwd, fTime * LANDER_ASCENTRATE);
+				Orientation.Fwd.y = 1.0f;
+				Position.MulAdd(Orientation.Fwd, fTime * LANDER_ASCENTRATE);
 			
 				// Did we reach orbit?
 				if(m_pHuman->Position.y > ArenaSize.y + m_pHuman->BboxRadius.y)
@@ -363,22 +363,22 @@ void Defcon::CLander::Move(float fTime)
 			if(pTarget == nullptr)
 			{
 				// No target, just coast.
-				Orientation.fwd.y = 0;
+				Orientation.Fwd.y = 0;
 			}
 			else
 			{
 				// Target present, move towards it.
-				gpArena->Direction(Position, pTarget->Position, Orientation.fwd);
-				//Orientation.fwd = pTarget->Position;
-				//float dist = Orientation.fwd.Distance(Position);
-				//Orientation.fwd -= Position;
+				gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
+				//Orientation.Fwd = pTarget->Position;
+				//float dist = Orientation.Fwd.Distance(Position);
+				//Orientation.Fwd -= Position;
 				//if(dist > ArenaSize.x / 2)
-				//	Orientation.fwd *= -1;
-				//Orientation.fwd.Normalize();
+				//	Orientation.Fwd *= -1;
+				//Orientation.Fwd.Normalize();
 			}
 
 			CFPoint fpos(Position);
-			fpos.MulAdd(Orientation.fwd, fTime * ScreenSize.x * speed);
+			fpos.MulAdd(Orientation.Fwd, fTime * ScreenSize.x * speed);
 
 #if 0
 			// Avoid moving too close to other hunters.
@@ -396,14 +396,14 @@ void Defcon::CLander::Move(float fTime)
 						{
 							// Reverse course at reduced speed.
 							speed *= 0.9f;
-							Orientation.fwd *= -1;
-							Orientation.fwd.y *= 2.0f;
+							Orientation.Fwd *= -1;
+							Orientation.Fwd.y *= 2.0f;
 							break;
 						}
 						else
 						{
 							speed *= 0.7f;
-							Orientation.fwd.y *= 1.0f;
+							Orientation.Fwd.y *= 1.0f;
 						}
 					}
 				}
@@ -411,7 +411,7 @@ void Defcon::CLander::Move(float fTime)
 			}
 #endif
 
-			Position.MulAdd(Orientation.fwd, fTime * ScreenSize.x * speed);
+			Position.MulAdd(Orientation.Fwd, fTime * ScreenSize.x * speed);
 		}
 			break;
 	} // switch(state)

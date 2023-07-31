@@ -31,7 +31,7 @@ Defcon::CGuppy::CGuppy()
 	float speed = FRANDRANGE(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
 	if(FRAND > 0.5f) 
 		speed *= -1;
-	Orientation.fwd.Set(speed, 0);
+	Orientation.Fwd.Set(speed, 0);
 	m_personalSpace = FRAND * 60 + 20;
 	RadarColor = C_ORANGE;
 
@@ -115,11 +115,11 @@ void Defcon::CGuppy::Move(float fTime)
 			else if(pTarget != nullptr)
 			{
 				CFPoint pt;
-				gpArena->Direction(Position, pTarget->Position, Orientation.fwd);
+				gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
 
-				//Orientation.fwd.Set(SGN(this->m_targetOffset.y), 0);
-				Orientation.fwd.y += (float)(m_amp * sin(Age * m_freq));
-				Position.MulAdd(Orientation.fwd, fTime * GUPPY_SPEEDMIN/2);
+				//Orientation.Fwd.Set(SGN(this->m_targetOffset.y), 0);
+				Orientation.Fwd.y += (float)(m_amp * sin(Age * m_freq));
+				Position.MulAdd(Orientation.Fwd, fTime * GUPPY_SPEEDMIN/2);
 			}
 			break;
 
@@ -130,18 +130,18 @@ void Defcon::CGuppy::Move(float fTime)
 			{
 				float vd = Position.y - pTarget->Position.y;
 				if(ABS(vd) > BboxRadius.y || 
-					SGN(pTarget->Orientation.fwd.x) == 
-					SGN(Orientation.fwd.x))
+					SGN(pTarget->Orientation.Fwd.x) == 
+					SGN(Orientation.Fwd.x))
 					m_eState = fighting;
 				else
 				{
-					Orientation.fwd.y = SGN(vd)*0.5f;
-					//if(Orientation.fwd.y == 0)
-					//	Orientation.fwd.y = SFRAND;
+					Orientation.Fwd.y = SGN(vd)*0.5f;
+					//if(Orientation.Fwd.y == 0)
+					//	Orientation.Fwd.y = SFRAND;
 					CFPoint pt;
 					gpArena->Direction(Position, pTarget->Position, pt);
-					Orientation.fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
-					Position.MulAdd(Orientation.fwd, fTime * AVG(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX));
+					Orientation.Fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
+					Position.MulAdd(Orientation.Fwd, fTime * AVG(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX));
 				}
 			}
 			
@@ -157,9 +157,9 @@ void Defcon::CGuppy::Move(float fTime)
 			{
 				check(pTarget != nullptr);
 
-				float dist = gpArena->Direction(Position, pTarget->Position, Orientation.fwd);
+				float dist = gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
 				float vd = Position.y - pTarget->Position.y;
-				if(ABS(vd) < BboxRadius.y && SGN(pTarget->Orientation.fwd.x) != SGN(Orientation.fwd.x))
+				if(ABS(vd) < BboxRadius.y && SGN(pTarget->Orientation.Fwd.x) != SGN(Orientation.Fwd.x))
 				{
 					// We can be hit by player. 
 					// Take evasive action.
@@ -168,7 +168,7 @@ void Defcon::CGuppy::Move(float fTime)
 				else
 				{
 					CFPoint pt = pTarget->Position + m_targetOffset;
-					gpArena->Direction(Position, pt, Orientation.fwd);
+					gpArena->Direction(Position, pt, Orientation.Fwd);
 
 					float speed;
 
@@ -178,8 +178,8 @@ void Defcon::CGuppy::Move(float fTime)
 					else
 						speed = MAP(dist, 0.0f, 0.8f, GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
 
-					Orientation.fwd.y += (float)(m_amp * sin(Age * m_freq));
-					Position.MulAdd(Orientation.fwd, fTime * speed);
+					Orientation.Fwd.y += (float)(m_amp * sin(Age * m_freq));
+					Position.MulAdd(Orientation.Fwd, fTime * speed);
 
 					if(this->CanBeInjured() && pTarget->CanBeInjured() && speed < 400)
 					{
@@ -267,15 +267,15 @@ void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
 		dir.Set((float)cos(t), (float)sin(t));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.fwd = Inertia;
+		pFlak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.fwd *= FRAND * 12.0f + 20.0f;
+		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
 		//ndir *= FRAND * 0.4f + 0.2f;
 		float speed = FRAND * 30 + 110;
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}

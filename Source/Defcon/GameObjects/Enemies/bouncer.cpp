@@ -30,10 +30,10 @@ Defcon::IBouncer::IBouncer()
 	ParentType = Type;
 	Type = EObjType::BOUNCER;
 	PointValue = BOUNCER_VALUE;
-	Orientation.fwd.Set(1.0f, 0.0f);
+	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = C_WHITE;
 	AnimSpeed = FRAND * 0.05f + 0.12f;
-	Orientation.fwd.y = 0.0; 
+	Orientation.Fwd.y = 0.0; 
 	m_fGravity = FRAND * 10.0f + 5.0f;
 
 	const auto& Info = GameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
@@ -64,18 +64,18 @@ void Defcon::IBouncer::Move(float fElapsedTime)
 	const float h = gpArena->GetTerrainElev(Position.x);
 	if(Position.y < h)
 	{
-		Orientation.fwd.y *= -1;
+		Orientation.Fwd.y *= -1;
 		Position.y = h;
-		Orientation.fwd.x = SGN(Orientation.fwd.x) * (FRAND * 15 + 5);
+		Orientation.Fwd.x = SGN(Orientation.Fwd.x) * (FRAND * 15 + 5);
 		// todo: switch sign of x depending on surface normal
 		// at terrain impact point.
 	}
 
 	// Have gravity pull bouncer down.
-	//float speed = ABS(Orientation.fwd.y);
-	Orientation.fwd.y -= m_fGravity * fElapsedTime;
+	//float speed = ABS(Orientation.Fwd.y);
+	Orientation.Fwd.y -= m_fGravity * fElapsedTime;
 
-	Position.MulAdd(Orientation.fwd, fElapsedTime * 40);
+	Position.MulAdd(Orientation.Fwd, fElapsedTime * 40);
 
 
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
@@ -122,10 +122,10 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 
 			float angle = MAP(a, 0, 7, 0, 5.5f);
 			angle += off + SFRAND * 0.05f;
-			pFlak->Orientation.fwd.Set(sinf(angle), cosf(angle));
+			pFlak->Orientation.Fwd.Set(sinf(angle), cosf(angle));
 			
-			pFlak->Orientation.fwd *= (SFRAND*15+30) * (i+2);
-			pFlak->Orientation.fwd += Inertia;
+			pFlak->Orientation.Fwd *= (SFRAND*15+30) * (i+2);
+			pFlak->Orientation.Fwd += Inertia;
 
 			debris.Add(pFlak);
 		}
@@ -148,11 +148,11 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 
 				float angle = MAP(a, 0, 7, 0, 5.5f);
 				angle += off2 + SFRAND * 0.05f;
-				pFlak->Orientation.fwd.Set(
+				pFlak->Orientation.Fwd.Set(
 					sinf(angle), cosf(angle));
 				
-				pFlak->Orientation.fwd *= (SFRAND*5+6) * (i+2);
-				pFlak->Orientation.fwd += Inertia;
+				pFlak->Orientation.Fwd *= (SFRAND*5+6) * (i+2);
+				pFlak->Orientation.Fwd += Inertia;
 
 				debris.Add(pFlak);
 			}

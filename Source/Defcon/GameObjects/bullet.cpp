@@ -60,7 +60,7 @@ void Defcon::IBullet::Move(float fTime)
 		}
 	}
 
-	Position.MulAdd(Orientation.fwd, fTime * m_fSpeed);
+	Position.MulAdd(Orientation.Fwd, fTime * m_fSpeed);
 }
 
 

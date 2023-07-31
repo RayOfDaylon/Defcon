@@ -223,7 +223,7 @@ void UDefconPlayMainWidgetBase::UpdatePlayerShip(float DeltaTime)
 		}
 		else
 		{
-			const bool IsFacingRight = (PlayerShipPtr->Orientation.fwd.x > 0);
+			const bool IsFacingRight = (PlayerShipPtr->Orientation.Fwd.x > 0);
 			auto S = PlayerShipExhaustPtr->GetActualSize();
 			S.X = ExhaustLength;
 			PlayerShipExhaustPtr->FlipHorizontal = !IsFacingRight;
@@ -382,22 +382,6 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 	DrawObjects(Debris,  PaintArguments);
 	DrawObjects(Blasts,  PaintArguments);
 
-
-	
-#if 0
-	// Draw any particles required by enemy materializations.
-	Enemies->ForEach([&PaintArguments, this](Defcon::IGameObject* pObj)
-		{
-			auto EnemyPtr = static_cast<Defcon::CEnemy*>(pObj);
-
-			if(EnemyPtr->IsMaterializing())
-			{
-				EnemyPtr->DrawMaterialization(PaintArguments, *CoordMapperPtr);
-			}
-		}
-	);
-#endif
-
 	if(bShowBoundingBoxes && PlayerShipPtr && PlayerShipPtr->IsAlive())
 	{
 		DrawObjectBbox(PlayerShipPtr, PaintArguments);
@@ -447,28 +431,28 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 	auto Str = FString::Printf(TEXT("%d, %d"), (int32)PlayerShipPtr->Position.x, (int32)PlayerShipPtr->Position.y); 
 	Position->SetText(FText::FromString(Str));
 
-	Str = FString::Printf(TEXT("%d"), (int32)PlayerShipPtr->Orientation.fwd.x); 
+	Str = FString::Printf(TEXT("%d"), (int32)PlayerShipPtr->Orientation.Fwd.x); 
 	OrientFwd->SetText(FText::FromString(Str));
 
 	Str = FString::Printf(TEXT("%.4f, %.4f"), PlayerShipPtr->Velocity.x, PlayerShipPtr->Velocity.y); 
 	Speed->SetText(FText::FromString(Str));
 
-	Str = FString::Printf(TEXT("%.4f, %.4f"), PlayerShipPtr->m_thrustVector.x, PlayerShipPtr->m_thrustVector.y);
+	Str = FString::Printf(TEXT("%.4f, %.4f"), PlayerShipPtr->ThrustVector.x, PlayerShipPtr->ThrustVector.y);
 	Thrust->SetText(FText::FromString(Str)); 
 
-	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->m_navCtls[Defcon::ILiveGameObject::ctlBack].bActive, PlayerShipPtr->m_navCtls[Defcon::ILiveGameObject::ctlBack].fTimeDown);
+	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlBack].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlBack].TimeDown);
 	ThrustLeftKey->SetText(FText::FromString(Str)); 
 
-	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->m_navCtls[Defcon::ILiveGameObject::ctlFwd].bActive, PlayerShipPtr->m_navCtls[Defcon::ILiveGameObject::ctlFwd].fTimeDown);
+	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlFwd].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlFwd].TimeDown);
 	ThrustRightKey->SetText(FText::FromString(Str)); 
 
-	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->m_navCtls[Defcon::ILiveGameObject::ctlUp].bActive, PlayerShipPtr->m_navCtls[Defcon::ILiveGameObject::ctlUp].fTimeDown);
+	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlUp].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlUp].TimeDown);
 	ThrustUpKey->SetText(FText::FromString(Str)); 
 
-	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->m_navCtls[Defcon::ILiveGameObject::ctlDown].bActive, PlayerShipPtr->m_navCtls[Defcon::ILiveGameObject::ctlDown].fTimeDown);
+	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlDown].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlDown].TimeDown);
 	ThrustDownKey->SetText(FText::FromString(Str)); 
 
-	Str = FString::Printf(TEXT("%.4f, %.4f"), PlayerShipPtr->m_fThrustDuration_Forwards, PlayerShipPtr->m_fThrustDuration_Backwards);
+	Str = FString::Printf(TEXT("%.4f, %.4f"), PlayerShipPtr->ThrustDurationForwards, PlayerShipPtr->ThrustDurationBackwards);
 	Duration->SetText(FText::FromString(Str)); 
 
 	Str = FString::Printf(TEXT("%d%%"), ROUND(PlayerShipPtr->GetShieldStrength() * 100));

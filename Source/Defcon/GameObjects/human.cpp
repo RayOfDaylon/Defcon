@@ -115,7 +115,7 @@ void Defcon::CHuman::Move(float fElapsedTime)
 		Position.y -= 27.0f;
 
 		// Init momentum for possible fall.
-		Orientation.fwd.y = -2.0f;
+		Orientation.Fwd.y = -2.0f;
 	}
 	else
 	{
@@ -125,16 +125,16 @@ void Defcon::CHuman::Move(float fElapsedTime)
 		{
 			// We're above the ground, so we must be 
 			// falling from a killed abductor.
-			Orientation.fwd.Set(
+			Orientation.Fwd.Set(
 				0.0f, 
-				Orientation.fwd.y +  Orientation.fwd.y * 1.5f * fElapsedTime);
+				Orientation.Fwd.y +  Orientation.Fwd.y * 1.5f * fElapsedTime);
 				
-			Position.MulAdd(Orientation.fwd, fElapsedTime);
+			Position.MulAdd(Orientation.Fwd, fElapsedTime);
 
 			if(Position.y < h)
 			{
 				// We fall to the ground.
-				if(Orientation.fwd.y < -HUMAN_TERMINALVELOCITY)
+				if(Orientation.Fwd.y < -HUMAN_TERMINALVELOCITY)
 				{
 					// We landed too hard, so we're toast.
 					gpArena->ExplodeObject(this);

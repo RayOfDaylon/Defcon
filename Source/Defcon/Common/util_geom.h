@@ -188,8 +188,8 @@ inline CFPoint operator / (const CFPoint& pt1, float f)            { CFPoint r(p
 // A bastardized 2D matrix to store 2D orientations.
 typedef struct
 {
-	CFPoint	fwd;
-	CFPoint	up;
+	CFPoint	Fwd;
+	CFPoint	Up;
 } Orient2D;
 
 
@@ -307,7 +307,7 @@ public:
 class CBezierSpline2D
 {
 	public:
-		CFPoint	m_pt[4];	// p1, a, b, p2
+		CFPoint	Pts[4];	// p1, a, b, p2
 
 		void CalcPt(float t, CFPoint& r) const
 		{
@@ -320,15 +320,15 @@ class CBezierSpline2D
 			const float coeff2    = t3 * t * invt;
 
 			r.Set(
-				m_pt[0].x * invtcubed +
-				m_pt[1].x * coeff1 +
-				m_pt[2].x * coeff2 +
-				m_pt[3].x * tcubed,
+				Pts[0].x * invtcubed +
+				Pts[1].x * coeff1 +
+				Pts[2].x * coeff2 +
+				Pts[3].x * tcubed,
 
-				m_pt[0].y * invtcubed +
-				m_pt[1].y * coeff1 +
-				m_pt[2].y * coeff2 +
-				m_pt[3].y * tcubed
+				Pts[0].y * invtcubed +
+				Pts[1].y * coeff1 +
+				Pts[2].y * coeff2 +
+				Pts[3].y * tcubed
 				);
 		}
 };

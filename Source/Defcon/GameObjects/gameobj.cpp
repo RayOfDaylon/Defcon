@@ -33,8 +33,8 @@ Defcon::IGameObject::IGameObject()
 	:
 	RadarColor(MakeColorFromComponents(255,255,255))
 {
-	Orientation.up.Set(0.0f, 1.0f);
-	Orientation.fwd.Set(1.0f, 0.0f);
+	Orientation.Up.Set(0.0f, 1.0f);
+	Orientation.Fwd.Set(1.0f, 0.0f);
 	BboxRadius.Set(10, 10);
 }
 
@@ -224,16 +224,16 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 		}
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.fwd = Inertia;
+		pFlak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
+		pFlak->Orientation.Fwd *= FRAND * 12.0f + 30.0f;
 		// Make the particle have a velocity vector
 		// as if it were standing still.
 		const float speed = FRAND * 180 + 90;
 
-		pFlak->Orientation.fwd.MulAdd(dir, speed);
+		pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 		debris.Add(pFlak);
 	}
@@ -273,12 +273,12 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 			if(bGrounded)
 				dir.y = abs(dir.y);
 
-			pFlak->Orientation.fwd = Inertia;
+			pFlak->Orientation.Fwd = Inertia;
 
-			pFlak->Orientation.fwd *= FRAND * 12.0f + 30.0f;
+			pFlak->Orientation.Fwd *= FRAND * 12.0f + 30.0f;
 			float speed = FRAND * 45 + 22;
 
-			pFlak->Orientation.fwd.MulAdd(dir, speed);
+			pFlak->Orientation.Fwd.MulAdd(dir, speed);
 
 			debris.Add(pFlak);
 		}
@@ -318,12 +318,12 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 				dir.y = abs(dir.y);
 
 			// Puff has at least the object's momentum.
-			//pPuff->Orientation.fwd = pObj->Inertia;
+			//pPuff->Orientation.Fwd = pObj->Inertia;
 			pPuff->Orientation = pFireball->Orientation;
 
 			// Scale the momentum up a bit, otherwise 
 			// the explosion looks like it's standing still.
-			pPuff->Orientation.fwd *= FRAND * 2.0f + 3.0f;
+			pPuff->Orientation.Fwd *= FRAND * 2.0f + 3.0f;
 			//ndir *= FRAND * 0.4f + 0.2f;
 			// Make the particle have a velocity vector
 			// as if it were standing still.
@@ -331,7 +331,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 
 			CFPoint speed_((FRAND*2+2)*speed, speed);
 
-			pPuff->Orientation.fwd.MulAdd(dir, speed_);
+			pPuff->Orientation.Fwd.MulAdd(dir, speed_);
 
 
 			debris.Add(pPuff);

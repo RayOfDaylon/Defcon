@@ -80,7 +80,7 @@ void Defcon::CLaserbeam::Create(const CFPoint& where, const Orient2D& aim)
 	float budge = FRAND;
 	budge -= 0.5f;
 	budge *= 3;	
-	Position.MulAdd(aim.up, budge);
+	Position.MulAdd(aim.Up, budge);
 }
 
 
@@ -94,7 +94,7 @@ void Defcon::CLaserbeam::Move(float fTime)
 
 		float f = m_fLength; 
 		m_posStart = Position;
-		m_posStart.MulAdd(Orientation.fwd, f * m_fScale);
+		m_posStart.MulAdd(Orientation.Fwd, f * m_fScale);
 	}
 }
 
@@ -109,7 +109,7 @@ void Defcon::CLaserbeam::Draw(FPaintArguments& PaintArguments, const I2DCoordMap
 	const float fAge = Lifespan / m_maxAge; // 0..1
 
 	CFPoint ptEnd(m_posStart);
-	ptEnd.MulAdd(Orientation.fwd, m_fLength * m_fScale);
+	ptEnd.MulAdd(Orientation.Fwd, m_fLength * m_fScale);
 
 	CFPoint p1, p2;
 	Mapper.To(m_posStart, p1);
@@ -176,14 +176,14 @@ void Defcon::CLaserbeam::DrawSmall(FPaintArguments&, const I2DCoordMapper&, FSla
 void Defcon::CLaserbeam::GetInjurePt(CFPoint& pt) const
 {
 	pt = m_posStart;
-	pt.MulAdd(Orientation.fwd, m_fLength * m_fScale);
+	pt.MulAdd(Orientation.Fwd, m_fLength * m_fScale);
 }
 
 
 bool Defcon::CLaserbeam::TestInjury(const CFRect& r) const
 {
 	CFPoint ptEnd = m_posStart;
-	ptEnd.MulAdd(Orientation.fwd, m_fLength * m_fScale);
+	ptEnd.MulAdd(Orientation.Fwd, m_fLength * m_fScale);
 
 	// No hit if beam is above or below the target.
 	if(m_posStart.y <= r.LL.y || m_posStart.y >= r.UR.y)

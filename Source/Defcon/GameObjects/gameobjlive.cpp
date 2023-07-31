@@ -22,19 +22,19 @@
 
 Defcon::ILiveGameObject::ILiveGameObject()
 	:
-	m_bCanMove(true),
-	m_maxThrust(1.0f),
-	m_fThrustDuration_Vertical(0.0f),
-	m_fThrustDuration_Forwards(0.0f),
-	m_fThrustDuration_Backwards(0.0f)
+	bCanMove(true),
+	MaxThrust(1.0f),
+	ThrustDurationVertical(0.0f),
+	ThrustDurationForwards(0.0f),
+	ThrustDurationBackwards(0.0f)
 {
 	Drag = 0.1f;
 
 	SetShieldStrength(1.0f);
 
-	for(int32 i = 0; i < array_size(m_navCtls); i++)
+	for(int32 i = 0; i < array_size(NavControls); i++)
 	{
-		m_navCtls[i].bActive = false;
+		NavControls[i].bActive = false;
 	}
 }
 
@@ -43,18 +43,18 @@ bool Defcon::ILiveGameObject::RegisterImpact(float f)
 {
 	// Lower shields by <f>, and return true if shields go below zero.
 
-  	m_fShields -= f;
-	const bool b = (m_fShields < 0.0f);
-	m_fShields = FMath::Max(0.0f, m_fShields);
-	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(Type), ROUND(m_fShields * 100));
+  	ShieldStrength -= f;
+	const bool b = (ShieldStrength < 0.0f);
+	ShieldStrength = FMath::Max(0.0f, ShieldStrength);
+	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
 	return b;
 }
 
 
 void Defcon::ILiveGameObject::SetShieldStrength(float f)	
 {
-	m_fShields = f; 
-	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(Type), ROUND(m_fShields * 100));
+	ShieldStrength = f; 
+	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
 }
 
 
@@ -90,25 +90,25 @@ float Defcon::ILiveGameObject::NavControl_Duration(int i) const
 {
 	// Report how long a nav control has been continually used, in seconds.
 
-	if(!m_bCanMove)
+	if(!bCanMove)
 	{
 		return 0.0f;
 	}
 
-	if(!m_navCtls[i].bActive)
+	if(!NavControls[i].bActive)
 	{
 		return 0.0f;
 	}
 
-	const float f = (float)(GameTime() - m_navCtls[i].fTimeDown);
+	const float f = (float)(GameTime() - NavControls[i].TimeDown);
 	return FMath::Max(0.0f, f);
 }
 
 
 void Defcon::ILiveGameObject::SetNavControl(int i, bool b, float f)
 {
-	m_navCtls[i].bActive = b;
-	m_navCtls[i].fTimeDown = f;
+	NavControls[i].bActive = b;
+	NavControls[i].TimeDown = f;
 }
 
 
@@ -120,25 +120,25 @@ void Defcon::ILiveGameObject::ComputeThrustTimings(float frameTime)
 
 	check(frameTime > 0.0f);
 
-	m_fThrustDuration_Forwards  = this->NavControl_Duration(ctlFwd);
-	m_fThrustDuration_Backwards = this->NavControl_Duration(ctlBack);
-	m_fThrustDuration_Forwards  = FMath::Min(m_fThrustDuration_Forwards, frameTime);
-	m_fThrustDuration_Backwards = FMath::Min(m_fThrustDuration_Backwards, frameTime);
+	ThrustDurationForwards  = this->NavControl_Duration(ctlFwd);
+	ThrustDurationBackwards = this->NavControl_Duration(ctlBack);
+	ThrustDurationForwards  = FMath::Min(ThrustDurationForwards, frameTime);
+	ThrustDurationBackwards = FMath::Min(ThrustDurationBackwards, frameTime);
 	
 
 	// If neither up or down thrusts active, set the vert. thrust to zero.
-	if(!m_navCtls[ctlUp].bActive && !m_navCtls[ctlDown].bActive)
+	if(!NavControls[ctlUp].bActive && !NavControls[ctlDown].bActive)
 	{
-		m_fThrustDuration_Vertical = 0;
+		ThrustDurationVertical = 0;
 		return;
 	}
 
-	m_fThrustDuration_Vertical += this->NavControl_Duration(ctlUp);
-	m_fThrustDuration_Vertical -= this->NavControl_Duration(ctlDown);
+	ThrustDurationVertical += this->NavControl_Duration(ctlUp);
+	ThrustDurationVertical -= this->NavControl_Duration(ctlDown);
 
 	// Clamp vertical thrust duration to the frametime.
-	m_fThrustDuration_Vertical = FMath::Min(m_fThrustDuration_Vertical, frameTime);
-	m_fThrustDuration_Vertical = FMath::Max(m_fThrustDuration_Vertical, -frameTime);
+	ThrustDurationVertical = FMath::Min(ThrustDurationVertical, frameTime);
+	ThrustDurationVertical = FMath::Max(ThrustDurationVertical, -frameTime);
 }
 
 
@@ -151,21 +151,21 @@ void Defcon::ILiveGameObject::ComputeForces(float frametime)
 
 	if(frametime > 0.0f)
 	{
-		m_thrustVector = Orientation.fwd;
+		ThrustVector = Orientation.Fwd;
 
-		if(Orientation.fwd.x > 0)
+		if(Orientation.Fwd.x > 0)
 		{
-			m_thrustVector.Mul(m_fThrustDuration_Forwards * kHorzSpeedScaler);
-			m_thrustVector.MulAdd(Orientation.fwd, -m_fThrustDuration_Backwards * kHorzSpeedScaler);
+			ThrustVector.Mul(ThrustDurationForwards * kHorzSpeedScaler);
+			ThrustVector.MulAdd(Orientation.Fwd, -ThrustDurationBackwards * kHorzSpeedScaler);
 		}
 		else
 		{
-			m_thrustVector.Mul(m_fThrustDuration_Backwards * kHorzSpeedScaler);
-			m_thrustVector.MulAdd(Orientation.fwd, -m_fThrustDuration_Forwards * kHorzSpeedScaler);
+			ThrustVector.Mul(ThrustDurationBackwards * kHorzSpeedScaler);
+			ThrustVector.MulAdd(Orientation.Fwd, -ThrustDurationForwards * kHorzSpeedScaler);
 		}
 
-		m_thrustVector.MulAdd(Orientation.up, m_fThrustDuration_Vertical * kVertSpeedScaler);
-		m_thrustVector.Mul(m_maxThrust / frametime);
+		ThrustVector.MulAdd(Orientation.Up, ThrustDurationVertical * kVertSpeedScaler);
+		ThrustVector.Mul(MaxThrust / frametime);
 	}
 }
 
@@ -174,7 +174,7 @@ void Defcon::ILiveGameObject::ImpartForces(float DeltaTime)
 {
 	check(Mass > 0.0f);
 
-	if(!m_bCanMove)
+	if(!bCanMove)
 	{
 		return;
 	}
@@ -188,7 +188,7 @@ void Defcon::ILiveGameObject::ImpartForces(float DeltaTime)
 	const double r = fmod(DeltaTime, FT);
 	const double k = r / FT;
 
-	CFPoint accel = m_thrustVector;
+	CFPoint accel = ThrustVector;
 	accel.Div(Mass);
 
 	while(count--)

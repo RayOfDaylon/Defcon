@@ -218,19 +218,19 @@ Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(EObjType kind, const CFPo
 
 
 
-#define SET_RANDOM_FWD_ORIENT   pE->Orientation.fwd.x = SBRAND;
+#define SET_RANDOM_FWD_ORIENT   pE->Orientation.Fwd.x = SBRAND;
 #define SET_PLAYER_AS_TARGET    pE->SetTarget(&gpArena->GetPlayerShip());
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForBouncer(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	pE->Orientation.fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
+	pE->Orientation.Fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForWeakBouncer(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	pE->Orientation.fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
+	pE->Orientation.Fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
 }
 
 
@@ -352,7 +352,7 @@ void Defcon::CCreateEnemyEvent::SpecializeForSwarmer(Defcon::CEnemy* pE, const C
 {
 	CSwarmer* p = static_cast<CSwarmer*>(pE);
 	SET_PLAYER_AS_TARGET
-	pE->Orientation.fwd.x = SBRAND;
+	pE->Orientation.Fwd.x = SBRAND;
 	p->SetOriginalPosition(where);
 }
 
