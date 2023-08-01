@@ -118,12 +118,12 @@ Defcon::CGameObjectCollection& UDefconPlayViewBase::GetHumans()
 
 void UDefconPlayViewBase::DeleteAllObjects()
 {
-	m_enemies.DeleteAll(true);
-	m_blasts. DeleteAll(true);
-	m_debris. DeleteAll(true);
-	m_objects.DeleteAll(true);
+	Enemies.  DeleteAll(Defcon::kIncludingSprites);
+	Blasts.   DeleteAll(Defcon::kIncludingSprites);
+	Debris.   DeleteAll(Defcon::kIncludingSprites);
+	Objects.DeleteAll(Defcon::kIncludingSprites);
 
-	Events. DeleteAll();
+	Events.   DeleteAll();
 }
 
 
@@ -155,10 +155,10 @@ void UDefconPlayViewBase::OnFinishActivating()
 	InitPlayerShip();
 
 	PlayAreaMain->Humans     = &GetHumans();
-	PlayAreaMain->Objects    = &m_objects; // todo: use Init method the way the rader widget does
-	PlayAreaMain->Enemies    = &m_enemies;
-	PlayAreaMain->Debris     = &m_debris;
-	PlayAreaMain->Blasts     = &m_blasts;
+	PlayAreaMain->Objects    = &Objects; // todo: use Init method the way the rader widget does
+	PlayAreaMain->Enemies    = &Enemies;
+	PlayAreaMain->Debris     = &Debris;
+	PlayAreaMain->Blasts     = &Blasts;
 	PlayAreaMain->ArenaSize  = ArenaSize;
 
 	// Start the current mission.
@@ -175,7 +175,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 
 
-	PlayAreaRadar->Init(&GetPlayerShip(), MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &m_objects, &m_enemies);
+	PlayAreaRadar->Init(&GetPlayerShip(), MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
 
 
 	GetPlayerShip().BindToShieldValue([WeakThis = TWeakObjectPtr<UDefconPlayViewBase>(this)](const float& Value)
@@ -214,6 +214,14 @@ void UDefconPlayViewBase::OnDeactivate()
 
 	PlayAreaMain->OnDeactivate();
 	PlayAreaRadar->OnDeactivate();
+
+	// Because the object collections are owned by us and not by the current mission,
+	// object deletions can happen after the current mission has been recreated 
+	// due to the player ship getting destroyed, in which case it will attempt 
+	// to remove hostiles in a new (and empty mission), borking the hostile count.
+	// So for now, mark all enemies as non-mission-critical.
+
+	Enemies.ForEach([](Defcon::IGameObject* Obj){ Obj->SetAsMissionTarget(false); });
 
 	DeleteAllObjects();
 
@@ -761,7 +769,7 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 
 	pShip->InstallSprite();
 
-	m_objects.Add(pShip);
+	Objects.Add(pShip);
 
 	gpAudio->OutputSound(Defcon::EAudioTrack::Player_dying);
 
@@ -785,7 +793,7 @@ void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& object
 	bbox.Inflate(PlayerShip.BboxRadius);
 
 
-	Defcon::IGameObject* pObj = m_objects.GetFirst();
+	Defcon::IGameObject* pObj = Objects.GetFirst();
 
 	while(pObj != nullptr)
 	{
@@ -839,7 +847,7 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 	CFRect rObj, rPlayer(PlayerShip.Position);
 	rPlayer.Inflate(PlayerShip.BboxRadius);
 	
-	Defcon::IGameObject* pObj = m_enemies.GetFirst();
+	Defcon::IGameObject* pObj = Enemies.GetFirst();
 
 	while(pObj != nullptr)
 	{
@@ -893,7 +901,7 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 
 void UDefconPlayViewBase::AddDebris(Defcon::IGameObject* p)
 {
-	m_debris.Add(p);
+	Debris.Add(p);
 }
 
 
@@ -938,17 +946,17 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	}
 	else if(ARENA_BOGDOWN)
 	{
-		if(m_enemies.Count() + m_objects.Count() + m_debris.Count() > 250)
+		if(Enemies.Count() + Objects.Count() + Debris.Count() > 250)
 		{
-			if(m_enemies.Count() + m_objects.Count() < 500)
+			if(Enemies.Count() + Objects.Count() < 500)
 			{
 				DeltaTime *= 0.8f;
 			}
-			else if(m_enemies.Count() + m_objects.Count() < 750)
+			else if(Enemies.Count() + Objects.Count() < 750)
 			{
 				DeltaTime *= 0.65f;
 			}
-			else //if(m_objects.Count() < 750)
+			else //if(Objects.Count() < 750)
 			{
 				DeltaTime *= 0.5f;
 			}
@@ -959,7 +967,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	this->ProcessWeaponsHits();
 
 	this->CheckPlayerCollided();
-	this->CheckIfPlayerHit(m_objects);
+	this->CheckIfPlayerHit(Objects);
 
 	// Move and draw everyone.
 	//m_virtualScreen.Clear(gGameColors.GetColor(0, (float)m_nFlashScreen/SMARTBOMB_MAX_FLASHSCREEN));
@@ -986,8 +994,8 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	gop.DeltaTime	= DeltaTime;
 	gop.MapperPtr   = &MainAreaMapper;
 
-	m_blasts.Process(gop);
-	m_debris.Process(gop);
+	Blasts.Process(gop);
+	Debris.Process(gop);
 
 	if(HumansInvolved)
 	{
@@ -1037,8 +1045,8 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	};
 
 
-	m_objects.Process(gop);
-	m_enemies.Process(gop);
+	Objects.Process(gop);
+	Enemies.Process(gop);
 
 	// ------------------------------------------------------
 
@@ -1149,7 +1157,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 					m_pPlayer->Position);
 				m_pPlayer->Init((float)wp);
 				m_pPlayer->MapperPtr = &m_coordMapper;
-				m_objects.Add(m_pPlayer);
+				Objects.Add(m_pPlayer);
 				
 				m_fPlayerRebirthClock = PLAYER_REBIRTH_DELAY;
 			}
@@ -1294,7 +1302,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 
 			if(GetPlayerShip().IsAlive())
 			{
-				GetPlayerShip().FireLaserWeapon(m_objects);
+				GetPlayerShip().FireLaserWeapon(Objects);
 
 				if(true/*BRAND*/)
 					gpAudio->OutputSound(Defcon::EAudioTrack::Laserfire);
@@ -1423,7 +1431,7 @@ void UDefconPlayViewBase::LayMine(Defcon::IGameObject& obj, const CFPoint& from,
 	p->InstallSprite();
 	p->Position = obj.Position - obj.Orientation.Fwd * (2 * FMath::Max(obj.BboxRadius.x, obj.BboxRadius.y));
 
-	m_objects.Add(p);
+	Objects.Add(p);
 }
 
 
@@ -1519,7 +1527,7 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 
 	gpAudio->OutputSound((Defcon::EAudioTrack)(soundid - 1 + (int32)Defcon::EAudioTrack::Bullet));
 
-	m_objects.Add(pBullet);
+	Objects.Add(pBullet);
 
 	return pBullet;
 }
@@ -1583,9 +1591,9 @@ void UDefconPlayViewBase::ExplodeObject(Defcon::IGameObject* pObj)
 		return;
 	}
 
-	pObj->Explode(m_debris);
+	pObj->Explode(Debris);
 
-	if(GetPlayerShip().IsAlive() && GetPlayerShip().IsSolid() /*&& m_debris.Count() < 800*/)
+	if(GetPlayerShip().IsAlive() && GetPlayerShip().IsSolid() /*&& Debris.Count() < 800*/)
 	{
 		//gpAudio->OutputSound(Defcon::ship_exploding);
 
@@ -1647,9 +1655,9 @@ void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& ob
 
 	// Loop through the weapons fire, 
 	// then, for each bullet, loop through the targets.
-	Defcon::IGameObject* pObj = m_objects.GetFirst();
+	Defcon::IGameObject* pObj = Objects.GetFirst();
 
-	m_objects.ForEach([&](Defcon::IGameObject* pObj)
+	Objects.ForEach([&](Defcon::IGameObject* pObj)
 	//{
 	//while(pObj != nullptr)
 	{
@@ -1787,37 +1795,38 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 	// an object's shields have been struck by 
 	// a certain force.
 
-	const auto cby = Defcon::EColor::gray;
+	const auto cby = Defcon::EColor::Gray;
 
-	for(int32 i = 0; i < 10; i++)
+	for(int32 I = 0; I < 10; I++)
 	{
-		auto pFlak = new Defcon::CFlak;
-		pFlak->ColorbaseYoung = cby;
-		pFlak->LargestSize = 4;
-		pFlak->bFade = true;//bDieOff;
+		auto FlakPtr = new Defcon::CFlak;
+		FlakPtr->ColorbaseYoung = cby;
+		FlakPtr->LargestSize = 4;
+		FlakPtr->bFade = true;//bDieOff;
 
-		pFlak->Position = pObj->Position;
-		pFlak->Orientation = pObj->Orientation;
+		FlakPtr->Position = pObj->Position;
+		FlakPtr->Orientation = pObj->Orientation;
 
-		CFPoint dir;
-		double t = FRAND * TWO_PI;
+		CFPoint Direction;
+		const double T = FRAND * TWO_PI;
 		
-		dir.Set((float)cos(t), (float)sin(t));
+		Direction.Set((float)cos(T), (float)sin(T));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.Fwd = pObj->Inertia;
+		FlakPtr->Orientation.Fwd = pObj->Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
+		FlakPtr->Orientation.Fwd *= FRANDRANGE(20, 32);
 		//ndir *= FRAND * 0.4f + 0.2f;
-		float speed = FRAND * 30 + 110;
+		float speed = FRANDRANGE(110, 140);
 
-		pFlak->Orientation.Fwd.MulAdd(dir, speed);
+		FlakPtr->Orientation.Fwd.MulAdd(Direction, speed);
 
-		m_debris.Add(pFlak);
+		Debris.Add(FlakPtr);
 	}
-	m_fRadarFritzed = FMath::Max(1.5f, fForce*10);//MAX_RADARFRITZ;
+
+	m_fRadarFritzed = FMath::Max(1.5f, fForce * 10);//MAX_RADARFRITZ;
 
 	gpAudio->OutputSound(Defcon::EAudioTrack::Shieldbonk);
 }
@@ -1826,8 +1835,8 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 
 void UDefconPlayViewBase::ProcessWeaponsHits()
 {
-	this->CheckIfObjectsGotHit(m_objects);
-	this->CheckIfObjectsGotHit(m_enemies);
+	this->CheckIfObjectsGotHit(Objects);
+	this->CheckIfObjectsGotHit(Enemies);
 
 	auto Mission = gDefconGameInstance->GetMission();
 
@@ -1871,7 +1880,7 @@ void UDefconPlayViewBase::Hyperspace()
 #endif
 
 	//const float fs = m_pPlayer->GetShieldStrength();
-	//m_objects.Delete(m_pPlayer);
+	//Objects.Delete(m_pPlayer);
 	//m_pPlayer = new CPlayer;
 	//m_pPlayer->SetShieldStrength(fs);
 
@@ -1889,7 +1898,7 @@ void UDefconPlayViewBase::Hyperspace()
 	m_coordMapper.ScrollTo(pt);
 		
 	m_pPlayer->MapperPtr = &m_coordMapper;
-	m_objects.Add(m_pPlayer);
+	Objects.Add(m_pPlayer);
 
 	pObj = tempset.GetFirst();
 	while(pObj != nullptr)
@@ -1905,19 +1914,19 @@ void UDefconPlayViewBase::Hyperspace()
 
 void UDefconPlayViewBase::FireSmartbomb()
 {
-	if(GetPlayerShip().IsAlive() )
+	if(GetPlayerShip().IsAlive())
 	{
 		gpAudio->OutputSound(Defcon::EAudioTrack::Smartbomb);
 
-		auto pBomb = new Defcon::CSmartbomb;
+		auto BombPtr = new Defcon::CSmartbomb;
 
-		pBomb->MapperPtr = &GetMainAreaMapper();
-		pBomb->Position = GetPlayerShip().Position;
-		pBomb->Range.Set(MainAreaSize.X, MainAreaSize.Y);
-		pBomb->Targets = &m_enemies;
-		pBomb->Debris = &m_debris;
+		BombPtr->MapperPtr = &GetMainAreaMapper();
+		BombPtr->Position = GetPlayerShip().Position;
+		BombPtr->Range.Set(MainAreaSize.X, MainAreaSize.Y);
+		BombPtr->Targets = &Enemies;
+		BombPtr->Debris = &Debris;
 
-		m_blasts.Add(pBomb);
+		Blasts.Add(BombPtr);
 
 		m_nFlashScreen = SMARTBOMB_MAX_FLASHSCREEN;
 	}
@@ -2122,7 +2131,7 @@ void UDefconPlayViewBase::OnSpawnEnemy()
 		Defcon::EObjType::BOUNCER_WEAK
 	};
 
-	static int Index = 0;
+	static int32 Index = 0;
 
 	auto pt = GetPlayerShip().Position;
 	pt.x = WrapX(pt.x + 300 * SGN(GetPlayerShip().Orientation.Fwd.x));

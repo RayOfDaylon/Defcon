@@ -4,8 +4,6 @@
 /*
 	mission_yllabian_dogfight_2.cpp
 	"Yllabian Dogfight 2" mission in Defence Condition.
-
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 

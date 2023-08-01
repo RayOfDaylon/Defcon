@@ -215,6 +215,8 @@ void Defcon::CMilitaryMission::HostileDestroyed(EObjType Kind)
 
 	if(Kind == EObjType::LANDER) 
 	{
+		check(NumLandersRemaining > 0);
+
 		NumLandersRemaining--; 
 	} 
 }

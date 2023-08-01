@@ -18,18 +18,18 @@
 
 Defcon::CGameColors::CGameColors()
 {
-	CFVector ColorBases[(int32)EColor::numbases];
+	CFVector ColorBases[(int32)EColor::Count];
 	
-	ColorBases[(int32)EColor::gray        ].Set(1.0f, 1.0f, 1.0f);
-	ColorBases[(int32)EColor::yellow      ].Set(1.0f, 1.0f, 0.0f);
-	ColorBases[(int32)EColor::lightyellow ].Set(1.0f, 1.0f, 0.5f);
-	ColorBases[(int32)EColor::red         ].Set(1.0f, 0.0f, 0.0f);
-	ColorBases[(int32)EColor::blue        ].Set(0.0f, 0.0f, 1.0f);
-	ColorBases[(int32)EColor::lightblue   ].Set(0.5f, 0.5f, 1.0f);
-	ColorBases[(int32)EColor::purple      ].Set(0.7f, 0.0f, 0.7f);
-	ColorBases[(int32)EColor::magenta     ].Set(1.0f, 0.0f, 1.0f);
-	ColorBases[(int32)EColor::orange      ].Set(1.0f, 0.5f, 0.0f);
-	ColorBases[(int32)EColor::green       ].Set(0.0f, 1.0f, 0.0f);
+	ColorBases[(int32)EColor::Gray        ].Set(1.0f, 1.0f, 1.0f);
+	ColorBases[(int32)EColor::Yellow      ].Set(1.0f, 1.0f, 0.0f);
+	ColorBases[(int32)EColor::LightYellow ].Set(1.0f, 1.0f, 0.5f);
+	ColorBases[(int32)EColor::Red         ].Set(1.0f, 0.0f, 0.0f);
+	ColorBases[(int32)EColor::Blue        ].Set(0.0f, 0.0f, 1.0f);
+	ColorBases[(int32)EColor::LightBlue   ].Set(0.5f, 0.5f, 1.0f);
+	ColorBases[(int32)EColor::Purple      ].Set(0.7f, 0.0f, 0.7f);
+	ColorBases[(int32)EColor::Magenta     ].Set(1.0f, 0.0f, 1.0f);
+	ColorBases[(int32)EColor::Orange      ].Set(1.0f, 0.5f, 0.0f);
+	ColorBases[(int32)EColor::Green       ].Set(0.0f, 1.0f, 0.0f);
 
 	for(int32 J = 0; J < array_size(ColorBases); J++)
 	{

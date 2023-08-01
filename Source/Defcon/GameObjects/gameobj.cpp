@@ -41,8 +41,11 @@ Defcon::IGameObject::IGameObject()
 
 Defcon::IGameObject::~IGameObject() 
 {
+	//UE_LOG(LogGame, Log, TEXT("Game object destructing, type = %s"), *ObjectTypeManager.GetName(GetType()));
+
 	if(IsMissionTarget()) 
 	{
+		//UE_LOG(LogGame, Log, TEXT("    Game object was a mission target"));
 		gDefconGameInstance->HostileDestroyed(GetType());
 	}
 
@@ -194,7 +197,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	
 	if(this->GetType() != EObjType::HUMAN && IRAND(3) == 1)
 	{
-		//cby = EColor::gray;
+		//cby = EColor::Gray;
 	}
 
 	bool bDieOff = (FRAND >= 0.25f);
@@ -247,7 +250,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 
 		if(this->GetType() != EObjType::HUMAN && IRAND(3) == 1)
 		{
-			cby = EColor::gray;
+			cby = EColor::Gray;
 		}
 		else
 		{
@@ -458,7 +461,7 @@ void                 Defcon::IGameObject::SetExternalOwnership(bool b)         {
 bool                 Defcon::IGameObject::IsMissionTarget() const              { return bMissionTarget; }
 void                 Defcon::IGameObject::SetAsMissionTarget(bool b)           { bMissionTarget = b; }
 const FLinearColor&  Defcon::IGameObject::GetRadarColor() const                { return RadarColor; }
-Defcon::EColor       Defcon::IGameObject::GetExplosionColorBase() const        { return EColor::gray; }
+Defcon::EColor       Defcon::IGameObject::GetExplosionColorBase() const        { return EColor::Gray; }
 
 
 

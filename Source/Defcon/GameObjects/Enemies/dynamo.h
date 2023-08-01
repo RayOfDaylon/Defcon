@@ -24,8 +24,9 @@ namespace Defcon
 			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
 
 		private:
-			float	m_orgY;
-			float   m_SpawnSpacehumCountdown = 1.0f;
+			float	 OriginalY;
+			float    SpawnSpacehumCountdown = 1.0f;
+			CFPoint  WiggleAnimSpeed;
 	};
 }
 

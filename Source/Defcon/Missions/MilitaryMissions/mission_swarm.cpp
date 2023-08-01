@@ -4,8 +4,6 @@
 /*
 	mission_swarm.cpp
 	"Swarm" mission in Defence Condition.
-
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 

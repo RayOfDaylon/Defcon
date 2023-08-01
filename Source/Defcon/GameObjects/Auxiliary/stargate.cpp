@@ -35,12 +35,12 @@ Defcon::CStargate::CStargate()
 
 	const EColor cby[] = 
 		{
-			EColor::gray, 
-			EColor::red,
-			EColor::yellow,
-			EColor::blue,
-			EColor::lightyellow,
-			EColor::lightblue
+			EColor::Gray, 
+			EColor::Red,
+			EColor::Yellow,
+			EColor::Blue,
+			EColor::LightYellow,
+			EColor::LightBlue
 		};
 
 	bMortal = false;

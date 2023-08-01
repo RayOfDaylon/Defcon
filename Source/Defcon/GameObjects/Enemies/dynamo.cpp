@@ -24,15 +24,18 @@
 Defcon::CDynamo::CDynamo()
 {
 	ParentType = Type;
-	Type = EObjType::DYNAMO;
+	Type       = EObjType::DYNAMO;
+
 	PointValue = DYNAMO_VALUE;
 	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = C_LIGHT;
 	AnimSpeed = FRAND * 0.05f + 0.15f;
 
+	WiggleAnimSpeed.Set(FRANDRANGE(4.0f, 8.0f), FRANDRANGE(2.0f, 6.0f));
+
 	CreateSprite(Type);
 	const auto& SpriteInfo = GameObjectResources.Get(Type);
-	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+	BboxRadius = SpriteInfo.Size / 2;
 }
 
 
@@ -49,17 +52,22 @@ const char* Defcon::CDynamo::GetClassname() const
 #endif
 
 
-void Defcon::CDynamo::Move(float fTime)
+void Defcon::CDynamo::Move(float DeltaTime)
 {
 	// Just float around drifting horizontally.
 
-	CEnemy::Move(fTime);
+	if(Age == 0.0f)
+	{
+		OriginalY = Position.y;
+	}
+
+	CEnemy::Move(DeltaTime);
+
 	Inertia = Position;
 
+	SpawnSpacehumCountdown -= DeltaTime;
 
-	m_SpawnSpacehumCountdown -= fTime;
-
-	if(m_SpawnSpacehumCountdown <= 0.0f 
+	if(SpawnSpacehumCountdown <= 0.0f 
 		&& this->CanBeInjured()
 		&& gpArena->GetPlayerShip().IsAlive()
 		&& gpArena->IsPointVisible(Position))
@@ -70,21 +78,18 @@ void Defcon::CDynamo::Move(float fTime)
 		float T = NORM_(XP, 0.0f, 50000.0f);
 		T = CLAMP(T, 0.0f, 1.0f);
 
-		m_SpawnSpacehumCountdown = LERP(2.5f, 0.5f, T);
-		m_SpawnSpacehumCountdown += Daylon::FRandRange(0.0f, 0.25f);
+		SpawnSpacehumCountdown = LERP(2.5f, 0.5f, T);
+		SpawnSpacehumCountdown += Daylon::FRandRange(0.0f, 0.25f);
 
 		// todo: maybe have dynamo take a break after spitting out lots of hums, then resume.
 	}
 
+	Position.x += (float)sin(WiggleAnimSpeed.x * Age) * 1.5f;
+	
+	const float Sn = (float)sin(WiggleAnimSpeed.y * Age) * 15.0f;
+	Position.y = OriginalY + Sn;
 
-	if(Age < 1.0f)
-		m_orgY = Position.y;
-
-	Position.x += (float)sin(5.0f * Age) * 1.0f;
-	float sn = (float)sin(1.0f * Age) * 1.0f;
-	Position.y = m_orgY + sn;
-
-	Position.y = CLAMP(Position.y, 0, gpArena->GetHeight()-1);
+	Position.y = CLAMP(Position.y, 0, gpArena->GetHeight() - 1);
 
 	Inertia = Position - Inertia;
 }

@@ -13,17 +13,17 @@ namespace Defcon
 {
 	enum class EColor
 	{
-		gray,
-		yellow,
-		lightyellow,
-		red,
-		blue,
-		lightblue,
-		purple,
-		magenta,
-		orange,
-		green,
-		numbases
+		Gray,
+		Yellow,
+		LightYellow,
+		Red,
+		Blue,
+		LightBlue,
+		Purple,
+		Magenta,
+		Orange,
+		Green,
+		Count
 	};
 
 	// gray, yellow, and lightyellow need to be the top three.
@@ -37,7 +37,7 @@ namespace Defcon
 			FLinearColor GetColor(EColor Color, float Brightness) const;
 
 		private:
-			FLinearColor	Colors[(int32)EColor::numbases][32];
+			FLinearColor	Colors[(int32)EColor::Count][32];
 	};
 }
 

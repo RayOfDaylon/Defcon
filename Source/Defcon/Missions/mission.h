@@ -74,8 +74,8 @@ namespace Defcon
 		// the mission has concluded.
 
 		public:
-			IMission() {}
-			virtual ~IMission() {}
+			IMission();
+			virtual ~IMission();
 
 			virtual void Init();
 
@@ -103,7 +103,7 @@ namespace Defcon
 
 			CEventQueue            Events;
 			FString                IntroText;
-			EMissionID              ID          = EMissionID::Undefined;
+			EMissionID             ID          = EMissionID::Undefined;
 			float                  Age         = 0.0f;
 			bool                   IntroIsDone = false;
 	};

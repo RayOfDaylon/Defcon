@@ -189,7 +189,7 @@ void Defcon::CPhred::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mappe
 
 Defcon::EColor Defcon::CPhred::GetExplosionColorBase() const
 {
-	return EColor::gray;
+	return EColor::Gray;
 }
 
 
@@ -360,7 +360,7 @@ void Defcon::CMunchie::Draw(FPaintArguments& framebuf, const I2DCoordMapper& map
 
 Defcon::EColor Defcon::CMunchie::GetExplosionColorBase() const
 {
-	return EColor::green;
+	return EColor::Green;
 }
 
 
@@ -531,5 +531,5 @@ void Defcon::CBigRed::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapp
 
 Defcon::EColor Defcon::CBigRed::GetExplosionColorBase() const
 {
-	return EColor::red;
+	return EColor::Red;
 }

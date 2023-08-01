@@ -23,8 +23,8 @@
 
 Defcon::CFlak::CFlak()
 	:
-	ColorbaseOld(EColor::red),
-	ColorbaseYoung(EColor::gray),
+	ColorbaseOld(EColor::Red),
+	ColorbaseYoung(EColor::Gray),
 	bCold(false)
 {
 	ParentType = Type;
@@ -90,7 +90,7 @@ void Defcon::CFlak::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& Mappe
 		{
 			// flak piece is old.
 
-			Color = IRAND(4) != 0 ? gGameColors.GetColor(ColorbaseOld, Youth) : gGameColors.GetColor(EColor::red, Youth);
+			Color = IRAND(4) != 0 ? gGameColors.GetColor(ColorbaseOld, Youth) : gGameColors.GetColor(EColor::Red, Youth);
 		}
 		else
 		{
@@ -188,7 +188,7 @@ void Defcon::CGlowingFlak::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper
 				color = (
 					rand()%4 ? 
 					gGameColors.GetColor(ColorbaseOld, Youth) :
-					gGameColors.GetColor(EColor::red, Youth));
+					gGameColors.GetColor(EColor::Red, Youth));
 
 			}
 			else
@@ -304,7 +304,7 @@ void Defcon::CPuff::Draw
 		
 		orgbr = (HBRUSH_)SelectGdiObject_(
 			dc, 
-			gGameColors.GetBrush(EColor::gray, m_fBrightest*Youth*0.5f));		
+			gGameColors.GetBrush(EColor::Gray, m_fBrightest*Youth*0.5f));		
 
 		Ellipse_(dc, R.left, R.top, R.right, R.bottom);
 

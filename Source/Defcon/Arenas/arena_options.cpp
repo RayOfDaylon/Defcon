@@ -221,25 +221,25 @@ void Defcon::COptionsArena::Init
 		m_items[i].SetFontID(varfontid);
 		m_items[i].SetExternalOwnership(true);
 		m_items[i].SetColor(C_UNSELECTED);
-		m_objects.Add(&m_items[i]);
+		Objects.Add(&m_items[i]);
 
 		m_values[i].SetFontID(varfontid);
 		m_values[i].SetExternalOwnership(true);
 		m_values[i].SetColor(C_UNSELECTEDVALUE);
-		m_objects.Add(&m_values[i]);
+		Objects.Add(&m_values[i]);
 	}
 
 	m_title.SetColor(C_WHITE);
 	m_title.SetFontID(EFont::body);
 	m_title.SetAlignment(EAlignment::center);
 	m_title.SetExternalOwnership(true);
-	m_objects.Add(&m_title);
+	Objects.Add(&m_title);
 
 	m_desc.SetColor(C_WHITE);
 	m_desc.SetFontID(EFont::body);
 	m_desc.SetAlignment(EAlignment::center);
 	m_desc.SetExternalOwnership(true);
-	m_objects.Add(&m_desc);
+	Objects.Add(&m_desc);
 
 	m_edittitle.SetText("Editing");
 	m_edittitle.SetColor(C_WHITE);
@@ -474,7 +474,7 @@ void Defcon::COptionsArena::Update(float DeltaTime)
 	gop.pDib			= &m_virtualScreen;
 	gop.MapperPtr			= &m_coordMapper;
 
-	m_objects.Process(gop);
+	Objects.Process(gop);
 
 
 	int x1, y1, x2, y2;

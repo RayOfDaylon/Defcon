@@ -263,7 +263,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 	
 	if(IRAND(3) == 1)
 	{
-		ColorBase = EColor::gray;
+		ColorBase = EColor::Gray;
 	}
 
 	bool bDieOff = (FRAND >= 0.25f);
@@ -312,7 +312,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 
 		if(IRAND(3) == 1)
 		{
-			ColorBase = EColor::gray;
+			ColorBase = EColor::Gray;
 		}
 		else
 		{
@@ -347,7 +347,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 
 
 #if 1
-	ColorBase = EColor::gray;
+	ColorBase = EColor::Gray;
 
 
 	for(I = 0; I < 20; I++)

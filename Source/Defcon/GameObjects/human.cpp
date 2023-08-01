@@ -208,7 +208,7 @@ void Defcon::CHuman::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mappe
 
 Defcon::EColor Defcon::CHuman::GetExplosionColorBase() const
 {
-	return EColor::red;
+	return EColor::Red;
 }
 
 

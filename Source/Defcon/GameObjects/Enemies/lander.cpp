@@ -429,7 +429,7 @@ void Defcon::CLander::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapp
 
 Defcon::EColor Defcon::CLander::GetExplosionColorBase() const
 {
-	//return EColor::lightyellow;
- 	//return EColor::yellow;
-	return EColor::green;
+	//return EColor::LightYellow;
+ 	//return EColor::Yellow;
+	return EColor::Green;
 }

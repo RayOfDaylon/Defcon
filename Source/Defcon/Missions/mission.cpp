@@ -11,6 +11,7 @@
 #include "mission.h"
 
 #include "DefconUtils.h"
+#include "DefconLogging.h"
 
 #include "Common/util_color.h"
 #include "Common/util_geom.h"
@@ -43,6 +44,17 @@
 #endif
 
 
+
+Defcon::IMission::IMission()
+{
+	UE_LOG(LogGame, Log, TEXT("Creating mission"));
+}
+
+
+Defcon::IMission::~IMission()
+{
+	UE_LOG(LogGame, Log, TEXT("Destroying mission"));
+}
 
 
 void Defcon::IMission::Init()

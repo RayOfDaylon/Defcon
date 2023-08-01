@@ -12,6 +12,9 @@ namespace Defcon
 	class IGameObject;
 	class GameObjectProcessingParams;
 
+	const bool kIncludingSprites = true;
+	const bool kExcludingSprites = !kIncludingSprites;
+
 	class CGameObjectCollection
 	{
 		// A set of game objects.

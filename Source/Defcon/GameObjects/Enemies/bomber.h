@@ -22,26 +22,19 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			//virtual	void Init  (const CFPoint& Size1, const CFPoint& Size2) override;
-			virtual void OnFinishedCreating () override;
+			virtual void    OnFinishedCreating    () override;
 
-			virtual void Move  (float);
-			virtual void Draw  (FPaintArguments&, const I2DCoordMapper&);
-			virtual EColor GetExplosionColorBase  () const override;
-			virtual float GetExplosionMass() const;
+			virtual void    Move                  (float DeltaTime);
+			virtual void    Draw                  (FPaintArguments&, const I2DCoordMapper&);
+			virtual EColor  GetExplosionColorBase () const override;
+			virtual float   GetExplosionMass      () const;
 
 		private:
-			float m_fLayingMines;
-			float m_yoff;
-			float m_freq;
-			float m_xFreq;
-			float m_amp;
-			float m_halfwayAltitude;
-
-			CBezierSpline2D m_currentPath;
-			float m_pathTravelTime = 0.0f;
-			float m_secondsPerPath = 0.0f;
-			CFPoint m_posPrev;
+			float           StopLayingMinesCountdown;
+			CBezierSpline2D CurrentPath;
+			float           PathTravelTime = 0.0f;
+			float           SecondsPerPath = 0.0f;
+			CFPoint         PreviousPosition;
 	};
 }
 

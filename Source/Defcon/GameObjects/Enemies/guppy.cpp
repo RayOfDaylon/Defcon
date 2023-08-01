@@ -233,7 +233,7 @@ void Defcon::CGuppy::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mappe
 
 Defcon::EColor Defcon::CGuppy::GetExplosionColorBase() const
 {
-	return EColor::magenta;
+	return EColor::Magenta;
 }
 
 
@@ -245,7 +245,7 @@ float Defcon::CGuppy::GetExplosionMass() const
 
 void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
 {
-	const auto cby = EColor::magenta;
+	const auto cby = EColor::Magenta;
 
 	bMortal = true;
 	Lifespan = 0.0f;
@@ -254,8 +254,8 @@ void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
 	for(int32 i = 0; i < 20; i++)
 	{
 		CFlak* pFlak = new CFlak;
-		pFlak->ColorbaseYoung = BRAND ? EColor::magenta : EColor::red;
-		pFlak->ColorbaseOld = BRAND ? EColor::magenta : EColor::orange;
+		pFlak->ColorbaseYoung = BRAND ? EColor::Magenta : EColor::Red;
+		pFlak->ColorbaseOld = BRAND ? EColor::Magenta : EColor::Orange;
 		pFlak->bCold = true;
 		pFlak->LargestSize = 6;
 		pFlak->bFade = true;//bDieOff;

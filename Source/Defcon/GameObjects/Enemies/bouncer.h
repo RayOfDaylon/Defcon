@@ -26,7 +26,7 @@ namespace Defcon
 			
 
 		private:
-			float	m_fGravity;
+			float	Gravity;
 	};
 
 

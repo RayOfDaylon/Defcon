@@ -119,7 +119,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 
 	// todo: do we need these?
-	Defcon::CGameObjectCollection& GetDebris  () { return m_debris; }
+	Defcon::CGameObjectCollection& GetDebris  () { return Debris; }
 
 
 
@@ -140,10 +140,10 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 
 	Defcon::CTerrain*              Terrain;
-	Defcon::CGameObjectCollection  m_enemies;
-	Defcon::CGameObjectCollection  m_objects;  // stuff like beacons, stars, text, etc.
-	Defcon::CGameObjectCollection  m_debris;
-	Defcon::CGameObjectCollection  m_blasts;
+	Defcon::CGameObjectCollection  Enemies;
+	Defcon::CGameObjectCollection  Objects;  // stuff like beacons, stars, text, etc.
+	Defcon::CGameObjectCollection  Debris;
+	Defcon::CGameObjectCollection  Blasts;
 
 	Defcon::CEventQueue            Events;
 
@@ -180,8 +180,8 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	Defcon::CPlayer&                      GetPlayerShip           ();
 	const Defcon::CGameObjectCollection&  GetConstHumans          () const;
 	Defcon::CGameObjectCollection&        GetHumans               ();
-	Defcon::CGameObjectCollection&        GetObjects              () { return m_objects; }
-	Defcon::CGameObjectCollection&        GetEnemies              () { return m_enemies; }
+	Defcon::CGameObjectCollection&        GetObjects              () { return Objects; }
+	Defcon::CGameObjectCollection&        GetEnemies              () { return Enemies; }
 
 	float                Direction            (const CFPoint& P1, const CFPoint& P2, CFPoint& Result) const;
 	void                 Lerp                 (const CFPoint& P1, const CFPoint& P2, CFPoint& Result, float T) const;
@@ -205,7 +205,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	void                 CreateEnemy          (Defcon::EObjType Kind, const CFPoint& Where, float When, Defcon::EObjectCreationFlags Flags);
 	Defcon::CEnemy*      CreateEnemyNow       (Defcon::EObjType Kind, const CFPoint& Where, Defcon::EObjectCreationFlags Flags);
 	Defcon::IGameObject* FindHuman            (float X) const;
-	Defcon::IGameObject* FindEnemy            (Defcon::EObjType Kind, Defcon::IGameObject* Obj = nullptr) const { return m_enemies.Find(Kind, Obj); }
+	Defcon::IGameObject* FindEnemy            (Defcon::EObjType Kind, Defcon::IGameObject* Obj = nullptr) const { return Enemies.Find(Kind, Obj); }
 	void                 CheckIfObjectsGotHit (Defcon::CGameObjectCollection& Objects);
 	void                 ShieldBonk           (Defcon::IGameObject* Obj, float Force);
 	void                 ProcessWeaponsHits   ();

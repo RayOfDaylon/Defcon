@@ -4,7 +4,6 @@
 /*
 	turret.cpp
 	Turret type for Defcon game.
-	Copyright 2021 Daylon Graphics Ltd.
 */
 
 
@@ -65,7 +64,7 @@ const char* Defcon::CTurret::GetClassname() const
 
 Defcon::EColor Defcon::CTurret::GetExplosionColorBase() const
 {
-	return EColor::lightyellow;
+	return EColor::LightYellow;
 }
 
 
@@ -188,7 +187,7 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 {
 	Super::Explode(debris);
 #if 0
-	const int cby = EColor::red;
+	const int cby = EColor::Red;
 
 	bMortal = true;
 	Lifespan = 0.0f;
@@ -198,7 +197,7 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 	{
 		CFlak* pFlak = new CFlak;
 
-		pFlak->ColorbaseYoung = EColor::lightyellow;
+		pFlak->ColorbaseYoung = EColor::LightYellow;
 		pFlak->ColorbaseOld	= cby;
 		pFlak->bCold			= true;
 		pFlak->LargestSize	= FRAND * 15 + 2;

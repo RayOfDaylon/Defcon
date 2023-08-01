@@ -88,7 +88,7 @@ void Defcon::CSpacehum::Draw(FPaintArguments& framebuf, const I2DCoordMapper& ma
 
 void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 {
-	const auto cby = EColor::gray;
+	const auto cby = EColor::Gray;
 
 	bMortal = true;
 	Lifespan = 0.0f;

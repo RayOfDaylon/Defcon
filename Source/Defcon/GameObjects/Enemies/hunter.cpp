@@ -232,7 +232,7 @@ void Defcon::CHunter::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapp
 
 Defcon::EColor Defcon::CHunter::GetExplosionColorBase() const
 {
-	return EColor::yellow;
+	return EColor::Yellow;
 }
 
 

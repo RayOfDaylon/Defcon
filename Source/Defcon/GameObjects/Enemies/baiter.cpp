@@ -164,5 +164,5 @@ void Defcon::CBaiter::Move(float DeltaTime)
 
 Defcon::EColor Defcon::CBaiter::GetExplosionColorBase() const
 {
-	return EColor::yellow;
+	return EColor::Yellow;
 }

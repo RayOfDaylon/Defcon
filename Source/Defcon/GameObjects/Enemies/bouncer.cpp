@@ -4,7 +4,6 @@
 /*
 	bouncer.cpp
 	Bouncer enemy type for Defcon game.
-	Copyright 2009 Daylon Graphics Ltd.
 
 	rcg		dec 11/09	Created.
 */
@@ -28,16 +27,17 @@
 Defcon::IBouncer::IBouncer()
 {
 	ParentType = Type;
-	Type = EObjType::BOUNCER;
+	Type       = EObjType::BOUNCER;
+
 	PointValue = BOUNCER_VALUE;
 	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = C_WHITE;
-	AnimSpeed = FRAND * 0.05f + 0.12f;
+	AnimSpeed = FRANDRANGE(0.12f, 0.17f);
 	Orientation.Fwd.y = 0.0; 
-	m_fGravity = FRAND * 10.0f + 5.0f;
+	Gravity = FRANDRANGE(5, 15);
 
 	const auto& Info = GameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
-	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
+	BboxRadius = Info.Size / 2;
 }
 
 
@@ -57,11 +57,13 @@ const char* Defcon::IBouncer::GetClassname() const
 void Defcon::IBouncer::Move(float DeltaTime)
 {
 	CEnemy::Move(DeltaTime);
+
 	Inertia = Position;
 
 	// Check if terrain hit.
 	WRAP(Position.x, 0, gpArena->GetWidth());
 	const float h = gpArena->GetTerrainElev(Position.x);
+
 	if(Position.y < h)
 	{
 		Orientation.Fwd.y *= -1;
@@ -73,15 +75,16 @@ void Defcon::IBouncer::Move(float DeltaTime)
 
 	// Have gravity pull bouncer down.
 	//float speed = ABS(Orientation.Fwd.y);
-	Orientation.Fwd.y -= m_fGravity * DeltaTime;
+	Orientation.Fwd.y -= Gravity * DeltaTime;
 
 	Position.MulAdd(Orientation.Fwd, DeltaTime * 40);
 
-
+#if 0
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 	//if(m_bWaits)
 	//	diff *= ABS(sin(Age*PI));
 	diff = FMath::Min(diff, 1.5f);
+#endif
 
 	Inertia = Position - Inertia;
 }
@@ -112,7 +115,7 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 		for(i = 0; i < 10; i++)
 		{
 			CFlak* pFlak = new CFlak;
-			pFlak->ColorbaseYoung = BRAND ? EColor::gray : EColor::yellow;
+			pFlak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
 			float largest = FRAND * 6 + 5;
 			pFlak->LargestSize = MAP(i, 0, 9, largest, 4);
@@ -138,7 +141,7 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 			for(i = 0; i < 10; i++)
 			{
 				CFlak* pFlak = new CFlak;
-				pFlak->ColorbaseYoung = BRAND ? EColor::gray : EColor::yellow;
+				pFlak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
 				float largest = FRAND * 6 + 5;
 				pFlak->LargestSize = MAP(i, 0, 9, largest, 4);
@@ -181,12 +184,12 @@ void Defcon::CBouncer::Move(float DeltaTime)
 	IBouncer::Move(DeltaTime);
 
 	// todo: Is the firing time based on fps or on time?
-	float diff = (float)gDefconGameInstance->GetScore() / 50000;
+	float Diff = (float)gDefconGameInstance->GetScore() / 50000;
 	//if(m_bWaits)
 		//diff *= (float)(ABS(sin(Age * PI)));
-	diff = FMath::Min(diff, 1.5f);
+	Diff = FMath::Min(Diff, 1.5f);
 
-	if(FRAND <= 0.25f * diff
+	if(FRAND <= 0.25f * Diff
 		&& !gpArena->IsEnding()
 		&& this->CanBeInjured()
 		&& gpArena->GetPlayerShip().IsAlive()
@@ -218,12 +221,12 @@ void Defcon::CWeakBouncer::Move(float DeltaTime)
 	IBouncer::Move(DeltaTime);
 
 	// todo: Is the firing time based on fps or on time?
-	float diff = (float)gDefconGameInstance->GetScore() / 50000;
+	float Diff = (float)gDefconGameInstance->GetScore() / 50000;
 	//if(m_bWaits)
 		//diff *= (float)(ABS(sin(Age * PI)));
-	diff = FMath::Min(diff, 1.5f);
+	Diff = FMath::Min(Diff, 1.5f);
 
-	if(FRAND <= 0.05f * diff
+	if(FRAND <= 0.05f * Diff
 		&& !gpArena->IsEnding()
 		&& this->CanBeInjured()
 		&& gpArena->GetPlayerShip().IsAlive()

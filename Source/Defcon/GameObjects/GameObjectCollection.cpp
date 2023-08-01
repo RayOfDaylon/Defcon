@@ -17,7 +17,7 @@ Defcon::CGameObjectCollection::CGameObjectCollection()
 
 Defcon::CGameObjectCollection::~CGameObjectCollection()
 {
-	this->DeleteAll();
+	DeleteAll();
 }
 
 

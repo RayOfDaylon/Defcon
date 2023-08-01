@@ -5,7 +5,6 @@
 /*
 	starfield.cpp
 	Simple animated 3D starfield.
-	Copyright 2004-2021 Daylon Graphics Ltd.
 
 	rcg		jun 24/04	Created.
 */

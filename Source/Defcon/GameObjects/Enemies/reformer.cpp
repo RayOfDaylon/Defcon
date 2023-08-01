@@ -177,7 +177,7 @@ void Defcon::CReformer::Explode(CGameObjectCollection& debris)
 
 
 #if 1
-	const auto cby = EColor::gray;
+	const auto cby = EColor::Gray;
 
 
 	for(int32 i = 0; i < 20; i++)
@@ -412,7 +412,7 @@ void Defcon::CReformerPart::Draw(FPaintArguments& framebuf, const I2DCoordMapper
 
 void Defcon::CReformerPart::Explode(CGameObjectCollection& debris)
 {
-	const auto cby = EColor::gray;
+	const auto cby = EColor::Gray;
 
 	bMortal = true;
 	Lifespan = 0.0f;

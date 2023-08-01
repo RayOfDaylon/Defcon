@@ -120,7 +120,7 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 
 	// Define which color to make the debris.
 
-	const auto cby = EColor::purple;
+	const auto cby = EColor::Purple;
 	maxsize *= 1.5f;
 
 

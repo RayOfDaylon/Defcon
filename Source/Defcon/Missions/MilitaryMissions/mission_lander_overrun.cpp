@@ -5,14 +5,10 @@
 	mission_lander_overrun.cpp
 	"Lander Overrun" mission in Defence Condition.
 	A ton of landers with minimal escort.
-
-	Copyright 2004 Daylon Graphics Ltd.
 */
 
 
-
 #include "MilitaryMission.h"
-
 
 
 void Defcon::CLanderOverrun::Init()

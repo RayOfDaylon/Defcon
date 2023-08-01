@@ -164,7 +164,7 @@ void Defcon::CSwarmer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& map
 
 void Defcon::CSwarmer::Explode(CGameObjectCollection& debris)
 {
-	const auto cby = EColor::red;
+	const auto cby = EColor::Red;
 
 	bMortal = true;
 	Lifespan = 0.0f;

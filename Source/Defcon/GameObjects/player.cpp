@@ -417,7 +417,7 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 	
 	if(this->GetType() != EObjType::HUMAN && IRAND(3) == 1)
 	{
-		cby = EColor::gray;
+		cby = EColor::Gray;
 	}
 
 	bool bDieOff = (FRAND >= 0.25f);
