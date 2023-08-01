@@ -161,7 +161,7 @@ void Defcon::CPhred::Move(float fTime)
 /*			// Fire control.
 			if(FRAND <= 0.05f * 0.33f
 				&& this->CanBeInjured()
-				&& gpArena->IsPointVisible(Position))
+				&& IsOurPositionVisible())
 				gpArena->FireBullet(*this, Position, 1, 1);
 */
 
@@ -333,7 +333,7 @@ void Defcon::CMunchie::Move(float fTime)
 /*			// Fire control.
 			if(FRAND <= 0.05f * 0.33f
 				&& this->CanBeInjured()
-				&& gpArena->IsPointVisible(Position))
+				&& IsOurPositionVisible())
 				gpArena->FireBullet(*this, Position, 1, 1);
 */
 			if(xd < 350 && FRAND < 0.02 && m_fSquakTime == 0.0f)
@@ -504,7 +504,7 @@ void Defcon::CBigRed::Move(float fTime)
 /*			// Fire control.
 			if(FRAND <= 0.05f * 0.33f
 				&& this->CanBeInjured()
-				&& gpArena->IsPointVisible(Position))
+				&& IsOurPositionVisible())
 				gpArena->FireBullet(*this, Position, 1, 1);
 */
 			if(xd < 350 && FRAND < 0.02 && m_fSquakTime == 0.0f)

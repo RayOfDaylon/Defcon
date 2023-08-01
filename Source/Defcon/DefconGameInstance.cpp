@@ -274,36 +274,33 @@ void UDefconGameInstance::OnToggleShowOrigin()
 }
 
 
+#define GETVIEW		auto View = Cast<UDefconPlayViewBase>(CurrentView);	if(View == nullptr)	{ return; }
+
+
 void UDefconGameInstance::OnToggleGodMode()
 {
 	GodMode = !GodMode;
 
-	auto View = Cast<UDefconPlayViewBase>(CurrentView);
-	
-	if(View == nullptr)
-	{
-		return;
-	}
+	GETVIEW
 
-	const FString Str = FString::Printf(TEXT("God mode %s"), GodMode ? TEXT("ON") : TEXT("OFF"));
+	View->AddMessage(FString::Printf(TEXT("God mode %s"), GodMode ? TEXT("ON") : TEXT("OFF")));
+}
 
-	View->AddMessage(Str);
+
+void UDefconGameInstance::OnSelectEnemyToSpawn()
+{
+	GETVIEW
+
+	View->OnSelectEnemyToSpawn();
 }
 
 
 void UDefconGameInstance::OnSpawnEnemy()
 {
-	auto View = Cast<UDefconPlayViewBase>(CurrentView);
-	
-	if(View == nullptr)
-	{
-		return;
-	}
+	GETVIEW
 
-	
-	const FString Str = FString::Printf(TEXT("Spawning lander at player's position %d, %d"), (int32)PlayerShipPtr->Position.x, (int32)PlayerShipPtr->Position.y);
-
-	View->AddMessage(Str, 0.5f);
+	const FString Str = FString::Printf(TEXT("Spawning enemy near player's position %d, %d"), (int32)PlayerShipPtr->Position.x, (int32)PlayerShipPtr->Position.y);
+	View->AddMessage(Str, 0.25f);
 
 	View->OnSpawnEnemy();
 }
@@ -311,12 +308,7 @@ void UDefconGameInstance::OnSpawnEnemy()
 
 void UDefconGameInstance::OnIncrementXp()
 {
-	auto View = Cast<UDefconPlayViewBase>(CurrentView);
-	
-	if(View == nullptr)
-	{
-		return;
-	}
+	GETVIEW
 
 	Score += 5000;
 
@@ -328,12 +320,7 @@ void UDefconGameInstance::OnIncrementXp()
 
 void UDefconGameInstance::OnDecrementXp()
 {
-	auto View = Cast<UDefconPlayViewBase>(CurrentView);
-	
-	if(View == nullptr)
-	{
-		return;
-	}
+	GETVIEW
 
 	if(Score <= 0)
 	{

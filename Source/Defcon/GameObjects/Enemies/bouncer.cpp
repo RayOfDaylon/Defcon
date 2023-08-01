@@ -35,6 +35,7 @@ Defcon::IBouncer::IBouncer()
 	AnimSpeed = FRANDRANGE(0.12f, 0.17f);
 	Orientation.Fwd.y = 0.0; 
 	Gravity = FRANDRANGE(5, 15);
+	FiringCountdown = FRANDRANGE(1.0f, 5.0f);
 
 	const auto& Info = GameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
 	BboxRadius = Info.Size / 2;
@@ -79,6 +80,19 @@ void Defcon::IBouncer::Move(float DeltaTime)
 
 	Position.MulAdd(Orientation.Fwd, DeltaTime * 40);
 
+	// See if we need to shoot.
+
+	if(IsOurPositionVisible() && TargetPtr != nullptr)
+	{
+		FiringCountdown -= DeltaTime;
+
+		if(FiringCountdown <= 0.0f)
+		{
+			ResetFiringCountdown();
+			FireWeapon();
+		}
+	}
+
 #if 0
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 	//if(m_bWaits)
@@ -87,11 +101,6 @@ void Defcon::IBouncer::Move(float DeltaTime)
 #endif
 
 	Inertia = Position - Inertia;
-}
-
-
-void Defcon::IBouncer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
 }
 
 
@@ -179,24 +188,18 @@ Defcon::CBouncer::~CBouncer()
 }
 
 
-void Defcon::CBouncer::Move(float DeltaTime)
+void Defcon::CBouncer::ResetFiringCountdown()
 {
-	IBouncer::Move(DeltaTime);
+	float T = (float)gDefconGameInstance->GetScore() / 50000;
+	T = CLAMP(T, 0.0f, 1.0f);
 
-	// todo: Is the firing time based on fps or on time?
-	float Diff = (float)gDefconGameInstance->GetScore() / 50000;
-	//if(m_bWaits)
-		//diff *= (float)(ABS(sin(Age * PI)));
-	Diff = FMath::Min(Diff, 1.5f);
+	FiringCountdown = LERP(2.0f, 0.25f, T) + Daylon::FRandRange(0.0f, 0.2f);
+}
 
-	if(FRAND <= 0.25f * Diff
-		&& !gpArena->IsEnding()
-		&& this->CanBeInjured()
-		&& gpArena->GetPlayerShip().IsAlive()
-		&& gpArena->IsPointVisible(Position))
-	{
-		gpArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, EObjectCreationFlags::EnemyPart);
-	}
+
+void Defcon::CBouncer::FireWeapon()
+{
+	gpArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, EObjectCreationFlags::EnemyPart);
 }
 
 
@@ -216,22 +219,17 @@ Defcon::CWeakBouncer::~CWeakBouncer()
 }
 
 
-void Defcon::CWeakBouncer::Move(float DeltaTime)
+void Defcon::CWeakBouncer::ResetFiringCountdown()
 {
-	IBouncer::Move(DeltaTime);
+	float T = (float)gDefconGameInstance->GetScore() / 50000;
+	T = CLAMP(T, 0.0f, 1.0f);
 
-	// todo: Is the firing time based on fps or on time?
-	float Diff = (float)gDefconGameInstance->GetScore() / 50000;
-	//if(m_bWaits)
-		//diff *= (float)(ABS(sin(Age * PI)));
-	Diff = FMath::Min(Diff, 1.5f);
-
-	if(FRAND <= 0.05f * Diff
-		&& !gpArena->IsEnding()
-		&& this->CanBeInjured()
-		&& gpArena->GetPlayerShip().IsAlive()
-		&& gpArena->IsPointVisible(Position))
-	{
-		gpArena->FireBullet(*this, Position, 1, 1);
-	}
+	FiringCountdown = LERP(2.0f, 0.1f, T) + Daylon::FRandRange(0.0f, 0.2f);
 }
+
+
+void Defcon::CWeakBouncer::FireWeapon()
+{
+	gpArena->FireBullet(*this, Position, 1, 1);
+}
+

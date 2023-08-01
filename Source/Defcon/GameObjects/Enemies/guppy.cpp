@@ -26,7 +26,7 @@ Defcon::CGuppy::CGuppy()
 	ParentType = Type;
 	Type = EObjType::GUPPY;
 	PointValue = GUPPY_VALUE;
-	State = lounging;
+	State = Lounging;
 	TargetPtr = nullptr;
 	float speed = FRANDRANGE(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
 	if(FRAND > 0.5f) 
@@ -69,15 +69,15 @@ void Defcon::CGuppy::Move(float fTime)
 
 	Inertia = Position;
 	
-	IGameObject* pTarget = TargetPtr;
+	TargetPtr;
 
-	if(pTarget == nullptr)
+	if(TargetPtr == nullptr)
 	{
 		TimeTargetWithinRange = 0.0f;
 	}
 	else
 	{
-		const bool bVis = gpArena->IsPointVisible(Position);
+		const bool bVis = IsOurPositionVisible();
 
 		// Update target-within-range information.
 		if(TimeTargetWithinRange > 0.0f)
@@ -97,7 +97,8 @@ void Defcon::CGuppy::Move(float fTime)
 
 				TargetOffset.Set(
 					FRANDRANGE(-100, 100), 
-					FRANDRANGE(50, 90) * SGN(Position.y - pTarget->Position.y));
+					FRANDRANGE(50, 90) * SGN(Position.y - TargetPtr->Position.y));
+
 				Frequency = FRANDRANGE(6, 12);
 				Amplitude = FRANDRANGE(0.33f, 0.9f);
 			}
@@ -107,15 +108,18 @@ void Defcon::CGuppy::Move(float fTime)
 
 	switch(State)
 	{
-		case lounging:
-			// Just float towards target unless the target
-			// has become in range.
+		case Lounging:
+
+			// Just float towards target unless the target has come in range.
 			if(TimeTargetWithinRange >= 0.33f)
-				State = fighting;
-			else if(pTarget != nullptr)
+			{
+				State = Fighting;
+			}
+
+			else if(TargetPtr != nullptr)
 			{
 				CFPoint pt;
-				gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
+				gpArena->Direction(Position, TargetPtr->Position, Orientation.Fwd);
 
 				//Orientation.Fwd.Set(SGN(this->m_targetOffset.y), 0);
 				Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
@@ -124,22 +128,22 @@ void Defcon::CGuppy::Move(float fTime)
 			break;
 
 
-		case evading:
+		case Evading:
 		{
-			if(pTarget != nullptr)
+			if(TargetPtr != nullptr)
 			{
-				float vd = Position.y - pTarget->Position.y;
+				float vd = Position.y - TargetPtr->Position.y;
 				if(ABS(vd) > BboxRadius.y || 
-					SGN(pTarget->Orientation.Fwd.x) == 
+					SGN(TargetPtr->Orientation.Fwd.x) == 
 					SGN(Orientation.Fwd.x))
-					State = fighting;
+					State = Fighting;
 				else
 				{
 					Orientation.Fwd.y = SGN(vd)*0.5f;
 					//if(Orientation.Fwd.y == 0)
 					//	Orientation.Fwd.y = SFRAND;
 					CFPoint pt;
-					gpArena->Direction(Position, pTarget->Position, pt);
+					gpArena->Direction(Position, TargetPtr->Position, pt);
 					Orientation.Fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
 					Position.MulAdd(Orientation.Fwd, fTime * AVG(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX));
 				}
@@ -149,39 +153,46 @@ void Defcon::CGuppy::Move(float fTime)
 			break;
 
 
-		case fighting:
+		case Fighting:
 		{
 			if(TimeTargetWithinRange == 0.0f)
-				State = lounging;
+			{
+				State = Lounging;
+			}
 			else
 			{
-				check(pTarget != nullptr);
+				check(TargetPtr != nullptr);
 
-				float dist = gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
-				float vd = Position.y - pTarget->Position.y;
-				if(ABS(vd) < BboxRadius.y && SGN(pTarget->Orientation.Fwd.x) != SGN(Orientation.Fwd.x))
+				float dist = gpArena->Direction(Position, TargetPtr->Position, Orientation.Fwd);
+				float vd = Position.y - TargetPtr->Position.y;
+				if(ABS(vd) < BboxRadius.y && SGN(TargetPtr->Orientation.Fwd.x) != SGN(Orientation.Fwd.x))
 				{
 					// We can be hit by player. 
 					// Take evasive action.
-					State = evading;
+					State = Evading;
 				}
 				else
 				{
-					CFPoint pt = pTarget->Position + TargetOffset;
+					CFPoint pt = TargetPtr->Position + TargetOffset;
 					gpArena->Direction(Position, pt, Orientation.Fwd);
 
 					float speed;
 
 					dist /= gpArena->GetDisplayWidth();
+
 					if(dist >= 0.8f)
+					{
 						speed = MAP(dist, 0.8f, 1.0f, GUPPY_SPEEDMAX, 0.0f);
+					}
 					else
+					{
 						speed = MAP(dist, 0.0f, 0.8f, GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
+					}
 
 					Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
 					Position.MulAdd(Orientation.Fwd, fTime * speed);
 
-					if(this->CanBeInjured() && pTarget->CanBeInjured() && speed < 400)
+					if(IsOurPositionVisible() && CanBeInjured() && TargetPtr->CanBeInjured() && speed < 400)
 					{
 						FiringCountdown -= fTime;
 
@@ -205,11 +216,6 @@ void Defcon::CGuppy::Move(float fTime)
 
 void Defcon::CGuppy::ConsiderFiringBullet()
 {
-	//if(!(this->CanBeInjured() && gpArena->GetPlayerShip().IsAlive() && gpArena->IsPointVisible(Position)))
-	//{
-	//	return;
-	//}
-
 	if(FiringCountdown <= 0.0f)
 	{
 		IBullet* pb = gpArena->FireBullet(*this, Position, (FRAND <= 0.85f) ? 2 : 3, 1);

@@ -73,6 +73,7 @@ namespace Defcon
 				enemies_canthurteachother,
 				enemies_minesdonthurt,
 
+				fireballs_explode_on_ground,
 				fireball_value,
 				firebomber_value,
 				firebomber_speed_min,
@@ -265,6 +266,7 @@ extern Defcon::CPrefs	gPrefs;
 #define ENEMIES_MINESDONTHURT      BPREFVAL(enemies_minesdonthurt)
 #define ENEMY_BIRTHDEBRISDIST      FPREFVAL(enemy_birthdebrisdist)
 #define ENEMY_BIRTHDURATION        FPREFVAL(enemy_birthduration)
+#define FIREBALLS_EXPLODE_ON_GROUND  BPREFVAL(fireballs_explode_on_ground)
 #define FIREBALL_VALUE             IPREFVAL(fireball_value)
 
 #define FIREBOMBER_SPEED_MIN       FPREFVAL(firebomber_speed_min)

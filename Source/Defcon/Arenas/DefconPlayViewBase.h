@@ -212,7 +212,32 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	void                 AddMessage           (const FString& Str, float Duration = 0.0f);
 	void                 TransportPlayerShip  ();
 	void                 AllStopPlayerShip    ();
+
 	void                 OnSpawnEnemy         (); // debug routine
+	void                 OnSelectEnemyToSpawn (); // debug routine
+	int32                SpawnedEnemyIndex = 0;
+	
+	Defcon::EObjType SpawnedEnemyTypes[18] =
+	{
+		Defcon::EObjType::LANDER,
+		Defcon::EObjType::HUNTER,
+		Defcon::EObjType::GUPPY,
+		Defcon::EObjType::BOMBER,
+		Defcon::EObjType::POD,
+		Defcon::EObjType::SWARMER,
+		Defcon::EObjType::BAITER,
+		Defcon::EObjType::PHRED,
+		Defcon::EObjType::BIGRED,
+		Defcon::EObjType::MUNCHIE,
+		Defcon::EObjType::FIREBOMBER_TRUE,
+		Defcon::EObjType::FIREBOMBER_WEAK,
+		Defcon::EObjType::DYNAMO,
+		Defcon::EObjType::SPACEHUM,
+		Defcon::EObjType::REFORMER,
+		Defcon::EObjType::GHOST,
+		Defcon::EObjType::BOUNCER_TRUE,
+		Defcon::EObjType::BOUNCER_WEAK
+	};
 
 };
 

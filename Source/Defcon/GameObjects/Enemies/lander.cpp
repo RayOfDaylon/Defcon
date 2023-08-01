@@ -160,7 +160,7 @@ void Defcon::CLander::Move(float fTime)
 	if(FRAND <= 0.005f 
 		&& this->CanBeInjured()
 		&& gpArena->GetPlayerShip().IsAlive()
-		&& gpArena->IsPointVisible(Position))
+		&& IsOurPositionVisible())
 		gpArena->FireBullet(*this, Position, 1, 1);
 
 

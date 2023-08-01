@@ -462,6 +462,7 @@ bool                 Defcon::IGameObject::IsMissionTarget() const              {
 void                 Defcon::IGameObject::SetAsMissionTarget(bool b)           { bMissionTarget = b; }
 const FLinearColor&  Defcon::IGameObject::GetRadarColor() const                { return RadarColor; }
 Defcon::EColor       Defcon::IGameObject::GetExplosionColorBase() const        { return EColor::Gray; }
+bool                 Defcon::IGameObject::IsOurPositionVisible() const         { return gpArena->IsPointVisible(Position); }
 
 
 

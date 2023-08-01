@@ -35,17 +35,17 @@ Defcon::CGhost::CGhost()
 	PointValue = GHOST_VALUE;
 	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = MakeColorFromComponents(192, 192, 192);
-	// Our size is the size of a part x 3.
+
 	AnimSpeed     = FRAND * 0.35f + 0.65f;
-	m_xFreq       = FRAND * 0.5f + 1.0f;
-	m_bWaits      = BRAND;
+	
+	bWaits        = BRAND;
 	NumParts      = IRAND(4) + 4;
 	SpinVelocity  = SFRAND;
 	SpinAngle     = FRAND;
 	DispersalCountdown = 0.0f;
 
 	const auto& Info = GameObjectResources.Get(EObjType::GHOSTPART);
-	BboxRadius = Info.Size * 0.5f;
+	BboxRadius = Info.Size * 0.5f; // seems too small, yet... here we are
 }
 
 
@@ -77,13 +77,13 @@ void Defcon::CGhost::Move(float fTime)
 	CEnemy::Move(fTime);
 	Inertia = Position;
 
-	Orientation.Fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
+	Orientation.Fwd.y = 0.1f * (float)sin(Frequency * (OffsetY + Age)); 
 
 
 	//float diff = (float)UDefconUtils::GetGameInstance(gpArena)->GetScore() / 50000;
 	float diff = (float)gDefconGameInstance->GetScore() / 50000;
 
-	if(m_bWaits)
+	if(bWaits)
 		diff *= (float)(ABS(sin(Age * PI)));
 
 	diff = FMath::Min(diff, 1.5f);
@@ -93,7 +93,7 @@ void Defcon::CGhost::Move(float fTime)
 		if(FRAND <= 0.05f * diff
 			&& this->CanBeInjured()
 			&& gpArena->GetPlayerShip().IsAlive()
-			&& gpArena->IsPointVisible(Position))
+			&& IsOurPositionVisible())
 		{
 			gpArena->FireBullet(*this, Position, 1, 1);
 		}
@@ -175,7 +175,7 @@ void Defcon::CGhost::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& mapp
 
 	for(int32 I = 0; I < N; I++)
 	{
-		const float T = (float)(TWO_PI * I / N + ((SpinAngle + FRAND * 0.1f) * TWO_PI));
+		const float T = (float)(TWO_PI * (float)I / N + ((SpinAngle + FRAND * 0.1f) * TWO_PI));
 		CFPoint Pt2((float)cos(T), (float)sin(T));
 		const float Radius = (float)(sin((F + FRAND * 3) * PI) * R + 5.0f);
 
@@ -225,18 +225,6 @@ void Defcon::CGhost::DrawPart(FPaintArguments& PaintArgs, const CFPoint& Pt)
 }
 
 
-void Defcon::CGhost::OnAboutToDie()
-{
-	// Release parts.
-/*
-	for(int i = 0; i < NumParts; i++)
-	{
-		gpGame->CreateEnemy(EObjType::GHOSTPART, PartLocs[i], false, false);
-	}
-*/
-}
-
-
 void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 {
 	//CEnemy::Explode(Debris);
@@ -275,6 +263,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 	for(I = 0; I < N; I++)
 	{
 		CGlowingFlak* FlakPtr = new CGlowingFlak;
+
 		FlakPtr->ColorbaseYoung = ColorBase;
 		FlakPtr->LargestSize = MaxSize;
 		FlakPtr->bFade = bDieOff;
@@ -306,7 +295,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 	if(FRAND <= DEBRIS_DUAL_PROB)
 	{
 		bDieOff = (FRAND >= 0.25f);
-		N = (int)(FRAND * 20 + 20);
+		N = (int32) FRANDRANGE(20, 40);
 		MaxSize = FRAND * 4 + 8.0f;
 		//MaxSize = FMath::Min(MaxSize, 9.0f);
 
@@ -322,6 +311,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 		for(I = 0; I < N; I++)
 		{
 			CGlowingFlak* FlakPtr = new CGlowingFlak;
+
 			FlakPtr->ColorbaseYoung = ColorBase;
 			FlakPtr->LargestSize = MaxSize;
 			FlakPtr->bFade = bDieOff;
@@ -335,8 +325,8 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 			Direction.Set((float)cos(T), (float)sin(T));
 
 			FlakPtr->Orientation.Fwd = Inertia;
-
 			FlakPtr->Orientation.Fwd *= FRANDRANGE(30, 42) * 1.5f;
+
 			const float Speed = FRANDRANGE(22, 67);
 
 			FlakPtr->Orientation.Fwd.MulAdd(Direction, Speed);
@@ -353,6 +343,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 	for(I = 0; I < 20; I++)
 	{
 		CFlak* FlakPtr = new CFlak;
+
 		FlakPtr->ColorbaseYoung = ColorBase;
 		FlakPtr->ColorbaseOld = ColorBase;
 		FlakPtr->bCold = true;
@@ -422,12 +413,12 @@ void Defcon::CGhostPart::SetFlightPath(const CFPoint& From, const CFPoint& To)
 {
 	// from and to must be unmodulated.
 
-	m_path.Pts[0] = m_path.Pts[1] = From;
-	m_path.Pts[2] = m_path.Pts[3] = To;
+	Path.Pts[0] = Path.Pts[1] = From;
+	Path.Pts[2] = Path.Pts[3] = To;
 
 	// Make the control points match their anchor but with a random offset.
-	m_path.Pts[1] += CFPoint(FRANDRANGE(-300.0f, 300.0f), FRANDRANGE(-300.0f, 300.0f));
-	m_path.Pts[2] += CFPoint(FRANDRANGE(-300.0f, 300.0f), FRANDRANGE(-300.0f, 300.0f));
+	Path.Pts[1] += CFPoint(FRANDRANGE(-300.0f, 300.0f), FRANDRANGE(-300.0f, 300.0f));
+	Path.Pts[2] += CFPoint(FRANDRANGE(-300.0f, 300.0f), FRANDRANGE(-300.0f, 300.0f));
 }
 
 
@@ -440,9 +431,9 @@ void Defcon::CGhostPart::Move(float fTime)
 
 	// We're moving along a spline, so determine our normalized distance along it.
 
-	if(Age < m_fMaxAge)
+	if(Age < MaxAge)
 	{
-		m_path.CalcPt(powf(Age / m_fMaxAge, 0.75f), Position);
+		Path.CalcPt(powf(Age / MaxAge, 0.75f), Position);
 		Position.x = gpArena->WrapX(Position.x);
 		return;
 	}
@@ -454,7 +445,6 @@ void Defcon::CGhostPart::Move(float fTime)
 void Defcon::CGhostPart::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& mapper)
 {
 }
-
 
 
 void Defcon::CGhostPart::Explode(CGameObjectCollection& Debris)

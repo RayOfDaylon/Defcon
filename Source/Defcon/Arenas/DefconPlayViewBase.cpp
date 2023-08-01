@@ -774,6 +774,9 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 	gpAudio->OutputSound(Defcon::EAudioTrack::Player_dying);
 
 	PlayerShip.OnAboutToDie();
+
+	// Deassign target for all enemies so that they don't keep moving towards and firing at the dying (and soon nonexistant) player.
+	Enemies.ForEach([](Defcon::IGameObject* Obj){ static_cast<Defcon::CEnemy*>(Obj)->SetTarget(nullptr); });
 }
 
 
@@ -1593,12 +1596,10 @@ void UDefconPlayViewBase::ExplodeObject(Defcon::IGameObject* pObj)
 
 	pObj->Explode(Debris);
 
-	if(GetPlayerShip().IsAlive() && GetPlayerShip().IsSolid() /*&& Debris.Count() < 800*/)
+	// Not sure what the player ship being intact has to do with an object exploding
+	//if(GetPlayerShip().IsAlive() && GetPlayerShip().IsSolid() /*&& Debris.Count() < 800*/)
 	{
-		//gpAudio->OutputSound(Defcon::ship_exploding);
-
 		const float em = pObj->GetExplosionMass();
-
 		
 		Defcon::EAudioTrack track;
 		if(em >= 1.0f) 
@@ -2105,41 +2106,25 @@ Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::EObjType EnemyType, 
 }
 
 
+void UDefconPlayViewBase::OnSelectEnemyToSpawn()
+{
+	SpawnedEnemyIndex = (SpawnedEnemyIndex + 1) % array_size(SpawnedEnemyTypes);
+
+	FString Str = FString::Printf(TEXT("Enemy type %s chosen"), *Defcon::ObjectTypeManager.GetName(SpawnedEnemyTypes[SpawnedEnemyIndex]));
+
+	AddMessage(Str, 0.25f);
+}
+
+
 void UDefconPlayViewBase::OnSpawnEnemy()
 {
 	// Debug tool, lets us spawn enemies on demand to test materialization, etc.
 
-	const Defcon::EObjType Types[] =
-	{
-		Defcon::EObjType::LANDER,
-		Defcon::EObjType::HUNTER,
-		Defcon::EObjType::GUPPY,
-		Defcon::EObjType::BOMBER,
-		Defcon::EObjType::POD,
-		Defcon::EObjType::SWARMER,
-		Defcon::EObjType::BAITER,
-		Defcon::EObjType::PHRED,
-		Defcon::EObjType::BIGRED,
-		Defcon::EObjType::MUNCHIE,
-		Defcon::EObjType::FIREBOMBER_TRUE,
-		Defcon::EObjType::FIREBOMBER_WEAK,
-		Defcon::EObjType::DYNAMO,
-		Defcon::EObjType::SPACEHUM,
-		Defcon::EObjType::REFORMER,
-		Defcon::EObjType::GHOST,
-		Defcon::EObjType::BOUNCER_TRUE,
-		Defcon::EObjType::BOUNCER_WEAK
-	};
-
-	static int32 Index = 0;
-
 	auto pt = GetPlayerShip().Position;
 	pt.x = WrapX(pt.x + 300 * SGN(GetPlayerShip().Orientation.Fwd.x));
 
-	CreateEnemy(Types[Index], pt, 0.0f, 
+	CreateEnemy(SpawnedEnemyTypes[SpawnedEnemyIndex], pt, 0.0f, 
 		(Defcon::EObjectCreationFlags)((int32)Defcon::EObjectCreationFlags::Materializes | (int32)Defcon::EObjectCreationFlags::NotMissionTarget));
-
-	Index = (Index + 1) % array_size(Types);
 }
 
 

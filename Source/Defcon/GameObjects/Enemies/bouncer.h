@@ -19,11 +19,15 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-
-			void Explode(CGameObjectCollection&);
+			virtual void Move    (float DeltaTime);
+			virtual void Explode (CGameObjectCollection&) override;
 			
+		protected:
+
+			virtual void ResetFiringCountdown () = 0;
+			virtual void FireWeapon           () = 0;
+
+			float   FiringCountdown = 0.0f;
 
 		private:
 			float	Gravity;
@@ -41,11 +45,8 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move(float);
-			//virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-
-			//void Explode(CGameObjectCollection&);
-			
+			virtual void FireWeapon           () override;
+			virtual void ResetFiringCountdown () override;
 	};
 
 
@@ -60,11 +61,7 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move(float);
-			//virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-
-			//void Explode(CGameObjectCollection&);
-			
+			virtual void FireWeapon           () override;
+			virtual void ResetFiringCountdown () override;
 	};
 }
-

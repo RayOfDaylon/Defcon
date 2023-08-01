@@ -74,6 +74,7 @@ namespace Defcon
 
 			virtual void          Notify                (EMessage, void*);
 
+			bool                  IsOurPositionVisible  () const;
 			virtual IGameObject*  CreateFireball        (CGameObjectCollection&, float&);
 			virtual bool          Fireballs             () const;
 			virtual void          Explode               (CGameObjectCollection&);

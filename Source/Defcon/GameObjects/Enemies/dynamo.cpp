@@ -70,7 +70,7 @@ void Defcon::CDynamo::Move(float DeltaTime)
 	if(SpawnSpacehumCountdown <= 0.0f 
 		&& this->CanBeInjured()
 		&& gpArena->GetPlayerShip().IsAlive()
-		&& gpArena->IsPointVisible(Position))
+		&& IsOurPositionVisible())
 	{
 		gpArena->CreateEnemy(EObjType::SPACEHUM, Position, 0.0f, EObjectCreationFlags::EnemyPart);
 

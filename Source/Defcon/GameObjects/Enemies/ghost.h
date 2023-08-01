@@ -27,12 +27,12 @@ namespace Defcon
 			
 
 			void SetFlightPath(const CFPoint&, const CFPoint&);
-			void SetFlightDuration(float t) { m_fMaxAge = t; }
+			void SetFlightDuration(float t) { MaxAge = t; }
 
 		protected:
-			CBezierSpline2D	m_path;
+			CBezierSpline2D	Path;
 
-			float			m_fMaxAge;
+			float			MaxAge;
 
 	};
 
@@ -52,25 +52,23 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual void DrawPart(FPaintArguments&, const CFPoint&);
-			virtual void OnAboutToDie();
-			void Explode(CGameObjectCollection&);
-			
-			bool Fireballs() const { return true; }
+			virtual void Move       (float DeltaTime) override;
+			virtual void Draw       (FPaintArguments&, const I2DCoordMapper&) override;
+			virtual void Explode    (CGameObjectCollection&) override;
+
+			virtual bool Fireballs  () const override { return true; }
 
 		protected:
-			float m_yoff	= 0.0f;
-			float m_freq	= 2.0f;
-			float m_xFreq	= 1.0f;
-			float m_yOrg;
 
-			int32	NumParts;
-			bool	m_bWaits;
-			float	SpinVelocity;
-			float	SpinAngle;
-			CFPoint	PartLocs[10];
+			virtual void DrawPart(FPaintArguments&, const CFPoint&);
+
+			CFPoint	 PartLocs[10];
+			float    OffsetY	= 0.0f;
+			float    Frequency	= 2.0f;
+			float	 SpinVelocity;
+			float	 SpinAngle;
+			int32	 NumParts;
+			bool	 bWaits;
 
 			float    DispersalCountdown = 0.0f;
 	};

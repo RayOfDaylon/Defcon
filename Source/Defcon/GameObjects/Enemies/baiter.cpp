@@ -146,7 +146,7 @@ void Defcon::CBaiter::Move(float DeltaTime)
 			SetNavControl(ILiveGameObject::ctlUp, false, 0);
 		}
 
-		if(gpArena->IsPointVisible(Position))
+		if(IsOurPositionVisible())
 		{
 			FireWeaponCountdown -= DeltaTime;
 

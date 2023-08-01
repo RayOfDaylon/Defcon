@@ -16,20 +16,14 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual EColor GetExplosionColorBase  () const override;
-			virtual float GetExplosionMass() const;
-			virtual bool Fireballs() const { return false; }
-			void Explode(CGameObjectCollection&);
-			
+			virtual void    Move                   (float DeltaTime) override;
+			virtual EColor  GetExplosionColorBase  () const override;
+			virtual float   GetExplosionMass       () const override;
+			virtual bool    Fireballs              () const  override { return false; }
+			void            Explode                (CGameObjectCollection&) override;
+			virtual float   GetCollisionForce      () const override { return 0.02f * COLLISION_DAMAGE; }
 
-			virtual float GetCollisionForce() const override { return 0.02f * COLLISION_DAMAGE; }
-
-			float	m_fSpeed;
-
-		private:
-			bool	m_bFirstTime;	
+			float	Speed = 0.0f;
 	};
 }
 

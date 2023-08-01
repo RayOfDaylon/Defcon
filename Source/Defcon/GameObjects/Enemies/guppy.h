@@ -17,25 +17,29 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void  Move                  (float) override;
-			virtual void  Draw                  (FPaintArguments&, const I2DCoordMapper&) override;
-			virtual void  OnAboutToDie          () override;
-			virtual bool  Fireballs             () const override { return false; }
-			virtual void  Explode               (CGameObjectCollection&) override;
-			virtual float GetExplosionMass      () const override;
+			virtual void   Move                   (float) override;
+			virtual void   Draw                   (FPaintArguments&, const I2DCoordMapper&) override;
+			virtual void   OnAboutToDie           () override;
+			virtual bool   Fireballs              () const override { return false; }
+			virtual void   Explode                (CGameObjectCollection&) override;
+			virtual float  GetExplosionMass       () const override;
 			virtual EColor GetExplosionColorBase  () const override;
 
-			float					TimeTargetWithinRange;
-			CFPoint					TargetOffset;
 
 		protected:
+			
 			void  ConsiderFiringBullet();
 
+
 		private:
-			enum EState { lounging, fighting, evading };
-			EState					State;
-			float					Frequency;
-			float					Amplitude;
-			float                   FiringCountdown = 0.0f;
+			
+			enum EState { Lounging, Fighting, Evading };
+
+			CFPoint  TargetOffset;
+			float    TimeTargetWithinRange;
+			float    Frequency;
+			float    Amplitude;
+			float    FiringCountdown = 0.0f;
+			EState   State;
 	};
 }

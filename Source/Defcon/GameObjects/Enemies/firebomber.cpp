@@ -38,16 +38,12 @@ Defcon::IFirebomber::IFirebomber()
 	RadarColor = C_WHITE;
 	
 	AnimSpeed = FRAND * 0.05f + 0.12f;
-	m_bAbsSin = false;
-	m_sgn = 1;
-	m_bWaits = BRAND;
 
-	m_firingCountdown = 2.0f;
-
-	m_travelCountdown = 1.0f;
+	FiringCountdown = 2.0f;
+	TravelCountdown = 1.0f;
 
 	Orientation.Fwd.Set(SBRAND, SBRAND);
-	m_ourInertia = Orientation.Fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
+	OurInertia = Orientation.Fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
 
 	const auto& Info = GameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
 	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
@@ -74,30 +70,30 @@ void Defcon::IFirebomber::Move(float fTime)
 	Super::Move(fTime);
 	Inertia = Position;
 
-	m_travelCountdown -= fTime;
+	TravelCountdown -= fTime;
 
-	if(m_travelCountdown <= 0.0f)
+	if(TravelCountdown <= 0.0f)
 	{
 		// We've finished traveling, so define a new direction and travel length.
 		Orientation.Fwd.Set(SBRAND, SBRAND);
-		m_ourInertia      = Orientation.Fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
+		OurInertia      = Orientation.Fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
 
 		if(IRAND(3) == 1)
 		{
-			m_ourInertia *= 0.5f;
+			OurInertia *= 0.5f;
 		}
 
-		m_travelCountdown = Daylon::FRandRange(FIREBOMBER_TRAVEL_TIME_MIN, FIREBOMBER_TRAVEL_TIME_MAX);
+		TravelCountdown = Daylon::FRandRange(FIREBOMBER_TRAVEL_TIME_MIN, FIREBOMBER_TRAVEL_TIME_MAX);
 	}
 
-	Position += m_ourInertia * fTime;
+	Position += OurInertia * fTime;
 
 
 	WRAP(Position.y, 0, ScreenSize.y);
 
-	if(gpArena->IsPointVisible(Position))
+	if(IsOurPositionVisible() && TargetPtr != nullptr)
 	{
-		m_firingCountdown -= fTime;
+		FiringCountdown -= fTime;
 	}
 
 	Inertia = Position - Inertia;
@@ -196,12 +192,12 @@ void Defcon::CFirebomber::Move(float fTime)
 {
 	Super::Move(fTime);
 
-	if(!(this->CanBeInjured() && gpArena->GetPlayerShip().IsAlive() && gpArena->IsPointVisible(Position)))
+	if(!(this->CanBeInjured() && gpArena->GetPlayerShip().IsAlive() && IsOurPositionVisible()))
 	{
 		return;
 	}
 
-	if(m_firingCountdown <= 0.0f)
+	if(FiringCountdown <= 0.0f)
 	{
 		gpArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, EObjectCreationFlags::EnemyPart);
 
@@ -212,7 +208,7 @@ void Defcon::CFirebomber::Move(float fTime)
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);
 
-		m_firingCountdown = LERP(2.0f, 0.25f, T) + Daylon::FRandRange(0.0f, 0.2f);
+		FiringCountdown = LERP(2.0f, 0.25f, T) + Daylon::FRandRange(0.0f, 0.2f);
 	}
 }
 
@@ -237,16 +233,17 @@ void Defcon::CWeakFirebomber::Move(float fTime)
 {
 	Super::Move(fTime);
 
-	float diff = (float)gDefconGameInstance->GetScore() / 50000;
-	if(m_bWaits)
-		diff *= (float)(ABS(sin(Age * PI)));
-	diff = FMath::Min(diff, 1.5f);
-
-	if(FRAND <= 0.05f * diff
-		&& this->CanBeInjured()
-		&& gpArena->GetPlayerShip().IsAlive()
-		&& gpArena->IsPointVisible(Position))
+	if(FiringCountdown <= 0.0f)
 	{
 		gpArena->FireBullet(*this, Position, 1, 1);
+
+		// The time to fire goes down as the player XP increases.
+
+		float XP = (float)gDefconGameInstance->GetScore();
+
+		float T = NORM_(XP, 1000.0f, 50000.f);
+		T = CLAMP(T, 0.0f, 1.0f);
+
+		FiringCountdown = LERP(2.0f, 0.1f, T) + Daylon::FRandRange(0.0f, 0.2f);
 	}
 }

@@ -78,7 +78,7 @@ void Defcon::CSwarmer::Move(float fTime)
 		m_fTimeTargetWithinRange = 0.0f;
 	else
 	{
-		const bool bVis = gpArena->IsPointVisible(Position);
+		const bool bVis = IsOurPositionVisible();
 
 		// Update target-within-range information.
 		if(m_fTimeTargetWithinRange > 0.0f)

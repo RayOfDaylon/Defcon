@@ -70,6 +70,9 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	void OnToggleGodMode();
 
 	UFUNCTION(BlueprintCallable, Category="Defcon")
+	void OnSelectEnemyToSpawn();
+
+	UFUNCTION(BlueprintCallable, Category="Defcon")
 	void OnSpawnEnemy();
 
 	UFUNCTION(BlueprintCallable, Category="Defcon")

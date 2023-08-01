@@ -29,12 +29,9 @@ namespace Defcon
 			
 
 		protected:
-			CFPoint m_ourInertia;
-			float   m_firingCountdown = 0.0f;
-			float   m_travelCountdown = 0.0f;
-			int		m_sgn;
-			bool	m_bAbsSin;
-			bool	m_bWaits;
+			CFPoint OurInertia;
+			float   FiringCountdown = 0.0f;
+			float   TravelCountdown = 0.0f;
 	};
 
 

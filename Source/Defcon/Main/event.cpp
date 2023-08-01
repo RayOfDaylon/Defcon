@@ -223,12 +223,14 @@ Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(EObjType kind, const CFPo
 
 void Defcon::CCreateEnemyEvent::SpecializeForBouncer(Defcon::CEnemy* pE, const CFPoint& where)
 {
+	SET_PLAYER_AS_TARGET
 	pE->Orientation.Fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForWeakBouncer(Defcon::CEnemy* pE, const CFPoint& where)
 {
+	SET_PLAYER_AS_TARGET
 	pE->Orientation.Fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
 }
 
@@ -254,27 +256,25 @@ void Defcon::CCreateEnemyEvent::SpecializeForMunchie(Defcon::CEnemy* pE, const C
 }
 
 
-
 void Defcon::CCreateEnemyEvent::SpecializeForGhost(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	CGhost* p = static_cast<CGhost*>(pE);
 	SET_PLAYER_AS_TARGET
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForGhostPart(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	CGhostPart* p = static_cast<CGhostPart*>(pE);
 	SET_PLAYER_AS_TARGET
-	p->SetCollisionInjurious(false);
+	pE->SetCollisionInjurious(false);
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForLander(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	CLander* p = static_cast<CLander*>(pE);
-	p->m_pvUserTerrainEval = gpArena;
 	SET_PLAYER_AS_TARGET
+
+	CLander* p = static_cast<CLander*>(pE);
+	//p->m_pvUserTerrainEval = gpArena;
 	p->Objects = &gpArena->GetObjects();
 	p->SetDoChaseHumans(gDefconGameInstance->GetMission()->HumansInvolved());
 }
@@ -282,17 +282,13 @@ void Defcon::CCreateEnemyEvent::SpecializeForLander(Defcon::CEnemy* pE, const CF
 
 void Defcon::CCreateEnemyEvent::SpecializeForGuppy(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	CGuppy* p = static_cast<CGuppy*>(pE);
 	SET_PLAYER_AS_TARGET
-	//p->Objects = &gpArena->GetEnemies();
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForHunter(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	CHunter* p = static_cast<CHunter*>(pE);
 	SET_PLAYER_AS_TARGET
-	//p->Objects = &gpArena->GetEnemies();
 }
 
 
@@ -304,30 +300,34 @@ void Defcon::CCreateEnemyEvent::SpecializeForBomber(Defcon::CEnemy* pE, const CF
 
 void Defcon::CCreateEnemyEvent::SpecializeForFirebomber(Defcon::CEnemy* pE, const CFPoint& where)
 {
+	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForWeakFirebomber(Defcon::CEnemy* pE, const CFPoint& where)
 {
+	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForFireball(Defcon::CEnemy* pE, const CFPoint& where)
 {
+	SET_PLAYER_AS_TARGET
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForDynamo(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	//pE->Position.y = FRANDRANGE(90, gpArena->GetHeight() - 90);
+	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForSpacehum(Defcon::CEnemy* pE, const CFPoint& where)
 {
+	SET_PLAYER_AS_TARGET
 }
 
 
@@ -339,27 +339,29 @@ void Defcon::CCreateEnemyEvent::SpecializeForPod(Defcon::CEnemy* pE, const CFPoi
 
 void Defcon::CCreateEnemyEvent::SpecializeForSwarmer(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	CSwarmer* p = static_cast<CSwarmer*>(pE);
 	SET_PLAYER_AS_TARGET
 	pE->Orientation.Fwd.x = SBRAND;
+
+	CSwarmer* p = static_cast<CSwarmer*>(pE);
 	p->SetOriginalPosition(where);
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForTurret(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	auto p = static_cast<CTurret*>(pE);
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
+
+	auto p = static_cast<CTurret*>(pE);
 	p->SetOriginalPosition(where);
 }
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForReformerPart(Defcon::CEnemy* pE, const CFPoint& where)
 {
-	CReformerPart* p = static_cast<CReformerPart*>(pE);
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
+	CReformerPart* p = static_cast<CReformerPart*>(pE);
 	p->SetOriginalPosition(where);
 }
 
@@ -373,6 +375,7 @@ void Defcon::CCreateEnemyEvent::SpecializeForBaiter(Defcon::CEnemy* pE, const CF
 
 void Defcon::CCreateEnemyEvent::SpecializeForReformer(Defcon::CEnemy* pE, const CFPoint& where)
 {
+	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 

@@ -34,8 +34,8 @@ Defcon::CSpacehum::CSpacehum()
 	bIsCollisionInjurious = true;
 	Brightness = FRANDRANGE(0.9f, 1.0f);
 
-	m_fSpeed = (float)gDefconGameInstance->GetScore() / 250;
-	m_fSpeed *= FRANDRANGE(0.9f, 1.33f);
+	Speed = (float)gDefconGameInstance->GetScore() / 250;
+	Speed *= FRANDRANGE(0.9f, 1.33f);
 
 	CreateSprite(Type);
 	const auto& SpriteInfo = GameObjectResources.Get(Type);
@@ -52,29 +52,30 @@ const char* Defcon::CSpacehum::GetClassname() const
 #endif
 
 
-void Defcon::CSpacehum::Move(float fTime)
+void Defcon::CSpacehum::Move(float DeltaTime)
 {
-	// Just float around drifting horizontally.
+	// Just chase the player.
 
-	CEnemy::Move(fTime);
+	CEnemy::Move(DeltaTime);
+
 	Inertia = Position;
 
-	CPlayer* pTarget = &gpArena->GetPlayerShip();
-
-	if(pTarget->IsAlive())
+	if(TargetPtr != nullptr)
 	{
-		gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
-		CFPoint budge((float)sin(FRAND * PI * 2), (float)cos(FRAND * PI * 2));
+		gpArena->Direction(Position, TargetPtr->Position, Orientation.Fwd);
+		
+		CFPoint Budge((float)sin(FRAND * PI * 2), (float)cos(FRAND * PI * 2));
 
+		// todo: initially fly away quickly from the parent dynamo toward player
 		if(Age < 2.0f)
 		{
-			budge.x *= 0.1f;
+			Budge.x *= 0.1f;
 			Orientation.Fwd.x *= 0.1f;
 		}
 
-		budge *= SFRAND * 200.0f * fTime;
-		Position.MulAdd(Orientation.Fwd, fTime * m_fSpeed);
-		Position += budge;
+		Budge *= SFRAND * 200.0f * DeltaTime;
+		Position.MulAdd(Orientation.Fwd, DeltaTime * Speed);
+		Position += Budge;
 	}
 
 	Inertia = Position - Inertia;
@@ -88,38 +89,35 @@ void Defcon::CSpacehum::Draw(FPaintArguments& framebuf, const I2DCoordMapper& ma
 
 void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 {
-	const auto cby = EColor::Gray;
-
 	bMortal = true;
 	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
-	for(int32 i = 0; i < 10; i++)
+	for(int32 I = 0; I < 10; I++)
 	{
-		CFlak* pFlak = new CFlak;
-		pFlak->ColorbaseYoung = cby;
-		pFlak->LargestSize = 4;
-		pFlak->bFade = true;//bDieOff;
+		CFlak* FlakPtr = new CFlak;
 
-		pFlak->Position = Position;
-		pFlak->Orientation = Orientation;
+		FlakPtr->ColorbaseYoung = EColor::Gray;
+		FlakPtr->LargestSize = 4;
+		FlakPtr->bFade = true;
 
-		CFPoint dir;
-		double t = FRAND * TWO_PI;
-		
-		dir.Set((float)cos(t), (float)sin(t));
+		FlakPtr->Position    = Position;
+		FlakPtr->Orientation = Orientation;
+
+		double T = FRAND * TWO_PI;
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.Fwd = Inertia;
+		FlakPtr->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
-		//ndir *= FRAND * 0.4f + 0.2f;
-		float speed = FRAND * 30 + 110;
+		FlakPtr->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
 
-		pFlak->Orientation.Fwd.MulAdd(dir, speed);
+		const CFPoint Direction((float)cos(T), (float)sin(T));
+		const float FlakSpeed = FRAND * 30 + 110;
 
-		debris.Add(pFlak);
+		FlakPtr->Orientation.Fwd.MulAdd(Direction, FlakSpeed);
+
+		debris.Add(FlakPtr);
 	}
 }

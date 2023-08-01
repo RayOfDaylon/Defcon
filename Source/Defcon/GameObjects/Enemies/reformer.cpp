@@ -77,7 +77,7 @@ void Defcon::CReformer::Move(float fTime)
 		if(FRAND <= 0.05f * diff
 			&& this->CanBeInjured()
 			&& gpArena->GetPlayerShip().IsAlive()
-			&& gpArena->IsPointVisible(Position))
+			&& IsOurPositionVisible())
 			gpArena->FireBullet(*this, Position, 1, 1);
 	}
 
@@ -308,7 +308,7 @@ void Defcon::CReformerPart::Move(float fTime)
 			m_fTimeTargetWithinRange = 0.0f;
 		else
 		{
-			const bool bVis = gpArena->IsPointVisible(Position);
+			const bool bVis = IsOurPositionVisible();
 
 			// Update target-within-range information.
 			if(m_fTimeTargetWithinRange > 0.0f)

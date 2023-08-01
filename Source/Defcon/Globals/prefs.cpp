@@ -26,7 +26,7 @@ void Defcon::CPrefs::Construct()
 #define INITPREF(_key, _val, _units, _type, _min, _max, _desc)	m_pref[_key].Init(_val, _units, _type, _min, _max, #_key, _desc)
 #define INITPREF2(_key, _val, _units, _type, _min, _max, _desc, _ex1, _ex2, _ex3)	m_pref[_key].Init(_val, _units, _type, _min, _max, #_key, _desc, _ex1, _ex2, _ex3)
 
-    //        Key                          Value     Units           Type          Min         Max        Description
+    //        Key                          Value     Units           Type          Min          Max       Description
 	//        ---------------------------  -----     -------------   ----------- ---------  ------------  --------------------------------------------------------------------------------------------
 
 	INITPREF( planet_to_screen_ratio,       5.0f,    "%",            type_float,     2.0f,        6.0f,   "How wide the planet surface is relative to visible portion"                                );
@@ -90,6 +90,7 @@ void Defcon::CPrefs::Construct()
 
 	INITPREF( bouncer_value,              200,       "",             type_int,       0,        1000,      "Number of points earned for destroying a bouncer"                                          );
 	INITPREF( fireball_value,             100,       "",             type_int,       0,        1000,      "Number of points earned for destroying a fireball"                                         );
+	INITPREF( fireballs_explode_on_ground,  1,       "",             type_bool,      0,           0,      "If fireballs should explode when hitting the ground"                                       );
 	INITPREF( guppy_value,                200,       "",             type_int,       0,        1000,      "Number of points earned for destroying a space guppy"                                      );
 	INITPREF( hunter_value,               250,       "",             type_int,       0,        1000,      "Number of points earned for destroying a hunter"                                           );
 	INITPREF( baiter_prob,                  0.33f,   "%",            type_float,     0,           1,      "Probability of baiter appearing near end of mission"                                       );

@@ -34,12 +34,11 @@
 Defcon::CEnemy::CEnemy()
 {
 	ParentType = Type;
-	Type = EObjType::ENEMY;
+	Type       = EObjType::ENEMY;
 
-	Age = 0;
-	bCanBeInjured = false;
+	bCanBeInjured         = false;
 	bIsCollisionInjurious = false;
-	Brightness = FRAND * 0.33f + 0.66f;
+	Brightness            = FRAND * 0.33f + 0.66f;
 }
 
 

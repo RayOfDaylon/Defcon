@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-July 30, 2023
+August 1, 2023
 
 Chapters:
 
@@ -68,13 +68,16 @@ jump to the next mission.
 
 Some debugging controls are available at runtime. They are:
 
-0 - Toggle frame rate display
-1 - Toggle player ship etc. stats
-2 - Reserved for bullet time toggle (helps see animations better)
-4 - Toggle planet origin axis line
-3 - Toggle bounding boxes
-9 - Spawn enemy near the player ship (cycles through all enemy types)
-G - Toggle god mode
+0          Toggle frame rate display
+1          Toggle player ship etc. stats
+2          Reserved for bullet time toggle (helps see animations better)
+3          Toggle bounding boxes
+4          Toggle planet origin axis line
+8          Choose type of enemy to spawn (cycles through all enemy types)
+9          Spawn enemy near the player ship
+G          Toggle god mode
+Numpad +   Increase XP by 5,000 pts
+Numpad -   Decrease XP by 5,000 pts
 
 
 How the Game Works

@@ -121,7 +121,7 @@ void Defcon::CBomber::Move(float DeltaTime)
 		else if(
 			FRAND <= 0.01f 
 			&& this->CanBeInjured()
-			&& gpArena->IsPointVisible(Position)
+			&& IsOurPositionVisible()
 			&& SGN(Orientation.Fwd.x) == SGN(gpArena->GetPlayerShip().Orientation.Fwd.x))
 		{
 			StopLayingMinesCountdown = FRANDRANGE(0.33f, 0.5f);
