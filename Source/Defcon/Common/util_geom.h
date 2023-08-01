@@ -70,8 +70,15 @@ class CFPoint
 		CFPoint () : x(0.0f), y(0.0f) {}
 		CFPoint (float x2, float y2) : x(x2), y(y2) {}
 		CFPoint (int32 x2, int32 y2) : x((float)x2), y((float)y2) {}
+
+		// This ctor causes FVector2D-only expressions to fail, don't know why
+		//CFPoint (const FVector2D& V) : x(V.X), y(V.Y) {}
+
+		CFPoint& operator = (const FVector2D& V) { Set(V.X, V.Y); return *this; }
 		
 		void  Set  (float a, float b) { x = a; y = b; }
+		//void  Set  (double a, double b) { x = (float)a; y = (float)b; }
+		//void  Set  (int32 a, int32 b) { x = (float)a; y = (float)b; }
 
 		void  Add  (const CFPoint& pt) { x += pt.x; y += pt.y; }
 		void  Sub  (const CFPoint& pt) { x -= pt.x; y -= pt.y; }

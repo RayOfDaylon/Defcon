@@ -154,7 +154,7 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 
 			y *= gpArena->GetHeight();	
 
-			gpArena->CreateEnemy(EnemySpawnCountsArray[i].Kind, CFPoint(x, y), FRANDRANGE(0.0f, JFactor * j), true, true);	
+			gpArena->CreateEnemy(EnemySpawnCountsArray[i].Kind, CFPoint(x, y), FRANDRANGE(0.0f, JFactor * j), EObjectCreationFlags::StandardEnemy);	
 		}	
 	}	
 	
@@ -207,6 +207,19 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 }
 
 
+void Defcon::CMilitaryMission::HostileDestroyed(EObjType Kind)
+{
+	check(NumHostilesRemaining > 0);
+
+	NumHostilesRemaining--;
+
+	if(Kind == EObjType::LANDER) 
+	{
+		NumLandersRemaining--; 
+	} 
+}
+
+
 int32 Defcon::CMilitaryMission::HostilesRemaining() const
 {
 	return NumHostilesRemaining;
@@ -248,7 +261,7 @@ void Defcon::CMilitaryMission::AddNonMissionTarget(EObjType objType, const CFPoi
 	x = (float)fmod(x, wp);
 	float y = FRANDRANGE(0.3f, 0.8f) * gpArena->GetHeight();
 
-	gpArena->CreateEnemy(objType, CFPoint(x, y), 0.0f, true, false);
+	gpArena->CreateEnemy(objType, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
 }
 
 
@@ -261,7 +274,7 @@ void Defcon::CMilitaryMission::AddBaiter(const CFPoint& where)
 	x = (float)fmod(x, wp);
 	float y = FRANDRANGE(0.2f, 0.8f) * gpArena->GetHeight();
 
-	gpArena->CreateEnemy(EObjType::BAITER, CFPoint(x, y), 0.0f, true, false);
+	gpArena->CreateEnemy(EObjType::BAITER, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
 }
 
 

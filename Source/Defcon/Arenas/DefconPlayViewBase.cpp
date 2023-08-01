@@ -146,7 +146,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 	m_bArenaDying = false;
 	Daylon::Hide(Fader);
 
-	ShipThrustSoundLoop = gpAudio->CreateLoopedSound(Defcon::playership_thrust);
+	ShipThrustSoundLoop = gpAudio->CreateLoopedSound(Defcon::EAudioTrack::Playership_thrust);
 	WasShipUnderThrust = false;
 
 	PlayAreaMain->ClearMessages();
@@ -200,7 +200,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	GetPlayerShip().EnableInput();
 
-	gpAudio->OutputSound(Defcon::EAudioTrack::wave_start);
+	gpAudio->OutputSound(Defcon::EAudioTrack::Wave_start);
 }
 
 
@@ -653,7 +653,7 @@ class CDestroyedPlayerShip : public Defcon::ILiveGameObject
 					UninstallSprite();
 					Sprite.Reset();
 
-					gpAudio->OutputSound(Defcon::EAudioTrack::ship_exploding2b);
+					gpAudio->OutputSound(Defcon::EAudioTrack::Ship_exploding2b);
 				}
 
 				// Move the particle groups.
@@ -763,7 +763,7 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 
 	m_objects.Add(pShip);
 
-	gpAudio->OutputSound(Defcon::player_dying);
+	gpAudio->OutputSound(Defcon::EAudioTrack::Player_dying);
 
 	PlayerShip.OnAboutToDie();
 }
@@ -1297,9 +1297,9 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 				GetPlayerShip().FireLaserWeapon(m_objects);
 
 				if(true/*BRAND*/)
-					gpAudio->OutputSound(Defcon::EAudioTrack::laserfire);
+					gpAudio->OutputSound(Defcon::EAudioTrack::Laserfire);
 				else
-					gpAudio->OutputSound(Defcon::laserfire_alt);
+					gpAudio->OutputSound(Defcon::EAudioTrack::Laserfire_alt);
 			}
 
 		break;
@@ -1517,7 +1517,7 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 	// but that would deny interesting friendly fire.
 	pBullet->Position = from + pBullet->Orientation.Fwd * (2 * FMath::Max(obj.BboxRadius.x, obj.BboxRadius.y));
 
-	gpAudio->OutputSound((Defcon::EAudioTrack)(soundid - 1 + (int32)Defcon::EAudioTrack::bullet));
+	gpAudio->OutputSound((Defcon::EAudioTrack)(soundid - 1 + (int32)Defcon::EAudioTrack::Bullet));
 
 	m_objects.Add(pBullet);
 
@@ -1597,21 +1597,21 @@ void UDefconPlayViewBase::ExplodeObject(Defcon::IGameObject* pObj)
 		{
 			const Defcon::EAudioTrack LargeExplosionSounds[] =
 			{
-				Defcon::EAudioTrack::ship_exploding,
-				Defcon::EAudioTrack::ship_exploding2,
-				Defcon::EAudioTrack::ship_exploding2a,
-				Defcon::EAudioTrack::ship_exploding2b
+				Defcon::EAudioTrack::Ship_exploding,
+				Defcon::EAudioTrack::Ship_exploding2,
+				Defcon::EAudioTrack::Ship_exploding2a,
+				Defcon::EAudioTrack::Ship_exploding2b
 			};
 
 			track = LargeExplosionSounds[IRAND(array_size(LargeExplosionSounds))] ;
 		}
 		else if(em >= 0.3f)
 		{
-			track = Defcon::ship_exploding_medium;
+			track = Defcon::EAudioTrack::Ship_exploding_medium;
 		}
 		else
 		{
-			track = Defcon::ship_exploding_small;
+			track = Defcon::EAudioTrack::Ship_exploding_small;
 		}
 
 		gpAudio->OutputSound(track);
@@ -1819,7 +1819,7 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 	}
 	m_fRadarFritzed = FMath::Max(1.5f, fForce*10);//MAX_RADARFRITZ;
 
-	gpAudio->OutputSound(Defcon::shieldbonk);
+	gpAudio->OutputSound(Defcon::EAudioTrack::Shieldbonk);
 }
 
 
@@ -1907,7 +1907,7 @@ void UDefconPlayViewBase::FireSmartbomb()
 {
 	if(GetPlayerShip().IsAlive() )
 	{
-		gpAudio->OutputSound(Defcon::smartbomb);
+		gpAudio->OutputSound(Defcon::EAudioTrack::Smartbomb);
 
 		auto pBomb = new Defcon::CSmartbomb;
 
@@ -1944,7 +1944,7 @@ namespace Defcon
 
 				if(gpArena->IsPointVisible(Params.P)) // todo: maybe check extents of materialization field i.e. if player gets even a partial glimpse
 				{
-					gpAudio->OutputSound(ship_materialize);
+					gpAudio->OutputSound(EAudioTrack::Ship_materialize);
 				}
 			}
 	};
@@ -2031,13 +2031,13 @@ void UDefconPlayViewBase::SpecializeMaterialization(Defcon::FMaterializationPara
 }
 
 
-void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, const CFPoint& Where, float RelativeWhen, bool bMaterializes, bool bTarget)
+void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, const CFPoint& Where, float RelativeWhen, Defcon::EObjectCreationFlags Flags)
 {
 	auto TimeToDeploy = GameTime() + RelativeWhen;
 
 	const auto MaterializationLifetime = ENEMY_BIRTHDURATION;
 
-	if(bMaterializes)
+	if(0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::Materializes))
 	{
 		Defcon::FMaterializationParams Params;
 
@@ -2065,34 +2065,41 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, const CFPoint&
 		gDefconGameInstance->m_pMission->AddEvent(MaterializationEvent);
 	}
 
-	auto p = new Defcon::CCreateEnemyEvent;
-	p->Init();
+	auto EventPtr = new Defcon::CCreateEnemyEvent;
 
-	p->EnemyType			= EnemyType;
-	p->Where				= Where;
-	p->bMissionTarget		= bTarget;
-	p->When				= TimeToDeploy;
+	EventPtr->Init();
 
-	gDefconGameInstance->m_pMission->AddEvent(p);
+	EventPtr->EnemyType			= EnemyType;
+	EventPtr->Where				= Where;
+	EventPtr->bMissionTarget	= (0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::IsMissionTarget));
+	EventPtr->When				= TimeToDeploy;
+
+	gDefconGameInstance->m_pMission->AddEvent(EventPtr);
 }
 
 
-Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::EObjType EnemyType, const CFPoint& Where, bool bMaterializes, bool bTarget)
+Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::EObjType EnemyType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags)
 {
 	// Create an enemy immediately by executing its Do method and not putting the event into the event queue.
-	auto* p = new Defcon::CCreateEnemyEvent;
-	p->Init();
-	p->EnemyType = EnemyType;
-	p->Where = Where;
-	p->bMissionTarget = bTarget;
+
+	auto EventPtr = new Defcon::CCreateEnemyEvent;
+
+	EventPtr->Init();
+
+	EventPtr->EnemyType      = EnemyType;
+	EventPtr->Where          = Where;
+	EventPtr->bMissionTarget = (0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::IsMissionTarget));
 	
-	p->Do();
+	EventPtr->Do();
+
 	return (Defcon::CEnemy*)GetEnemies().GetFirst();
 }
 
 
 void UDefconPlayViewBase::OnSpawnEnemy()
 {
+	// Debug tool, lets us spawn enemies on demand to test materialization, etc.
+
 	const Defcon::EObjType Types[] =
 	{
 		Defcon::EObjType::LANDER,
@@ -2120,7 +2127,8 @@ void UDefconPlayViewBase::OnSpawnEnemy()
 	auto pt = GetPlayerShip().Position;
 	pt.x = WrapX(pt.x + 300 * SGN(GetPlayerShip().Orientation.Fwd.x));
 
-	CreateEnemy(Types[Index], pt, 0.0f, true, false);
+	CreateEnemy(Types[Index], pt, 0.0f, 
+		(Defcon::EObjectCreationFlags)((int32)Defcon::EObjectCreationFlags::Materializes | (int32)Defcon::EObjectCreationFlags::NotMissionTarget));
 
 	Index = (Index + 1) % array_size(Types);
 }

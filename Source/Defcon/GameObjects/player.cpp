@@ -383,7 +383,7 @@ void Defcon::CPlayer::Explode(CGameObjectCollection& debris)
 		return;
 	}
 
-	gpAudio->OutputSound(Defcon::player_dying);
+	gpAudio->OutputSound(EAudioTrack::Player_dying);
 	//time_wait(250);
  
 

@@ -34,9 +34,9 @@ void UDefconMissionPickerViewBase::NativeOnInitialized()
 
 	// Get info on each mission.
 
-	MissionInfos.Reserve((int32)Defcon::MissionID::missions_count);
+	MissionInfos.Reserve((int32)Defcon::EMissionID::Count);
 
-	Defcon::IMission* pMission = Defcon::CMissionFactory::Make(Defcon::MissionID::first);
+	Defcon::IMission* pMission = Defcon::CMissionFactory::Make(Defcon::EMissionID::First);
 
 	while(pMission != nullptr)
 	{
@@ -93,7 +93,7 @@ void UDefconMissionPickerViewBase::NativeTick(const FGeometry& MyGeometry, float
 		if(ExpanderAge >= ExpanderLifetime)
 		{
 			Daylon::Hide(RootCanvas);
-			gDefconGameInstance->MissionID = (Defcon::MissionID)(CurrentCell.Y * CellsAcross + CurrentCell.X);
+			gDefconGameInstance->MissionID = (Defcon::EMissionID)(CurrentCell.Y * CellsAcross + CurrentCell.X);
 			TransitionToArena(EDefconArena::Prewave);
 		}
 		else
@@ -230,7 +230,7 @@ void UDefconMissionPickerViewBase::UpdateGridHighlights()
 
 	const int32 Index = CurrentCell.Y * CellsAcross + CurrentCell.X;
 
-	if(Index < (int32)Defcon::MissionID::missions_count)
+	if(Index < (int32)Defcon::EMissionID::Count)
 	{
 		MissionName->SetText(FText::FromString(MissionInfos[Index].Name));
 		MissionDesc->SetText(FText::FromString(MissionInfos[Index].Desc));
@@ -250,7 +250,7 @@ void UDefconMissionPickerViewBase::ChangeCurrentCell(int32 ColumnInc, int32 RowI
 		return;
 	}
 
-	gpAudio->OutputSound(Defcon::EAudioTrack::focus_changed);
+	gpAudio->OutputSound(Defcon::EAudioTrack::Focus_changed);
 
 	CurrentCell.X = ((CurrentCell.X + ColumnInc) + CellsAcross) % CellsAcross;
 	CurrentCell.Y = ((CurrentCell.Y + RowInc)    + CellsDown  ) % CellsDown;
@@ -278,9 +278,9 @@ void UDefconMissionPickerViewBase::OnChooseMission()
 {
 	const int32 MissionID = CurrentCell.Y * CellsAcross + CurrentCell.X;
 
-	if(MissionID >= (int32)Defcon::MissionID::missions_count)
+	if(MissionID >= (int32)Defcon::EMissionID::Count)
 	{
-		gpAudio->OutputSound(Defcon::EAudioTrack::invalid_selection);
+		gpAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
 		return;
 	}
 
@@ -291,11 +291,11 @@ void UDefconMissionPickerViewBase::OnChooseMission()
 
 	Daylon::Show(StartMissionExpander);
 
-	gpAudio->OutputSound(Defcon::EAudioTrack::mission_chosen);
+	gpAudio->OutputSound(Defcon::EAudioTrack::Mission_chosen);
 
 	gDefconGameInstance->SetScore(0);
 
-	gDefconGameInstance->SetCurrentMission((Defcon::MissionID)MissionID);
+	gDefconGameInstance->SetCurrentMission((Defcon::EMissionID)MissionID);
 }
 
 

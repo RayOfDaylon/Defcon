@@ -168,7 +168,7 @@ void Defcon::CPhred::Move(float fTime)
 			if(xd < 350 && FRAND < 0.02 && m_fSquakTime == 0.0f)
 			{
 				m_fSquakTime = 0.0001f;
-				gpAudio->OutputSound(phred);
+				gpAudio->OutputSound(EAudioTrack::Phred);
 			}
 			if(m_fSquakTime != 0.0f)
 			{
@@ -339,7 +339,7 @@ void Defcon::CMunchie::Move(float fTime)
 			if(xd < 350 && FRAND < 0.02 && m_fSquakTime == 0.0f)
 			{
 				m_fSquakTime = 0.0001f;
-				gpAudio->OutputSound(munchie);
+				gpAudio->OutputSound(EAudioTrack::Munchie);
 			}
 			if(m_fSquakTime != 0.0f)
 			{
@@ -510,7 +510,7 @@ void Defcon::CBigRed::Move(float fTime)
 			if(xd < 350 && FRAND < 0.02 && m_fSquakTime == 0.0f)
 			{
 				m_fSquakTime = 0.0001f;
-				gpAudio->OutputSound(bigred);
+				gpAudio->OutputSound(EAudioTrack::Bigred);
 			}
 			if(m_fSquakTime != 0.0f)
 			{

@@ -211,13 +211,13 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 
 	Defcon::IMission* m_pMission = nullptr;
 
-	Defcon::MissionID MissionID = Defcon::MissionID::first;
+	Defcon::EMissionID MissionID = Defcon::EMissionID::First;
 
 	UDefconPlayViewBase* GetPlayView() { return Cast<UDefconPlayViewBase>(Views[(int32)EDefconArena::Play]); }
 
 	UDefconViewBase* GetCurrentView      () const { return CurrentView; }
 	void             SetCurrentView      (UDefconViewBase* View);
-	void             SetCurrentMission   (Defcon::MissionID InMissionID);
+	void             SetCurrentMission   (Defcon::EMissionID InMissionID);
 
 	protected:
 

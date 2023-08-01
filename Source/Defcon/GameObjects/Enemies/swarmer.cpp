@@ -124,7 +124,7 @@ void Defcon::CSwarmer::Move(float fTime)
 
 			if(CountdownToMakeSound <= 0.0f)
 			{
-				gpAudio->OutputSound(Defcon::swarmer);
+				gpAudio->OutputSound(EAudioTrack::Swarmer);
 				CountdownToMakeSound = Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX);
 			}
 

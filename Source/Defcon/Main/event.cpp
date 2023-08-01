@@ -125,50 +125,50 @@ void Defcon::CEndMissionEvent::Do()
 void Defcon::CCreateEnemyEvent::Do()
 {
 	// Create generic enemy.
-	CEnemy* pE = this->CreateEnemy(EnemyType, Where);
+	CEnemy* EnemyPtr = CreateEnemy(EnemyType, Where);
 
-	check(pE != nullptr);
+	check(EnemyPtr != nullptr);
 
 
 	// Specialize it.
 	switch(EnemyType)
 	{
-		case EObjType::GHOST:           this->SpecializeForGhost             (pE, Where); break;
-		case EObjType::GHOSTPART:       this->SpecializeForGhostPart         (pE, Where); break;
-		case EObjType::GUPPY:           this->SpecializeForGuppy             (pE, Where); break;
-		case EObjType::HUNTER:          this->SpecializeForHunter            (pE, Where); break;
-		case EObjType::LANDER:          this->SpecializeForLander            (pE, Where); break;
-		case EObjType::BOMBER:          this->SpecializeForBomber            (pE, Where); break;
-		case EObjType::FIREBOMBER_TRUE: this->SpecializeForFirebomber        (pE, Where); break;
-		case EObjType::FIREBOMBER_WEAK: this->SpecializeForWeakFirebomber    (pE, Where); break;
-		case EObjType::FIREBALL:        this->SpecializeForFireball          (pE, Where); break;
-		case EObjType::DYNAMO:          this->SpecializeForDynamo            (pE, Where); break;
-		case EObjType::SPACEHUM:        this->SpecializeForSpacehum          (pE, Where); break;
-		case EObjType::BAITER:          this->SpecializeForBaiter            (pE, Where); break;
-		case EObjType::POD:             this->SpecializeForPod               (pE, Where); break;
-		case EObjType::SWARMER:         this->SpecializeForSwarmer           (pE, Where); break;
-		case EObjType::REFORMER:        this->SpecializeForReformer          (pE, Where); break;
-		case EObjType::REFORMERPART:    this->SpecializeForReformerPart      (pE, Where); break;
-		case EObjType::BOUNCER_TRUE:    this->SpecializeForBouncer           (pE, Where); break;
-		case EObjType::BOUNCER_WEAK:    this->SpecializeForWeakBouncer       (pE, Where); break;
-		case EObjType::PHRED:           this->SpecializeForPhred             (pE, Where); break;
-		case EObjType::BIGRED:          this->SpecializeForBigRed            (pE, Where); break;
-		case EObjType::MUNCHIE:         this->SpecializeForMunchie           (pE, Where); break;
-		case EObjType::TURRET:          this->SpecializeForTurret            (pE, Where); break;
+		case EObjType::GHOST:           SpecializeForGhost          (EnemyPtr, Where); break;
+		case EObjType::GHOSTPART:       SpecializeForGhostPart      (EnemyPtr, Where); break;
+		case EObjType::GUPPY:           SpecializeForGuppy          (EnemyPtr, Where); break;
+		case EObjType::HUNTER:          SpecializeForHunter         (EnemyPtr, Where); break;
+		case EObjType::LANDER:          SpecializeForLander         (EnemyPtr, Where); break;
+		case EObjType::BOMBER:          SpecializeForBomber         (EnemyPtr, Where); break;
+		case EObjType::FIREBOMBER_TRUE: SpecializeForFirebomber     (EnemyPtr, Where); break;
+		case EObjType::FIREBOMBER_WEAK: SpecializeForWeakFirebomber (EnemyPtr, Where); break;
+		case EObjType::FIREBALL:        SpecializeForFireball       (EnemyPtr, Where); break;
+		case EObjType::DYNAMO:          SpecializeForDynamo         (EnemyPtr, Where); break;
+		case EObjType::SPACEHUM:        SpecializeForSpacehum       (EnemyPtr, Where); break;
+		case EObjType::BAITER:          SpecializeForBaiter         (EnemyPtr, Where); break;
+		case EObjType::POD:             SpecializeForPod            (EnemyPtr, Where); break;
+		case EObjType::SWARMER:         SpecializeForSwarmer        (EnemyPtr, Where); break;
+		case EObjType::REFORMER:        SpecializeForReformer       (EnemyPtr, Where); break;
+		case EObjType::REFORMERPART:    SpecializeForReformerPart   (EnemyPtr, Where); break;
+		case EObjType::BOUNCER_TRUE:    SpecializeForBouncer        (EnemyPtr, Where); break;
+		case EObjType::BOUNCER_WEAK:    SpecializeForWeakBouncer    (EnemyPtr, Where); break;
+		case EObjType::PHRED:           SpecializeForPhred          (EnemyPtr, Where); break;
+		case EObjType::BIGRED:          SpecializeForBigRed         (EnemyPtr, Where); break;
+		case EObjType::MUNCHIE:         SpecializeForMunchie        (EnemyPtr, Where); break;
+		case EObjType::TURRET:          SpecializeForTurret         (EnemyPtr, Where); break;
 
 		default:
 			check(false);
 			break;
 	}
 	
-	pE->InstallSprite();
-	pE->SetAsMissionTarget(bMissionTarget);
-	pE->MakeHurtable();
-	pE->SetCollisionInjurious();
+	EnemyPtr->InstallSprite();
+	EnemyPtr->SetAsMissionTarget(bMissionTarget);
+	EnemyPtr->MakeHurtable();
+	EnemyPtr->SetCollisionInjurious();
 
-	gpArena->GetEnemies().Add(pE);
+	gpArena->GetEnemies().Add(EnemyPtr);
 
-	pE->OnFinishedCreating();
+	EnemyPtr->OnFinishedCreating();
 }
 
 

@@ -19,6 +19,18 @@
 namespace Defcon
 {
 	class IBullet;
+
+	enum class EObjectCreationFlags
+	{
+		NoMaterialization = 0x0,
+		NotMissionTarget  = 0x0,
+		Materializes      = 0x1,
+		IsMissionTarget   = 0x2,
+
+		EnemyPart     = NoMaterialization | NotMissionTarget,
+		StandardEnemy = Materializes | IsMissionTarget,
+		CleanerEnemy  = Materializes | NotMissionTarget
+	};
 }
 
 struct FDefconInputState
@@ -26,6 +38,7 @@ struct FDefconInputState
 	bool    bActive   = false;
 	double  TimeDown = 0.0;
 };
+
 
 /*
 	Base class of the play view widget blueprint, which holds the main screen, the radar screen, 
@@ -170,12 +183,12 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	Defcon::CGameObjectCollection&        GetObjects              () { return m_objects; }
 	Defcon::CGameObjectCollection&        GetEnemies              () { return m_enemies; }
 
-	float                Direction            (const CFPoint& posA, const CFPoint& posB,CFPoint& result) const;
-	void                 Lerp                 (const CFPoint& pt1, const CFPoint& pt2, CFPoint& result, float t) const;
-	float                Xdistance            (float x1, float x2) const;
-	float                HorzDistance         (const CFPoint& ptFrom, const CFPoint& ptTo) const { return Xdistance(ptFrom.x, ptTo.x); }
-	float                WrapX                (float x) const;
-	bool                 IsPointVisible       (const CFPoint& pt) const;
+	float                Direction            (const CFPoint& P1, const CFPoint& P2, CFPoint& Result) const;
+	void                 Lerp                 (const CFPoint& P1, const CFPoint& P2, CFPoint& Result, float T) const;
+	float                Xdistance            (float X1, float X2) const;
+	float                HorzDistance         (const CFPoint& PtFrom, const CFPoint& PtTo) const { return Xdistance(PtFrom.x, PtTo.x); }
+	float                WrapX                (float X) const;
+	bool                 IsPointVisible       (const CFPoint& Pt) const;
 
 	float                GetWidth             () const { return ArenaWidth; }
 	float                GetHeight            () const { return ArenaSize.Y; }
@@ -183,18 +196,18 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	float                GetTerrainElev       (float X) const;
 	bool                 HasTerrain           () const { return true; } // todo: support no-terrain missions
 	void                 CreateTerrain        ();
-	void                 AddDebris            (Defcon::IGameObject* p);
-	void                 LayMine              (Defcon::IGameObject& obj, const CFPoint& from, int, int);
+	void                 AddDebris            (Defcon::IGameObject* Obj);
+	void                 LayMine              (Defcon::IGameObject& Obj, const CFPoint& From, int, int);
 	Defcon::IBullet*     FireBullet           (Defcon::IGameObject&, const CFPoint& From, int SoundID, int);
 	bool                 IsEnding             () const { return m_bArenaDying; }
-	void                 ExplodeObject        (Defcon::IGameObject* pObj);
-	void                 IncreaseScore        (int32 Points, bool bVis, const CFPoint* pPos);
-	void                 CreateEnemy          (Defcon::EObjType kind, const CFPoint& where, float When, bool bMaterializes, bool bTarget);
-	Defcon::CEnemy*      CreateEnemyNow       (Defcon::EObjType kind, const CFPoint& where, bool bMaterializes, bool bTarget);
-	Defcon::IGameObject* FindHuman            (float x) const;
-	Defcon::IGameObject* FindEnemy            (Defcon::EObjType t, Defcon::IGameObject* p = nullptr) const { return m_enemies.Find(t, p); }
+	void                 ExplodeObject        (Defcon::IGameObject* Obj);
+	void                 IncreaseScore        (int32 Points, bool bVis, const CFPoint* P);
+	void                 CreateEnemy          (Defcon::EObjType Kind, const CFPoint& Where, float When, Defcon::EObjectCreationFlags Flags);
+	Defcon::CEnemy*      CreateEnemyNow       (Defcon::EObjType Kind, const CFPoint& Where, Defcon::EObjectCreationFlags Flags);
+	Defcon::IGameObject* FindHuman            (float X) const;
+	Defcon::IGameObject* FindEnemy            (Defcon::EObjType Kind, Defcon::IGameObject* Obj = nullptr) const { return m_enemies.Find(Kind, Obj); }
 	void                 CheckIfObjectsGotHit (Defcon::CGameObjectCollection& Objects);
-	void                 ShieldBonk           (Defcon::IGameObject* pObj, float Force);
+	void                 ShieldBonk           (Defcon::IGameObject* Obj, float Force);
 	void                 ProcessWeaponsHits   ();
 	void                 AddMessage           (const FString& Str, float Duration = 0.0f);
 	void                 TransportPlayerShip  ();

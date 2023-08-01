@@ -29,38 +29,37 @@ namespace Defcon
 	};
 
 
-	enum class MissionID
+	enum class EMissionID
 	{
 		// Mission IDs. The order of the missions 
 		// is determined by the order they are listed here.
-		flighttraining = 0,
-		first = flighttraining,
-		weapons_training,
-		//humanstraining,
+		FlightTraining = 0,
+		First = FlightTraining,
+		WeaponsTraining,
+		//HumansTraining,
 
-		firstcontact,
-		reinforcements,
-		yllabian_dogfight,
-		apex_offensive_lite,
-		bomber_showdown,
+		FirstContact,
+		Reinforcements,
+		YllabianDogfight,
+		ApexOffensiveLite,
+		BomberShowdown,
 		//swarm,
-		apex_offensive,
-		firebomber_showdown,
-		lander_overrun,
-		firebomber_pack,
-		reformer_showdown,
-		yllabian_dogfight2,
-
-		ghost,
-		random,
-		bring_it_on,
-		haunted,
-		bouncers,
-		yllabian_escort,
+		ApexOffensive,
+		FirebomberShowdown,
+		LanderOverrun,
+		FirebomberPack,
+		ReformerShowdown,
+		YllabianDogfight2,
+		Ghost,
+		Random,
+		BringItOn,
+		Haunted,
+		Bouncers,
+		YllabianEscort,
 
 		//... todo: add the rest
-		missions_count,
-		notdef
+		Count,
+		Undefined
 	};
 
 
@@ -91,7 +90,7 @@ namespace Defcon
 			virtual bool	HumansInvolved	() const { return true; }
 			virtual bool	IsCompleted		() const { return true; }
 
-			MissionID		GetID			() const { return ID; }
+			EMissionID		GetID			() const { return ID; }
 			void			AddEvent		(CEvent* p) { Events.Add(p); }
 			bool			IsRunning		() const { return (gpArena != nullptr); }
 
@@ -104,7 +103,7 @@ namespace Defcon
 
 			CEventQueue            Events;
 			FString                IntroText;
-			MissionID              ID          = MissionID::notdef;
+			EMissionID              ID          = EMissionID::Undefined;
 			float                  Age         = 0.0f;
 			bool                   IntroIsDone = false;
 	};
@@ -113,7 +112,8 @@ namespace Defcon
 	class CFlightTrainingMission : public IMission
 	{
 		public:
-			CFlightTrainingMission();
+			CFlightTrainingMission() { ID = EMissionID::FlightTraining; }
+			virtual void Init() override;
 			virtual bool Update(float) override;
 
 			virtual FString GetName() const override { return "Flight Training"; }
@@ -136,7 +136,7 @@ namespace Defcon
 	class CWeaponsTrainingMission : public IMission
 	{
 		public:
-			CWeaponsTrainingMission() { ID = MissionID::weapons_training; }
+			CWeaponsTrainingMission() { ID = EMissionID::WeaponsTraining; }
 			virtual void Init() override;
 			virtual bool Update(float) override;
 

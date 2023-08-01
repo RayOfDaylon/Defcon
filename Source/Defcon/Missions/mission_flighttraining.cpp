@@ -22,9 +22,9 @@
 constexpr int32 NumBeacons = 15;
 
 
-Defcon::CFlightTrainingMission::CFlightTrainingMission()
+void Defcon::CFlightTrainingMission::Init()
 {
-	ID = MissionID::flighttraining;
+	IMission::Init();
 
 	IntroText = 
 		"Welcome, Defender.\n"
@@ -88,21 +88,24 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float DeltaTime)
 {
 	auto ObjPtr = gpArena->GetObjects().GetFirst();
 
+	CFRect rPlayer;
+	rPlayer.Set(gpArena->GetPlayerShip().Position);
+	rPlayer.Inflate(gpArena->GetPlayerShip().BboxRadius);
+
 	while(ObjPtr != nullptr)
 	{
 		if(ObjPtr->GetType() == EObjType::BEACON)
 		{
 			auto BeaconPtr = static_cast<CBeacon*>(ObjPtr);
-			CFRect rPlayer, rBeacon;
+			
+			CFRect rBeacon;
 
-			rPlayer.Set(gpArena->GetPlayerShip().Position);
-			rPlayer.Inflate(gpArena->GetPlayerShip().BboxRadius);
 			rBeacon.Set(BeaconPtr->Position);
 			rBeacon.Inflate(BeaconPtr->BboxRadius);
 		
 			if(rPlayer.Intersect(rBeacon))
 			{
-				gpAudio->OutputSound(Defcon::gulp);
+				gpAudio->OutputSound(EAudioTrack::Gulp);
 				ObjPtr->UninstallSprite();
 				gpArena->GetObjects().Delete(ObjPtr);
 				NumTargets--;

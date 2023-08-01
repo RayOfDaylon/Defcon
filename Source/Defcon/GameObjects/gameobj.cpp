@@ -41,7 +41,7 @@ Defcon::IGameObject::IGameObject()
 
 Defcon::IGameObject::~IGameObject() 
 {
-	if(this->IsMissionTarget()) 
+	if(IsMissionTarget()) 
 	{
 		gDefconGameInstance->HostileDestroyed(GetType());
 	}

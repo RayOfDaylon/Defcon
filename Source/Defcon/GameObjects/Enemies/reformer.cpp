@@ -160,7 +160,7 @@ void Defcon::CReformer::OnAboutToDie()
 
 	for(int32 i = 0; i < m_numParts; i++)
 	{
-		gpArena->CreateEnemy(EObjType::REFORMERPART, m_partLocs[i], 0.0f, false, false);
+		gpArena->CreateEnemy(EObjType::REFORMERPART, m_partLocs[i], 0.0f, EObjectCreationFlags::EnemyPart);
 	}
 }
 
@@ -353,7 +353,7 @@ void Defcon::CReformerPart::Move(float fTime)
 				&& SGN(Orientation.Fwd.x) == SGN(dir.x))
 			{
 				gpArena->FireBullet(*this, Position, 1, 1);
-				gpAudio->OutputSound(Defcon::swarmer);
+				gpAudio->OutputSound(EAudioTrack::Swarmer);
 			}
 		}
 
@@ -361,33 +361,42 @@ void Defcon::CReformerPart::Move(float fTime)
 		m_halfwayAltitude = (float)(sin((m_yoff+Age)*0.6f) * 50 + (0.5f * ScreenSize.y));
 
 		CFPoint pos;
+
 		if(Age < 0.7f)
+		{
 			pos.x = Position.x + .2f * Orientation.Fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
+		}
 		else
+		{
 			pos.x = Position.x + Orientation.Fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
-		pos.y = 
-			(float)sin(m_freq * (m_yoff + Age)) 
-			* m_amp + m_halfwayAltitude;
+		}
+
+		pos.y = (float)sin(m_freq * (m_yoff + Age)) * m_amp + m_halfwayAltitude;
 
 		Position = pos;
 		if(Age < 0.7f)
+		{
 			Position.y = LERP(m_posOrg.y, pos.y, Age / 0.7f);
+		}
 	}
 	else
 	{
 		if(bestdist > 15.0f) 
+		{
 			Position = Inertia + (bestdir * (FRAND*50+150) * fTime);
+		}
 		else
 		{
 			// If we have been at rest for longer than 
 			// 2 seconds, then form a reformer.
 			m_fMergeTime += fTime;
+
 			if(m_fMergeTime >= 2.0f)
 			{
 				this->MarkAsDead();
 				pClosest->MarkAsDead();
 				Position.Avg(pClosest->Position);
-				gpArena->CreateEnemy(EObjType::REFORMER, Position, 0.0f, false, false);
+				gpArena->CreateEnemy(EObjType::REFORMER, Position, 0.0f, EObjectCreationFlags::EnemyPart);
 			}
 		}
 	}

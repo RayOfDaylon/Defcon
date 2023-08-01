@@ -65,7 +65,7 @@ namespace Defcon
 			CCreateEnemyEvent() {}
 
 			EObjType  EnemyType      = EObjType::UNKNOWN;
-			bool      bMissionTarget = true;
+			bool      bMissionTarget = false;
 
 			virtual void Do() override;
 

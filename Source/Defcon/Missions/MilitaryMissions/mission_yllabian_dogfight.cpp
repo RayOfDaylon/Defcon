@@ -18,7 +18,7 @@ void Defcon::CYllabianDogfight::Init()
 {
 	CMilitaryMission::Init();
 
-	NumHostilesRemaining = 12+15+9+6+3+6;
+	NumHostilesRemaining = 12 + 15 + 9 + 6 + 3 + 6;
 
 	IntroText =
 		"Yllabian space guppies and swarmers have set an ambush.\n"
@@ -55,7 +55,7 @@ void Defcon::CYllabianDogfight::MakeTargets(float fElapsed, const CFPoint& where
 				x = (float)fmod(x, wp);
 				float y = FRANDRANGE(0.25f, 0.75f) * gpArena->GetHeight();
 
-				gpArena->CreateEnemy(waves[i].Kind, CFPoint(x, y), FRANDRANGE(0.0f, 0.1f * j), true, true);
+				gpArena->CreateEnemy(waves[i].Kind, CFPoint(x, y), FRANDRANGE(0.0f, 0.1f * j), EObjectCreationFlags::StandardEnemy);
 			}
 		}
 

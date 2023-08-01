@@ -31,9 +31,9 @@ namespace Defcon
 			virtual void	Init				() override;
 			virtual bool	Update				(float);
 			virtual void	MakeTargets			(float, const CFPoint&) = 0;
-			virtual void	HostileDestroyed	(EObjType Kind) { NumHostilesRemaining--; if(Kind == EObjType::LANDER) { NumLandersRemaining--; } }
+			virtual void	HostileDestroyed	(EObjType Kind);
 			virtual void	AddNonMissionTarget	(EObjType, const CFPoint&);
-			virtual bool	IsCompleted			() const override { return (HostilesRemaining() == 0); }
+			virtual bool	IsCompleted			() const override { return (HostilesRemaining() <= 0); }
 			virtual int32	HostilesRemaining	() const;
 			virtual int32	HostilesInPlay		() const;
 			virtual int32   LandersRemaining    () const { return NumLandersRemaining; }
@@ -70,7 +70,7 @@ namespace Defcon
 	class CFirstContactMission : public CMilitaryMission
 	{
 		public:
-			CFirstContactMission() { ID = MissionID::firstcontact; }
+			CFirstContactMission() { ID = EMissionID::FirstContact; }
 
 			virtual void Init    () override;
 			//virtual bool Update  (float) override;
@@ -86,7 +86,7 @@ namespace Defcon
 	class CReinforcedMission : public CMilitaryMission
 	{
 		public:
-			CReinforcedMission() { ID = MissionID::reinforcements; }
+			CReinforcedMission() { ID = EMissionID::Reinforcements; }
 			virtual void Init    () override;
 			//virtual bool Update  (float) override;
 
@@ -101,7 +101,7 @@ namespace Defcon
 	class CBomberShowdown : public CMilitaryMission
 	{
 		public:
-			CBomberShowdown() { ID = MissionID::bomber_showdown; }
+			CBomberShowdown() { ID = EMissionID::BomberShowdown; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -116,7 +116,7 @@ namespace Defcon
 	class CFirebomberShowdown : public CMilitaryMission
 	{
 		public:
-			CFirebomberShowdown() { ID = MissionID::firebomber_showdown; }
+			CFirebomberShowdown() { ID = EMissionID::FirebomberShowdown; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -131,7 +131,7 @@ namespace Defcon
 	class CYllabianDogfight : public CMilitaryMission
 	{
 		public:
-			CYllabianDogfight() { ID = MissionID::yllabian_dogfight; }
+			CYllabianDogfight() { ID = EMissionID::YllabianDogfight; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -151,7 +151,7 @@ namespace Defcon
 	class CYllabianDogfight2 : public CMilitaryMission
 	{
 		public:
-			CYllabianDogfight2() { ID = MissionID::yllabian_dogfight2; }
+			CYllabianDogfight2() { ID = EMissionID::YllabianDogfight2; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -171,7 +171,7 @@ namespace Defcon
 	class CYllabianEscort : public CMilitaryMission
 	{
 		public:
-			CYllabianEscort() { ID = MissionID::yllabian_escort; }
+			CYllabianEscort() { ID = EMissionID::YllabianEscort; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -187,7 +187,7 @@ namespace Defcon
 	class CFirebomberPack : public CMilitaryMission
 	{
 		public:
-			CFirebomberPack() { ID = MissionID::firebomber_pack; }
+			CFirebomberPack() { ID = EMissionID::FirebomberPack; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -201,7 +201,7 @@ namespace Defcon
 	class CApexOffensive : public CMilitaryMission
 	{
 		public:
-			CApexOffensive() { ID = MissionID::apex_offensive; }
+			CApexOffensive() { ID = EMissionID::ApexOffensive; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -216,7 +216,7 @@ namespace Defcon
 	class CPartyMixMission : public CMilitaryMission
 	{
 		public:
-			CPartyMixMission() { ID = MissionID::random; }
+			CPartyMixMission() { ID = EMissionID::Random; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -255,7 +255,7 @@ namespace Defcon
 	class CApexOffensiveLite : public CMilitaryMission
 	{
 		public:
-			CApexOffensiveLite() { ID = MissionID::apex_offensive_lite; }
+			CApexOffensiveLite() { ID = EMissionID::ApexOffensiveLite; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -272,7 +272,7 @@ namespace Defcon
 	class CSwarm : public CMilitaryMission
 	{
 		public:
-			CSwarm() { ID = MissionID::swarm; }
+			CSwarm() { ID = EMissionID::swarm; }
 			virtual void Init();
 			virtual bool Update(float);
 
@@ -288,7 +288,7 @@ namespace Defcon
 	class CLanderOverrun : public CMilitaryMission
 	{
 		public:
-			CLanderOverrun() { ID = MissionID::lander_overrun; }
+			CLanderOverrun() { ID = EMissionID::LanderOverrun; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -303,7 +303,7 @@ namespace Defcon
 	class CReformerShowdown : public CMilitaryMission
 	{
 		public:
-			CReformerShowdown() { ID = MissionID::reformer_showdown; }
+			CReformerShowdown() { ID = EMissionID::ReformerShowdown; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -318,7 +318,7 @@ namespace Defcon
 	class CHaunted : public CMilitaryMission
 	{
 		public:
-			CHaunted() { ID = MissionID::haunted; }
+			CHaunted() { ID = EMissionID::Haunted; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -333,7 +333,7 @@ namespace Defcon
 	class CBouncersMission : public CMilitaryMission
 	{
 		public:
-			CBouncersMission() { ID = MissionID::bouncers; }
+			CBouncersMission() { ID = EMissionID::Bouncers; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -348,7 +348,7 @@ namespace Defcon
 	class CGhostMission : public CMilitaryMission
 	{
 		public:
-			CGhostMission() { ID = MissionID::ghost; }
+			CGhostMission() { ID = EMissionID::Ghost; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -363,7 +363,7 @@ namespace Defcon
 	class CBringItOn : public CMilitaryMission
 	{
 		public:
-			CBringItOn() { ID = MissionID::bring_it_on; }
+			CBringItOn() { ID = EMissionID::BringItOn; }
 			virtual void Init();
 			//virtual bool Update(float);
 
@@ -382,30 +382,30 @@ namespace Defcon
 		// The mission enums are sorted in chrono order.
 
 		public:
-			static IMission* Make(MissionID e)
+			static IMission* Make(EMissionID e)
 			{
 				switch(e)
 				{
-					case MissionID::flighttraining:         return new CFlightTrainingMission; 
-					case MissionID::weapons_training:       return new CWeaponsTrainingMission; 
-					case MissionID::firstcontact:           return new CFirstContactMission; 
-					case MissionID::bomber_showdown:        return new CBomberShowdown;
-					case MissionID::reinforcements:         return new CReinforcedMission; 
-					case MissionID::yllabian_dogfight:      return new CYllabianDogfight;
-					case MissionID::apex_offensive_lite:    return new CApexOffensiveLite;
-					//case MissionID::swarm:                return new CSwarm;
-					case MissionID::apex_offensive:         return new CApexOffensive;
-					case MissionID::firebomber_showdown:    return new CFirebomberShowdown;
-					case MissionID::lander_overrun:         return new CLanderOverrun;
-					case MissionID::firebomber_pack:        return new CFirebomberPack;
-					case MissionID::reformer_showdown:      return new CReformerShowdown;
-					case MissionID::yllabian_dogfight2:     return new CYllabianDogfight2;
-					case MissionID::ghost:                  return new CGhostMission;
-					case MissionID::random:                 return new CPartyMixMission;
-					case MissionID::bring_it_on:            return new CBringItOn;
-					case MissionID::haunted:                return new CHaunted;
-					case MissionID::bouncers:               return new CBouncersMission;
-					case MissionID::yllabian_escort:        return new CYllabianEscort;
+					case EMissionID::ApexOffensive:         return new CApexOffensive;
+					case EMissionID::ApexOffensiveLite:     return new CApexOffensiveLite;
+					case EMissionID::BomberShowdown:        return new CBomberShowdown;
+					case EMissionID::Bouncers:              return new CBouncersMission;
+					case EMissionID::BringItOn:             return new CBringItOn;
+					case EMissionID::FirebomberPack:        return new CFirebomberPack;
+					case EMissionID::FirebomberShowdown:    return new CFirebomberShowdown;
+					case EMissionID::FirstContact:          return new CFirstContactMission; 
+					case EMissionID::FlightTraining:        return new CFlightTrainingMission; 
+					case EMissionID::Ghost:                 return new CGhostMission;
+					case EMissionID::Haunted:               return new CHaunted;
+					case EMissionID::LanderOverrun:         return new CLanderOverrun;
+					case EMissionID::Random:                return new CPartyMixMission;
+					case EMissionID::ReformerShowdown:      return new CReformerShowdown;
+					case EMissionID::Reinforcements:        return new CReinforcedMission; 
+					case EMissionID::WeaponsTraining:       return new CWeaponsTrainingMission; 
+					case EMissionID::YllabianDogfight:      return new CYllabianDogfight;
+					case EMissionID::YllabianDogfight2:     return new CYllabianDogfight2;
+					case EMissionID::YllabianEscort:        return new CYllabianEscort;
+					//case EMissionID::Swarm:               return new CSwarm;
 				}
 				return nullptr;
 			}
@@ -413,38 +413,7 @@ namespace Defcon
 			static IMission* MakeNext(IMission* pCurrent)
 			{
 				// nullptr is returned if there is no next mission.
-				return CMissionFactory::Make((MissionID)((int)pCurrent->GetID() + 1));
+				return CMissionFactory::Make((EMissionID)((int)pCurrent->GetID() + 1));
 			}
 	};
-
-
-	// todo: this macro s/b a function.
-#define SPAWN_ENEMIES(JFactor, MinAlt, MaxAlt)	\
-	{	\
-	int32 i, j;	\
-	for(i = 0; i < array_size(waves); i++)	\
-	{	\
-		for(j = 0; j < waves[i].count[WaveIndex] && this->HostilesRemaining() > 0; j++)	\
-		{	\
-			float wp = gpArena->GetWidth();	\
-			float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + where.x;	\
-			x = (float)fmod(x, wp);	\
-			float y;	\
-			switch(waves[i].type)	\
-			{	\
-				case EObjType::LANDER:	\
-				case EObjType::BOUNCER:	\
-					y = FRANDRANGE(0.85f, 1.0f);	\
-					break;	\
-					\
-				default:	\
-					y = FRANDRANGE(MinAlt, MaxAlt);	\
-			}	\
-			y *= gpArena->GetHeight();	\
-			gpArena->CreateEnemy(waves[i].type, CFPoint(x, y), FRANDRANGE(0.0f, JFactor * j), true, true);	\
-		}	\
-	}	\
-	}
-
-	#define STANDARD_ENEMY_SPAWNING(JFactor)  SPAWN_ENEMIES(JFactor, 0.2f, 0.8f)
 }

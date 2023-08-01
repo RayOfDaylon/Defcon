@@ -300,7 +300,7 @@ void Defcon::CLander::Move(float fTime)
 					// them have been tracking him, they will
 					// stop doing so.
 					m_pHuman->Notify(Defcon::EMessage::TakenAboard, this);
-					gpAudio->OutputSound(human_abducted);
+					gpAudio->OutputSound(EAudioTrack::Human_abducted);
 				}
 			}
 		}

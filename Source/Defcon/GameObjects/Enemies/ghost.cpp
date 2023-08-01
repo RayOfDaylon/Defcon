@@ -20,6 +20,11 @@
 #include "Arenas/DefconPlayViewBase.h"
 #include "DefconUtils.h"
 
+#define DEBUG_MODULE      1
+
+#if(DEBUG_MODULE == 1)
+#pragma optimize("", off)
+#endif
 
 
 Defcon::CGhost::CGhost()
@@ -31,17 +36,16 @@ Defcon::CGhost::CGhost()
 	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = MakeColorFromComponents(192, 192, 192);
 	// Our size is the size of a part x 3.
-	AnimSpeed = FRAND * 0.35f + 0.65f;
-	m_xFreq = FRAND * 0.5f + 1.0f;
-	m_bWaits = BRAND;
-	m_numParts = IRAND(4) + 4;
-	m_fSpinVel = SFRAND;
-	m_fSpinAngle = FRAND;
-	m_fSpinVelMax = FRAND * 4.0f + 1.0f;
+	AnimSpeed     = FRAND * 0.35f + 0.65f;
+	m_xFreq       = FRAND * 0.5f + 1.0f;
+	m_bWaits      = BRAND;
+	NumParts      = IRAND(4) + 4;
+	SpinVelocity  = SFRAND;
+	SpinAngle     = FRAND;
 	DispersalCountdown = 0.0f;
 
 	const auto& Info = GameObjectResources.Get(EObjType::GHOSTPART);
-	BboxRadius.Set(Info.Size.X * 1.5f, Info.Size.Y * 1.5f);
+	BboxRadius = Info.Size * 0.5f;
 }
 
 
@@ -95,8 +99,8 @@ void Defcon::CGhost::Move(float fTime)
 		}
 	}
 
-	m_fSpinVel = 1.0f;//sin(Age * PI * m_fSpinVelMax);
-	m_fSpinAngle += (m_fSpinVel * fTime);
+	SpinVelocity = 1.0f;//sin(Age * PI * m_fSpinVelMax);
+	SpinAngle += (SpinVelocity * fTime);
 
 	Position.MulAdd(Orientation.Fwd, fTime * 50.0f);
 	Inertia = Position - Inertia;
@@ -130,9 +134,9 @@ void Defcon::CGhost::Move(float fTime)
 			// Don't modulate newloc; it will cause wrong path animation if path cross x-origin.
 			// Modulation must happen in ghostpart::move.
 
-			for(int32 i = 1; i < m_numParts; i++)
+			for(int32 i = 1; i < NumParts; i++)
 			{
-				CGhostPart* p = (CGhostPart*)gpArena->CreateEnemyNow(EObjType::GHOSTPART, m_partLocs[i], false, false);
+				CGhostPart* p = (CGhostPart*)gpArena->CreateEnemyNow(EObjType::GHOSTPART, PartLocs[i], EObjectCreationFlags::EnemyPart);
 
 				p->SetCollisionInjurious(false);
 				p->SetFlightDuration(flighttime);
@@ -142,81 +146,81 @@ void Defcon::CGhost::Move(float fTime)
 			// Now move ourselves. Do this last because we use our original Position as the 
 			// source position of the dispersal in the above loop.
 
-			Position = newloc;
+			Position   = newloc;
 			Position.x = gpArena->WrapX(Position.x);
 		
-			gpAudio->OutputSound(ghostflight);
+			gpAudio->OutputSound(EAudioTrack::Ghostflight);
 		}
 	}
 }
 
 
-void Defcon::CGhost::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
+void Defcon::CGhost::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& mapper)
 {
 	if(DispersalCountdown > 0.0f)
 	{
 		return;
 	}
 
-	m_partLocs[0] = Position;
+	PartLocs[0] = Position;
 
-	float f = (float)fmod(Age, AnimSpeed) / AnimSpeed;
+	const float F = (float)fmod(Age, AnimSpeed) / AnimSpeed;
 		//(float)Age / AnimSpeed;
 
 
 	// Draw the parts in a circle around a central part.
-	int32 n = m_numParts - 1;
-	int32 i;
-	for(i = 0; i < n; i++)
+	const int32 N = NumParts - 1;
+
+	const float R = BboxRadius.x * 1.25f;
+
+	for(int32 I = 0; I < N; I++)
 	{
-		const float t = (float)(TWO_PI * i / n + ((m_fSpinAngle + FRAND*0.1f) * TWO_PI));
-		CFPoint pt2((float)cos(t), (float)sin(t));
-		float r = (float)(sin((f + FRAND*3) * PI) * 5 + 10);
-		BboxRadius.Set(r, r);
-		pt2 *= r;
-		pt2 += Position;
-		m_partLocs[i+1] = pt2;
+		const float T = (float)(TWO_PI * I / N + ((SpinAngle + FRAND * 0.1f) * TWO_PI));
+		CFPoint Pt2((float)cos(T), (float)sin(T));
+		const float Radius = (float)(sin((F + FRAND * 3) * PI) * R + 5.0f);
+
+		Pt2 *= Radius;
+		Pt2 += Position;
+		PartLocs[I + 1] = Pt2;
 	}
 
-	for(i = 0; i < m_numParts; i++)
+	for(int32 I = 0; I < NumParts; I++)
 	{
 		CFPoint pt;
-		mapper.To(m_partLocs[i], pt);
-		this->DrawPart(framebuf, pt);
+		mapper.To(PartLocs[I], pt);
+		this->DrawPart(PaintArgs, pt);
 	}
 }
 
 
-void Defcon::CGhost::DrawPart(FPaintArguments& framebuf, const CFPoint& where)
+void Defcon::CGhost::DrawPart(FPaintArguments& PaintArgs, const CFPoint& Pt)
 {
-	const CFPoint pt = where;
-
 	auto& Info = GameObjectResources.Get(EObjType::GHOSTPART);
 
-	const int w = Info.Size.X;
+	const int W = Info.Size.X;
 
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
+	if(Pt.x >= -W && Pt.x <= PaintArgs.GetWidth() + W)
 	{
 		const int32 NumCels = Info.Atlas->Atlas.NumCels;
-		const float f = (NumCels - 1) * PSIN(PI * fmod(Age, AnimSpeed) / AnimSpeed);
+		const float F = (NumCels - 1) * PSIN(PI * fmod(Age, AnimSpeed) / AnimSpeed);
 
 		const float Usize = 1.0f / NumCels;
 
 		const auto S = Info.Size;
-		const FSlateLayoutTransform Translation(FVector2D(pt.x, pt.y) - S / 2);
-		const auto Geometry = framebuf.AllottedGeometry->MakeChild(S, Translation);
+		const FSlateLayoutTransform Translation(FVector2D(Pt.x, Pt.y) - S / 2);
+		const auto Geometry = PaintArgs.AllottedGeometry->MakeChild(S, Translation);
 
-		const float F = Usize * ROUND(f);
-		FBox2f UVRegion(FVector2f(F, 0.0f), FVector2f(F + Usize, 1.0f));
+		const float F2 = Usize * ROUND(F);
+		FBox2f UVRegion(FVector2f(F2, 0.0f), FVector2f(F2 + Usize, 1.0f));
 		Info.Atlas->Atlas.AtlasBrush.SetUVRegion(UVRegion);
 
 		FSlateDrawElement::MakeBox(
-			*framebuf.OutDrawElements,
-			framebuf.LayerId,
+			*PaintArgs.OutDrawElements,
+			PaintArgs.LayerId,
 			Geometry.ToPaintGeometry(),
 			&Info.Atlas->Atlas.AtlasBrush,
 			ESlateDrawEffect::None,
-			C_WHITE * framebuf.RenderOpacity);
+			C_WHITE * PaintArgs.RenderOpacity);
 	}
 }
 
@@ -225,156 +229,156 @@ void Defcon::CGhost::OnAboutToDie()
 {
 	// Release parts.
 /*
-	for(int i = 0; i < m_numParts; i++)
+	for(int i = 0; i < NumParts; i++)
 	{
-		gpGame->CreateEnemy(EObjType::GHOSTPART, m_partLocs[i], false, false);
+		gpGame->CreateEnemy(EObjType::GHOSTPART, PartLocs[i], false, false);
 	}
 */
 }
 
 
-void Defcon::CGhost::Explode(CGameObjectCollection& debris)
+void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 {
-	//CEnemy::Explode(debris);
+	//CEnemy::Explode(Debris);
 
 	bMortal = true;
 	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
 	// Create an explosion by making
-	// several debris objects and 
-	// adding them to the debris set.
-	int n = (int)(FRAND * 30 + 30);
-	float maxsize = FRAND * 5 + 3;
+	// several Debris objects and 
+	// adding them to the Debris set.
+	int32 N = (int32)(FRAND * 30 + 30);
+	float MaxSize = FRAND * 5 + 3;
 
 /*
-	// Don't use huge particles ever; it just looks silly in the end.
+	// Don'T use huge particles ever; it just looks silly in the end.
 	if(FRAND < .08)
-		maxsize = 14;
+		MaxSize = 14;
 */
 
-	// Define which color to make the debris.
-	auto cby = this->GetExplosionColorBase();
-	maxsize *= this->GetExplosionMass();
+	// Define which color to make the Debris.
+	auto ColorBase = this->GetExplosionColorBase();
+	MaxSize *= this->GetExplosionMass();
 	
 	if(IRAND(3) == 1)
 	{
-		cby = EColor::gray;
+		ColorBase = EColor::gray;
 	}
 
 	bool bDieOff = (FRAND >= 0.25f);
-	int i;
+	int32 I;
 
-	float fBrightBase;
-	IGameObject* pFireblast = this->CreateFireblast(debris, fBrightBase);
+	float BrightBase;
+	IGameObject* pFireblast = this->CreateFireblast(Debris, BrightBase);
 
-	for(i = 0; i < n; i++)
+	for(I = 0; I < N; I++)
 	{
-		CGlowingFlak* pFlak = new CGlowingFlak;
-		pFlak->ColorbaseYoung = cby;
-		pFlak->LargestSize = maxsize;
-		pFlak->bFade = bDieOff;
+		CGlowingFlak* FlakPtr = new CGlowingFlak;
+		FlakPtr->ColorbaseYoung = ColorBase;
+		FlakPtr->LargestSize = MaxSize;
+		FlakPtr->bFade = bDieOff;
 
-		pFlak->Position = Position;
-		pFlak->Orientation = Orientation;
+		FlakPtr->Position = Position;
+		FlakPtr->Orientation = Orientation;
 
-		CFPoint dir;
-		double t = FRAND * TWO_PI;
+		CFPoint Direction;
+		double T = FRAND * TWO_PI;
 		
-		dir.Set((float)cos(t), (float)sin(t));
+		Direction.Set((float)cos(T), (float)sin(T));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.Fwd = Inertia;
+		FlakPtr->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.Fwd *= FRAND * 12.0f + 30.0f;
+		FlakPtr->Orientation.Fwd *= FRANDRANGE(30, 42) * 1.5f;
+
 		// Make the particle have a velocity vector
 		// as if it were standing still.
-		float speed = FRAND * 180 + 90;
+		const float Speed = FRANDRANGE(90, 270);
 
+		FlakPtr->Orientation.Fwd.MulAdd(Direction, Speed);
 
-		pFlak->Orientation.Fwd.MulAdd(dir, speed);
-
-		debris.Add(pFlak);
+		Debris.Add(FlakPtr);
 	}
 
 	if(FRAND <= DEBRIS_DUAL_PROB)
 	{
 		bDieOff = (FRAND >= 0.25f);
-		n = (int)(FRAND * 20 + 20);
-		maxsize = FRAND * 4 + 8.0f;
-		//maxsize = FMath::Min(maxsize, 9.0f);
+		N = (int)(FRAND * 20 + 20);
+		MaxSize = FRAND * 4 + 8.0f;
+		//MaxSize = FMath::Min(MaxSize, 9.0f);
 
 		if(IRAND(3) == 1)
 		{
-			cby = EColor::gray;
+			ColorBase = EColor::gray;
 		}
 		else
 		{
-			cby = this->GetExplosionColorBase();
+			ColorBase = this->GetExplosionColorBase();
 		}
 
-		for(i = 0; i < n; i++)
+		for(I = 0; I < N; I++)
 		{
-			CGlowingFlak* pFlak = new CGlowingFlak;
-			pFlak->ColorbaseYoung = cby;
-			pFlak->LargestSize = maxsize;
-			pFlak->bFade = bDieOff;
+			CGlowingFlak* FlakPtr = new CGlowingFlak;
+			FlakPtr->ColorbaseYoung = ColorBase;
+			FlakPtr->LargestSize = MaxSize;
+			FlakPtr->bFade = bDieOff;
 
-			pFlak->Position = Position;
-			pFlak->Orientation = Orientation;
+			FlakPtr->Position = Position;
+			FlakPtr->Orientation = Orientation;
 
-			CFPoint dir;
-			double t = FRAND * TWO_PI;
+			CFPoint Direction;
+			double T = FRAND * TWO_PI;
 			
-			dir.Set((float)cos(t), (float)sin(t));
+			Direction.Set((float)cos(T), (float)sin(T));
 
-			pFlak->Orientation.Fwd = Inertia;
+			FlakPtr->Orientation.Fwd = Inertia;
 
-			pFlak->Orientation.Fwd *= FRAND * 12.0f + 30.0f;
-			float speed = FRAND * 45 + 22;
+			FlakPtr->Orientation.Fwd *= FRANDRANGE(30, 42) * 1.5f;
+			const float Speed = FRANDRANGE(22, 67);
 
-			pFlak->Orientation.Fwd.MulAdd(dir, speed);
+			FlakPtr->Orientation.Fwd.MulAdd(Direction, Speed);
 
-			debris.Add(pFlak);
+			Debris.Add(FlakPtr);
 		}
 	}
 
 
 #if 1
-	cby = EColor::gray;
+	ColorBase = EColor::gray;
 
 
-	for(i = 0; i < 20; i++)
+	for(I = 0; I < 20; I++)
 	{
-		CFlak* pFlak = new CFlak;
-		pFlak->ColorbaseYoung = cby;
-		pFlak->ColorbaseOld = cby;
-		pFlak->bCold = true;
-		pFlak->LargestSize = 4;
-		pFlak->bFade = true;//bDieOff;
+		CFlak* FlakPtr = new CFlak;
+		FlakPtr->ColorbaseYoung = ColorBase;
+		FlakPtr->ColorbaseOld = ColorBase;
+		FlakPtr->bCold = true;
+		FlakPtr->LargestSize = 8;
+		FlakPtr->bFade = true;//bDieOff;
 
-		pFlak->Position = Position;
-		pFlak->Orientation = Orientation;
+		FlakPtr->Position = Position;
+		FlakPtr->Orientation = Orientation;
 
-		CFPoint dir;
-		double t = FRAND * TWO_PI;
+		CFPoint Direction;
+		double T = FRAND * TWO_PI;
 		
-		dir.Set((float)cos(t), (float)sin(t));
+		Direction.Set((float)cos(T), (float)sin(T));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.Fwd = Inertia;
+		FlakPtr->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
+			FlakPtr->Orientation.Fwd *= FRANDRANGE(20, 32) * 1.5f;
 		//ndir *= FRAND * 0.4f + 0.2f;
-		float speed = FRAND * 30 + 110;
+		const float Speed = FRANDRANGE(110, 140);
 
-		pFlak->Orientation.Fwd.MulAdd(dir, speed);
+		FlakPtr->Orientation.Fwd.MulAdd(Direction, Speed);
 
-		debris.Add(pFlak);
+		Debris.Add(FlakPtr);
 	}
 #endif
 }
@@ -385,11 +389,12 @@ void Defcon::CGhost::Explode(CGameObjectCollection& debris)
 Defcon::CGhostPart::CGhostPart()
 {
 	ParentType = Type;
-	Type = EObjType::GHOSTPART;
+	Type       = EObjType::GHOSTPART;
+
 	PointValue = 0;
 	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = C_WHITE;
-	AnimSpeed = FRAND * 0.35f + 0.15f;
+	AnimSpeed = FRANDRANGE(0.15f, 0.5f);
 	bCanBeInjured = false;
 	bIsCollisionInjurious = false;
 
@@ -413,16 +418,16 @@ const char* Defcon::CGhostPart::GetClassname() const
 #endif
 
 
-void Defcon::CGhostPart::SetFlightPath(const CFPoint& from, const CFPoint& to)
+void Defcon::CGhostPart::SetFlightPath(const CFPoint& From, const CFPoint& To)
 {
 	// from and to must be unmodulated.
 
-	m_path.Pts[0] = m_path.Pts[1] = from;
-	m_path.Pts[2] = m_path.Pts[3] = to;
+	m_path.Pts[0] = m_path.Pts[1] = From;
+	m_path.Pts[2] = m_path.Pts[3] = To;
 
 	// Make the control points match their anchor but with a random offset.
-	m_path.Pts[1] += CFPoint(SFRAND * IRAND(300), SFRAND * IRAND(300));
-	m_path.Pts[2] += CFPoint(SFRAND * IRAND(300), SFRAND * IRAND(300));
+	m_path.Pts[1] += CFPoint(FRANDRANGE(-300.0f, 300.0f), FRANDRANGE(-300.0f, 300.0f));
+	m_path.Pts[2] += CFPoint(FRANDRANGE(-300.0f, 300.0f), FRANDRANGE(-300.0f, 300.0f));
 }
 
 
@@ -446,13 +451,20 @@ void Defcon::CGhostPart::Move(float fTime)
 }
 
 
-void Defcon::CGhostPart::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
+void Defcon::CGhostPart::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& mapper)
 {
 }
 
 
 
-void Defcon::CGhostPart::Explode(CGameObjectCollection& debris)
+void Defcon::CGhostPart::Explode(CGameObjectCollection& Debris)
 {
 	// Ghost parts don't explode.
 }
+
+
+#if(DEBUG_MODULE == 1)
+#pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

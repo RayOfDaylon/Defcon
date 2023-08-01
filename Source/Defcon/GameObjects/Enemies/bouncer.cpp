@@ -192,7 +192,7 @@ void Defcon::CBouncer::Move(float DeltaTime)
 		&& gpArena->GetPlayerShip().IsAlive()
 		&& gpArena->IsPointVisible(Position))
 	{
-		gpArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, false, false);
+		gpArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, EObjectCreationFlags::EnemyPart);
 	}
 }
 

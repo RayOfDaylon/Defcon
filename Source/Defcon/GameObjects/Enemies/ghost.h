@@ -66,12 +66,11 @@ namespace Defcon
 			float m_xFreq	= 1.0f;
 			float m_yOrg;
 
-			int32	m_numParts;
+			int32	NumParts;
 			bool	m_bWaits;
-			float	m_fSpinVel;
-			float	m_fSpinAngle;
-			float	m_fSpinVelMax;
-			CFPoint	m_partLocs[10];
+			float	SpinVelocity;
+			float	SpinAngle;
+			CFPoint	PartLocs[10];
 
 			float    DispersalCountdown = 0.0f;
 	};
