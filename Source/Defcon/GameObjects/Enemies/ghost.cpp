@@ -20,7 +20,7 @@
 #include "Arenas/DefconPlayViewBase.h"
 #include "DefconUtils.h"
 
-#define DEBUG_MODULE      1
+#define DEBUG_MODULE      0
 
 #if(DEBUG_MODULE == 1)
 #pragma optimize("", off)

@@ -39,6 +39,6 @@ int MyStrncpy(char* Dst, const char* Src, size_t Len) { return 0; }
 #endif
 
 
-char* MyStrcpy(char* dst, const char* src) { return nullptr; }
-int MySprintf(char* dst, const char* fmt, ...) { return 0; }
-char* MyStrtok(char* Stream, const char* Delim) { return nullptr; }
+char* MyStrcpy(char* /*dst*/, const char* /*src*/) { return nullptr; }
+int MySprintf(char* /*dst*/, const char* /*fmt*/, ...) { return 0; }
+char* MyStrtok(char* /*Stream*/, const char* /*Delim*/) { return nullptr; }
