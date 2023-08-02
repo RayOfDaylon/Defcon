@@ -112,7 +112,7 @@ void Defcon::CGhost::Move(float fTime)
 	if(pTarget->IsAlive() && !this->MarkedForDeath())
 	{
 		CFPoint dir;
-		const float dist = gpArena->Direction(Position, pTarget->Position, dir);
+		const float dist = gpArena->ShortestDirection(Position, pTarget->Position, dir);
 
 		if(dist < GHOST_PLAYER_DIST_MIN) // todo: use pref value instead of constant 200
 		{

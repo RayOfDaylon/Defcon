@@ -78,7 +78,7 @@ void Defcon::CFireball::Move(float fTime)
 		else
 		{
 			CFPoint dir;
-			Speed = (FRAND * 0.5f + 1.0f) * gpArena->Direction(Position, TargetPtr->Position, dir);
+			Speed = (FRAND * 0.5f + 1.0f) * gpArena->ShortestDirection(Position, TargetPtr->Position, dir);
 			Orientation.Fwd.x = (float)(SGN(dir.x));
 			Orientation.Fwd.y = (float)(SGN(dir.y));
 		}

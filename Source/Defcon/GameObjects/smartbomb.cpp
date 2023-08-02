@@ -11,6 +11,7 @@
 #include "Globals/prefs.h"
 #include "Globals/GameObjectResources.h"
 #include "Arenas/DefconPlayViewBase.h"
+#include "DefconGameInstance.h"
 
 #include "Runtime/Engine/Classes/Materials/MaterialInstanceDynamic.h"
 
@@ -36,7 +37,7 @@ const char* Defcon::CSmartbomb::GetClassname() const
 Defcon::CSmartbomb::CSmartbomb()
 {
 	ParentType = Type;
-	Type = EObjType::SMARTBOMB;
+	Type       = EObjType::SMARTBOMB;
 
 	NameColor = TEXT("Color");
 	NameOs    = TEXT("Os");
@@ -46,7 +47,8 @@ Defcon::CSmartbomb::CSmartbomb()
 	if(MID == nullptr)
 	{
 		auto ParentMaterial = Cast<UMaterialInterface>(GameObjectResources.SmartbombBrushPtr->GetResourceObject());
-		if (ParentMaterial)
+
+		if(ParentMaterial != nullptr)
 		{
 			MID = UMaterialInstanceDynamic::Create(ParentMaterial, nullptr);
 			GameObjectResources.SmartbombBrushPtr->SetResourceObject(MID);
@@ -62,47 +64,45 @@ Defcon::CSmartbomb::CSmartbomb()
 }
 
 
-void Defcon::CSmartbomb::Move(float fTimeElapsed)
+void Defcon::CSmartbomb::Move(float DeltaTime)
 {
 	// The smartbomb produces a shockwave that 
-	// moves quickly and destroys anything on 
-	// the screen.
+	// moves quickly and destroys anything on the screen.
 
 	if(bMortal)
-		return;
-
-	Age += fTimeElapsed;
-
-	CFPoint radius = Range;
-	float t = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
-	radius *= t;
-	float shockwave = radius.x;
-
-	CFPoint pt, bombpt;
-	MapperPtr->To(Position, bombpt);
-
-	IGameObject* pObj = Targets->GetFirst();
-	IGameObject* pObj2;
-
-	while(pObj != nullptr)
 	{
-		if(pObj->CanBeInjured() 
-			&& pObj->GetType() != EObjType::PLAYER
-			&& pObj->GetType() != EObjType::HUMAN)
-		{
-			MapperPtr->To(pObj->Position, pt);
-			if(pt.Distance(bombpt) < shockwave)
-			{
-				pObj2 = pObj->GetNext();
-				gpArena->ExplodeObject(pObj);
-				pObj->MarkAsDead();
-				pObj = pObj2;
-				continue;
-			}
-		}
-		pObj = pObj->GetNext();
+		return;
 	}
 
+	Age += DeltaTime;
+
+	CFPoint Radius = Range;
+	float T = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
+	Radius *= T;
+	float Shockwave = Radius.x;
+
+	CFPoint P, BombPos;
+	MapperPtr->To(Position, BombPos);
+
+	// Destroy objects within shockwave.
+
+	Targets->ForEach([&](Defcon::IGameObject* Target)
+	{
+		if(Target->CanBeInjured() 
+			&& Target->GetType() != EObjType::PLAYER // todo: maybe have a CanBeInjuredBySmartbomb method or generalize CanBeInjured
+			&& Target->GetType() != EObjType::HUMAN)
+		{
+			MapperPtr->To(Target->Position, P);
+
+			if(P.Distance(BombPos) < Shockwave)
+			{
+				gDefconGameInstance->GetStats().HostilesDestroyedBySmartbomb++;
+
+				gpArena->ExplodeObject(Target);
+				Target->MarkAsDead();
+			}
+		}
+	});
 
 	// Push debris with shockwave.
 
@@ -110,15 +110,16 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 	{
 		if(pObj->GetType() != EObjType::TEXT)
 		{
-			MapperPtr->To(pObj->Position, pt);
-			if(pt.Distance(bombpt) < shockwave)
+			MapperPtr->To(pObj->Position, P);
+
+			if(P.Distance(BombPos) < Shockwave)
 			{
 				// Make debris pushed by shockwave.
-				pt.Sub(bombpt);
-				pt.Normalize();
-				pt.y *= -1;
-				pt.Mul(SMARTBOMB_WAVEPUSH * (1.0f - t) + SMARTBOMB_WAVEPUSHMIN);
-				pObj->Orientation.Fwd += pt;
+				P.Sub(BombPos);
+				P.Normalize();
+				P.y *= -1;
+				P.Mul(SMARTBOMB_WAVEPUSH * (1.0f - T) + SMARTBOMB_WAVEPUSHMIN);
+				pObj->Orientation.Fwd += P;
 			}
 		}
 	});
@@ -131,7 +132,7 @@ void Defcon::CSmartbomb::Move(float fTimeElapsed)
 }
 
 
-void Defcon::CSmartbomb::Draw(FPaintArguments& framebuf, const I2DCoordMapper& map)
+void Defcon::CSmartbomb::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& Mapper)
 {
 	check(GameObjectResources.SmartbombBrushPtr != nullptr);
 
@@ -140,34 +141,33 @@ void Defcon::CSmartbomb::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 		return;
 	}
 
-	CFPoint radius = Range;
-	float t = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
-	radius *= t;
-	float shockwave = radius.x;
+	const float T = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
+	const CFPoint Radius = Range * T;
+	const float Shockwave = Radius.x;
 
-	CFRect r;
-	map.To(Position, r.LL);
-	const FVector2D pt(r.LL.x, r.LL.y);
-	r.UR = r.LL;
-	r.Inflate(CFPoint(shockwave, shockwave * .5f));
-	int x1, y1, x2, y2;
-	r.Classicize(x1, y1, x2, y2);
+	CFRect R;
+	Mapper.To(Position, R.LL);
+	const FVector2D P(R.LL.x, R.LL.y);
+	R.UR = R.LL;
+	R.Inflate(CFPoint(Shockwave, Shockwave * 0.5f));
+	int32 x1, y1, x2, y2;
+	R.Classicize(x1, y1, x2, y2);
 
 	// To draw in UE, we need to access the material used by the smartbomb brush.
 
-	MID->SetScalarParameterValue(NameOs, 1.0f - t);
+	MID->SetScalarParameterValue(NameOs, 1.0f - T);
 
-	const auto S = FVector2D(r.GetWidth(), r.GetHeight());
-	const FSlateLayoutTransform Translation(pt - S / 2);
-	const auto Geometry = framebuf.AllottedGeometry->MakeChild(S, Translation);
+	const auto S = FVector2D(R.GetWidth(), R.GetHeight());
+	const FSlateLayoutTransform Translation(P - S / 2);
+	const auto Geometry = PaintArgs.AllottedGeometry->MakeChild(S, Translation);
 
 	FSlateDrawElement::MakeBox(
-		*framebuf.OutDrawElements,
-		framebuf.LayerId,
+		*PaintArgs.OutDrawElements,
+		PaintArgs.LayerId,
 		Geometry.ToPaintGeometry(),
 		GameObjectResources.SmartbombBrushPtr,
 		ESlateDrawEffect::None,
-		C_WHITE /* * framebuf.RenderOpacity * framebuf.InWidgetStyle->GetColorAndOpacityTint().A */);
+		C_WHITE /* * PaintArgs.RenderOpacity * PaintArgs.InWidgetStyle->GetColorAndOpacityTint().A */);
 }
 
 

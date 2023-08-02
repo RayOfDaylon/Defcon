@@ -17,30 +17,26 @@
 #include "GameObjects/obj_types.h"
 #include "GameObjects/flak.h"
 #include "Arenas/DefconPlayViewBase.h"
+#include "DefconGameInstance.h"
 
 
 
 Defcon::CHunter::CHunter()
 {
 	ParentType = Type;
-	Type = EObjType::HUNTER;
-	PointValue = HUNTER_VALUE;
-	m_eState = lounging;
-	TargetPtr = nullptr;
-	float speed = FRANDRANGE(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX);
-	if(FRAND > 0.5f)
-	{
-		speed *= -1;
-	}
-	Orientation.Fwd.Set(speed, 0);
-	m_personalSpace = FRAND * 60 + 20;
-	RadarColor = C_ORANGE;
-	//BboxRadius.Set(15, 15);
-	AnimSpeed = FRAND * 0.6f + 0.4f;
-	Brightness = 1.0f;
-	m_fTimeTargetWithinRange = 0.0f;
-	m_amp = FRANDRANGE(0.33f, 0.9f);
+	Type       = EObjType::HUNTER;
 
+	PointValue            = HUNTER_VALUE;
+	State                 = Lounging;
+	RadarColor            = C_ORANGE;
+	Brightness            = 1.0f;
+	TimeTargetWithinRange = 0.0f;
+	Amplitude             = FRANDRANGE(0.33f, 0.9f);
+	
+	const float Speed = FRANDRANGE(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX) * (BRAND ? 1 : -1);
+
+	Orientation.Fwd.Set(Speed, 0);
+	
 	CreateSprite(Type);
 	const auto& Info = GameObjectResources.Get(Type);
 	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
@@ -48,11 +44,6 @@ Defcon::CHunter::CHunter()
 
 
 Defcon::CHunter::~CHunter()
-{
-}
-
-
-void Defcon::CHunter::OnAboutToDie()
 {
 }
 
@@ -66,104 +57,89 @@ const char* Defcon::CHunter::GetClassname() const
 #endif
 
 
-void Defcon::CHunter::Move(float fTime)
+void Defcon::CHunter::Move(float DeltaTime)
 {
-	CEnemy::Move(fTime);
+	CEnemy::Move(DeltaTime);
 
-	// todo: set current sprite cel accordingly.
-	// The left-facing cels are from 0-5, the right-facing cels are from 6-11.
-	//int32 CelBase = Age / 
-
-	const auto SecondsPerFrame = 1.0f / 15.0f; // assume 15 fps
-
-	//Sprite->SetCurrentCel(Orientation.Fwd.x < 0 ? 0 : 6 + ((FMath::RoundToInt(Age / SecondsPerFrame)) % 6) /* numcels/2*/);
-
-	//CurrentAge += DeltaTime;
-
-	// todo: computing AnimDuration and having our own CurrentAge for anim would be smoother.
-	/* const auto AnimDuration = Atlas.NumCels * SecondsPerFrame;
-
-	while(CurrentAge > AnimDuration)
-	{
-		CurrentAge -= Atlas.NumCels / Atlas.FrameRate;
-	}*/
-
-
-	// Move towards target.
 
 	Inertia = Position;
 	
-	IGameObject* pTarget = TargetPtr;
-
-	if(pTarget == nullptr)
-		m_fTimeTargetWithinRange = 0.0f;
+	if(TargetPtr == nullptr)
+	{
+		TimeTargetWithinRange = 0.0f;
+	}
 	else
 	{
 		const bool bVis = IsOurPositionVisible();
 
 		// Update target-within-range information.
-		if(m_fTimeTargetWithinRange > 0.0f)
+		if(TimeTargetWithinRange > 0.0f)
 		{
 			// Target was in range; See if it left range.
 			if(!bVis)
-				m_fTimeTargetWithinRange = 0.0f;
+			{
+				TimeTargetWithinRange = 0.0f;
+			}
 			else
-				m_fTimeTargetWithinRange += fTime;
+			{
+				TimeTargetWithinRange += DeltaTime;
+			}
 		}
 		else
 		{
 			// Target was out of range; See if it entered range.
 			if(bVis)
 			{
-				m_fTimeTargetWithinRange = fTime;
+				TimeTargetWithinRange = DeltaTime;
 
-				m_targetOffset.Set(
-					FRANDRANGE(-100, 100), 
-					FRANDRANGE(50, 90) * SGN(Position.y - pTarget->Position.y));
-				m_freq = FRANDRANGE(6, 12);
-				m_amp = FRANDRANGE(0.33f, 0.9f);
+				TargetOffset.Set(FRANDRANGE(-100, 100), FRANDRANGE(50, 90) * SGN(Position.y - TargetPtr->Position.y));
+				Frequency = FRANDRANGE(6, 12);
+				Amplitude = FRANDRANGE(0.33f, 0.9f);
 			}
 		}
 	}
 
 
-	switch(m_eState)
+	switch(State)
 	{
-		case lounging:
+		case Lounging:
 			// Just float towards target unless the target
 			// has become in range.
-			if(m_fTimeTargetWithinRange >= 0.33f)
-				m_eState = fighting;
-			else if(pTarget != nullptr)
+			if(TimeTargetWithinRange >= 0.33f)
 			{
-				CFPoint pt;
-				gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
+				State = Fighting;
+			}
+
+			else if(TargetPtr != nullptr)
+			{
+				gpArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
 
 				//Orientation.Fwd.Set(SGN(this->m_targetOffset.y), 0);
-				Orientation.Fwd.y += (float)(m_amp * sin(Age * m_freq));
-				Position.MulAdd(Orientation.Fwd, fTime * HUNTER_SPEEDMIN/2);
+				Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
+				Position.MulAdd(Orientation.Fwd, DeltaTime * HUNTER_SPEEDMIN/2);
 			}
 			break;
 
 
-		case evading:
+		case Evading:
 		{
-			if(pTarget != nullptr)
+			if(TargetPtr != nullptr)
 			{
-				float vd = Position.y - pTarget->Position.y;
-				if(ABS(vd) > BboxRadius.y || 
-					SGN(pTarget->Orientation.Fwd.x) == 
-					SGN(Orientation.Fwd.x))
-					m_eState = fighting;
+				const float DeltaY = Position.y - TargetPtr->Position.y;
+
+				if(ABS(DeltaY) > BboxRadius.y || SGN(TargetPtr->Orientation.Fwd.x) == SGN(Orientation.Fwd.x))
+				{
+					State = Fighting;
+				}
 				else
 				{
-					Orientation.Fwd.y = SGN(vd)*0.5f;
+					Orientation.Fwd.y = SGN(DeltaY) * 0.5f;
 					//if(Orientation.Fwd.y == 0)
 					//	Orientation.Fwd.y = SFRAND;
-					CFPoint pt;
-					gpArena->Direction(Position, pTarget->Position, pt);
-					Orientation.Fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
-					Position.MulAdd(Orientation.Fwd, fTime * AVG(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX));
+					CFPoint Pt;
+					gpArena->ShortestDirection(Position, TargetPtr->Position, Pt);
+					Orientation.Fwd.x = (FRAND * 0.25f + 0.33f) * SGN(Pt.x);
+					Position.MulAdd(Orientation.Fwd, DeltaTime * AVG(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX));
 				}
 			}
 			
@@ -171,50 +147,47 @@ void Defcon::CHunter::Move(float fTime)
 			break;
 
 
-		case fighting:
+		case Fighting:
 		{
-			if(m_fTimeTargetWithinRange == 0.0f)
-				m_eState = lounging;
+			if(TimeTargetWithinRange == 0.0f)
+			{
+				State = Lounging;
+			}
 			else
 			{
-				check(pTarget != nullptr);
+				float Distance = gpArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
+				const float DeltaY = Position.y - TargetPtr->Position.y;
 
-				float dist = gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
-				float vd = Position.y - pTarget->Position.y;
-				if(ABS(vd) < BboxRadius.y
-					&& SGN(pTarget->Orientation.Fwd.x) != 
-					SGN(Orientation.Fwd.x))
+				if(ABS(DeltaY) < BboxRadius.y && SGN(TargetPtr->Orientation.Fwd.x) != SGN(Orientation.Fwd.x))
 				{
-					// We can be hit by player. 
-					// Take evasive action.
-					m_eState = evading;
+					// We can be hit by player; take evasive action.
+					State = Evading;
 				}
 				else
 				{
-					CFPoint pt = pTarget->Position + m_targetOffset;
-					gpArena->Direction(Position, pt, Orientation.Fwd);
+					const CFPoint Pt = TargetPtr->Position + TargetOffset;
+					gpArena->ShortestDirection(Position, Pt, Orientation.Fwd);
 
-					float speed;
+					Distance /= gpArena->GetDisplayWidth();
 
-					dist /= gpArena->GetDisplayWidth();
-					if(dist >= 0.8f)
-						speed = MAP(dist, 0.8f, 1.0f, HUNTER_SPEEDMAX, 0.0f);
-					else
-						speed = MAP(dist, 0.0f, 0.8f, HUNTER_SPEEDMIN, HUNTER_SPEEDMAX);
+					const float Speed = Distance >= 0.8f 
+						? MAP(Distance, 0.8f, 1.0f, HUNTER_SPEEDMAX, 0.0f)
+						: MAP(Distance, 0.0f, 0.8f, HUNTER_SPEEDMIN, HUNTER_SPEEDMAX);
 
-					Orientation.Fwd.y += (float)(m_amp * sin(Age * m_freq));
-					Position.MulAdd(Orientation.Fwd, fTime * speed);
+					Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
+					Position.MulAdd(Orientation.Fwd, DeltaTime * Speed);
 
-					if(this->CanBeInjured() 
-						&& pTarget->CanBeInjured()
-						&& speed < 400 && FRAND <= 0.07f)
-						gpArena->FireBullet(*this, Position, 1, 1);
+					if(this->CanBeInjured() && TargetPtr->CanBeInjured() && Speed < 400)
+					{
+						FiringCountdown -= DeltaTime;
 
+						ConsiderFiringBullet();
+					}
 				}
 			}
 		}
 			break;
-	} // switch(state)
+	} // switch(State)
 
 	Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
 
@@ -225,8 +198,21 @@ void Defcon::CHunter::Move(float fTime)
 }
 
 
-void Defcon::CHunter::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
+void Defcon::CHunter::ConsiderFiringBullet()
 {
+	if(FiringCountdown <= 0.0f)
+	{
+		(void) gpArena->FireBullet(*this, Position, (FRAND <= 0.85f) ? 2 : 3, 1);
+
+		// The time to fire goes down as the player XP increases.
+
+		const float XP = (float)gDefconGameInstance->GetScore();
+
+		float T = NORM_(XP, 1000.0f, 50000.f);
+		T = CLAMP(T, 0.0f, 1.0f);
+
+		FiringCountdown = LERP(1.0f, 0.25f, T) + Daylon::FRandRange(0.0f, 0.2f);
+	}
 }
 
 

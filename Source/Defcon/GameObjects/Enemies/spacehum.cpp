@@ -62,7 +62,7 @@ void Defcon::CSpacehum::Move(float DeltaTime)
 
 	if(TargetPtr != nullptr)
 	{
-		gpArena->Direction(Position, TargetPtr->Position, Orientation.Fwd);
+		gpArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
 		
 		CFPoint Budge((float)sin(FRAND * PI * 2), (float)cos(FRAND * PI * 2));
 

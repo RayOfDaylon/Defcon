@@ -40,6 +40,7 @@ void Defcon::FObjectTypeManager::Init()
 	TypeNames.Add(EObjType::MATERIALIZATION , "MATERIALIZATION");
 	TypeNames.Add(EObjType::MINE            , "MINE");
 	TypeNames.Add(EObjType::MISSIONTILE     , "MISSIONTILE");
+	TypeNames.Add(EObjType::IMUNCHIE        , "IMUNCHIE");
 	TypeNames.Add(EObjType::MUNCHIE         , "MUNCHIE");
 	TypeNames.Add(EObjType::PHRED           , "PHRED");
 	TypeNames.Add(EObjType::PLAYER          , "PLAYER");

@@ -43,7 +43,7 @@ namespace Defcon
 		Ghostflight,
 		Phred, //munchie,
 		Munchie, // munchie2
-		Bigred, // munchie3
+		BigRed, // munchie3
 		Warp,
 		Playership_thrust,
 		Gulp,

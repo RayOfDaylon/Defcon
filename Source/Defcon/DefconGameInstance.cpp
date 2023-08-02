@@ -62,7 +62,7 @@ void UDefconGameInstance::Init()
 	ADD_AUDIO_TRACK(Defcon::EAudioTrack::Gulp,                  GulpSound);
 	ADD_AUDIO_TRACK(Defcon::EAudioTrack::Warp,                  WarpSound);
 	ADD_AUDIO_TRACK(Defcon::EAudioTrack::Phred,                 PhredSound);
-	ADD_AUDIO_TRACK(Defcon::EAudioTrack::Bigred,                BigRedSound);
+	ADD_AUDIO_TRACK(Defcon::EAudioTrack::BigRed,                BigRedSound);
 	ADD_AUDIO_TRACK(Defcon::EAudioTrack::Munchie,               MunchieSound);
 	ADD_AUDIO_TRACK(Defcon::EAudioTrack::Ghostflight,           GhostFlightSound);
 	ADD_AUDIO_TRACK(Defcon::EAudioTrack::Smartbomb,             SmartbombSound);
@@ -83,8 +83,8 @@ void UDefconGameInstance::Init()
 	const auto UpscaleFactor = 4.25f / 3.0f;
 
 
-	HumanAtlas          ->Atlas.InitCache();
-	PlayerShipAtlas     ->Atlas.InitCache();
+	HumanAtlas     ->Atlas.InitCache();
+	PlayerShipAtlas->Atlas.InitCache();
 
 	GameObjectResources.Add(Defcon::EObjType::HUMAN,    { HumanAtlas,      HumanAtlas      ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f });
 	GameObjectResources.Add(Defcon::EObjType::PLAYER,   { PlayerShipAtlas, PlayerShipAtlas ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f } );

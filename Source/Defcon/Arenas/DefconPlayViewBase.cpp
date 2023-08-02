@@ -70,7 +70,7 @@ void UDefconPlayViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTim
 
 	if(Fader->IsVisible())
 	{
-		const float T = 1.0f - FMath::Max(0.0f, m_fFadeAge / FADE_DURATION_NORMAL);
+		const float T = 1.0f - FMath::Max(0.0f, FadeAge / FADE_DURATION_NORMAL);
 
 		Fader->SetRenderOpacity(T);
 	}
@@ -143,7 +143,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	gpArena = this;
 
-	m_bArenaDying = false;
+	bArenaDying = false;
 	Daylon::Hide(Fader);
 
 	ShipThrustSoundLoop = gpAudio->CreateLoopedSound(Defcon::EAudioTrack::Playership_thrust);
@@ -495,16 +495,16 @@ void UDefconPlayViewBase::ConcludeMission()
 {
 	// Wave can end. todo: handle via gameinstance?
 
-	if(!m_bArenaDying)
+	if(!bArenaDying)
 	{
-		m_bArenaDying = true;
+		bArenaDying = true;
 		auto pEvt = new Defcon::CEndMissionEvent;
 		pEvt->Init();
 		//pEvt->m_what = CEvent::Type::endmission;
 		pEvt->When = GameTime() + FADE_DURATION_NORMAL;
 		Events.Add(pEvt);
 
-		m_fFadeAge = FADE_DURATION_NORMAL;
+		FadeAge = FADE_DURATION_NORMAL;
 
 		Daylon::Show(Fader);
 	}
@@ -775,6 +775,8 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 
 	PlayerShip.OnAboutToDie();
 
+	gDefconGameInstance->GetStats().PlayerDeaths++;
+
 	// Deassign target for all enemies so that they don't keep moving towards and firing at the dying (and soon nonexistant) player.
 	Enemies.ForEach([](Defcon::IGameObject* Obj){ static_cast<Defcon::CEnemy*>(Obj)->SetTarget(nullptr); });
 }
@@ -809,12 +811,14 @@ void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& object
 			if(bHit)
 			{
 				// PlayerShip ship has been hit by a bullet.
+
+				gDefconGameInstance->GetStats().PlayerHits++;
+
 				const bool bPlayerKilled = !gDefconGameInstance->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
 
 				if(bPlayerKilled)
 				{
 					this->DestroyPlayerShip();
-					//this->ExplodeObject(&PlayerShip);
 				}
 				else
 				{
@@ -861,12 +865,13 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 
 			if(rObj.Intersect(rPlayer))
 			{
+				gDefconGameInstance->GetStats().PlayerCollisions++;
+
 				const bool bPlayerKilled = !gDefconGameInstance->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
 
 				if(bPlayerKilled)
 				{
 					this->DestroyPlayerShip();
-					//this->ExplodeObject(&PlayerShip);
 				}
 				else
 				{
@@ -886,7 +891,6 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 						pObj->bMortal = true;
 						pObj->Lifespan = 0.0f;
 						pObj->OnAboutToDie();
-						//this->ExplodeObject(pObj);
 					}
 				}
 
@@ -927,7 +931,7 @@ Defcon::CPlayer& UDefconPlayViewBase::GetPlayerShip()
 
 void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 {
-	if(!m_bArenaDying)
+	if(!bArenaDying)
 	{
 		if(!gDefconGameInstance->Update(DeltaTime))
 		{
@@ -938,9 +942,9 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	Events.Process(DeltaTime);
 
 
-	if(m_fFadeAge > 0.0f)
+	if(FadeAge > 0.0f)
 	{
-		m_fFadeAge -= DeltaTime;
+		FadeAge -= DeltaTime;
 	}
 
 	if(m_bRunSlow)
@@ -1169,16 +1173,16 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 #endif
 		{
 			// Player died; restart mission.
-			if(!m_bArenaDying)
+			if(!bArenaDying)
 			{
-				m_bArenaDying = true;
+				bArenaDying = true;
 				auto pEvt = new Defcon::CRestartMissionEvent;
 				pEvt->Init();
 
 				pEvt->When = now + FADE_DURATION_NORMAL;
 				Events.Add(pEvt);
 
-				m_fFadeAge = FADE_DURATION_NORMAL;
+				FadeAge = FADE_DURATION_NORMAL;
 			}
 		}
 	}
@@ -1306,6 +1310,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 			if(GetPlayerShip().IsAlive())
 			{
 				GetPlayerShip().FireLaserWeapon(Objects);
+				gDefconGameInstance->GetStats().ShotsFired++;
 
 				if(true/*BRAND*/)
 					gpAudio->OutputSound(Defcon::EAudioTrack::Laserfire);
@@ -1343,98 +1348,88 @@ bool UDefconPlayViewBase::IsPointVisible(const CFPoint& pt) const
 typedef enum { fa_wild, fa_at, fa_lead } FiringAccuracy;
 
 
-float UDefconPlayViewBase::Direction(const CFPoint& posA, const CFPoint& posB, CFPoint& result) const
+float UDefconPlayViewBase::ShortestDirection(const CFPoint& A, const CFPoint& B, CFPoint& Result) const
 {
-	// Return direction to achieve shortest travel 
-	// time from point A to point B. The distance 
-	// is returned also.
+	// Return direction to achieve shortest travel time 
+	// from point A to point B. The distance is also returned.
 
-	CFPoint a(posA), b(posB);
+	//const CFPoint A(PtA), B(PtB);
 
-	const float w = this->GetWidth();
+	const float W = this->GetWidth();
 
-	const float fFromTail1 = w - a.x;
-	const float fFromTail2 = w - b.x;
+	const float FromTail1 = W - A.x;
+	const float FromTail2 = W - B.x;
 
-	const float d0 = ABS(b.x - a.x);
-	const float d1 = a.x + fFromTail2;
-	const float d2 = b.x + fFromTail1;
+	const float D0 = ABS(B.x - A.x);
+	const float D1 = A.x + FromTail2;
+	const float D2 = B.x + FromTail1;
 
-	const float xdist = FMath::Min(d0, FMath::Min(d1, d2));
+	const float HorzDistance = FMath::Min(D0, FMath::Min(D1, D2));
 
+	check(HorzDistance <= W / 2);
 
-	if(d0 == xdist)
+	if(D0 == HorzDistance)
 	{
-		result = b - a;
+		Result = B - A;
 	}
-	else if(d1 == xdist)
+	else if(D1 == HorzDistance)
 	{
 		// B behind origin, A past it.
-		result = b;
-		result.x -= w;
-		result -= a;
+		Result = B;
+		Result.x -= W;
+		Result -= A;
 	}
-	else if(d2 == xdist)
+	else if(D2 == HorzDistance)
 	{
 		// A behind origin, B past it.
-		result = a;
-		result.x -= w;
-		result = b - result;
+		Result = A;
+		Result.x -= W;
+		Result = B - Result;
 	}
 
-	const float dist = result.Length();
-	check(xdist <= w/2);
-	check(ABS(result.x) <= w/2);
-	result.Normalize();
+	const float Distance = Result.Length();
+	check(ABS(Result.x) <= W / 2);
 
-	return dist;
+	Result.Normalize();
+
+	return Distance;
 }
 
 
-void UDefconPlayViewBase::Lerp(const CFPoint& pt1, const CFPoint& pt2, CFPoint& result, float t) const
+void UDefconPlayViewBase::Lerp(const CFPoint& A, const CFPoint& B, CFPoint& Result, float T) const
 {
-	// Lerp arena coords pt1 and pt2.
-	// lerp locations lie along the shortest line 
-	// between pt1 and pt2.
+	// Lerp arena coords A and B.
+	// Lerp locations lie along the shortest line between A and B.
 
-	CFPoint dir;
-	float len = this->Direction(pt1, pt2, dir);
+	CFPoint Dir;
+	const float Len = this->ShortestDirection(A, B, Dir);
 
-	dir *= len * t;
-	result = pt1 + dir;
+	Dir *= Len * T;
+	Result = A + Dir;
 
-	WRAP(result.x, 0, this->GetWidth());
-
-	/*if(result.x < 0)
-	{
-		result.x += this->GetWidth();
-	}
-	else if(result.x >= this->GetWidth())
-	{
-		result.x -= this->GetWidth();
-	}*/
+	Result.x = WrapX(Result.x);
 }
 
 
 float UDefconPlayViewBase::WrapX(float x) const
 {
-	const auto w = this->GetWidth();
+	const auto W = this->GetWidth();
 
-	if(x > w) return x - w;
-	if(x < 0) return x + w;
+	if(x > W) return x - W;
+	if(x < 0) return x + W;
 
 	return x;
 }
 
 
-void UDefconPlayViewBase::LayMine(Defcon::IGameObject& obj, const CFPoint& from, int, int)
+void UDefconPlayViewBase::LayMine(Defcon::IGameObject& Obj, const CFPoint& from, int, int)
 {
-	auto p = new Defcon::CMine;
+	auto Mine = new Defcon::CMine;
 
-	p->InstallSprite();
-	p->Position = obj.Position - obj.Orientation.Fwd * (2 * FMath::Max(obj.BboxRadius.x, obj.BboxRadius.y));
+	Mine->InstallSprite();
+	Mine->Position = Obj.Position - Obj.Orientation.Fwd * (2 * FMath::Max(Obj.BboxRadius.x, Obj.BboxRadius.y));
 
-	Objects.Add(p);
+	Objects.Add(Mine);
 }
 
 
@@ -1477,7 +1472,7 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 	}
 
 	CFPoint dir;
-	this->Direction(from, GetPlayerShip().Position, dir);
+	this->ShortestDirection(from, GetPlayerShip().Position, dir);
 
 
 	switch(eAccuracy)
@@ -1515,7 +1510,7 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 				pt.x -= this->GetWidth();
 			}
 
-			const float speed = (1.0f / time) * this->Direction(from, pt, dir);
+			const float speed = (1.0f / time) * this->ShortestDirection(from, pt, dir);
 			pBullet->SetSpeed(speed);
 			break;
 	}
@@ -1565,7 +1560,7 @@ Defcon::IGameObject* UDefconPlayViewBase::FindHuman(float x) const
 
 	while(pObj != nullptr)
 	{
-		if(!((Defcon::CHuman*)pObj)->IsBeingCarried() && pObj->Lifespan > 0.1f)
+		if(!static_cast<Defcon::CHuman*>(pObj)->IsBeingCarried() && pObj->Lifespan > 0.1f)
 		{
 			const float dist = this->Xdistance(pObj->Position.x, x);
 
@@ -1643,129 +1638,104 @@ void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& ob
 	// with all injurable objects (such as player and enemies).
 
 
-	CFRect bbox;
-	CFPoint injurePt;
-	CFPoint screenPos;
+	CFRect  Bbox;
+	CFPoint InjurePt;
+	CFPoint ScreenPos;
 
 	// The debris is a seperate game object collection
 	// so that we can build it up without disturbing 
 	// the arena's object collection, which is necessary 
 	// since we are searching through it.
 	//CGameObjectCollection	debris;
-	const int32 sw = GetDisplayWidth();
+	const int32 DisplayWidth = GetDisplayWidth();
 
 	// Loop through the weapons fire, 
 	// then, for each bullet, loop through the targets.
 	Defcon::IGameObject* pObj = Objects.GetFirst();
 
-	Objects.ForEach([&](Defcon::IGameObject* pObj)
-	//{
-	//while(pObj != nullptr)
+	Objects.ForEach([&](Defcon::IGameObject* ObjPtr)
 	{
-		if(!pObj->IsInjurious())
+		if(!ObjPtr->IsInjurious())
 		{
-			//pObj = pObj->GetNext();
-			//continue;
 			return;
 		}
 		
-		pObj->GetInjurePt(injurePt);
+		ObjPtr->GetInjurePt(InjurePt);
 
-		Defcon::IGameObject* pObj2 = objects.GetFirst();
+		Defcon::IGameObject* Obj2Ptr = objects.GetFirst();
 
-		while(pObj2 != nullptr)
+		while(Obj2Ptr != nullptr)
 		{
-			if(!pObj2->CanBeInjured())
+			if(!Obj2Ptr->CanBeInjured())
 			{
-				pObj2 = pObj2->GetNext();
+				Obj2Ptr = Obj2Ptr->GetNext();
 				continue;
 			}
-			/*			
-			// Player ship is not in the objects list so this block would never run
-			if(pObj2 == &GetPlayerShip())
-			{
-				// If the target is the player ship, 
-				// and the bullet is one of its lasers, 
-				// then don't check. We have this suicide 
-				// problem where a laser beam wraps around
-				// and hits us (duh).
-				if(pObj->GetCreatorType() == Defcon::EObjType::PLAYER)
-				{
-					pObj2 = pObj2->GetNext();
-					continue;
-				}
-			}
-			else*/ if((pObj->GetParentType() == Defcon::EObjType::BULLET) && ENEMIES_CANTHURTEACHOTHER)
+
+			if((ObjPtr->GetParentType() == Defcon::EObjType::BULLET) && ENEMIES_CANTHURTEACHOTHER)
 			{
 				// For non-players, bullets don't hurt.
-				pObj2 = pObj2->GetNext();
+				Obj2Ptr = Obj2Ptr->GetNext();
 				continue;
 			}
-			else if(pObj->GetType() == Defcon::EObjType::MINE && ENEMIES_MINESDONTHURT)
+			else if(ObjPtr->GetType() == Defcon::EObjType::MINE && ENEMIES_MINESDONTHURT)
 			{
 				// For non-players, mines don't hurt.
-				pObj2 = pObj2->GetNext();
+				Obj2Ptr = Obj2Ptr->GetNext();
 				continue;
 			}
 
-			GetMainAreaMapper().To(pObj2->Position, screenPos);
+			GetMainAreaMapper().To(Obj2Ptr->Position, ScreenPos);
 
-			if(!(screenPos.x > -20 && screenPos.x < sw + 20))
+			if(!(ScreenPos.x > -20 && ScreenPos.x < DisplayWidth + 20))
 			{
-				pObj2 = pObj2->GetNext();
+				Obj2Ptr = Obj2Ptr->GetNext();
 				continue;
 			}
 				
-			bbox.Set(pObj2->Position);
-			bbox.Inflate(pObj2->BboxRadius);
+			Bbox.Set(Obj2Ptr->Position);
+			Bbox.Inflate(Obj2Ptr->BboxRadius);
 
-			const bool bHit = (bbox.PtInside(injurePt) || pObj->TestInjury(bbox));
-
-			if(bHit)
+			if(Bbox.PtInside(InjurePt) || ObjPtr->TestInjury(Bbox))
 			{
 				// Object has been hit! Ow!!!
 
-				// todo: generalize code so 
-				// that all objects have a 
-				// RegisterImpact() method.
-				/*
-				// Player ship not in object list so this block never runs
-				if(pObj2 == &GetPlayerShip())
-				{
-					const bool bPlayerKilled = GetPlayerShip().RegisterImpact(pObj->GetCollisionForce());
+				// todo: generalize code so that all objects have a RegisterImpact() method.
+				// Can't use dynamic_cast, force all objects to be static castable to ILiveGameObject.
 
-					if(bPlayerKilled)
-						this->ExplodeObject(&GetPlayerShip());
-					else
-						this->ShieldBonk(&GetPlayerShip(), pObj->GetCollisionForce());
-				}
-				else*/
-				{
-					// todo: if we can't use dynamic_cast, then we force all objects to be static castable to ILiveGameObject.
-					auto pLiveObject = static_cast<Defcon::ILiveGameObject*>(pObj2);// nullptr;// todo: dynamic_cast<ILiveGameObject*>(pObj2);
+				auto pLiveObject = static_cast<Defcon::ILiveGameObject*>(Obj2Ptr);
 
-					if(pLiveObject != nullptr)
+				if(pLiveObject != nullptr)
+				{
+					const bool bKilled = pLiveObject->RegisterImpact(ObjPtr->GetCollisionForce());
+
+					if(bKilled)
 					{
-						const bool bKilled = pLiveObject->RegisterImpact(pObj->GetCollisionForce());
-
-						if(bKilled)
+						if(ObjPtr->GetType() == Defcon::EObjType::LASERBEAM)
 						{
-							this->ExplodeObject(pObj2);
+							if(Obj2Ptr->GetType() == Defcon::EObjType::HUMAN)
+							{
+								gDefconGameInstance->GetStats().FriendlyFireIncidents++;
+							}
+							else
+							{
+								gDefconGameInstance->GetStats().HostilesDestroyedByLaser++;
+							}
 						}
+
+						this->ExplodeObject(Obj2Ptr);
 					}
 				}
 
-				// Either way, bullet is toast.
-				pObj->MarkAsDead();
-				// Skip testing targets, and 
-				// continue with next bullet.
+				// Either way, the weapons fire object is toast.
+				ObjPtr->MarkAsDead();
+
+				// Skip testing targets, and continue with next bullet.
 				break;
 			}
 			
-			pObj2 = pObj2->GetNext();
+			Obj2Ptr = Obj2Ptr->GetNext();
 		}
-		
-		//pObj = pObj->GetNext();
 	});
 }
 
@@ -1775,9 +1745,9 @@ void UDefconPlayViewBase::OnPlayerShipDestroyed()
 {
 	// Player died; restart mission.
 
-	if(!m_bArenaDying)
+	if(!bArenaDying)
 	{
-		m_bArenaDying = true;
+		bArenaDying = true;
 
 		auto pEvt = new Defcon::CRestartMissionEvent;
 		pEvt->Init();
@@ -1785,7 +1755,7 @@ void UDefconPlayViewBase::OnPlayerShipDestroyed()
 		pEvt->When = GameTime() + DESTROYED_PLAYER_LIFETIME * 2;
 		Events.Add(pEvt);
 
-		m_fFadeAge = DESTROYED_PLAYER_LIFETIME * 2;
+		FadeAge = DESTROYED_PLAYER_LIFETIME * 2;
 	}
 }
 
@@ -1801,6 +1771,7 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 	for(int32 I = 0; I < 10; I++)
 	{
 		auto FlakPtr = new Defcon::CFlak;
+
 		FlakPtr->ColorbaseYoung = cby;
 		FlakPtr->LargestSize = 4;
 		FlakPtr->bFade = true;//bDieOff;
@@ -1831,7 +1802,6 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 
 	gpAudio->OutputSound(Defcon::EAudioTrack::Shieldbonk);
 }
-
 
 
 void UDefconPlayViewBase::ProcessWeaponsHits()
@@ -1917,6 +1887,8 @@ void UDefconPlayViewBase::FireSmartbomb()
 {
 	if(GetPlayerShip().IsAlive())
 	{
+		gDefconGameInstance->GetStats().SmartbombsDetonated++;
+
 		gpAudio->OutputSound(Defcon::EAudioTrack::Smartbomb);
 
 		auto BombPtr = new Defcon::CSmartbomb;

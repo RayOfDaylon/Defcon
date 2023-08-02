@@ -4,70 +4,67 @@
 #pragma once
 
 #include "enemies.h"
+#include "Globals/_sound.h"
 
 
 namespace Defcon
 {
-	// todo: use a base class to consolidate common members and code
+	class IMunchie : public CEnemy
+	{
+		// Base class of munchie enemies -- munchie, phred, and bigred.
+		// Motion is done via ILiveGameObject physics.
 
-	class CPhred : public CEnemy
+		public:
+			IMunchie();
+			virtual ~IMunchie() {}
+
+			virtual void   Move                   (float DeltaTime) override;
+
+
+		protected:
+
+			float	     SquakTime;
+			EAudioTrack  AudioTrack;
+			bool	     bPreferTargetUnderside;
+	};
+
+
+	class CPhred : public IMunchie
 	{
 		public:
 			CPhred();
-			virtual ~CPhred();
+			virtual ~CPhred() {}
 
 #ifdef _DEBUG
-			virtual const char* GetClassname() const;
+			virtual const char* GetClassname() const { static char* psz = "Phred"; return psz; }
 #endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual EColor GetExplosionColorBase  () const override;
-
-
-		private:
-			bool	m_bPreferTargetUnderside;
-			bool	m_bFacingLeft;
-			float	m_fSquakTime;
+			virtual EColor GetExplosionColorBase  () const override { return EColor::Gray; }
 	};
 
-	class CBigRed : public CEnemy
+
+	class CBigRed : public IMunchie
 	{
 		public:
 			CBigRed();
-			virtual ~CBigRed();
+			virtual ~CBigRed() {}
 
 #ifdef _DEBUG
-			virtual const char* GetClassname() const;
+			virtual const char* GetClassname() const { static char* psz = "BigRed"; return psz; }
 #endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual EColor GetExplosionColorBase  () const override;
-
-
-		private:
-			bool	m_bPreferTargetUnderside;
-			bool	m_bFacingLeft;
-			float	m_fSquakTime;
+			virtual EColor GetExplosionColorBase  () const override { return EColor::Red; }
 	};
 
-	class CMunchie : public CEnemy
+
+	class CMunchie : public IMunchie
 	{
 		public:
 			CMunchie();
-			virtual ~CMunchie();
+			virtual ~CMunchie() {}
 
 #ifdef _DEBUG
-			virtual const char* GetClassname() const;
+			virtual const char* GetClassname() const { static char* psz = "Munchie"; return psz; }
 #endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual EColor GetExplosionColorBase  () const override;
-			float GetExplosionMass() const { return 0.6f; }
-
-
-		private:
-			bool	m_bPreferTargetUnderside;
-			bool	m_bFacingLeft;
-			float	m_fSquakTime;
+			virtual EColor GetExplosionColorBase () const override { return EColor::Green; }
+			virtual float  GetExplosionMass      () const override { return 0.6f; }
 	};
 }

@@ -27,7 +27,7 @@ Defcon::CGuppy::CGuppy()
 	Type = EObjType::GUPPY;
 	PointValue = GUPPY_VALUE;
 	State = Lounging;
-	TargetPtr = nullptr;
+	
 	float speed = FRANDRANGE(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
 	if(FRAND > 0.5f) 
 		speed *= -1;
@@ -61,11 +61,11 @@ const char* Defcon::CGuppy::GetClassname() const
 #endif
 
 
-void Defcon::CGuppy::Move(float fTime)
+void Defcon::CGuppy::Move(float DeltaTime)
 {
 	// Move towards target.
 
-	CEnemy::Move(fTime);
+	CEnemy::Move(DeltaTime);
 
 	Inertia = Position;
 	
@@ -86,14 +86,14 @@ void Defcon::CGuppy::Move(float fTime)
 			if(!bVis)
 				TimeTargetWithinRange = 0.0f;
 			else
-				TimeTargetWithinRange += fTime;
+				TimeTargetWithinRange += DeltaTime;
 		}
 		else
 		{
 			// Target was out of range; See if it entered range.
 			if(bVis)
 			{
-				TimeTargetWithinRange = fTime;
+				TimeTargetWithinRange = DeltaTime;
 
 				TargetOffset.Set(
 					FRANDRANGE(-100, 100), 
@@ -119,11 +119,11 @@ void Defcon::CGuppy::Move(float fTime)
 			else if(TargetPtr != nullptr)
 			{
 				CFPoint pt;
-				gpArena->Direction(Position, TargetPtr->Position, Orientation.Fwd);
+				gpArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
 
 				//Orientation.Fwd.Set(SGN(this->m_targetOffset.y), 0);
 				Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
-				Position.MulAdd(Orientation.Fwd, fTime * GUPPY_SPEEDMIN/2);
+				Position.MulAdd(Orientation.Fwd, DeltaTime * GUPPY_SPEEDMIN/2);
 			}
 			break;
 
@@ -143,9 +143,9 @@ void Defcon::CGuppy::Move(float fTime)
 					//if(Orientation.Fwd.y == 0)
 					//	Orientation.Fwd.y = SFRAND;
 					CFPoint pt;
-					gpArena->Direction(Position, TargetPtr->Position, pt);
+					gpArena->ShortestDirection(Position, TargetPtr->Position, pt);
 					Orientation.Fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
-					Position.MulAdd(Orientation.Fwd, fTime * AVG(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX));
+					Position.MulAdd(Orientation.Fwd, DeltaTime * AVG(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX));
 				}
 			}
 			
@@ -161,9 +161,7 @@ void Defcon::CGuppy::Move(float fTime)
 			}
 			else
 			{
-				check(TargetPtr != nullptr);
-
-				float dist = gpArena->Direction(Position, TargetPtr->Position, Orientation.Fwd);
+				float dist = gpArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
 				float vd = Position.y - TargetPtr->Position.y;
 				if(ABS(vd) < BboxRadius.y && SGN(TargetPtr->Orientation.Fwd.x) != SGN(Orientation.Fwd.x))
 				{
@@ -174,27 +172,20 @@ void Defcon::CGuppy::Move(float fTime)
 				else
 				{
 					CFPoint pt = TargetPtr->Position + TargetOffset;
-					gpArena->Direction(Position, pt, Orientation.Fwd);
-
-					float speed;
+					gpArena->ShortestDirection(Position, pt, Orientation.Fwd);
 
 					dist /= gpArena->GetDisplayWidth();
 
-					if(dist >= 0.8f)
-					{
-						speed = MAP(dist, 0.8f, 1.0f, GUPPY_SPEEDMAX, 0.0f);
-					}
-					else
-					{
-						speed = MAP(dist, 0.0f, 0.8f, GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
-					}
-
+					const float speed = dist >= 0.8f 
+						? MAP(dist, 0.8f, 1.0f, GUPPY_SPEEDMAX, 0.0f)
+						: MAP(dist, 0.0f, 0.8f, GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
+					
 					Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
-					Position.MulAdd(Orientation.Fwd, fTime * speed);
+					Position.MulAdd(Orientation.Fwd, DeltaTime * speed);
 
 					if(IsOurPositionVisible() && CanBeInjured() && TargetPtr->CanBeInjured() && speed < 400)
 					{
-						FiringCountdown -= fTime;
+						FiringCountdown -= DeltaTime;
 
 						ConsiderFiringBullet();
 					}
@@ -218,7 +209,7 @@ void Defcon::CGuppy::ConsiderFiringBullet()
 {
 	if(FiringCountdown <= 0.0f)
 	{
-		IBullet* pb = gpArena->FireBullet(*this, Position, (FRAND <= 0.85f) ? 2 : 3, 1);
+		(void) gpArena->FireBullet(*this, Position, (FRAND <= 0.85f) ? 2 : 3, 1);
 
 		// The time to fire goes down as the player XP increases.
 

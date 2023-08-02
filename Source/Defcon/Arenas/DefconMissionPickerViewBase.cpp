@@ -294,6 +294,7 @@ void UDefconMissionPickerViewBase::OnChooseMission()
 	gpAudio->OutputSound(Defcon::EAudioTrack::Mission_chosen);
 
 	gDefconGameInstance->SetScore(0);
+	gDefconGameInstance->GetStats().Reset();
 
 	gDefconGameInstance->SetCurrentMission((Defcon::EMissionID)MissionID);
 }

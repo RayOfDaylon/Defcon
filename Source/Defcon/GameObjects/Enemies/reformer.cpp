@@ -289,7 +289,7 @@ void Defcon::CReformerPart::Move(float fTime)
 
 
 			CFPoint dir;
-			float dist = gpArena->Direction(Position, pNeighbour->Position, dir);
+			float dist = gpArena->ShortestDirection(Position, pNeighbour->Position, dir);
 			if(dist < bestdist)
 			{
 				pClosest = pNeighbour;
@@ -329,13 +329,13 @@ void Defcon::CReformerPart::Move(float fTime)
 					//m_targetOffset.Set(
 					//	LERP(-100, 100, FRAND), 
 					//	LERP(50, 90, FRAND) * SGN(Position.y - pTarget->Position.y));
-					//m_freq = LERP(6, 12, FRAND);
+					//Frequency = LERP(6, 12, FRAND);
 					//m_amp = LERP(.33f, .9f, FRAND);
 				}
 			}
 
 			CFPoint dir;
-			float dist = gpArena->Direction(Position, pTarget->Position, dir);
+			float dist = gpArena->ShortestDirection(Position, pTarget->Position, dir);
 
 			if(m_fTimeTargetWithinRange > 0.75f)
 			{

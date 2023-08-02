@@ -15,31 +15,28 @@ namespace Defcon
 			CHunter();
 			virtual ~CHunter();
 
-			//virtual void Notify(Defcon::EMessage, void*);
-
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
+			virtual void   Move                   (float DeltaTime) override;
 			virtual EColor GetExplosionColorBase  () const override;
-			virtual float GetExplosionMass() const;
+			virtual float  GetExplosionMass       () const override;
 
-			float					m_personalSpace;
-			float					m_maxSpeed;
-
-			virtual void OnAboutToDie();
-
-			float					m_fTimeTargetWithinRange;
-			CFPoint					m_targetOffset;
 
 		protected:
+			
+			void  ConsiderFiringBullet();
+
 
 		private:
-			enum State { lounging, fighting, evading };
-			State					m_eState;
-			float					m_fSpeed;
-			float					m_freq;
-			float					m_amp;
+
+			enum EState { Lounging, Fighting, Evading };
+
+			CFPoint     TargetOffset;
+			float       TimeTargetWithinRange;
+			float       Frequency;
+			float       Amplitude;
+			float       FiringCountdown = 1.0f;
+			EState      State;
 	};
 }

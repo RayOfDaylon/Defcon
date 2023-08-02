@@ -14,36 +14,37 @@ namespace Defcon
 			CLander();
 			virtual ~CLander();
 
-			virtual void Notify(Defcon::EMessage, void*);
 
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
+			virtual void   Move                   (float DeltaTime) override;
 			virtual EColor GetExplosionColorBase  () const override;
+			virtual void   Notify                 (Defcon::EMessage, void*) override;
+			virtual void   OnAboutToDie           () override;
 
-			void SetDoChaseHumans(bool b) { m_bChaseNearestHuman = b; }
+			void SetDoChaseHumans                 (bool b) { bChaseNearestHuman = b; }
 
-			CGameObjectCollection*	Objects;
-			float					m_personalSpace;
-			float					m_maxSpeed;
+			CGameObjectCollection*  Objects = nullptr;
 
-			// Hover mode stuff.
-			float					m_fHoverAltitude; // Distance above ground, not absolute Y value.
-			void*					m_pvUserTerrainEval;
-
-			virtual void OnAboutToDie();
 
 		protected:
 
+			void ConsiderFiringBullet(float DeltaTime);
+
+
 		private:
-			enum class State { descending, hovering, acquiring, ascending, ascended, fighting };
-			State					m_eState;
-			float					m_fSpeed;
-			IGameObject*			m_pHuman;
-			IGameObject*			m_pTrackedHuman;
-			bool					m_bChaseNearestHuman;
-			bool					m_bAscendStraight;
+
+			enum class EState { Descending, Hovering, Acquiring, Ascending, Ascended, Fighting };
+
+			IGameObject*  HumanPtr        = nullptr;
+			IGameObject*  TrackedHumanPtr = nullptr;
+			float         MaxSpeed;
+			float         HoverAltitude; // Distance above ground, not absolute Y value.
+			float         DescentSpeed;
+			float         FiringCountdown;
+			EState        State;
+			bool          bChaseNearestHuman;
+			bool          bAscendStraight;
 	};
 }

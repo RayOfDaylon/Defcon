@@ -101,7 +101,7 @@ void Defcon::CBaiter::Move(float DeltaTime)
 			(float)cos(Age) * 300.0f * SGN(TargetPtr->Orientation.Fwd.x),
 			vsign * (float)fabs(sin(Age)) * 50.0f + vsign * 50.0f);
 
-		const float Xd = gpArena->Direction(Position, target, delta);
+		const float Xd = gpArena->ShortestDirection(Position, target, delta);
 		bool bMoveTowards = (Xd > 150 || SGN(Orientation.Fwd.x) != SGN(TargetPtr->Orientation.Fwd.x));
 
 		if(bMoveTowards)

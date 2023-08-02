@@ -165,10 +165,10 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	bool 	bFinishActivating = false;
 
 	bool    m_bHumansInMission = false;
-	bool    m_bArenaDying    = false;
+	bool    bArenaDying    = false;
 	bool    m_bRunSlow       = false;
 	float   m_fRadarFritzed  = 0.0f;
-	float   m_fFadeAge       = 0.0f;
+	float   FadeAge       = 0.0f;
 	int32   m_nFlashScreen   = 0;//todo: is this needed?
 
 
@@ -183,7 +183,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	Defcon::CGameObjectCollection&        GetObjects              () { return Objects; }
 	Defcon::CGameObjectCollection&        GetEnemies              () { return Enemies; }
 
-	float                Direction            (const CFPoint& P1, const CFPoint& P2, CFPoint& Result) const;
+	float                ShortestDirection            (const CFPoint& P1, const CFPoint& P2, CFPoint& Result) const;
 	void                 Lerp                 (const CFPoint& P1, const CFPoint& P2, CFPoint& Result, float T) const;
 	float                Xdistance            (float X1, float X2) const;
 	float                HorzDistance         (const CFPoint& PtFrom, const CFPoint& PtTo) const { return Xdistance(PtFrom.x, PtTo.x); }
@@ -199,7 +199,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	void                 AddDebris            (Defcon::IGameObject* Obj);
 	void                 LayMine              (Defcon::IGameObject& Obj, const CFPoint& From, int, int);
 	Defcon::IBullet*     FireBullet           (Defcon::IGameObject&, const CFPoint& From, int SoundID, int);
-	bool                 IsEnding             () const { return m_bArenaDying; }
+	bool                 IsEnding             () const { return bArenaDying; }
 	void                 ExplodeObject        (Defcon::IGameObject* Obj);
 	void                 IncreaseScore        (int32 Points, bool bVis, const CFPoint* P);
 	void                 CreateEnemy          (Defcon::EObjType Kind, const CFPoint& Where, float When, Defcon::EObjectCreationFlags Flags);

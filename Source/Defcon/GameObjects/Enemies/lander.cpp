@@ -30,42 +30,41 @@
 
 Defcon::CLander::CLander()
 {
-	Type				= EObjType::LANDER;
-	PointValue		= LANDER_VALUE;
-	m_eState			= State::descending;
-	TargetPtr			= nullptr;
-	m_pHuman			= nullptr;
-	m_pTrackedHuman		= nullptr;
-	float speed			= (FRAND * .75f + 0.25f) * (FRAND > 0.5f ? -1 : 1);
-	m_personalSpace		= FRAND * 60 + 20;
-	m_maxSpeed			= FRAND * 0.5f + 0.5f;
-	RadarColor		= MakeColorFromComponents(255, 255, 0);
-	m_fSpeed			= FRAND + 1.0f;
-	m_fHoverAltitude	= FRAND * 20 + 40;
-	AnimSpeed		= FRAND * 0.66f + 0.33f;
+	ParentType = Type;
+	Type       = EObjType::LANDER;
 
-	Orientation.Fwd.Set(speed, 0);
-	//BboxRadius.Set(11, 11); // todo: s/b based on sprite size?
+	PointValue      = LANDER_VALUE;
+	State           = EState::Descending;
+	MaxSpeed        = FRANDRANGE(0.5f, 1.0f);
+	DescentSpeed    = FRANDRANGE(1.0f, 2.0f);
+	RadarColor      = MakeColorFromComponents(255, 255, 0);
+	HoverAltitude   = FRAND * 20 + 40;
+	FiringCountdown = FRANDRANGE(1.0f, 3.0f);
+
+	const float Speed = FRANDRANGE(0.25f, 1.0f) * (BRAND ? -1 : 1);
+	Orientation.Fwd.Set(Speed, 0);
 
 	// With increasing probability over 10,000 pts,
 	// and the nearest human is behind us, then 
 	// change direction.
 	// 0 - 10000    0.1
 	// 60000+        0.9
-	float fProbChaseHuman = 0.05f;
+
+	float ProbChaseHuman = 0.05f;
 
 	const float score = (float)gDefconGameInstance->GetScore();
 
 	if(score > 10000 && score <= 60000)
 	{
-		fProbChaseHuman = LERP(0.1f, 0.9f, (score-10000)/50000);
+		ProbChaseHuman = LERP(0.1f, 0.9f, (score-10000) / 50000);
 	}
 	else if(score > 60000)
 	{
-		fProbChaseHuman = 0.95f;
+		ProbChaseHuman = 0.95f;
 	}
 
-	m_bChaseNearestHuman = (FRAND <= fProbChaseHuman);
+	bChaseNearestHuman = (FRAND <= ProbChaseHuman);
+
 
 	CreateSprite(EObjType::LANDER);
 
@@ -81,12 +80,12 @@ Defcon::CLander::~CLander()
 
 void Defcon::CLander::OnAboutToDie()
 {
-	if(m_pHuman != nullptr)
+	if(HumanPtr != nullptr)
 	{
- 		m_pHuman->Notify(EMessage::CarrierKilled, this);
+ 		HumanPtr->Notify(EMessage::CarrierKilled, this);
 	}
 
-	m_pHuman = nullptr;
+	HumanPtr = nullptr;
 }
 
 
@@ -107,15 +106,15 @@ void Defcon::CLander::Notify(Defcon::EMessage msg, void* pObj)
 
 			check(pObj != nullptr);
 
-			if(pObj == m_pTrackedHuman)
+			if(pObj == TrackedHumanPtr)
 			{
-				m_pTrackedHuman = nullptr;
-				m_eState = State::hovering;
+				TrackedHumanPtr = nullptr;
+				State = EState::Hovering;
 			}
-			if(pObj == m_pHuman)
+			if(pObj == HumanPtr)
 			{
-				m_pHuman = nullptr;
-				m_eState = State::fighting;
+				HumanPtr = nullptr;
+				State = EState::Fighting;
 			}
 
 			break;
@@ -123,12 +122,14 @@ void Defcon::CLander::Notify(Defcon::EMessage msg, void* pObj)
 
 		case Defcon::EMessage::HumanTakenAboard:
 
-			if(pObj == m_pTrackedHuman)
+			check(pObj != nullptr);
+
+			if(pObj == TrackedHumanPtr)
 			{
-				check(m_pHuman == nullptr);
+				check(HumanPtr == nullptr);
 				// Someone beat us to the punch.
-				m_pTrackedHuman = nullptr;
-				m_eState = State::hovering;
+				TrackedHumanPtr = nullptr;
+				State = EState::Hovering;
 #ifdef _DEBUG
 				OutputDebugString("Hunter: tracked human abducted by sibling\n");
 #endif
@@ -141,64 +142,53 @@ void Defcon::CLander::Notify(Defcon::EMessage msg, void* pObj)
 }
 
 
-void Defcon::CLander::Move(float fTime)
+void Defcon::CLander::Move(float DeltaTime)
 {
 	// Move towards target.
 
-	CEnemy::Move(fTime);
+	CEnemy::Move(DeltaTime);
 
 	const float kHoverStartAlt = 100;
 
 	Inertia = Position;
 
-	// if we are on screen then
-	//   if the dice roll well enough
-	//     fire bullet
-
-	// todo: odds of firing a bullet need to be time based, not frame based.
-	// e.g. some deviation from a base bullets-per-second frequency.
-	if(FRAND <= 0.005f 
-		&& this->CanBeInjured()
-		&& gpArena->GetPlayerShip().IsAlive()
-		&& IsOurPositionVisible())
-		gpArena->FireBullet(*this, Position, 1, 1);
 
 
-	switch(m_eState)
+	ConsiderFiringBullet(DeltaTime);
+
+
+	switch(State)
 	{
-		case State::descending:
-			check(m_pHuman == nullptr);
-			check(m_pTrackedHuman == nullptr);
+		case EState::Descending:
+			check(HumanPtr == nullptr);
+			check(TrackedHumanPtr == nullptr);
 
 			if(Position.y < kHoverStartAlt)
-				m_eState = State::hovering;
+				State = EState::Hovering;
 			else
 			{
 				// Lower ourself.
 				Orientation.Fwd.y = -1.0f;
-				Position.MulAdd(Orientation.Fwd, fTime * m_fSpeed * LANDER_DESCENT_SPEED);
+				Position.MulAdd(Orientation.Fwd, DeltaTime * DescentSpeed * LANDER_DESCENT_SPEED);
 			}
 			break;
 
 
-		case State::hovering:
+		case EState::Hovering:
 		{
 			// Move horizontally while staying over terrain.
 
-			check(m_pHuman == nullptr);
-			check(m_pTrackedHuman == nullptr);
+			check(HumanPtr == nullptr);
+			check(TrackedHumanPtr == nullptr);
 
-			float speed = m_maxSpeed * 0.33f;
-			//check(m_fnTerrainEval != nullptr);
-
+			float speed = MaxSpeed * 0.33f;
 
 			CFPoint target; // where we want to move to.
 				
-			if(m_bChaseNearestHuman)
+			if(bChaseNearestHuman)
 			{
-				// todo: why aren't we using m_fnHumanFinder all the time?
-				//Defcon::CHuman* pHuman = gpGame->FindHuman(Position);
-				Defcon::CHuman* pHuman = (CHuman*)gpArena->FindHuman(Position.x);
+				auto pHuman = (CHuman*)gpArena->FindHuman(Position.x);
+
 				if(pHuman != nullptr)
 				{
 					target = pHuman->Position;
@@ -207,7 +197,7 @@ void Defcon::CLander::Move(float fTime)
 				}
 				else
 				{
-					m_eState = State::fighting;
+					State = EState::Fighting;
 					break;
 				}
 			}
@@ -228,54 +218,56 @@ void Defcon::CLander::Move(float fTime)
 			// Take terrain into account.
 			//float fAltDelta = Position.y - m_fnTerrainEval(Position.x, m_pvUserTerrainEval);
 			float fAltDelta = Position.y - gpArena->GetTerrainElev(Position.x);
-			fAltDelta -= m_fHoverAltitude;
+			fAltDelta -= HoverAltitude;
 			// If fAltDelta is +, we want to go down.
 			// Go down slower than up.
 			Orientation.Fwd.y = fAltDelta * (fAltDelta > 0 ? -0.01f : -0.03f);
 			Orientation.Fwd.y = FMath::Min(Orientation.Fwd.y, 1.25f);
 			Orientation.Fwd.y = FMath::Max(Orientation.Fwd.y, -1.25f);
 
-			Position.MulAdd(Orientation.Fwd, fTime * ScreenSize.x * speed);
+			Position.MulAdd(Orientation.Fwd, DeltaTime * ScreenSize.x * speed);
 
 			// If we are near a human, and the odds 
 			// say so or we've been around for more than 
 			// 20 seconds, then switch to abduct mode.
-			if(m_bChaseNearestHuman || Age > LANDER_MATURE || FRAND <= LANDER_ABDUCTODDS)
+			if(bChaseNearestHuman || Age > LANDER_MATURE || FRAND <= LANDER_ABDUCTODDS)
 			{
 				if(gDefconGameInstance->GetMission()->HumansInvolved())
 				{
-					//m_pTrackedHuman = m_fnHumanFinder(Position.x, m_pvUserTerrainEval);
-					m_pTrackedHuman = (CHuman*)gpArena->FindHuman(Position.x);
-					if(m_pTrackedHuman != nullptr)
-						m_eState = State::acquiring;
+					TrackedHumanPtr = (CHuman*)gpArena->FindHuman(Position.x);
+
+					if(TrackedHumanPtr != nullptr)
+					{
+						State = EState::Acquiring;
+					}
 				}
 			}
 		}
 			break;
 
 
-		case State::acquiring: 
+		case EState::Acquiring: 
 		{
 			// If human exists, move towards it into docking
 			// position. Otherwise, switch back to hovering.
-			check(m_pHuman == nullptr);
+			check(HumanPtr == nullptr);
 
-			if(m_pTrackedHuman == nullptr)
+			if(TrackedHumanPtr == nullptr)
 			{
-				m_eState = State::hovering;
+				State = EState::Hovering;
 			}
 			else
 			{
 				// Human target exists. Attempt to dock to it.
 				CFPoint target;
-				target = m_pTrackedHuman->Position;
+				target = TrackedHumanPtr->Position;
 				target.y += 27.0f; // Don't center lander with human!
 				PositionDelta(Orientation.Fwd, Position, target, ArenaSize.x);
 				float dist = Orientation.Fwd.Length();
 				Orientation.Fwd.Normalize();
-				float speed = m_maxSpeed * 0.33f;
-				float motion = FMath::Min(fTime * ScreenSize.x * speed, dist);
-				Position.MulAdd(Orientation.Fwd, /*fTime * 80.0f*/motion);
+				float speed = MaxSpeed * 0.33f;
+				const float motion = FMath::Min(DeltaTime * ScreenSize.x * speed, dist);
+				Position.MulAdd(Orientation.Fwd, motion);
 
 				// If we've docked, switch to ascent mode.
 
@@ -283,15 +275,16 @@ void Defcon::CLander::Move(float fTime)
 
 				if(dd.Distance(Position) < 2.0f)
 				{
-					m_eState = State::ascending;
-					m_pHuman = m_pTrackedHuman;
-					m_pTrackedHuman = nullptr;
+					State = EState::Ascending;
+					HumanPtr = TrackedHumanPtr;
+					TrackedHumanPtr = nullptr;
 
 					// Ascend perfectly vertical half the time,
 					// and otherwise, cut the horz. speed
 					// by some random amount.
-					m_bAscendStraight = (FRAND >= 0.5f);
-					if(!m_bAscendStraight)
+					bAscendStraight = BRAND;
+
+					if(!bAscendStraight)
 					{
 						Orientation.Fwd.x *= FRAND;
 					}
@@ -299,7 +292,7 @@ void Defcon::CLander::Move(float fTime)
 					// that we've abducted him, thus if any of
 					// them have been tracking him, they will
 					// stop doing so.
-					m_pHuman->Notify(Defcon::EMessage::TakenAboard, this);
+					HumanPtr->Notify(Defcon::EMessage::TakenAboard, this);
 					gpAudio->OutputSound(EAudioTrack::Human_abducted);
 				}
 			}
@@ -307,57 +300,57 @@ void Defcon::CLander::Move(float fTime)
 			break;
 
 
-		case State::ascending:
+		case EState::Ascending:
 		{
-			check(m_pTrackedHuman == nullptr);
+			check(TrackedHumanPtr == nullptr);
 
-			if(m_pHuman == nullptr)
+			if(HumanPtr == nullptr)
 			{
 				// The human we were taking was killed.
 				// (Player is a lousy shot).
-				m_eState = State::fighting;
+				State = EState::Fighting;
 			}
 			else
 			{
 				// Got the human, proceed to orbit.
-				if(m_bAscendStraight)
+				if(bAscendStraight)
 					Orientation.Fwd.x = 0.0f;
 
 				Orientation.Fwd.y = 1.0f;
-				Position.MulAdd(Orientation.Fwd, fTime * LANDER_ASCENTRATE);
+				Position.MulAdd(Orientation.Fwd, DeltaTime * LANDER_ASCENTRATE);
 			
 				// Did we reach orbit?
-				if(m_pHuman->Position.y > ArenaSize.y + m_pHuman->BboxRadius.y)
+				if(HumanPtr->Position.y > ArenaSize.y + HumanPtr->BboxRadius.y)
 				{
 					// Kill us and the human.
-					this->m_eState = State::ascended;
-					this->bMortal = true;
-					this->MarkAsDead();
-					m_pHuman->bMortal = true;
-					m_pHuman->MarkAsDead();
+					State = EState::Ascended;
+					bMortal = true;
+					MarkAsDead();
+					HumanPtr->bMortal = true;
+					HumanPtr->MarkAsDead();
 				}
 			}
 		}
 			break;
 
 
-		case State::fighting:
+		case EState::Fighting:
 		{
-			check(m_pHuman == nullptr);
-			check(m_pTrackedHuman == nullptr);
+			check(HumanPtr == nullptr);
+			check(TrackedHumanPtr == nullptr);
 
-			if(m_bChaseNearestHuman)
+			if(bChaseNearestHuman)
 			{
 				//Defcon::CHuman* pHuman = gpGame->FindHuman(Position);
 				Defcon::CHuman* pHuman = (CHuman*) gpArena->FindHuman(Position.x);
 				if(pHuman != nullptr)
 				{
-					m_eState = State::hovering;
+					State = EState::Hovering;
 					break;
 				}
 			}
 
-			float speed = m_maxSpeed * 0.33f;
+			float speed = MaxSpeed * 0.33f;
 
 			IGameObject* pTarget = TargetPtr;
 			if(pTarget == nullptr)
@@ -368,7 +361,7 @@ void Defcon::CLander::Move(float fTime)
 			else
 			{
 				// Target present, move towards it.
-				gpArena->Direction(Position, pTarget->Position, Orientation.Fwd);
+				gpArena->ShortestDirection(Position, pTarget->Position, Orientation.Fwd);
 				//Orientation.Fwd = pTarget->Position;
 				//float dist = Orientation.Fwd.Distance(Position);
 				//Orientation.Fwd -= Position;
@@ -378,7 +371,7 @@ void Defcon::CLander::Move(float fTime)
 			}
 
 			CFPoint fpos(Position);
-			fpos.MulAdd(Orientation.Fwd, fTime * ScreenSize.x * speed);
+			fpos.MulAdd(Orientation.Fwd, DeltaTime * ScreenSize.x * speed);
 
 #if 0
 			// Avoid moving too close to other hunters.
@@ -411,19 +404,43 @@ void Defcon::CLander::Move(float fTime)
 			}
 #endif
 
-			Position.MulAdd(Orientation.Fwd, fTime * ScreenSize.x * speed);
+			Position.MulAdd(Orientation.Fwd, DeltaTime * ScreenSize.x * speed);
 		}
 			break;
 	} // switch(state)
 
 	Inertia = Position - Inertia;
-
-	//m_fNow = GameTime();
 }
 
 
-void Defcon::CLander::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
+void Defcon::CLander::ConsiderFiringBullet(float DeltaTime)
 {
+	if(!gpArena->IsPointVisible(Position) || TargetPtr == nullptr)
+	{
+		return;
+	}
+		
+	// Hold fire if target is below ground
+	if(TargetPtr->Position.y < gpArena->GetTerrainElev(TargetPtr->Position.x))
+	{
+		return;
+	}
+
+	FiringCountdown -= DeltaTime;
+
+	if(FiringCountdown <= 0.0f)
+	{
+		(void) gpArena->FireBullet(*this, Position, (FRAND <= 0.85f) ? 2 : 3, 1);
+
+		// The time to fire goes down as the player XP increases.
+
+		const float XP = (float)gDefconGameInstance->GetScore();
+
+		float T = NORM_(XP, 1000.0f, 50000.f);
+		T = CLAMP(T, 0.0f, 1.0f);
+
+		FiringCountdown = LERP(3.0f, 0.25f, T) + Daylon::FRandRange(0.0f, 1.0f);
+	}
 }
 
 

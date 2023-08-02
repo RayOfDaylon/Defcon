@@ -27,6 +27,7 @@ namespace Defcon
 		SWARMER,
 		
 		BAITER,
+		IMUNCHIE,
 		PHRED,
 		BIGRED,
 		MUNCHIE,

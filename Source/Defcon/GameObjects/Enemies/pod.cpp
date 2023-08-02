@@ -24,17 +24,16 @@
 
 Defcon::CPod::CPod()
 	:
-	m_yoff(0.0f),
-	m_freq(2.0f),
-	m_xFreq(1.0f)
+	OffsetY(0.0f),
+	Frequency(2.0f)
 {
 	ParentType = Type;
-	Type = EObjType::POD;
+	Type       = EObjType::POD;
+
 	PointValue = POD_VALUE;
-	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = C_MAGENTA;
-	AnimSpeed = FRAND * 0.35f + 0.65f;
-	m_xFreq = FRAND * 0.5f + 1.0f;
+
+	Orientation.Fwd.Set(1.0f, 0.0f);
 
 	CreateSprite(Type);
 	const auto& SpriteInfo = GameObjectResources.Get(Type);
@@ -56,25 +55,24 @@ const char* Defcon::CPod::GetClassname() const
 #endif
 
 
-void Defcon::CPod::Move(float fTime)
+void Defcon::CPod::Move(float DeltaTime)
 {
 	// Just float around drifting horizontally.
 
-	CEnemy::Move(fTime);
+	CEnemy::Move(DeltaTime);
+
 	Inertia = Position;
 
 	//UE_LOG(LogGame, Log, TEXT("%S: Pod is at %d, %d"), __FUNCTION__, (int32)Position.x, (int32)Position.y);
 
-	Orientation.Fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
+	Orientation.Fwd.y = 0.1f * (float)sin(Frequency * (OffsetY + Age)); 
 
 	// Cause radar blip to blink
-	//float f = (float)fmod(Age, AnimSpeed) / AnimSpeed;
-	float f = 0.5f * (sin(Age * PI * 2) + 1.0f);
-	//f *= 1;
-	LerpColor(C_RED, C_BLUE, f, RadarColor);
+	const float T = PSIN(Age * PI * 2.0f);
+	LerpColor(C_RED, C_BLUE, T, RadarColor);
 
 
-	Position.MulAdd(Orientation.Fwd, fTime * 50.0f);
+	Position.MulAdd(Orientation.Fwd, DeltaTime * 50.0f); // todo: maybe make each pod's speed unique
 
 	//UE_LOG(LogGame, Log, TEXT("%S: Pod now at %d, %d"), __FUNCTION__, (int32)Position.x, (int32)Position.y);
 
@@ -82,16 +80,11 @@ void Defcon::CPod::Move(float fTime)
 }
 
 
-void Defcon::CPod::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
-}
-
-
 void Defcon::CPod::OnAboutToDie()
 {
 	// Release swarmers.
 
-	for(int32 i = 0; i < SWARMERS_PER_POD; i++)
+	for(int32 I = 0; I < SWARMERS_PER_POD; I++)
 	{
 		gpArena->CreateEnemy(EObjType::SWARMER, Position, 0.0f, EObjectCreationFlags::EnemyPart);
 	}
@@ -101,7 +94,7 @@ void Defcon::CPod::OnAboutToDie()
 void Defcon::CPod::Explode(CGameObjectCollection& debris)
 {
 	// Pods explode normally (but deep purple or red)
-	// but in a pod intersection, even more so because 
+	// but if collided with perfectly, even more so because 
 	// all the swarmers are biting it.
 
 	bMortal = true;

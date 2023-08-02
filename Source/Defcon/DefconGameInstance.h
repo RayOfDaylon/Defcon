@@ -15,7 +15,32 @@
 #include "GameObjects/obj_types.h"
 #include "DefconGameInstance.generated.h"
 
+namespace Defcon
+{
+	struct FTotals
+	{
+		int32 ShotsFired                   = 0;
+		int32 SmartbombsDetonated          = 0;
+		int32 HostilesDestroyedBySmartbomb = 0;
+		int32 HostilesDestroyedByLaser     = 0;
+		int32 FriendlyFireIncidents        = 0;
+		int32 PlayerHits                   = 0;
+		int32 PlayerCollisions             = 0;
+		int32 PlayerDeaths                 = 0;
 
+		void Reset()
+		{
+			ShotsFired                   = 0;
+			SmartbombsDetonated          = 0;
+			HostilesDestroyedBySmartbomb = 0;
+			HostilesDestroyedByLaser     = 0;
+			FriendlyFireIncidents        = 0;
+			PlayerHits                   = 0;
+			PlayerCollisions             = 0;
+			PlayerDeaths                 = 0;
+		}
+	};
+}
 
 
 /*
@@ -237,8 +262,8 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	// The score isn't visually shown, it's used more to track XP.
 	int32 Score = 0;
 	Daylon::TBindableValue<int32> SmartbombsLeft;
-	bool GodMode = false;
-
+	bool                          GodMode = false;
+	Defcon::FTotals               Stats;
 
 	public:
 
@@ -260,6 +285,7 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	void                                 MissionEnded           ();
 	FString                              GetCurrentMissionName  () const;
 	void                                 AddEvent               (Defcon::CEvent* Event);
+	Defcon::FTotals&                     GetStats               () { return Stats; }
 };
 
 extern UDefconGameInstance* gDefconGameInstance;
