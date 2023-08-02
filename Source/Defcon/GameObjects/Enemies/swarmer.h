@@ -10,8 +10,8 @@ namespace Defcon
 {
 	class CSwarmer : public CEnemy
 	{
-		// A swarmer is a tiny orange guy that flies 
-		// and shoots, and normally erupts from pods.
+		// A swarmer is a tiny orange guy that flies and shoots, and normally erupts from pods.
+
 		public:
 			CSwarmer();
 			virtual ~CSwarmer();
@@ -19,21 +19,25 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual float GetExplosionMass() const override { return 0.1f; }
-			bool Fireballs() const { return false; }
-			void Explode(CGameObjectCollection&);
+			virtual void  Move               (float DeltaTime) override;
+			virtual float GetExplosionMass   () const override { return 0.1f; }
+			virtual bool  Fireballs          () const override { return false; }
+			virtual void  Explode            (CGameObjectCollection&) override;
 
 			void SetOriginalPosition(const CFPoint& pt)	{ m_posOrg = pt; }
 
 		private:
-			float m_yoff;
-			float m_freq;
-			float m_xFreq;
-			float m_amp;
-			float m_halfwayAltitude;
-			float m_fTimeTargetWithinRange;
+
+			void ConsiderFiringBullet(float DeltaTime);
+
+			float FiringCountdown;
+
+			float VerticalOffset;
+			float Frequency;
+			float HorzFrequency;
+			float Amplitude;
+			float HalfwayAltitude;
+			float TimeTargetWithinRange;
 			float CountdownToMakeSound;
 			CFPoint	m_posOrg;
 	};

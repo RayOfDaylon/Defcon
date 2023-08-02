@@ -36,13 +36,21 @@ Defcon::CGhost::CGhost()
 	Orientation.Fwd.Set(1.0f, 0.0f);
 	RadarColor = MakeColorFromComponents(192, 192, 192);
 
-	AnimSpeed     = FRAND * 0.35f + 0.65f;
+	AnimSpeed     = FRANDRANGE(0.5f, 1.0f);
 	
-	bWaits        = BRAND;
-	NumParts      = IRAND(4) + 4;
-	SpinVelocity  = SFRAND;
-	SpinAngle     = FRAND;
+	NumParts           = IRAND(4) + 4;
+	SpinVelocity       = FRANDRANGE(-1.0f, 1.0f);
+	SpinAngle          = FRAND;
+	SpinDir            = BRAND ? 1: -1;
 	DispersalCountdown = 0.0f;
+	FiringCountdown    = FRANDRANGE(2.0f, 4.0f);
+
+	for(int I = 1; I < NumParts; I++)
+	{
+		PartRadiiMin[I] = FRANDRANGE(0.5f, 1.0f);
+		PartRadiiMax[I] = FRANDRANGE(PartRadiiMin[I], 1.5f);
+		PartRadiiSpeed[I] = FRANDRANGE(1.0f, 2.0f);
+	}
 
 	const auto& Info = GameObjectResources.Get(EObjType::GHOSTPART);
 	BboxRadius = Info.Size * 0.5f; // seems too small, yet... here we are
@@ -62,91 +70,104 @@ const char* Defcon::CGhost::GetClassname() const
 #endif
 
 
-void Defcon::CGhost::Move(float fTime)
+
+void Defcon::CGhost::ConsiderFiringBullet(float DeltaTime)
+{
+	if(!gpArena->IsPointVisible(Position) || TargetPtr == nullptr)
+	{
+		return;
+	}
+		
+	// Hold fire if target is below ground
+	if(TargetPtr->Position.y < gpArena->GetTerrainElev(TargetPtr->Position.x))
+	{
+		return;
+	}
+
+	FiringCountdown -= DeltaTime;
+
+	if(FiringCountdown <= 0.0f)
+	{
+		(void) gpArena->FireBullet(*this, Position, 1, 1);
+
+		// The time to fire goes down as the player XP increases.
+
+		const float XP = (float)gDefconGameInstance->GetScore();
+
+		float T = NORM_(XP, 1000.0f, 50000.f);
+		T = CLAMP(T, 0.0f, 1.0f);
+
+		FiringCountdown = LERP(3.0f, 0.25f, T) + Daylon::FRandRange(0.0f, 1.0f);
+	}
+}
+
+
+void Defcon::CGhost::Move(float DeltaTime)
 {
 	// Just float around drifting horizontally.
 
 	if(DispersalCountdown > 0.0f)
 	{
-		DispersalCountdown -= fTime;
+		DispersalCountdown -= DeltaTime;
 		return;
 	}
 
 	// We are in normal form (not dispersed).
 
-	CEnemy::Move(fTime);
+	CEnemy::Move(DeltaTime);
+
 	Inertia = Position;
 
 	Orientation.Fwd.y = 0.1f * (float)sin(Frequency * (OffsetY + Age)); 
 
+	ConsiderFiringBullet(DeltaTime);
 
-	//float diff = (float)UDefconUtils::GetGameInstance(gpArena)->GetScore() / 50000;
-	float diff = (float)gDefconGameInstance->GetScore() / 50000;
+	//SpinVelocity = 1.0f;//sin(Age * PI * m_fSpinVelMax);
+	SpinAngle += (SpinVelocity * DeltaTime);
 
-	if(bWaits)
-		diff *= (float)(ABS(sin(Age * PI)));
-
-	diff = FMath::Min(diff, 1.5f);
-
-	if(true/*m_bFiresBullets*/)
-	{
-		if(FRAND <= 0.05f * diff
-			&& this->CanBeInjured()
-			&& gpArena->GetPlayerShip().IsAlive()
-			&& IsOurPositionVisible())
-		{
-			gpArena->FireBullet(*this, Position, 1, 1);
-		}
-	}
-
-	SpinVelocity = 1.0f;//sin(Age * PI * m_fSpinVelMax);
-	SpinAngle += (SpinVelocity * fTime);
-
-	Position.MulAdd(Orientation.Fwd, fTime * 50.0f);
+	Position.MulAdd(Orientation.Fwd, DeltaTime * 50.0f);
 	Inertia = Position - Inertia;
 
 	// See if we need to disperse (player ship got too close).
 
-	CPlayer* pTarget = &gpArena->GetPlayerShip();
-
-	if(pTarget->IsAlive() && !this->MarkedForDeath())
+	if(TargetPtr != nullptr && !this->MarkedForDeath())
 	{
-		CFPoint dir;
-		const float dist = gpArena->ShortestDirection(Position, pTarget->Position, dir);
+		CFPoint Direction;
+		const float Distance = gpArena->ShortestDirection(Position, TargetPtr->Position, Direction);
 
-		if(dist < GHOST_PLAYER_DIST_MIN) // todo: use pref value instead of constant 200
+		if(Distance < GHOST_PLAYER_DIST_MIN)
 		{
-			const float flighttime = FRAND * 1.0f + 0.5f;
+			const float FlightTime = FRANDRANGE(0.5f, 1.5f);
 
-			DispersalCountdown = flighttime;
+			DispersalCountdown = FlightTime;
 
 			// We don't have a sprite to hide, and our Draw method takes care of "hiding" us by
 			// not rendering if we're dispersed (since the parts will render).
 			//Sprite->Hide();
 
 			// While hidden, move us to our reformation spot.
-			CFPoint newloc;
+			CFPoint NewPos;
 
 			// Choose somewhere else on the screen.
-			newloc.x = Position.x + SFRAND * gpArena->GetDisplayWidth() / 1.5f;
-			newloc.y = (FRAND * 0.75f + 0.125f) * gpArena->GetHeight();
+			NewPos.x = Position.x + SFRAND * gpArena->GetDisplayWidth() / 1.5f;
+			NewPos.y = FRANDRANGE(0.125f, 0.875f) * gpArena->GetHeight();
 
 			// Don't modulate newloc; it will cause wrong path animation if path cross x-origin.
 			// Modulation must happen in ghostpart::move.
 
 			for(int32 i = 1; i < NumParts; i++)
 			{
-				CGhostPart* p = (CGhostPart*)gpArena->CreateEnemyNow(EObjType::GHOSTPART, PartLocs[i], EObjectCreationFlags::EnemyPart);
+				auto GhostPart = (CGhostPart*)gpArena->CreateEnemyNow(EObjType::GHOSTPART, PartLocs[i], EObjectCreationFlags::EnemyPart);
 
-				p->SetCollisionInjurious(false);
-				p->SetFlightDuration(flighttime);
-				p->SetFlightPath(Position, newloc);
+				GhostPart->SetCollisionInjurious(false);
+				GhostPart->SetFlightDuration(FlightTime);
+				GhostPart->SetFlightPath(Position, NewPos);
 			}
 
 			// Now move ourselves. Do this last because we use our original Position as the 
 			// source position of the dispersal in the above loop.
 
-			Position   = newloc;
+			Position   = NewPos;
 			Position.x = gpArena->WrapX(Position.x);
 		
 			gpAudio->OutputSound(EAudioTrack::Ghostflight);
@@ -175,9 +196,9 @@ void Defcon::CGhost::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& mapp
 
 	for(int32 I = 0; I < N; I++)
 	{
-		const float T = (float)(TWO_PI * (float)I / N + ((SpinAngle + FRAND * 0.1f) * TWO_PI));
+		const float T = SpinDir * (float)(TWO_PI * (float)I / N + ((SpinAngle + PSIN(Age)/*FRAND * 0.1f*/) * TWO_PI));
 		CFPoint Pt2((float)cos(T), (float)sin(T));
-		const float Radius = (float)(sin((F + FRAND * 3) * PI) * R + 5.0f);
+		const float Radius = (float)(sin((F /*+ FRAND * 3*/) * PI) * R * LERP(PartRadiiMin[I + 1], PartRadiiMax[I + 1], PSIN(Age * PartRadiiSpeed[I + 1])) /*+ 5.0f*/);
 
 		Pt2 *= Radius;
 		Pt2 += Position;

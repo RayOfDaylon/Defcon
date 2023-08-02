@@ -8,37 +8,6 @@
 
 namespace Defcon
 {
-	class CReformerPart : public CEnemy
-	{
-		public:
-			CReformerPart();
-			virtual ~CReformerPart();
-
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
-			virtual float GetExplosionMass() const override { return 0.25f; }
-			void Explode(CGameObjectCollection&);
-			
-
-
-			void SetOriginalPosition(const CFPoint& pt)
-				{ m_posOrg = pt; }
-
-		private:
-			float	m_yoff;
-			float	m_freq;
-			float	m_xFreq;
-			float	m_amp;
-			float	m_halfwayAltitude;
-			float	m_fTimeTargetWithinRange;
-			CFPoint	m_posOrg;
-			float	m_fMergeTime;
-	};
-
-
 	class CReformer : public CEnemy
 	{
 		// A reformer is like a pod, except that it can fire, 
@@ -57,26 +26,55 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			virtual void Move          (float);
-			virtual void Draw          (FPaintArguments&, const I2DCoordMapper&);
+			virtual void Move          (float DeltaTime) override;
+			virtual void Draw          (FPaintArguments&, const I2DCoordMapper&) override;
+			virtual void OnAboutToDie  () override;
+			virtual void Explode       (CGameObjectCollection&) override;
+			virtual bool Fireballs     () const override { return false; }
 			virtual void DrawPart      (FPaintArguments&, const CFPoint&);
-			virtual void OnAboutToDie  ();
-			void         Explode       (CGameObjectCollection&);
-			
-			bool         Fireballs     () const { return false; }
+
 
 		protected:
-			float   m_yoff;
-			float   m_freq;
-			float   m_xFreq;
-			float   m_yOrg;
 
-			int32	m_numParts;
-			bool	m_bWaits;
-			float	m_fSpinVel;
-			float	m_fSpinAngle;
-			float	m_fSpinVelMax;
-			CFPoint	m_partLocs[10];
+			void ConsiderFiringBullet  (float DeltaTime);
 
+
+		private:
+			CFPoint  PartLocations[10];
+			float    FiringCountdown;
+			float    VerticalOffset;
+			float    Frequency;
+			float    SpinVelocity;
+			float    SpinAngle;
+			float    MaxSpinVelocity;
+			int32    NumParts;
+			//bool     bWaits;
+	};
+
+
+	class CReformerPart : public CEnemy
+	{
+		public:
+			CReformerPart();
+			virtual ~CReformerPart();
+
+#ifdef _DEBUG
+			virtual const char* GetClassname() const;
+#endif
+			virtual void  Move              (float DeltaTime) override;
+			virtual float GetExplosionMass  () const override { return 0.25f; }
+			virtual void  Explode           (CGameObjectCollection&) override;
+			
+			void SetOriginalPosition(const CFPoint& P) { OriginalPos = P; }
+
+		private:
+			CFPoint  OriginalPos;
+			float    VerticalOffset;
+			float    Frequency;
+			float    HorzFrequency;
+			float    Amplitude;
+			float    HalfwayAltitude;
+			float    TimeTargetWithinRange;
+			float    MergeTime;
 	};
 }

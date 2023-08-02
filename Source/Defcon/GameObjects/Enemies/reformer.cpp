@@ -22,24 +22,23 @@
 
 
 Defcon::CReformer::CReformer()
-	:
-	m_yoff(0.0f),
-	m_freq(2.0f),
-	m_xFreq(1.0f)
 {
 	ParentType = Type;
-	Type = EObjType::REFORMER;
-	PointValue = REFORMER_VALUE;
+	Type       = EObjType::REFORMER;
+
+	PointValue      = REFORMER_VALUE;
+	VerticalOffset  = 0.0f;
+	Frequency       = 2.0f;
+	RadarColor      = MakeColorFromComponents(191, 33, 33);
+	AnimSpeed       = FRAND * 0.35f + 0.65f;
+	NumParts        = IRAND(4) + 4;
+	SpinVelocity    = SFRAND;
+	SpinAngle       = FRAND;
+	MaxSpinVelocity = FRANDRANGE(1.0f, 5.0f);
+	FiringCountdown = FRANDRANGE(2.0f, 4.0f);
+
+	BboxRadius.Set(10, 10); // todo: why so explicit?
 	Orientation.Fwd.Set(1.0f, 0.0f);
-	RadarColor = MakeColorFromComponents(191, 33, 33);
-	BboxRadius.Set(10, 10); // todo: why so explicit?//(float)bmp.GetWidth()/2, (float)bmp.GetHeight()/2);
-	AnimSpeed = FRAND * 0.35f + 0.65f;
-	m_xFreq = FRAND * 0.5f + 1.0f;
-	m_bWaits = BRAND;
-	m_numParts = IRAND(4) + 4;
-	m_fSpinVel = SFRAND;
-	m_fSpinAngle = FRAND;
-	m_fSpinVelMax = FRAND * 4.0f + 1.0f;
 }
 
 
@@ -57,99 +56,116 @@ const char* Defcon::CReformer::GetClassname() const
 #endif
 
 
-void Defcon::CReformer::Move(float fTime)
+void Defcon::CReformer::Move(float DeltaTime)
 {
 	// Just float around drifting horizontally.
 
-	CEnemy::Move(fTime);
+	CEnemy::Move(DeltaTime);
 	Inertia = Position;
 
-	Orientation.Fwd.y = 0.1f * (float)sin(m_freq * (m_yoff + Age)); 
+	Orientation.Fwd.y = 0.1f * (float)sin(Frequency * (VerticalOffset + Age)); 
 
-	float diff = (float)gDefconGameInstance->GetScore() / 50000;
+	ConsiderFiringBullet(DeltaTime);
 
-	if(m_bWaits)
-		diff *= (float)(ABS(sin(Age*PI)));
-	diff = FMath::Min(diff, 1.5f);
+	SpinVelocity = (float)(sin(Age * PI * MaxSpinVelocity));
+	SpinAngle += (SpinVelocity * DeltaTime);
 
-	if(true/*m_bFiresBullets*/)
-	{
-		if(FRAND <= 0.05f * diff
-			&& this->CanBeInjured()
-			&& gpArena->GetPlayerShip().IsAlive()
-			&& IsOurPositionVisible())
-			gpArena->FireBullet(*this, Position, 1, 1);
-	}
-
-
-	m_fSpinVel = (float)(sin(Age * PI * m_fSpinVelMax));
-	m_fSpinAngle += (m_fSpinVel * fTime);
-
-	Position.MulAdd(Orientation.Fwd, fTime * 50.0f);
+	Position.MulAdd(Orientation.Fwd, DeltaTime * 50.0f);
 
 	Inertia = Position - Inertia;
 }
 
 
-void Defcon::CReformer::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
+void Defcon::CReformer::ConsiderFiringBullet(float DeltaTime)
 {
-	m_partLocs[0] = Position;
-
-	float f = (float)fmod(Age, AnimSpeed) / AnimSpeed;
-
-
-	// Draw the parts in a circle around a central part.
-	int32 n = m_numParts - 1;
-	int32 i;
-	for(i = 0; i < n; i++)
+	if(!gpArena->IsPointVisible(Position) || TargetPtr == nullptr)
 	{
-		const float t = (float)(TWO_PI * i / n + (m_fSpinAngle * TWO_PI));
-		CFPoint pt2((float)cos(t), (float)sin(t));
-		float r = (float)(sin(f * PI) * 5 + 10);
-		BboxRadius.Set(r, r);
-		pt2 *= r;
-		pt2 += Position;
-		m_partLocs[i+1] = pt2;
+		return;
+	}
+		
+	// Hold fire if target is below ground
+	if(TargetPtr->Position.y < gpArena->GetTerrainElev(TargetPtr->Position.x))
+	{
+		return;
 	}
 
-	for(i = 0; i < m_numParts; i++)
+	FiringCountdown -= DeltaTime;
+
+	if(FiringCountdown <= 0.0f)
 	{
-		CFPoint pt;
-		mapper.To(m_partLocs[i], pt);
-		this->DrawPart(framebuf, pt);
+		(void) gpArena->FireBullet(*this, Position, 1, 1);
+
+		// The time to fire goes down as the player XP increases.
+
+		const float XP = (float)gDefconGameInstance->GetScore();
+
+		float T = NORM_(XP, 1000.0f, 50000.f);
+		T = CLAMP(T, 0.0f, 1.0f);
+
+		FiringCountdown = LERP(3.0f, 0.25f, T) + Daylon::FRandRange(0.0f, 1.0f);
 	}
 }
 
 
-void Defcon::CReformer::DrawPart(FPaintArguments& framebuf, const CFPoint& where)
+void Defcon::CReformer::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& Mapper)
+{
+	PartLocations[0] = Position;
+
+	float F = (float)fmod(Age, AnimSpeed) / AnimSpeed;
+
+	// Draw the parts in a circle around a central part.
+	const int32 N = NumParts - 1;
+	int32 I;
+
+	for(I = 0; I < N; I++)
+	{
+		const float T = (float)(TWO_PI * I / N + (SpinAngle * TWO_PI));
+		CFPoint P((float)cos(T), (float)sin(T));
+		const float R = (float)(sin(F * PI) * 5 + 10);
+		BboxRadius.Set(R, R);
+		P *= R;
+		P += Position;
+		PartLocations[I + 1] = P;
+	}
+
+	for(I = 0; I < NumParts; I++)
+	{
+		CFPoint P;
+		Mapper.To(PartLocations[I], P);
+		DrawPart(PaintArgs, P);
+	}
+}
+
+
+void Defcon::CReformer::DrawPart(FPaintArguments& PaintArgs, const CFPoint& Where)
 {
 	auto& Info = GameObjectResources.Get(EObjType::REFORMERPART);
 
-	CFPoint pt = where;
-	const int w = Info.Size.X;
+	CFPoint P = Where;
+	const float OurWidth = Info.Size.X;
 
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
+	if(P.x >= -OurWidth && P.x <= PaintArgs.GetWidth() + OurWidth)
 	{
 		const int32 NumCels = Info.Atlas->Atlas.NumCels;
-		const float f = (NumCels - 1) * PSIN(PI * fmod(Age, AnimSpeed) / AnimSpeed);
+		const float F = (NumCels - 1) * PSIN(PI * fmod(Age, AnimSpeed) / AnimSpeed);
 
 		const float Usize = 1.0f / NumCels;
 
 		const auto S = Info.Size;
-		const FSlateLayoutTransform Translation(FVector2D(pt.x, pt.y) - S / 2);
-		const auto Geometry = framebuf.AllottedGeometry->MakeChild(S, Translation);
+		const FSlateLayoutTransform Translation(FVector2D(P.x, P.y) - S / 2);
+		const auto Geometry = PaintArgs.AllottedGeometry->MakeChild(S, Translation);
 
-		const float F = Usize * ROUND(f);
-		FBox2f UVRegion(FVector2f(F, 0.0f), FVector2f(F + Usize, 1.0f));
+		const float F2 = Usize * ROUND(F);
+		FBox2f UVRegion(FVector2f(F2, 0.0f), FVector2f(F2 + Usize, 1.0f));
 		Info.Atlas->Atlas.AtlasBrush.SetUVRegion(UVRegion);
 
 		FSlateDrawElement::MakeBox(
-			*framebuf.OutDrawElements,
-			framebuf.LayerId,
+			*PaintArgs.OutDrawElements,
+			PaintArgs.LayerId,
 			Geometry.ToPaintGeometry(),
 			&Info.Atlas->Atlas.AtlasBrush,
 			ESlateDrawEffect::None,
-			C_WHITE * framebuf.RenderOpacity);
+			C_WHITE * PaintArgs.RenderOpacity);
 	}
 }
 
@@ -158,85 +174,72 @@ void Defcon::CReformer::OnAboutToDie()
 {
 	// Release parts.
 
-	for(int32 i = 0; i < m_numParts; i++)
+	for(int32 I = 0; I < NumParts; I++)
 	{
-		gpArena->CreateEnemy(EObjType::REFORMERPART, m_partLocs[i], 0.0f, EObjectCreationFlags::EnemyPart);
+		gpArena->CreateEnemy(EObjType::REFORMERPART, PartLocations[I], 0.0f, EObjectCreationFlags::EnemyPart);
 	}
 }
 
 
-void Defcon::CReformer::Explode(CGameObjectCollection& debris)
+void Defcon::CReformer::Explode(CGameObjectCollection& Debris)
 {
-	// Pods explode normally (but deep purple or red)
-	// but in a pod intersection, even more so because 
-	// all the swarmers are biting it.
-
 	bMortal = true;
 	Lifespan = 0.0f;
 	this->OnAboutToDie();
 
-
-#if 1
-	const auto cby = EColor::Gray;
-
+	const auto ColorBase = EColor::Gray;
 
 	for(int32 i = 0; i < 20; i++)
 	{
-		CFlak* pFlak = new CFlak;
-		pFlak->ColorbaseYoung = cby;
-		pFlak->ColorbaseOld = cby;
-		pFlak->bCold = true;
-		pFlak->LargestSize = 4;
-		pFlak->bFade = true;//bDieOff;
+		auto Flak = new CFlak;
 
-		pFlak->Position = Position;
-		pFlak->Orientation = Orientation;
+		Flak->ColorbaseYoung = ColorBase;
+		Flak->ColorbaseOld   = ColorBase;
+		Flak->bCold          = true;
+		Flak->LargestSize    = 4;
+		Flak->bFade          = true;
+		Flak->Position       = Position;
+		Flak->Orientation    = Orientation;
 
-		CFPoint dir;
-		double t = FRAND * TWO_PI;
+		CFPoint Direction;
+		const double T = FRAND * TWO_PI;
 		
-		dir.Set((float)cos(t), (float)sin(t));
+		Direction.Set((float)cos(T), (float)sin(T));
 
 		// Debris has at least the object's momentum.
-		pFlak->Orientation.Fwd = Inertia;
+		Flak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
-		//ndir *= FRAND * 0.4f + 0.2f;
-		float speed = FRAND * 30 + 110;
+		Flak->Orientation.Fwd *= FRANDRANGE(20, 32);
+		Flak->Orientation.Fwd.MulAdd(Direction, FRANDRANGE(110, 140));
 
-		pFlak->Orientation.Fwd.MulAdd(dir, speed);
-
-		debris.Add(pFlak);
+		Debris.Add(Flak);
 	}
-#endif
 }
 
-// --------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 
 Defcon::CReformerPart::CReformerPart()
-	:
-	m_freq(2.0f),
-	m_xFreq(1.0f)
 {
 	ParentType = Type;
-	Type = EObjType::REFORMERPART;
-	PointValue = REFORMERPART_VALUE;
-	Orientation.Fwd.Set(1.0f, 0.0f);
-	RadarColor = C_RED;
-	AnimSpeed = FRAND * 0.35f + 0.15f;
-	m_xFreq = 2.0f * FRANDRANGE(0.5f, 1.5f);
-	bCanBeInjured = true;
+	Type       = EObjType::REFORMERPART;
+
+	PointValue            = REFORMERPART_VALUE;
+	RadarColor            = C_RED;
+	Frequency             = 2.0f;
+	HorzFrequency         = FRANDRANGE(1.0f, 3.0f);
+	bCanBeInjured         = true;
 	bIsCollisionInjurious = true;
-	m_yoff = (float)(FRAND * PI);
-	m_fTimeTargetWithinRange = 0.0f;
-	m_fMergeTime = 0.0f;
+	VerticalOffset        = (FRAND * PI);
+	TimeTargetWithinRange = 0.0f;
+	MergeTime             = 0.0f;
+
+	Orientation.Fwd.Set(1.0f, 0.0f);
 
 	CreateSprite(Type);
-	const auto& Info = GameObjectResources.Get(Type);
-	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
+	BboxRadius = GameObjectResources.Get(Type).Size / 2;
 }
 
 
@@ -254,11 +257,12 @@ const char* Defcon::CReformerPart::GetClassname() const
 #endif
 
 
-void Defcon::CReformerPart::Move(float fTime)
+void Defcon::CReformerPart::Move(float DeltaTime)
 {
 	// Move in slightly perturbed sine wave pattern.
 
-	CEnemy::Move(fTime);
+	CEnemy::Move(DeltaTime);
+
 	Inertia = Position;
 
 	// todo: if neighbouring parts are within visual range, 
@@ -266,80 +270,89 @@ void Defcon::CReformerPart::Move(float fTime)
 	// maximum number reached or other parts are too distant,
 	// generate a reformer and delete the parts. 
 
-	bool bMerging = (Age >= 2.0f);
+	const bool bMerging = (Age >= 2.0f);
 
 
-	IGameObject* pClosest = nullptr;
-	CFPoint bestdir;
-	float bestdist = 1.0e+10f;
+	IGameObject* ClosestObject = nullptr;
+	CFPoint BestDirection;
+	float BestDistance = 1.0e+10f;
 
 	if(bMerging)
 	{
-		IGameObject* pObj = nullptr;
+		IGameObject* Object = nullptr;
 		for(;;)
 		{
-			IGameObject* pNeighbour = gpArena->FindEnemy(this->GetType(), pObj);
-			if(pNeighbour == nullptr)
-				break;
+			IGameObject* Neighbour = gpArena->FindEnemy(this->GetType(), Object);
 
-			pObj = pNeighbour;
-
-			if(pNeighbour == this)
-				continue;
-
-
-			CFPoint dir;
-			float dist = gpArena->ShortestDirection(Position, pNeighbour->Position, dir);
-			if(dist < bestdist)
+			if(Neighbour == nullptr)
 			{
-				pClosest = pNeighbour;
-				bestdist = dist;
-				bestdir = dir;
+				break;
+			}
+
+			Object = Neighbour;
+
+			if(Neighbour == this)
+			{
+				continue;
+			}
+
+			CFPoint Direction;
+			const float Distance = gpArena->ShortestDirection(Position, Neighbour->Position, Direction);
+
+			if(Distance < BestDistance)
+			{
+				ClosestObject = Neighbour;
+				BestDistance  = Distance;
+				BestDirection = Direction;
 			}
 		}
 	}
 
 
-	if(pClosest == nullptr)
+	if(ClosestObject == nullptr)
 	{
-		IGameObject* pTarget = TargetPtr;
-
-		if(pTarget == nullptr)
-			m_fTimeTargetWithinRange = 0.0f;
+		if(TargetPtr == nullptr)
+		{
+			TimeTargetWithinRange = 0.0f;
+		}
 		else
 		{
 			const bool bVis = IsOurPositionVisible();
 
 			// Update target-within-range information.
-			if(m_fTimeTargetWithinRange > 0.0f)
+			if(TimeTargetWithinRange > 0.0f)
 			{
 				// Target was in range; See if it left range.
 				if(!bVis)
-					m_fTimeTargetWithinRange = 0.0f;
+				{
+					TimeTargetWithinRange = 0.0f;
+				}
 				else
-					m_fTimeTargetWithinRange += fTime;
+				{
+					TimeTargetWithinRange += DeltaTime;
+				}
 			}
 			else
 			{
 				// Target was out of range; See if it entered range.
 				if(bVis)
 				{
-					m_fTimeTargetWithinRange = fTime;
+					TimeTargetWithinRange = DeltaTime;
 
 					//m_targetOffset.Set(
 					//	LERP(-100, 100, FRAND), 
-					//	LERP(50, 90, FRAND) * SGN(Position.y - pTarget->Position.y));
+					//	LERP(50, 90, FRAND) * SGN(Position.y - TargetPtr->Position.y));
 					//Frequency = LERP(6, 12, FRAND);
 					//m_amp = LERP(.33f, .9f, FRAND);
 				}
 			}
 
 			CFPoint dir;
-			float dist = gpArena->ShortestDirection(Position, pTarget->Position, dir);
+			const float Distance = gpArena->ShortestDirection(Position, TargetPtr->Position, dir);
 
-			if(m_fTimeTargetWithinRange > 0.75f)
+			if(TimeTargetWithinRange > 0.75f)
 			{
-				if(dist > ScreenSize.x * .4f)
+				if(Distance > ScreenSize.x * .4f)
 				{
 					Orientation.Fwd = dir;
 					Orientation.Fwd.y = 0;
@@ -347,66 +360,64 @@ void Defcon::CReformerPart::Move(float fTime)
 				}
 			}
 
-			if(m_fTimeTargetWithinRange
+			if(TimeTargetWithinRange
 				&& Age > 1.0f 
 				&& FRAND <= 0.007f
 				&& SGN(Orientation.Fwd.x) == SGN(dir.x))
 			{
-				gpArena->FireBullet(*this, Position, 1, 1);
+				(void) gpArena->FireBullet(*this, Position, 1, 1);
 				gpAudio->OutputSound(EAudioTrack::Swarmer);
 			}
 		}
 
-		m_amp = LERP(0.33f, 1.0f, PSIN(m_yoff+Age)) * 0.5f * ScreenSize.y;
-		m_halfwayAltitude = (float)(sin((m_yoff+Age)*0.6f) * 50 + (0.5f * ScreenSize.y));
+		Amplitude = LERP(0.33f, 1.0f, PSIN(VerticalOffset+Age)) * 0.5f * ScreenSize.y;
+		HalfwayAltitude = (float)(sin((VerticalOffset+Age)*0.6f) * 50 + (0.5f * ScreenSize.y));
 
-		CFPoint pos;
+		CFPoint P;
 
 		if(Age < 0.7f)
 		{
-			pos.x = Position.x + .2f * Orientation.Fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
+			P.x = Position.x + .2f * Orientation.Fwd.x * HorzFrequency * DeltaTime * ScreenSize.x * FRANDRANGE(0.25f, 0.3f);
 		}
 		else
 		{
-			pos.x = Position.x + Orientation.Fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
+			P.x = Position.x + Orientation.Fwd.x * HorzFrequency * DeltaTime * ScreenSize.x * FRANDRANGE(0.25f, 0.3f);
 		}
 
-		pos.y = (float)sin(m_freq * (m_yoff + Age)) * m_amp + m_halfwayAltitude;
+		P.y = (float)sin(Frequency * (VerticalOffset + Age)) * Amplitude + HalfwayAltitude;
 
-		Position = pos;
+		Position = P;
+
 		if(Age < 0.7f)
 		{
-			Position.y = LERP(m_posOrg.y, pos.y, Age / 0.7f);
+			Position.y = LERP(OriginalPos.y, P.y, Age / 0.7f);
 		}
 	}
-	else
+	else // ClosestObject != nullptr
 	{
-		if(bestdist > 15.0f) 
+		if(BestDistance > 15.0f) 
 		{
-			Position = Inertia + (bestdir * (FRAND*50+150) * fTime);
+			Position = Inertia + (BestDirection * FRANDRANGE(150, 200) * DeltaTime);
 		}
 		else
 		{
 			// If we have been at rest for longer than 
 			// 2 seconds, then form a reformer.
-			m_fMergeTime += fTime;
+			MergeTime += DeltaTime;
 
-			if(m_fMergeTime >= 2.0f)
+			if(MergeTime >= 2.0f)
 			{
-				this->MarkAsDead();
-				pClosest->MarkAsDead();
-				Position.Avg(pClosest->Position);
-				gpArena->CreateEnemy(EObjType::REFORMER, Position, 0.0f, EObjectCreationFlags::EnemyPart);
+				MarkAsDead();
+				ClosestObject->MarkAsDead();
+				Position.Avg(ClosestObject->Position);
+
+				gpArena->CreateEnemy(EObjType::REFORMER, Position, 0.0f, 
+					(EObjectCreationFlags)((int32)EObjectCreationFlags::NotMissionTarget | (int32)EObjectCreationFlags::NoMaterialization));
 			}
 		}
 	}
 
 	Inertia = Position - Inertia;
-}
-
-
-void Defcon::CReformerPart::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
 }
 
 
@@ -425,7 +436,7 @@ void Defcon::CReformerPart::Explode(CGameObjectCollection& debris)
 		pFlak->ColorbaseOld = cby;
 		pFlak->bCold = true;
 		pFlak->LargestSize = 4;
-		pFlak->bFade = true;//bDieOff;
+		pFlak->bFade = true;
 
 		pFlak->Position = Position;
 		pFlak->Orientation = Orientation;

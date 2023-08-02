@@ -2015,6 +2015,8 @@ void UDefconPlayViewBase::SpecializeMaterialization(Defcon::FMaterializationPara
 
 void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, const CFPoint& Where, float RelativeWhen, Defcon::EObjectCreationFlags Flags)
 {
+	// todo: we should take a parent type argument.
+
 	auto TimeToDeploy = GameTime() + RelativeWhen;
 
 	const auto MaterializationLifetime = ENEMY_BIRTHDURATION;

@@ -121,7 +121,7 @@ to using a TArray). As time goes by, these things will be addressed.
 
 Memory usage: the original code uses operator new/delete. Someday we 
 might have all dynamic objects derive from UObject to use UE's garbage collector, 
-but new/delete is actually very fast.
+but new/delete is fast.
 
 Each UUserWidget C++ class usually ends with the word "Base". This is to 
 help distinguish it from the Blueprint widget which subclasses it.
@@ -170,7 +170,7 @@ Global variables are:
 
 gpArena              The play arena where a mission is played out.
 gpAudio              The collection of available audio tracks (sounds).
-gDefconGameInstance  The singular game instance (has player, humans, missions).
+gDefconGameInstance  The singular game instance (has player, humans, missions, stats).
 GameObjectResources  Maps object types to their sprite atlases.
 
 The global function GameTime() abstracts UKismetLibrary::GetGameTimeInSeconds.
