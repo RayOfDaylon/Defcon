@@ -4,8 +4,8 @@ Extended remake of Williams Electronics Stargate 1981 arcade game using Unreal E
 "Defcon" is the internal project name.  
 Stargate was also known as Defender II in some locales.
 
-Example Videos  
-(none available yet, sorry)
+Example Videos
+Version 1.0: https://youtu.be/WTqya41q9xM
 
 The game differs from Stargate in these ways:
 - Each level is its own campaign mission and not a repeat wave  
