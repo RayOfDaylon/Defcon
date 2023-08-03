@@ -25,7 +25,7 @@ void Defcon::CLaserWeapon::Fire(CGameObjectCollection& ObjectCollection)
 	//BeamPtr->m_fArenawidth = m_fArenawidth;
 	BeamPtr->MapperPtr = m_pObject->MapperPtr;
 	
-	BeamPtr->SetMaxLength(gpArena->GetDisplayWidth() * 0.75f);
+	BeamPtr->SetMaxLength(GArena->GetDisplayWidth() * 0.75f);
 
 	ObjectCollection.Add(BeamPtr);
 }

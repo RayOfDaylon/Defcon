@@ -48,14 +48,14 @@ bool Defcon::CFlightTrainingMission::Update(float DeltaTime)
 
 	if(!TargetsMade)
 	{
-		this->DoMakeTargets(DeltaTime);
+		DoMakeTargets(DeltaTime);
 		TargetsMade = true;
 		return true;
 	}
 
 	CheckTargetHit(DeltaTime);
 
-	if(this->AreAllTargetsHit())
+	if(AreAllTargetsHit())
 	{
 		// We're done.
 		return false;
@@ -74,10 +74,10 @@ void Defcon::CFlightTrainingMission::DoMakeTargets(float DeltaTime)
 		Beacon->InstallSprite();
 
 		Beacon->Position.Set(
-			MAP(i, 0, 6, gpArena->GetDisplayWidth()*.66f, gpArena->GetWidth() * 0.9f),
-			SFRAND * 0.33f * gpArena->GetHeight() + gpArena->GetHeight() / 2);
+			MAP(i, 0, 6, GArena->GetDisplayWidth()*.66f, GArena->GetWidth() * 0.9f),
+			SFRAND * 0.33f * GArena->GetHeight() + GArena->GetHeight() / 2);
 
-		gpArena->GetObjects().Add(Beacon);
+		GArena->GetObjects().Add(Beacon);
 	}
 
 	NumTargets = NumBeacons;
@@ -86,11 +86,11 @@ void Defcon::CFlightTrainingMission::DoMakeTargets(float DeltaTime)
 
 void Defcon::CFlightTrainingMission::CheckTargetHit(float DeltaTime)
 {
-	auto ObjPtr = gpArena->GetObjects().GetFirst();
+	auto ObjPtr = GArena->GetObjects().GetFirst();
 
 	CFRect rPlayer;
-	rPlayer.Set(gpArena->GetPlayerShip().Position);
-	rPlayer.Inflate(gpArena->GetPlayerShip().BboxRadius);
+	rPlayer.Set(GArena->GetPlayerShip().Position);
+	rPlayer.Inflate(GArena->GetPlayerShip().BboxRadius);
 
 	while(ObjPtr != nullptr)
 	{
@@ -107,7 +107,7 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float DeltaTime)
 			{
 				gpAudio->OutputSound(EAudioTrack::Gulp);
 				ObjPtr->UninstallSprite();
-				gpArena->GetObjects().Delete(ObjPtr);
+				GArena->GetObjects().Delete(ObjPtr);
 				NumTargets--;
 
 				// Show message.
@@ -124,7 +124,7 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float DeltaTime)
 					Str = TEXT("All done! Yay!");
 				}
 
-				gpArena->AddMessage(Str);
+				GArena->AddMessage(Str);
 
 				break;
 			}

@@ -23,7 +23,7 @@
 #endif
 
 
-UDefconGameInstance* gDefconGameInstance = nullptr;
+UDefconGameInstance* GDefconGameInstance = nullptr;
 
 
 void UDefconGameInstance::Init()
@@ -31,7 +31,7 @@ void UDefconGameInstance::Init()
 	UE_LOG(LogGame, Log, TEXT("%S"), __FUNCTION__);
 	Super::Init();
 
-	gDefconGameInstance = this;
+	GDefconGameInstance = this;
 
 	Defcon::ObjectTypeManager.Init();
 
@@ -406,7 +406,7 @@ void UDefconGameInstance::TransitionToArena(EDefconArena Arena)
 }
 
 
-void UDefconGameInstance::InitMission(UDefconPlayViewBase* p)
+void UDefconGameInstance::InitMission()
 {
 	check(m_pMission);
 

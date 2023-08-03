@@ -7,7 +7,7 @@
 
 #if 0
 
-#include "Common/PaintArguments.h"
+#include "Common/Painter.h"
 #include "Common/util_geom.h"
 
 #include "GameObjects/gameobj.h"

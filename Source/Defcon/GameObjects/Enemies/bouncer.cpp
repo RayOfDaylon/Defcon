@@ -62,8 +62,8 @@ void Defcon::IBouncer::Move(float DeltaTime)
 	Inertia = Position;
 
 	// Check if terrain hit.
-	WRAP(Position.x, 0, gpArena->GetWidth());
-	const float h = gpArena->GetTerrainElev(Position.x);
+	WRAP(Position.x, 0, GArena->GetWidth());
+	const float h = GArena->GetTerrainElev(Position.x);
 
 	if(Position.y < h)
 	{
@@ -110,10 +110,10 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 
 	bMortal = true;
 	Lifespan = 0.0f;
-	this->OnAboutToDie();
+	OnAboutToDie();
 
 	float fBrightBase;
-	this->CreateFireblast(debris, fBrightBase);
+	CreateFireblast(debris, fBrightBase);
 
 	int32 a, i;
 	const float off = SFRAND * 0.2f;
@@ -190,7 +190,7 @@ Defcon::CBouncer::~CBouncer()
 
 void Defcon::CBouncer::ResetFiringCountdown()
 {
-	float T = (float)gDefconGameInstance->GetScore() / 50000;
+	float T = (float)GDefconGameInstance->GetScore() / 50000;
 	T = CLAMP(T, 0.0f, 1.0f);
 
 	FiringCountdown = LERP(2.0f, 0.25f, T) + Daylon::FRandRange(0.0f, 0.2f);
@@ -199,7 +199,7 @@ void Defcon::CBouncer::ResetFiringCountdown()
 
 void Defcon::CBouncer::FireWeapon()
 {
-	gpArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, EObjectCreationFlags::EnemyPart);
+	GArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, EObjectCreationFlags::EnemyPart);
 }
 
 
@@ -221,7 +221,7 @@ Defcon::CWeakBouncer::~CWeakBouncer()
 
 void Defcon::CWeakBouncer::ResetFiringCountdown()
 {
-	float T = (float)gDefconGameInstance->GetScore() / 50000;
+	float T = (float)GDefconGameInstance->GetScore() / 50000;
 	T = CLAMP(T, 0.0f, 1.0f);
 
 	FiringCountdown = LERP(2.0f, 0.1f, T) + Daylon::FRandRange(0.0f, 0.2f);
@@ -230,6 +230,6 @@ void Defcon::CWeakBouncer::ResetFiringCountdown()
 
 void Defcon::CWeakBouncer::FireWeapon()
 {
-	gpArena->FireBullet(*this, Position, 1, 1);
+	GArena->FireBullet(*this, Position, 1, 1);
 }
 

@@ -252,7 +252,7 @@ void Defcon::CPrefs::Construct()
 
 void Defcon::CPrefs::Init(const FString& psz)
 {
-	this->Construct();
+	Construct();
 		// todo: use UE file read API
 #if 0		
 	CDiskFile f;
@@ -273,7 +273,7 @@ void Defcon::CPrefs::Init(const FString& psz)
 		char* token = MyStrtok(buf, " \t=\r\n");
 		try
 		{
-			CPrefVar& var = this->Translate(token);
+			CPrefVar& var = Translate(token);
 			token = MyStrtok(nullptr, " \t=\r\n");
 			if(!isnum(token))
 				throw 0;

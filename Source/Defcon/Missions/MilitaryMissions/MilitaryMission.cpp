@@ -31,7 +31,7 @@ void Defcon::CMilitaryMission::Init()
 	IMission::Init();
 
 	// Military missions have stargates.
-	this->AddStargate();
+	AddStargate();
 
 #if 0
 	// Turrets are an experiment, maybe later we'll have them.
@@ -54,7 +54,7 @@ void Defcon::CMilitaryMission::Init()
 			pEvt->Where.Set(x, y);
 			pEvt->bMissionTarget = false; // can leave turrets alive w/o aborting mission
 			pEvt->m_bMaterializes = false;
-			this->AddEvent(pEvt);
+			AddEvent(pEvt);
 		}
 	}
 #endif
@@ -88,13 +88,13 @@ void Defcon::CMilitaryMission::AddEnemySpawnInfo(const FEnemySpawnCounts& EnemyS
 
 void Defcon::CMilitaryMission::AddStargate()
 {
-	check(gpArena != nullptr);
+	check(GArena != nullptr);
 	StargatePtr = new CStargate;
 	CFPoint pos(0.5f, 0.75f);
-	pos.Mul(CFPoint(gpArena->GetWidth(), gpArena->GetHeight()));
+	pos.Mul(CFPoint(GArena->GetWidth(), GArena->GetHeight()));
 	StargatePtr->Position = pos; 
 	StargatePtr->InstallSprite();
-	gpArena->GetObjects().Add(StargatePtr);
+	GArena->GetObjects().Add(StargatePtr);
 
 	// Since the stargate is stationary, cache its rectangle.
 	StargateRect.Set(StargatePtr->Position);
@@ -104,7 +104,7 @@ void Defcon::CMilitaryMission::AddStargate()
 
 bool Defcon::CMilitaryMission::PlayerInStargate() const
 {
-	return StargateRect.PtInside(gpArena->GetPlayerShip().Position);
+	return StargateRect.PtInside(GArena->GetPlayerShip().Position);
 }
 
 
@@ -116,8 +116,8 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 		return;
 	}
 
-	if(    !( (this->HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
-		   || (this->HostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK) ))
+	if(    !( (HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
+		   || (HostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK) ))
 	{
 		return;
 	}
@@ -131,9 +131,9 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 	
 	for(int32 i = 0; i < EnemySpawnCountsArray.Num(); i++)	
 	{	
-		for(int32 j = 0; j < EnemySpawnCountsArray[i].NumPerWave[WaveIndex] && this->HostilesRemaining() > 0; j++)	
+		for(int32 j = 0; j < EnemySpawnCountsArray[i].NumPerWave[WaveIndex] && HostilesRemaining() > 0; j++)	
 		{	
-			const float wp = gpArena->GetWidth();
+			const float wp = GArena->GetWidth();
 
 			float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + Where.x;	
 			x = (float)fmod(x, wp);	
@@ -152,9 +152,9 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 					y = FRANDRANGE(MinSpawnAlt, MaxSpawnAlt);	
 			}	
 
-			y *= gpArena->GetHeight();	
+			y *= GArena->GetHeight();	
 
-			gpArena->CreateEnemy(EnemySpawnCountsArray[i].Kind, CFPoint(x, y), FRANDRANGE(0.0f, JFactor * j), EObjectCreationFlags::StandardEnemy);	
+			GArena->CreateEnemy(EnemySpawnCountsArray[i].Kind, CFPoint(x, y), FRANDRANGE(0.0f, JFactor * j), EObjectCreationFlags::StandardEnemy);	
 		}	
 	}	
 	
@@ -171,36 +171,36 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 
 	RepopCounter += DeltaTime;
 
-	if(this->PlayerInStargate())
+	if(PlayerInStargate())
 	{
-		gpArena->AllStopPlayerShip();
+		GArena->AllStopPlayerShip();
 
 		if(IsCompleted())
 		{
 			// Warp to next mission.
-			auto& Player = gpArena->GetPlayerShip();
+			auto& Player = GArena->GetPlayerShip();
 			Player.EnableInput(false);
 
 			// If the player is carrying any humans, redistribute them back to the ground to avoid clumping in next mission.
-			gDefconGameInstance->GetHumans().ForEach([this](IGameObject* pObj)
+			GDefconGameInstance->GetHumans().ForEach([this](IGameObject* pObj)
 			{
 				auto Human = static_cast<CHuman*>(pObj);
 
 				if(Human->IsBeingCarried() && Human->GetCarrier()->GetType() == EObjType::PLAYER)
 				{
 					Human->SetToNotCarried();
-					Human->Position.Set(FRANDRANGE(0.0f, gpArena->GetWidth() - 1), 0.04f * gpArena->GetHeight()); 
+					Human->Position.Set(FRANDRANGE(0.0f, GArena->GetWidth() - 1), 0.04f * GArena->GetHeight()); 
 				}
 			});
  			return false;
 		}
 
-		gpArena->TransportPlayerShip();
+		GArena->TransportPlayerShip();
 	}
 
-	if(this->HostilesRemaining() > 0)
+	if(HostilesRemaining() > 0)
 	{
-		this->MakeTargets(DeltaTime, gpArena->GetPlayerShip().Position);
+		MakeTargets(DeltaTime, GArena->GetPlayerShip().Position);
 	}
 
 	return true;
@@ -230,7 +230,7 @@ int32 Defcon::CMilitaryMission::HostilesRemaining() const
 
 int32 Defcon::CMilitaryMission::HostilesInPlay() const
 {
-	return (int32)gpArena->GetEnemies().Count();
+	return (int32)GArena->GetEnemies().Count();
 }
 
 
@@ -249,7 +249,7 @@ void Defcon::CMilitaryMission::AddMissionCleaner(const CFPoint& where)
 			CleanerFreq -= 0.5f;
 		}
 
-		this->AddNonMissionTarget(FRAND < BAITER_PROB ? EObjType::BAITER : MunchieTypes[IRAND(3)], where);
+		AddNonMissionTarget(FRAND < BAITER_PROB ? EObjType::BAITER : MunchieTypes[IRAND(3)], where);
 	}
 }
 
@@ -258,12 +258,12 @@ void Defcon::CMilitaryMission::AddNonMissionTarget(EObjType objType, const CFPoi
 {
 	TimeLastCleanerSpawned = Age;
 
-	float wp = gpArena->GetWidth();
-	float x = (FRAND - 0.5f) * 1.0f * gpArena->GetDisplayWidth() + where.x;
+	float wp = GArena->GetWidth();
+	float x = (FRAND - 0.5f) * 1.0f * GArena->GetDisplayWidth() + where.x;
 	x = (float)fmod(x, wp);
-	float y = FRANDRANGE(0.3f, 0.8f) * gpArena->GetHeight();
+	float y = FRANDRANGE(0.3f, 0.8f) * GArena->GetHeight();
 
-	gpArena->CreateEnemy(objType, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
+	GArena->CreateEnemy(objType, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
 }
 
 
@@ -271,12 +271,12 @@ void Defcon::CMilitaryMission::AddBaiter(const CFPoint& where)
 {
 	TimeLastCleanerSpawned = Age;
 
-	float wp = gpArena->GetWidth();
+	float wp = GArena->GetWidth();
 	float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + where.x;
 	x = (float)fmod(x, wp);
-	float y = FRANDRANGE(0.2f, 0.8f) * gpArena->GetHeight();
+	float y = FRANDRANGE(0.2f, 0.8f) * GArena->GetHeight();
 
-	gpArena->CreateEnemy(EObjType::BAITER, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
+	GArena->CreateEnemy(EObjType::BAITER, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
 }
 
 

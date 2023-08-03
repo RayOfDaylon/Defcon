@@ -43,7 +43,7 @@ void Defcon::IMunchie::Move(float DeltaTime)
 
 	if(TargetPtr != nullptr)
 	{
-		const float xd = gpArena->HorzDistance(Position, TargetPtr->Position);
+		const float xd = GArena->HorzDistance(Position, TargetPtr->Position);
 		float d = Drag;
 		float m = Mass;
 
@@ -79,7 +79,7 @@ void Defcon::IMunchie::Move(float DeltaTime)
 		(float)cos(Age) * 300.0f * SGN(TargetPtr->Orientation.Fwd.x),
 		VertSgn * (float)fabs(sin(Age)) * 50.0f + VertSgn * 50.0f);
 
-	const float HorzDistance = gpArena->ShortestDirection(Position, TargetPos, Delta);
+	const float HorzDistance = GArena->ShortestDirection(Position, TargetPos, Delta);
 	bool bMoveTowards = (HorzDistance > 150 || SGN(Orientation.Fwd.x) != SGN(TargetPtr->Orientation.Fwd.x));
 
 	if(bMoveTowards)
@@ -92,18 +92,18 @@ void Defcon::IMunchie::Move(float DeltaTime)
 				? ILiveGameObject::ctlFwd
 				: ILiveGameObject::ctlBack;
 
-		if(this->NavControlDuration(ctl) == 0)
+		if(NavControlDuration(ctl) == 0)
 		{
 			ControlStartTime[ctl] = GameTime();
 		}
-		this->SetNavControl(ctl,  true,  ControlStartTime[ctl]);
-		this->SetNavControl(ctl2, false, 0);
+		SetNavControl(ctl,  true,  ControlStartTime[ctl]);
+		SetNavControl(ctl2, false, 0);
 	}
 	else
 	{
 		// Parallel the player.
-		this->SetNavControl(ILiveGameObject::ctlBack, false, 0);
-		this->SetNavControl(ILiveGameObject::ctlFwd,  false, 0);
+		SetNavControl(ILiveGameObject::ctlBack, false, 0);
+		SetNavControl(ILiveGameObject::ctlFwd,  false, 0);
 	}
 
 	// Vertical.

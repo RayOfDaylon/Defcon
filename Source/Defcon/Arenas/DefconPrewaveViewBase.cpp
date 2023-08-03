@@ -41,11 +41,11 @@ void UDefconPrewaveViewBase::OnActivate()
 	// Set the mission name
 	//auto GameInstance = gDefconGameInstance;
 
-	Defcon::IMission* pMission = Defcon::CMissionFactory::Make(gDefconGameInstance->MissionID);
+	Defcon::IMission* pMission = Defcon::CMissionFactory::Make(GDefconGameInstance->MissionID);
 
 	if(pMission == nullptr)
 	{
-		UE_LOG(LogGame, Error, TEXT("%S: invalid missionID %d"), __FUNCTION__, (int32)gDefconGameInstance->MissionID);
+		UE_LOG(LogGame, Error, TEXT("%S: invalid missionID %d"), __FUNCTION__, (int32)GDefconGameInstance->MissionID);
 		return;
 	}
 

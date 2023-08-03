@@ -107,7 +107,7 @@ void Defcon::CBomber::Move(float DeltaTime)
 
 	CEnemy::Move(DeltaTime);
 
-	if(gpArena->GetPlayerShip().IsAlive())
+	if(GArena->GetPlayerShip().IsAlive())
 	{
 		if(StopLayingMinesCountdown > 0.0f)
 		{
@@ -115,14 +115,14 @@ void Defcon::CBomber::Move(float DeltaTime)
 
 			if(FRAND < 0.2f)
 			{
-				gpArena->LayMine(*this, Position, 1, 1);
+				GArena->LayMine(*this, Position, 1, 1);
 			}
 		}
 		else if(
 			FRAND <= 0.01f 
-			&& this->CanBeInjured()
+			&& CanBeInjured()
 			&& IsOurPositionVisible()
-			&& SGN(Orientation.Fwd.x) == SGN(gpArena->GetPlayerShip().Orientation.Fwd.x))
+			&& SGN(Orientation.Fwd.x) == SGN(GArena->GetPlayerShip().Orientation.Fwd.x))
 		{
 			StopLayingMinesCountdown = FRANDRANGE(0.33f, 0.5f);
 		}
@@ -147,7 +147,7 @@ void Defcon::CBomber::Move(float DeltaTime)
 		float VDir = -(SGN(CurrentPath.Pts[3].y - CurrentPath.Pts[0].y));
 
 		// Wrap path endpoint so we don't eventually get way off arena.
-		CurrentPath.Pts[3].x = gpArena->WrapX(CurrentPath.Pts[3].x);
+		CurrentPath.Pts[3].x = GArena->WrapX(CurrentPath.Pts[3].x);
 
 		CurrentPath.Pts[0] = CurrentPath.Pts[3];
 

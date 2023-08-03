@@ -96,7 +96,7 @@ class CPrefVar
 		int32   GetChoiceCount  () const { return m_metadata.m_pChoiceNames->Strings.Num(); }
 		bool    Is              (const FString& Str) const	{ return (0 == Str.Compare(m_metadata.Name, ESearchCase::IgnoreCase)); }
 		bool    HasCallback     () const { return (m_fnCB != nullptr); }
-		void    InvokeCallback  (float f) { if(this->HasCallback()) { m_fnCB(*this, f, m_pvUser); } }
+		void    InvokeCallback  (float f) { if(HasCallback()) { m_fnCB(*this, f, m_pvUser); } }
 
 		float               Value;
 		VARCHANGECALLBACK   m_fnCB;

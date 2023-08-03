@@ -169,7 +169,7 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 
 	// If we have humans, draw them too.
 
-	auto GameInstance = gDefconGameInstance;
+	auto GameInstance = GDefconGameInstance;
 	const auto Mission = GameInstance->GetMission();
 
 	if(Mission != nullptr && Mission->HumansInvolved())

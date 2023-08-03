@@ -112,9 +112,9 @@ void Defcon::CHunter::Move(float DeltaTime)
 
 			else if(TargetPtr != nullptr)
 			{
-				gpArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
+				GArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
 
-				//Orientation.Fwd.Set(SGN(this->m_targetOffset.y), 0);
+				//Orientation.Fwd.Set(SGN(m_targetOffset.y), 0);
 				Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
 				Position.MulAdd(Orientation.Fwd, DeltaTime * HUNTER_SPEEDMIN/2);
 			}
@@ -137,7 +137,7 @@ void Defcon::CHunter::Move(float DeltaTime)
 					//if(Orientation.Fwd.y == 0)
 					//	Orientation.Fwd.y = SFRAND;
 					CFPoint Pt;
-					gpArena->ShortestDirection(Position, TargetPtr->Position, Pt);
+					GArena->ShortestDirection(Position, TargetPtr->Position, Pt);
 					Orientation.Fwd.x = (FRAND * 0.25f + 0.33f) * SGN(Pt.x);
 					Position.MulAdd(Orientation.Fwd, DeltaTime * AVG(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX));
 				}
@@ -155,7 +155,7 @@ void Defcon::CHunter::Move(float DeltaTime)
 			}
 			else
 			{
-				float Distance = gpArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
+				float Distance = GArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
 				const float DeltaY = Position.y - TargetPtr->Position.y;
 
 				if(ABS(DeltaY) < BboxRadius.y && SGN(TargetPtr->Orientation.Fwd.x) != SGN(Orientation.Fwd.x))
@@ -166,9 +166,9 @@ void Defcon::CHunter::Move(float DeltaTime)
 				else
 				{
 					const CFPoint Pt = TargetPtr->Position + TargetOffset;
-					gpArena->ShortestDirection(Position, Pt, Orientation.Fwd);
+					GArena->ShortestDirection(Position, Pt, Orientation.Fwd);
 
-					Distance /= gpArena->GetDisplayWidth();
+					Distance /= GArena->GetDisplayWidth();
 
 					const float Speed = Distance >= 0.8f 
 						? MAP(Distance, 0.8f, 1.0f, HUNTER_SPEEDMAX, 0.0f)
@@ -177,7 +177,7 @@ void Defcon::CHunter::Move(float DeltaTime)
 					Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
 					Position.MulAdd(Orientation.Fwd, DeltaTime * Speed);
 
-					if(this->CanBeInjured() && TargetPtr->CanBeInjured() && Speed < 400)
+					if(CanBeInjured() && TargetPtr->CanBeInjured() && Speed < 400)
 					{
 						FiringCountdown -= DeltaTime;
 
@@ -192,7 +192,7 @@ void Defcon::CHunter::Move(float DeltaTime)
 	Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
 
 	// Constrain vertically.
-	Position.y = CLAMP(Position.y, 0, gpArena->GetHeight());
+	Position.y = CLAMP(Position.y, 0, GArena->GetHeight());
 
 	Inertia = Position - Inertia;
 }
@@ -202,11 +202,11 @@ void Defcon::CHunter::ConsiderFiringBullet()
 {
 	if(FiringCountdown <= 0.0f)
 	{
-		(void) gpArena->FireBullet(*this, Position, (FRAND <= 0.85f) ? 2 : 3, 1);
+		(void) GArena->FireBullet(*this, Position, (FRAND <= 0.85f) ? 2 : 3, 1);
 
 		// The time to fire goes down as the player XP increases.
 
-		const float XP = (float)gDefconGameInstance->GetScore();
+		const float XP = (float)GDefconGameInstance->GetScore();
 
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);

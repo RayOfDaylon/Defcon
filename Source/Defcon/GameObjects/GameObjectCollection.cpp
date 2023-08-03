@@ -30,7 +30,7 @@ void Defcon::CGameObjectCollection::DeleteAll(bool IncludingSprites)
 			First->UninstallSprite();
 		}
 			
-		this->Delete(First);
+		Delete(First);
 	}
 }
 
@@ -89,14 +89,14 @@ void Defcon::CGameObjectCollection::Add(CGameObjectCollection& Set)
 	while((p = Set.GetFirst()) != nullptr)
 	{
 		Set.Detach(p);
-		this->Add(p);
+		Add(p);
 	}
 }
 
 
 void Defcon::CGameObjectCollection::Delete(IGameObject* p)
 {
-	this->Detach(p);
+	Detach(p);
 
 	if(!p->ExternallyOwned())
 	{
@@ -132,7 +132,7 @@ void Defcon::CGameObjectCollection::DetachAll()
 {
 	while(First != nullptr)
 	{
-		this->Detach(First);
+		Detach(First);
 	}
 }
 
@@ -157,7 +157,7 @@ Defcon::IGameObject* Defcon::CGameObjectCollection::Find(EObjType Kind, Defcon::
 {
 	if(p == nullptr)
 	{
-		p = this->GetFirst();
+		p = GetFirst();
 	}
 	else
 	{
@@ -191,7 +191,7 @@ bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
 
 	check(params.MapperPtr);
 
-	IGameObject* pObj = this->GetFirst();
+	IGameObject* pObj = GetFirst();
 	bool b = false;
 
 	while(pObj != nullptr)
@@ -224,7 +224,7 @@ bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
 				pObj->UninstallSprite();
 			}
 
-			this->Delete(pObj);
+			Delete(pObj);
 			pObj = pObj2;
 
 			continue;
@@ -233,7 +233,7 @@ bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
 		pObj->Move(params.DeltaTime);
 
 		// Handle wraparound onto planet.
-		pObj->Position.x = gpArena->WrapX(pObj->Position.x);
+		pObj->Position.x = GArena->WrapX(pObj->Position.x);
 
 
 		// Lots of objects temporarily exist outside arena's vertical bounds.

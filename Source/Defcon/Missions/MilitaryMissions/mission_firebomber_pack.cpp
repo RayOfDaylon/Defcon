@@ -30,8 +30,8 @@ void Defcon::CFirebomberPack::Init()
 
 void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if((    this->HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0  && RepopCounter > DELAY_BETWEEN_REATTACK))
+	if((    HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
+		|| (HostilesInPlay() > 0  && RepopCounter > DELAY_BETWEEN_REATTACK))
 	{
 
 		RepopCounter = 0.0f;
@@ -54,25 +54,25 @@ void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 
 		int32 i;
 
-		for(i = 0; i < numBombers[WaveIndex] && this->HostilesRemaining() > 0; i++)
+		for(i = 0; i < numBombers[WaveIndex] && HostilesRemaining() > 0; i++)
 		{
-			float wp = gpArena->GetWidth();
-			float x = (FRAND - 0.5f) * gpArena->GetDisplayWidth() + wp/2;
+			float wp = GArena->GetWidth();
+			float x = (FRAND - 0.5f) * GArena->GetDisplayWidth() + wp/2;
 			x = (float)fmod(x, wp);
-			float y = FRANDRANGE(0.25f, 0.85f) * gpArena->GetHeight();
+			float y = FRANDRANGE(0.25f, 0.85f) * GArena->GetHeight();
 
-			gpArena->CreateEnemy((i & 1) == 1 ? EObjType::FIREBOMBER_TRUE : EObjType::FIREBOMBER_WEAK, 
+			GArena->CreateEnemy((i & 1) == 1 ? EObjType::FIREBOMBER_TRUE : EObjType::FIREBOMBER_WEAK, 
 					CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), EObjectCreationFlags::StandardEnemy);
 		}
 
-		for(i = 0; i < numEscorts[WaveIndex] && this->HostilesRemaining() > 0; i++)
+		for(i = 0; i < numEscorts[WaveIndex] && HostilesRemaining() > 0; i++)
 		{
-			float wp = gpArena->GetWidth();
-			float x = (FRAND - 0.5f) * gpArena->GetDisplayWidth() + wp / 2;
+			float wp = GArena->GetWidth();
+			float x = (FRAND - 0.5f) * GArena->GetDisplayWidth() + wp / 2;
 			x = (float)fmod(x, wp);
-			float y = FRANDRANGE(0.25f, 0.85f) * gpArena->GetHeight();
+			float y = FRANDRANGE(0.25f, 0.85f) * GArena->GetHeight();
 
-			gpArena->CreateEnemy(EObjType::DYNAMO, CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), EObjectCreationFlags::StandardEnemy);
+			GArena->CreateEnemy(EObjType::DYNAMO, CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), EObjectCreationFlags::StandardEnemy);
 		}
 		WaveIndex++;
 	}

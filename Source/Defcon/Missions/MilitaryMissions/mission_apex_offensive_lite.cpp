@@ -36,7 +36,7 @@ void Defcon::CApexOffensiveLite::Init()
 
 void Defcon::CApexOffensiveLite::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(this->HostilesRemaining() > 0 
+	if(HostilesRemaining() > 0 
 		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 4
@@ -45,7 +45,7 @@ void Defcon::CApexOffensiveLite::MakeTargets(float fElapsed, const CFPoint& wher
 		// Add baiters until player clears minimal hostiles.
 		if(Age - TimeLastCleanerSpawned >= BAITER_SPAWN_FREQUENCY)
 		{
-			this->AddBaiter(where);
+			AddBaiter(where);
 		}
 	}
 

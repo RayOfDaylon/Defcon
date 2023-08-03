@@ -82,6 +82,12 @@ Numpad -   Decrease XP by 5,000 pts
 
 How the Game Works
 -------------------------------------------------------------------------------------
+A gameplay session starts when a mission is chosen and ends when:
+
+  - Esc is pressed (game aborted)
+  - A mission ends and no humans are remaining (defeat)
+  - The last mission ends and one or more humans remain (victory)
+
 Smart bomb explosions are drawn using a material that renders a circle within the full UV 
 space of its quad, with a parameter to change its opacity. A texture could have 
 been used but it would've had to be quite large to look sharp since the 

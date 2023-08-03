@@ -32,18 +32,18 @@ void Defcon::CYllabianDogfight2::Init()
 
 void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(this->HostilesRemaining() > 0 
+	if(HostilesRemaining() > 0 
 		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 3.5
 			)
 	{
-		this->AddMissionCleaner(where);
+		AddMissionCleaner(where);
 	}
 
 
-	if((this->HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
+	if((HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
+		|| (HostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
 	{
 		RepopCounter = 0.0f;
 
@@ -63,9 +63,9 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 		int32 i, j;
 		for(i = 0; i < array_size(waves); i++)
 		{
-			for(j = 0; j < waves[i].NumPerWave[WaveIndex] && this->HostilesRemaining() > 0; j++)
+			for(j = 0; j < waves[i].NumPerWave[WaveIndex] && HostilesRemaining() > 0; j++)
 			{
-				float wp = gpArena->GetWidth();
+				float wp = GArena->GetWidth();
 				CFPoint P;
 
 				switch(waves[i].Kind)
@@ -73,20 +73,20 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 					case EObjType::POD:
 					case EObjType::HUNTER:
 					case EObjType::DYNAMO:
-						P.x = FRAND * (gpArena->GetWidth() - 1);
+						P.x = FRAND * (GArena->GetWidth() - 1);
 						P.y = FRANDRANGE(0.15f, 0.85f);
 						break;
 
 					default:
-						P.x = (FRAND - 0.5f) * gpArena->GetDisplayWidth() + wp / 2;
+						P.x = (FRAND - 0.5f) * GArena->GetDisplayWidth() + wp / 2;
 						P.y = FRANDRANGE(0.25f, 0.75f);
 						break;
 				}
 
 				P.x = (float)fmod(P.x, wp);
-				P.y *= gpArena->GetHeight();
+				P.y *= GArena->GetHeight();
 
-				gpArena->CreateEnemy(waves[i].Kind, P, FRANDRANGE(0.0f, 0.1f * j), EObjectCreationFlags::StandardEnemy);
+				GArena->CreateEnemy(waves[i].Kind, P, FRANDRANGE(0.0f, 0.1f * j), EObjectCreationFlags::StandardEnemy);
 			}
 		}
 

@@ -5,7 +5,7 @@
 
 // flak.h
 
-#include "Common/PaintArguments.h"
+#include "Common/Painter.h"
 #include "Common/util_geom.h"
 #include "Common/util_color.h"
 #include "GameObjects/gameobj.h"

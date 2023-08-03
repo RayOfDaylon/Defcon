@@ -119,9 +119,9 @@ void Defcon::CGuppy::Move(float DeltaTime)
 			else if(TargetPtr != nullptr)
 			{
 				CFPoint pt;
-				gpArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
+				GArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
 
-				//Orientation.Fwd.Set(SGN(this->m_targetOffset.y), 0);
+				//Orientation.Fwd.Set(SGN(m_targetOffset.y), 0);
 				Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
 				Position.MulAdd(Orientation.Fwd, DeltaTime * GUPPY_SPEEDMIN/2);
 			}
@@ -143,7 +143,7 @@ void Defcon::CGuppy::Move(float DeltaTime)
 					//if(Orientation.Fwd.y == 0)
 					//	Orientation.Fwd.y = SFRAND;
 					CFPoint pt;
-					gpArena->ShortestDirection(Position, TargetPtr->Position, pt);
+					GArena->ShortestDirection(Position, TargetPtr->Position, pt);
 					Orientation.Fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
 					Position.MulAdd(Orientation.Fwd, DeltaTime * AVG(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX));
 				}
@@ -161,7 +161,7 @@ void Defcon::CGuppy::Move(float DeltaTime)
 			}
 			else
 			{
-				float dist = gpArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
+				float dist = GArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
 				float vd = Position.y - TargetPtr->Position.y;
 				if(ABS(vd) < BboxRadius.y && SGN(TargetPtr->Orientation.Fwd.x) != SGN(Orientation.Fwd.x))
 				{
@@ -172,9 +172,9 @@ void Defcon::CGuppy::Move(float DeltaTime)
 				else
 				{
 					CFPoint pt = TargetPtr->Position + TargetOffset;
-					gpArena->ShortestDirection(Position, pt, Orientation.Fwd);
+					GArena->ShortestDirection(Position, pt, Orientation.Fwd);
 
-					dist /= gpArena->GetDisplayWidth();
+					dist /= GArena->GetDisplayWidth();
 
 					const float speed = dist >= 0.8f 
 						? MAP(dist, 0.8f, 1.0f, GUPPY_SPEEDMAX, 0.0f)
@@ -197,7 +197,7 @@ void Defcon::CGuppy::Move(float DeltaTime)
 	} // switch(state)
 
 	// Constrain vertically.
-	Position.y = CLAMP(Position.y, 0, gpArena->GetHeight());
+	Position.y = CLAMP(Position.y, 0, GArena->GetHeight());
 
 	Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
 
@@ -209,11 +209,11 @@ void Defcon::CGuppy::ConsiderFiringBullet()
 {
 	if(FiringCountdown <= 0.0f)
 	{
-		(void) gpArena->FireBullet(*this, Position, (FRAND <= 0.85f) ? 2 : 3, 1);
+		(void) GArena->FireBullet(*this, Position, (FRAND <= 0.85f) ? 2 : 3, 1);
 
 		// The time to fire goes down as the player XP increases.
 
-		const float XP = (float)gDefconGameInstance->GetScore();
+		const float XP = (float)GDefconGameInstance->GetScore();
 
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);
@@ -241,7 +241,7 @@ void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
 
 	bMortal = true;
 	Lifespan = 0.0f;
-	this->OnAboutToDie();
+	OnAboutToDie();
 
 	for(int32 i = 0; i < 20; i++)
 	{

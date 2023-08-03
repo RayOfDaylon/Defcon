@@ -174,7 +174,7 @@ void Defcon::COptionsArena::Init
 	const int32 w = r.right - r.left;
 	const int32 h = r.bottom - r.top;
 
-	this->OnDisplaySizeChanged(w, h);
+	OnDisplaySizeChanged(w, h);
 
 	s_event_handler_arena_options.gpArena = this;
 	m_pInputs = &s_event_handler_arena_options;
@@ -246,7 +246,7 @@ void Defcon::COptionsArena::Init
 	m_edittitle.SetFontID(m_items[0].GetFontID());
 	m_edittitle.SetExternalOwnership(true);
 
-	this->FocusItem(sCurrentItem_arena_optons);
+	FocusItem(sCurrentItem_arena_optons);
 }
 
 
@@ -267,13 +267,13 @@ void Defcon::COptionsArena::Scroll()
 void Defcon::COptionsArena::FocusItem(int32 id)
 {
 	// Scroll text area if necessary.
-	this->Scroll();
+	Scroll();
 
 	int32 itemid = sCurrentItem_arena_optons - m_topItem;
 	m_items[itemid].SetColor(C_UNSELECTED);
 	m_values[itemid].SetColor(C_UNSELECTEDVALUE);
 	sCurrentItem_arena_optons = id;
-	this->Scroll();
+	Scroll();
 
 	itemid = sCurrentItem_arena_optons - m_topItem;
 	m_items[itemid].SetColor(C_SELECTED);
@@ -284,7 +284,7 @@ void Defcon::COptionsArena::FocusItem(int32 id)
 	{
 		m_items[i].SetText(gPrefs.m_pref[m_topItem + i].m_metadata.m_pszName);
 
-		this->UpdateValueText(i);
+		UpdateValueText(i);
 	}
 
 	m_desc.SetText(gPrefs.m_pref[sCurrentItem_arena_optons].m_metadata.m_pszDesc);
@@ -374,19 +374,19 @@ void Defcon::COptionsArena::navigate(EventType what)
 	switch(what)
 	{
 		case EventType::navigate_home:
-			this->FocusItem(0);
+			FocusItem(0);
 			break;
 
 		case EventType::navigate_end:
-			this->FocusItem(array_size(gPrefs.m_pref)-1);
+			FocusItem(array_size(gPrefs.m_pref)-1);
 			break;
 
 		case EventType::navigate_page_up:
 		{
 			if(sCurrentItem_arena_optons < array_size(m_items))
-				this->FocusItem(0);
+				FocusItem(0);
 			else
-				this->FocusItem(sCurrentItem_arena_optons - array_size(m_items));
+				FocusItem(sCurrentItem_arena_optons - array_size(m_items));
 		}
 			break;
 
@@ -395,9 +395,9 @@ void Defcon::COptionsArena::navigate(EventType what)
 			int32 n = 
 				sCurrentItem_arena_optons + array_size(m_items);
 			if(n < array_size(gPrefs.m_pref))
-				this->FocusItem(n);
+				FocusItem(n);
 			else
-				this->FocusItem(array_size(gPrefs.m_pref)-1);
+				FocusItem(array_size(gPrefs.m_pref)-1);
 		}
 			break;
 	}
@@ -517,7 +517,7 @@ void Defcon::COptionsArena::Update(float DeltaTime)
 			m_pEditor->Draw(m_virtualScreen, m_coordMapper);
 	}
 
-	this->FadeIn(m_virtualScreen);
+	FadeIn(m_virtualScreen);
 }
 
 
@@ -527,7 +527,7 @@ void Defcon::COptionsArena::UpdateKybdState()
 		return;
 
 	IArena::UpdateKybdState();
-	//this->UpdateKeysState(m_keys, Keys::count);
+	//UpdateKeysState(m_keys, Keys::count);
 }
 
 
@@ -544,9 +544,9 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 			if(State == State::viewing)
 			{
 				if(sCurrentItem_arena_optons == 0)
-					this->FocusItem(array_size(gPrefs.m_pref)-1);
+					FocusItem(array_size(gPrefs.m_pref)-1);
 				else
-					this->FocusItem(sCurrentItem_arena_optons - 1);
+					FocusItem(sCurrentItem_arena_optons - 1);
 			}
 			break;
 
@@ -555,9 +555,9 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 			if(State == State::viewing)
 			{
 				if(sCurrentItem_arena_optons == array_size(gPrefs.m_pref)-1)
-					this->FocusItem(0);
+					FocusItem(0);
 				else
-					this->FocusItem(sCurrentItem_arena_optons + 1);
+					FocusItem(sCurrentItem_arena_optons + 1);
 			}
 			break;
 
@@ -574,19 +574,19 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 					switch(key)
 					{
 						case Keys::home:
-							this->FocusItem(0);
+							FocusItem(0);
 							break;
 
 						case Keys::end:
-							this->FocusItem(array_size(gPrefs.m_pref)-1);
+							FocusItem(array_size(gPrefs.m_pref)-1);
 							break;
 
 						case Keys::pageup:
 						{
 							if(sCurrentItem_arena_optons < array_size(m_items))
-								this->FocusItem(0);
+								FocusItem(0);
 							else
-								this->FocusItem(sCurrentItem_arena_optons - array_size(m_items));
+								FocusItem(sCurrentItem_arena_optons - array_size(m_items));
 						}
 							break;
 
@@ -595,9 +595,9 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 							int32 n = 
 								sCurrentItem_arena_optons + array_size(m_items);
 							if(n < array_size(gPrefs.m_pref))
-								this->FocusItem(n);
+								FocusItem(n);
 							else
-								this->FocusItem(array_size(gPrefs.m_pref)-1);
+								FocusItem(array_size(gPrefs.m_pref)-1);
 						}
 							break;
 
@@ -610,7 +610,7 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 					{
 						m_pEditor->OnKey(m_keys[key]);
 						gPrefs.m_pref[sCurrentItem_arena_optons].SetValue(m_pEditor->GetValue());
-						this->UpdateValueText(sCurrentItem_arena_optons - m_topItem);
+						UpdateValueText(sCurrentItem_arena_optons - m_topItem);
 					}
 					break;
 			}
@@ -621,10 +621,10 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 			switch(State)
 			{
 				case State::viewing:
-					this->StartEditing();
+					StartEditing();
 					break;
 				case State::editing:
-					this->StopEditing();
+					StopEditing();
 					break;
 			}
 			break;
@@ -637,7 +637,7 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 					m_pNextArena = Defcon::CArenaFactory::Make(Defcon::ArenaKind::menu);
 					break;
 				case State::editing:
-					this->CancelEditing();
+					CancelEditing();
 					break;
 			}
 			break;
@@ -657,7 +657,7 @@ void Defcon::COptionsArena::StartEditing()
 		case type_bool:
 			// Just toggle the value immediately.
 			var.SetValue(1.0f - var.GetValue());
-			this->UpdateValueText(i);
+			UpdateValueText(i);
 			break;
 
 		case type_choice:
@@ -665,7 +665,7 @@ void Defcon::COptionsArena::StartEditing()
 			var.SetValue(var.GetValue() + 1.0f);
 			if(var.GetValue() >= var.GetChoiceCount())
 				var.SetValue(0.0f);
-			this->UpdateValueText(i);
+			UpdateValueText(i);
 			break;
 				
 
@@ -716,7 +716,7 @@ void Defcon::COptionsArena::StopEditing()
 void Defcon::COptionsArena::CancelEditing()
 {
 	gPrefs.m_pref[sCurrentItem_arena_optons].m_fValue = m_pEditor->GetInitialValue();
-	this->UpdateValueText(sCurrentItem_arena_optons - m_topItem);
+	UpdateValueText(sCurrentItem_arena_optons - m_topItem);
 	State = State::viewing;
 }
 

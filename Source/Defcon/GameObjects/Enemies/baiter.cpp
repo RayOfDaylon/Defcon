@@ -69,7 +69,7 @@ void Defcon::CBaiter::Move(float DeltaTime)
 		return;
 	}
 	
-	const float xd = gpArena->HorzDistance(Position, TargetPtr->Position);
+	const float xd = GArena->HorzDistance(Position, TargetPtr->Position);
 	float d = Drag;
 	float m = Mass;
 	// Increase drag as baiter near player.
@@ -101,7 +101,7 @@ void Defcon::CBaiter::Move(float DeltaTime)
 			(float)cos(Age) * 300.0f * SGN(TargetPtr->Orientation.Fwd.x),
 			vsign * (float)fabs(sin(Age)) * 50.0f + vsign * 50.0f);
 
-		const float Xd = gpArena->ShortestDirection(Position, target, delta);
+		const float Xd = GArena->ShortestDirection(Position, target, delta);
 		bool bMoveTowards = (Xd > 150 || SGN(Orientation.Fwd.x) != SGN(TargetPtr->Orientation.Fwd.x));
 
 		if(bMoveTowards)
@@ -109,7 +109,7 @@ void Defcon::CBaiter::Move(float DeltaTime)
 			const int32 ctl = (delta.x < 0)	? ILiveGameObject::ctlBack : ILiveGameObject::ctlFwd;
 			const int32 ctl2 = (ctl ==  ILiveGameObject::ctlBack) ? ILiveGameObject::ctlFwd : ILiveGameObject::ctlBack;
 
-			if(this->NavControlDuration(ctl) == 0)
+			if(NavControlDuration(ctl) == 0)
 			{
 				ControlStartTime[ctl] = GameTime();
 			}
@@ -153,7 +153,7 @@ void Defcon::CBaiter::Move(float DeltaTime)
 			if(FireWeaponCountdown <= 0.0f)
 			{
 				FireWeaponCountdown = FRANDRANGE(0.75f, 2.0f);
-				gpArena->FireBullet(*this, Position, 1, 1);
+				GArena->FireBullet(*this, Position, 1, 1);
 			}
 		}		
 	}

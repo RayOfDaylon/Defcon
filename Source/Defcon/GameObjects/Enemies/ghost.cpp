@@ -73,13 +73,13 @@ const char* Defcon::CGhost::GetClassname() const
 
 void Defcon::CGhost::ConsiderFiringBullet(float DeltaTime)
 {
-	if(!gpArena->IsPointVisible(Position) || TargetPtr == nullptr)
+	if(!GArena->IsPointVisible(Position) || TargetPtr == nullptr)
 	{
 		return;
 	}
 		
 	// Hold fire if target is below ground
-	if(TargetPtr->Position.y < gpArena->GetTerrainElev(TargetPtr->Position.x))
+	if(TargetPtr->Position.y < GArena->GetTerrainElev(TargetPtr->Position.x))
 	{
 		return;
 	}
@@ -88,11 +88,11 @@ void Defcon::CGhost::ConsiderFiringBullet(float DeltaTime)
 
 	if(FiringCountdown <= 0.0f)
 	{
-		(void) gpArena->FireBullet(*this, Position, 1, 1);
+		(void) GArena->FireBullet(*this, Position, 1, 1);
 
 		// The time to fire goes down as the player XP increases.
 
-		const float XP = (float)gDefconGameInstance->GetScore();
+		const float XP = (float)GDefconGameInstance->GetScore();
 
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);
@@ -130,10 +130,10 @@ void Defcon::CGhost::Move(float DeltaTime)
 
 	// See if we need to disperse (player ship got too close).
 
-	if(TargetPtr != nullptr && !this->MarkedForDeath())
+	if(TargetPtr != nullptr && !MarkedForDeath())
 	{
 		CFPoint Direction;
-		const float Distance = gpArena->ShortestDirection(Position, TargetPtr->Position, Direction);
+		const float Distance = GArena->ShortestDirection(Position, TargetPtr->Position, Direction);
 
 		if(Distance < GHOST_PLAYER_DIST_MIN)
 		{
@@ -149,15 +149,15 @@ void Defcon::CGhost::Move(float DeltaTime)
 			CFPoint NewPos;
 
 			// Choose somewhere else on the screen.
-			NewPos.x = Position.x + SFRAND * gpArena->GetDisplayWidth() / 1.5f;
-			NewPos.y = FRANDRANGE(0.125f, 0.875f) * gpArena->GetHeight();
+			NewPos.x = Position.x + SFRAND * GArena->GetDisplayWidth() / 1.5f;
+			NewPos.y = FRANDRANGE(0.125f, 0.875f) * GArena->GetHeight();
 
 			// Don't modulate newloc; it will cause wrong path animation if path cross x-origin.
 			// Modulation must happen in ghostpart::move.
 
 			for(int32 i = 1; i < NumParts; i++)
 			{
-				auto GhostPart = (CGhostPart*)gpArena->CreateEnemyNow(EObjType::GHOSTPART, PartLocs[i], EObjectCreationFlags::EnemyPart);
+				auto GhostPart = (CGhostPart*)GArena->CreateEnemyNow(EObjType::GHOSTPART, PartLocs[i], EObjectCreationFlags::EnemyPart);
 
 				GhostPart->SetCollisionInjurious(false);
 				GhostPart->SetFlightDuration(FlightTime);
@@ -168,7 +168,7 @@ void Defcon::CGhost::Move(float DeltaTime)
 			// source position of the dispersal in the above loop.
 
 			Position   = NewPos;
-			Position.x = gpArena->WrapX(Position.x);
+			Position.x = GArena->WrapX(Position.x);
 		
 			gpAudio->OutputSound(EAudioTrack::Ghostflight);
 		}
@@ -209,7 +209,7 @@ void Defcon::CGhost::Draw(FPainter& Painter, const I2DCoordMapper& mapper)
 	{
 		CFPoint pt;
 		mapper.To(PartLocs[I], pt);
-		this->DrawPart(Painter, pt);
+		DrawPart(Painter, pt);
 	}
 }
 
@@ -252,7 +252,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 
 	bMortal = true;
 	Lifespan = 0.0f;
-	this->OnAboutToDie();
+	OnAboutToDie();
 
 	// Create an explosion by making
 	// several Debris objects and 
@@ -267,8 +267,8 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 */
 
 	// Define which color to make the Debris.
-	auto ColorBase = this->GetExplosionColorBase();
-	MaxSize *= this->GetExplosionMass();
+	auto ColorBase = GetExplosionColorBase();
+	MaxSize *= GetExplosionMass();
 	
 	if(IRAND(3) == 1)
 	{
@@ -279,7 +279,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 	int32 I;
 
 	float BrightBase;
-	IGameObject* pFireblast = this->CreateFireblast(Debris, BrightBase);
+	IGameObject* pFireblast = CreateFireblast(Debris, BrightBase);
 
 	for(I = 0; I < N; I++)
 	{
@@ -326,7 +326,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 		}
 		else
 		{
-			ColorBase = this->GetExplosionColorBase();
+			ColorBase = GetExplosionColorBase();
 		}
 
 		for(I = 0; I < N; I++)
@@ -455,11 +455,11 @@ void Defcon::CGhostPart::Move(float fTime)
 	if(Age < MaxAge)
 	{
 		Path.CalcPt(powf(Age / MaxAge, 0.75f), Position);
-		Position.x = gpArena->WrapX(Position.x);
+		Position.x = GArena->WrapX(Position.x);
 		return;
 	}
 
-	this->MarkAsDead();
+	MarkAsDead();
 }
 
 

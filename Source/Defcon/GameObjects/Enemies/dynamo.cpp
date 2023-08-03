@@ -68,13 +68,13 @@ void Defcon::CDynamo::Move(float DeltaTime)
 	SpawnSpacehumCountdown -= DeltaTime;
 
 	if(SpawnSpacehumCountdown <= 0.0f 
-		&& this->CanBeInjured()
-		&& gpArena->GetPlayerShip().IsAlive()
+		&& CanBeInjured()
+		&& GArena->GetPlayerShip().IsAlive()
 		&& IsOurPositionVisible())
 	{
-		gpArena->CreateEnemy(EObjType::SPACEHUM, Position, 0.0f, EObjectCreationFlags::EnemyPart);
+		GArena->CreateEnemy(EObjType::SPACEHUM, Position, 0.0f, EObjectCreationFlags::EnemyPart);
 
-		const auto XP = gDefconGameInstance->GetScore();
+		const auto XP = GDefconGameInstance->GetScore();
 		float T = NORM_(XP, 0.0f, 50000.0f);
 		T = CLAMP(T, 0.0f, 1.0f);
 
@@ -89,7 +89,7 @@ void Defcon::CDynamo::Move(float DeltaTime)
 	const float Sn = (float)sin(WiggleAnimSpeed.y * Age) * 15.0f;
 	Position.y = OriginalY + Sn;
 
-	Position.y = CLAMP(Position.y, 0, gpArena->GetHeight() - 1);
+	Position.y = CLAMP(Position.y, 0, GArena->GetHeight() - 1);
 
 	Inertia = Position - Inertia;
 }

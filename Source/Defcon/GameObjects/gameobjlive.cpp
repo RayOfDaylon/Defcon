@@ -21,14 +21,13 @@
 
 
 Defcon::ILiveGameObject::ILiveGameObject()
-	:
-	bCanMove(true),
-	MaxThrust(1.0f),
-	ThrustDurationVertical(0.0f),
-	ThrustDurationForwards(0.0f),
-	ThrustDurationBackwards(0.0f)
 {
-	Drag = 0.1f;
+	MaxThrust               = 1.0f;
+	ThrustDurationVertical  = 0.0f;
+	ThrustDurationForwards  = 0.0f;
+	ThrustDurationBackwards = 0.0f;
+	Drag                    = 0.1f;
+	bCanMove                = true;
 
 	SetShieldStrength(1.0f);
 
@@ -65,9 +64,9 @@ void Defcon::ILiveGameObject::Move(float DeltaTime)
 
 	Inertia = Position;
 
-	this->ComputeThrustTimings(DeltaTime);
-	this->ComputeForces(DeltaTime);
-	this->ImpartForces(DeltaTime);
+	ComputeThrustTimings(DeltaTime);
+	ComputeForces(DeltaTime);
+	ImpartForces(DeltaTime);
 
 	Inertia = Position - Inertia;
 }
@@ -112,8 +111,8 @@ void Defcon::ILiveGameObject::ComputeThrustTimings(float frameTime)
 
 	check(frameTime > 0.0f);
 
-	ThrustDurationForwards  = this->NavControlDuration(ctlFwd);
-	ThrustDurationBackwards = this->NavControlDuration(ctlBack);
+	ThrustDurationForwards  = NavControlDuration(ctlFwd);
+	ThrustDurationBackwards = NavControlDuration(ctlBack);
 	ThrustDurationForwards  = FMath::Min(ThrustDurationForwards, frameTime);
 	ThrustDurationBackwards = FMath::Min(ThrustDurationBackwards, frameTime);
 	
@@ -125,8 +124,8 @@ void Defcon::ILiveGameObject::ComputeThrustTimings(float frameTime)
 		return;
 	}
 
-	ThrustDurationVertical += this->NavControlDuration(ctlUp);
-	ThrustDurationVertical -= this->NavControlDuration(ctlDown);
+	ThrustDurationVertical += NavControlDuration(ctlUp);
+	ThrustDurationVertical -= NavControlDuration(ctlDown);
 
 	// Clamp vertical thrust duration to the frametime.
 	ThrustDurationVertical = FMath::Min(ThrustDurationVertical, frameTime);

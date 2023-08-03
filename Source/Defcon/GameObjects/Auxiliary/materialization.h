@@ -12,7 +12,7 @@
 */
 
 #include "CoreMinimal.h"
-#include "Common/PaintArguments.h"
+#include "Common/Painter.h"
 #include "Common/util_core.h"
 #include "Common/util_geom.h"
 #include "Common/util_color.h"

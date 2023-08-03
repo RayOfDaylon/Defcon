@@ -98,7 +98,7 @@ class CFPoint
 
 		void   MulAdd      (const CFPoint& pt, float f)	            { x += pt.x * f; y += pt.y * f; }
 		void   MulAdd      (const CFPoint& pt, const CFPoint& off)	{ x += pt.x * off.x; y += pt.y * off.y; }
-		void   Normalize   ()                                       { Div(this->Length()); }
+		void   Normalize   ()                                       { Div(Length()); }
 		void   Lerp        (const CFPoint& pt, float t)             { x = LERP(x, pt.x, t); y = LERP(y, pt.y, t); }
 		void   Avg         (const CFPoint& pt)                      { x = AVG(x, pt.x); y = AVG(y, pt.y); }
 
@@ -207,9 +207,9 @@ class CFRect
 	public:
 
 		CFRect () {}
-		CFRect (float llx, float lly, float urx, float ury)    { this->Set(llx, lly, urx, ury); }
-		CFRect (const CFPoint& pt)                             { this->Set(pt); }
-		CFRect (const CFPoint& _LL, const CFPoint& _UR)        { this->Set(_LL, _UR); }
+		CFRect (float llx, float lly, float urx, float ury)    { Set(llx, lly, urx, ury); }
+		CFRect (const CFPoint& pt)                             { Set(pt); }
+		CFRect (const CFPoint& _LL, const CFPoint& _UR)        { Set(_LL, _UR); }
 
 		bool operator == (const CFRect& r) const  { return (LL == r.LL && UR == r.UR); }
 		bool operator != (const CFRect& r) const  { return (!(*this == r)); }

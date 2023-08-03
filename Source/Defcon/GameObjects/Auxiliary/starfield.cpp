@@ -99,7 +99,7 @@ void Defcon::CStarfield::Draw(FPaintArguments& Painter, const I2DCoordMapper& ma
 	CFPoint pt;
 	mapper.To(Position, pt);
 
-	const int32 n = this->GetNumStars();
+	const int32 n = GetNumStars();
 
 	const CFPoint halfsize(0.5f * m_w, 0.5f * m_h);
 	CFRect rect(pt);

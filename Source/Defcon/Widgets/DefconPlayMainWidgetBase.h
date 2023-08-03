@@ -264,6 +264,14 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 
 	public:
 
+	void Init(Defcon::CGameObjectCollection* Humans, 
+			  Defcon::CGameObjectCollection* Objects, 
+			  Defcon::CGameObjectCollection* Enemies, 
+			  Defcon::CGameObjectCollection* Debris,
+			  Defcon::CGameObjectCollection* Blasts,
+			  const FVector2D& ArenaSize);
+
+
 	void SetSafeToStart(bool b = true) { bSafeToStart = b; }
 
 	void OnDeactivate();
@@ -276,8 +284,8 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	void AddMessage    (const FString& Str, float Duration = 0.0f);
 	void ClearMessages ();
 
-	Defcon::I2DCoordMapper*                  CoordMapperPtr      = nullptr;
-	Defcon::I2DCoordMapper*                  CoordMapperRadarPtr = nullptr;
+	Defcon::I2DCoordMapper*          CoordMapperPtr      = nullptr;
+	Defcon::I2DCoordMapper*          CoordMapperRadarPtr = nullptr;
 	Defcon::CTerrain*                TerrainPtr          = nullptr;
 	Defcon::CPlayer*                 PlayerShipPtr       = nullptr;
 	Defcon::CGameObjectCollection*   Objects             = nullptr;

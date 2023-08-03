@@ -281,11 +281,11 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	void                                 BindToSmartbombCount   (TFunction<void(const int32& Val)> Delegate) { SmartbombsLeft.Bind(Delegate); }
 	void                                 HostileDestroyed       (Defcon::EObjType Kind) { if(m_pMission != nullptr) ((Defcon::CMilitaryMission*)m_pMission)->HostileDestroyed(Kind); }
 	Defcon::IMission*                    GetMission             () { return m_pMission; }
-	void                                 InitMission            (UDefconPlayViewBase* p);
+	void                                 InitMission            ();
 	void                                 MissionEnded           ();
 	FString                              GetCurrentMissionName  () const;
 	void                                 AddEvent               (Defcon::CEvent* Event);
 	Defcon::FTotals&                     GetStats               () { return Stats; }
 };
 
-extern UDefconGameInstance* gDefconGameInstance;
+extern UDefconGameInstance* GDefconGameInstance;

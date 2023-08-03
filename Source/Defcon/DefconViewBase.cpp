@@ -8,19 +8,19 @@
 
 const UDefconGameInstance* UDefconViewBase::GetConstDefconGameInstance() const
 {
-	return gDefconGameInstance;
+	return GDefconGameInstance;
 }
 
 
 UDefconGameInstance* UDefconViewBase::GetDefconGameInstance()
 {
-	return gDefconGameInstance;
+	return GDefconGameInstance;
 }
 
 
 void UDefconViewBase::TransitionToArena(EDefconArena Arena)
 {
-	gDefconGameInstance->TransitionToArena(Arena);
+	GDefconGameInstance->TransitionToArena(Arena);
 }
 
 
@@ -74,7 +74,7 @@ void UDefconViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 	if(!bDoneActivating && IsOkayToFinishActivating()/*bPaintingOccurring*/)
 	{
 		// This test is probably not needed, but just to be safe.
-		if(gDefconGameInstance != nullptr && gDefconGameInstance->IsLive() && gDefconGameInstance->GetCurrentView() == this)
+		if(GDefconGameInstance != nullptr && GDefconGameInstance->IsLive() && GDefconGameInstance->GetCurrentView() == this)
 		{
 			OnFinishActivating();
 

@@ -26,7 +26,7 @@ bool Defcon::CSwarm::Update(float fElapsed)
 	if(!CMilitaryMission::Update(fElapsed))
 		return false;
 
-	this->DoIntroText(fElapsed);
+	DoIntroText(fElapsed);
 
 	return true;
 }
@@ -59,18 +59,18 @@ void Defcon::CSwarm::DoIntroText(float fElapsed)
 
 void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(this->HostilesRemaining() > 0 
+	if(HostilesRemaining() > 0 
 		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 3.5
 			)
 	{
-		this->AddMissionCleaner(where);
+		AddMissionCleaner(where);
 	}
 
 
-	if((this->HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (this->HostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
+	if((HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
+		|| (HostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
 	{
 		RepopCounter = 0.0f;
 
@@ -87,7 +87,7 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 		int32 i, j;
 		for(i = 0; i < array_size(waves); i++)
 		{
-			for(j = 0; j < waves[i].count[WaveIndex] && this->HostilesRemaining() > 0; j++)
+			for(j = 0; j < waves[i].count[WaveIndex] && HostilesRemaining() > 0; j++)
 			{
 				CCreateEnemyEvent* p = new CCreateEnemyEvent;
 				p->Init(gpArena);
@@ -98,7 +98,7 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 				x = (float)fmod(x, wp);
 				float y = (float)gpArena->GetHeight() * FRAND;
 				p->Where.Set(x, y);
-				this->AddEvent(p);
+				AddEvent(p);
 			}
 		}
 

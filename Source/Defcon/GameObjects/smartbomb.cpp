@@ -96,9 +96,9 @@ void Defcon::CSmartbomb::Move(float DeltaTime)
 
 			if(P.Distance(BombPos) < Shockwave)
 			{
-				gDefconGameInstance->GetStats().HostilesDestroyedBySmartbomb++;
+				GDefconGameInstance->GetStats().HostilesDestroyedBySmartbomb++;
 
-				gpArena->ExplodeObject(Target);
+				GArena->ExplodeObject(Target);
 				Target->MarkAsDead();
 			}
 		}

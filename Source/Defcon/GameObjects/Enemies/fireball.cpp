@@ -72,13 +72,13 @@ void Defcon::CFireball::Move(float fTime)
 
 		if(TargetPtr == nullptr)
 		{
-			this->MarkAsDead();
+			MarkAsDead();
 			return;
 		}
 		else
 		{
 			CFPoint dir;
-			Speed = (FRAND * 0.5f + 1.0f) * gpArena->ShortestDirection(Position, TargetPtr->Position, dir);
+			Speed = (FRAND * 0.5f + 1.0f) * GArena->ShortestDirection(Position, TargetPtr->Position, dir);
 			Orientation.Fwd.x = (float)(SGN(dir.x));
 			Orientation.Fwd.y = (float)(SGN(dir.y));
 		}
@@ -107,13 +107,13 @@ void Defcon::CFireball::Move(float fTime)
 	// Explode if we hit the ground.
 	if(BULLETS_HIT_TERRAIN)
 	{
-		WRAP(Position.x, 0, gpArena->GetWidth());
+		WRAP(Position.x, 0, GArena->GetWidth());
 
-		if(Position.y <= gpArena->GetTerrainElev(Position.x))
+		if(Position.y <= GArena->GetTerrainElev(Position.x))
 		{
 			if(FIREBALLS_EXPLODE_ON_GROUND)
 			{
-				gpArena->ExplodeObject(this);	
+				GArena->ExplodeObject(this);	
 			}
 			else
 			{
@@ -143,7 +143,7 @@ void Defcon::CFireball::Explode(CGameObjectCollection& Debris)
 	bMortal  = true;
 	Lifespan = 0.0f;
 
-	this->OnAboutToDie();
+	OnAboutToDie();
 
 	for(int32 I = 0; I < 20; I++)
 	{

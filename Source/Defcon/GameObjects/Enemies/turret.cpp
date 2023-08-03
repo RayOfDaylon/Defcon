@@ -111,7 +111,7 @@ void Defcon::CTurret::Move(float fTime)
 		}
 
 		CFPoint dir;
-		float dist = gpArena->ShortestDirection(Position, pTarget->Position, dir);
+		float dist = GArena->ShortestDirection(Position, pTarget->Position, dir);
 
 		/*if(m_fTimeTargetWithinRange > 0.25f)
 		{
@@ -126,7 +126,7 @@ void Defcon::CTurret::Move(float fTime)
 		if(m_fTimeTargetWithinRange && Age > 1.0f && FRAND <= 0.07f
 			/*&& SGN(Orientation.Fwd.x) == SGN(dir.x)*/)
 		{
-			gpArena->FireBullet(*this, Position, 1, 1);
+			GArena->FireBullet(*this, Position, 1, 1);
 			//gpAudio->OutputSound(Defcon::swarmer);
 		}
 	}
@@ -162,7 +162,7 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 
 	bMortal = true;
 	Lifespan = 0.0f;
-	this->OnAboutToDie();
+	OnAboutToDie();
 
 	for(int32 i = 0; i < 100; i++)
 	{

@@ -108,7 +108,7 @@ void Defcon::CSwarmer::Move(float DeltaTime)
 		}
 
 		CFPoint Direction;
-		const float Distance = gpArena->ShortestDirection(Position, TargetPtr->Position, Direction);
+		const float Distance = GArena->ShortestDirection(Position, TargetPtr->Position, Direction);
 
 		if(TimeTargetWithinRange > 0.75f)
 		{
@@ -169,13 +169,13 @@ void Defcon::CSwarmer::Move(float DeltaTime)
 
 void Defcon::CSwarmer::ConsiderFiringBullet(float DeltaTime)
 {
-	if(!gpArena->IsPointVisible(Position) || TargetPtr == nullptr)
+	if(!GArena->IsPointVisible(Position) || TargetPtr == nullptr)
 	{
 		return;
 	}
 		
 	// Hold fire if target is below ground
-	if(TargetPtr->Position.y < gpArena->GetTerrainElev(TargetPtr->Position.x))
+	if(TargetPtr->Position.y < GArena->GetTerrainElev(TargetPtr->Position.x))
 	{
 		return;
 	}
@@ -184,11 +184,11 @@ void Defcon::CSwarmer::ConsiderFiringBullet(float DeltaTime)
 
 	if(FiringCountdown <= 0.0f)
 	{
-		(void) gpArena->FireBullet(*this, Position, 1, 1);
+		(void) GArena->FireBullet(*this, Position, 1, 1);
 
 		// The time to fire goes down as the player XP increases.
 
-		const float XP = (float)gDefconGameInstance->GetScore();
+		const float XP = (float)GDefconGameInstance->GetScore();
 
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);
@@ -204,7 +204,7 @@ void Defcon::CSwarmer::Explode(CGameObjectCollection& Debris)
 
 	bMortal = true;
 	Lifespan = 0.0f;
-	this->OnAboutToDie();
+	OnAboutToDie();
 
 	for(int32 i = 0; i < 20; i++)
 	{

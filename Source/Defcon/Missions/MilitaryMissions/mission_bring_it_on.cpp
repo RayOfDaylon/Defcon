@@ -33,9 +33,9 @@ void Defcon::CBringItOn::Init()
 
 void Defcon::CBringItOn::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(this->HostilesRemaining() > 0 && Age >= PLAYER_BIRTHDURATION + 6)
+	if(HostilesRemaining() > 0 && Age >= PLAYER_BIRTHDURATION + 6)
 	{
-		this->AddMissionCleaner(where);
+		AddMissionCleaner(where);
 	}
 
 	UpdateWaves(where);

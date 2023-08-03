@@ -106,10 +106,10 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 
 	bMortal = true;
 	Lifespan = 0.0f;
-	this->OnAboutToDie();
+	OnAboutToDie();
 
 	float fBrightBase;
-	this->CreateFireball(debris, fBrightBase);
+	CreateFireball(debris, fBrightBase);
 
 	int32 a, i;
 	const float off = SFRAND * 0.2f;
@@ -187,18 +187,18 @@ void Defcon::CFirebomber::Move(float fTime)
 {
 	Super::Move(fTime);
 
-	if(!(this->CanBeInjured() && gpArena->GetPlayerShip().IsAlive() && IsOurPositionVisible()))
+	if(!(CanBeInjured() && GArena->GetPlayerShip().IsAlive() && IsOurPositionVisible()))
 	{
 		return;
 	}
 
 	if(FiringCountdown <= 0.0f)
 	{
-		gpArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, EObjectCreationFlags::EnemyPart);
+		GArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, EObjectCreationFlags::EnemyPart);
 
 		// The time to fire goes down as the player XP increases.
 
-		float XP = (float)gDefconGameInstance->GetScore();
+		float XP = (float)GDefconGameInstance->GetScore();
 
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);
@@ -230,11 +230,11 @@ void Defcon::CWeakFirebomber::Move(float fTime)
 
 	if(FiringCountdown <= 0.0f)
 	{
-		gpArena->FireBullet(*this, Position, 1, 1);
+		GArena->FireBullet(*this, Position, 1, 1);
 
 		// The time to fire goes down as the player XP increases.
 
-		float XP = (float)gDefconGameInstance->GetScore();
+		float XP = (float)GDefconGameInstance->GetScore();
 
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);

@@ -92,7 +92,7 @@ namespace Defcon
 
 			EMissionID		GetID			() const { return ID; }
 			void			AddEvent		(CEvent* p) { Events.Add(p); }
-			bool			IsRunning		() const { return (gpArena != nullptr); }
+			bool			IsRunning		() const { return (GArena != nullptr); }
 
 			const FString&  GetIntroText    () const { return IntroText; }
 

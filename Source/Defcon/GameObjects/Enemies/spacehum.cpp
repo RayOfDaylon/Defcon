@@ -34,7 +34,7 @@ Defcon::CSpacehum::CSpacehum()
 	bIsCollisionInjurious = true;
 	Brightness = FRANDRANGE(0.9f, 1.0f);
 
-	Speed = (float)gDefconGameInstance->GetScore() / 250;
+	Speed = (float)GDefconGameInstance->GetScore() / 250;
 	Speed *= FRANDRANGE(0.9f, 1.33f);
 
 	CreateSprite(Type);
@@ -62,7 +62,7 @@ void Defcon::CSpacehum::Move(float DeltaTime)
 
 	if(TargetPtr != nullptr)
 	{
-		gpArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
+		GArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
 		
 		CFPoint Budge((float)sin(FRAND * PI * 2), (float)cos(FRAND * PI * 2));
 
@@ -86,7 +86,7 @@ void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 {
 	bMortal = true;
 	Lifespan = 0.0f;
-	this->OnAboutToDie();
+	OnAboutToDie();
 
 	for(int32 I = 0; I < 10; I++)
 	{

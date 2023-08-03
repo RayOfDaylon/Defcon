@@ -6,7 +6,7 @@
 // humans.h
 
 
-#include "Common/PaintArguments.h"
+#include "Common/Painter.h"
 
 #include "GameObjects/gameobj.h"
 #include "GameObjects/gameobjlive.h"

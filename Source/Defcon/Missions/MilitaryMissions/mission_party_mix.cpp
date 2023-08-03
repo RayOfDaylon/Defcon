@@ -63,13 +63,13 @@ void Defcon::CPartyMixMission::Init()
 
 void Defcon::CPartyMixMission::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(this->HostilesRemaining() > 0 
+	if(HostilesRemaining() > 0 
 		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 3.5
 			)
 	{
-		this->AddMissionCleaner(where);
+		AddMissionCleaner(where);
 	}
 
 	UpdateWaves(where);

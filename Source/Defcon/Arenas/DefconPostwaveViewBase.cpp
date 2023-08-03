@@ -85,7 +85,7 @@ void UDefconPostwaveViewBase::OnFinishActivating()
 	{
 		auto Humans = HumansRemainingGraph->GetAllChildren();
 
-		const int32 NumHumansAlive = gDefconGameInstance->GetHumans().Count();
+		const int32 NumHumansAlive = GDefconGameInstance->GetHumans().Count();
 		const int32 NumHumansDead = 15 - NumHumansAlive;
 
 		for(int32 Index = 0; Index < 15; Index++)
@@ -140,7 +140,7 @@ void UDefconPostwaveViewBase::NativeTick(const FGeometry& MyGeometry, float Delt
 		// Populate the HumansRemainingGraph box, at one human per 1/8 second.
 		const float HumansAge = Age - PVTimeToShowStars;
 
-		const int32 NumHumansAlive = gDefconGameInstance->GetHumans().Count();
+		const int32 NumHumansAlive = GDefconGameInstance->GetHumans().Count();
 
 		if(HumansAge < NumHumansAlive * PVTimeForOneHuman)
 		{
@@ -209,7 +209,7 @@ void UDefconPostwaveViewBase::SetSubtitle (const FString& Str) { Subtitle->SetTe
 
 void UDefconPostwaveViewBase::StartMission()
 {
-	TransitionToArena(gDefconGameInstance->GetMission() != nullptr ? EDefconArena::Prewave : EDefconArena::GameOver);
+	TransitionToArena(GDefconGameInstance->GetMission() != nullptr ? EDefconArena::Prewave : EDefconArena::GameOver);
 }
 
 

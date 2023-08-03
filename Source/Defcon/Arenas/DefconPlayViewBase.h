@@ -240,4 +240,4 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	};
 };
 
-extern UDefconPlayViewBase* gpArena; // todo: globals are bad
+extern UDefconPlayViewBase* GArena; // todo: globals are bad

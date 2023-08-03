@@ -5,7 +5,7 @@
 #include "GameObjects/GameObjectCollection.h"
 #include "Globals/GameObjectResources.h"
 #include "GameObjects/Enemies/enemies.h"
-#include "Common/PaintArguments.h"
+#include "Common/Painter.h"
 #include "DefconUtils.h"
 #include "DefconLogging.h"
 #include "Runtime/UMG/Public/Components/TextBlock.h"
@@ -25,6 +25,26 @@
 // todo: move to common/utils_core.h
 // Function wrapper around check() macro so that other macros can call check() w/o expansion problems
 static void Check(bool Condition) { check(Condition); }
+
+
+void UDefconPlayMainWidgetBase::Init(
+	Defcon::CGameObjectCollection* InHumans, 
+	Defcon::CGameObjectCollection* InObjects, 
+	Defcon::CGameObjectCollection* InEnemies, 
+	Defcon::CGameObjectCollection* InDebris,
+	Defcon::CGameObjectCollection* InBlasts,
+	const FVector2D& InArenaSize
+)
+{
+	Humans    = InHumans;
+	Objects   = InObjects;
+	Enemies   = InEnemies;
+	Debris    = InDebris;
+	Blasts    = InBlasts;
+	ArenaSize = InArenaSize;
+
+	ClearMessages();
+}
 
 
 void UDefconPlayMainWidgetBase::NativeOnInitialized()
@@ -94,7 +114,7 @@ void UDefconPlayMainWidgetBase::OnFinishActivating()
 	check(PlayerShipPtr != nullptr);
 	check(Humans != nullptr);
 	
-	m_bHumansInMission = gDefconGameInstance->GetMission()->HumansInvolved();
+	m_bHumansInMission = GDefconGameInstance->GetMission()->HumansInvolved();
 
 	Stars.Empty();
 	Stars.Reserve(STARS_COUNT);
@@ -420,7 +440,7 @@ void UDefconPlayMainWidgetBase::OnToggleShowOrigin()
 
 void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
-	if(!this->IsVisible() || PlayerShipPtr == nullptr)
+	if(!IsVisible() || PlayerShipPtr == nullptr)
 	{
 		return;
 	}
@@ -500,7 +520,7 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 	}
 
 
-	auto GI = gDefconGameInstance;// UDefconUtils::GetGameInstance(this);
+	auto GI = GDefconGameInstance;// UDefconUtils::GetGameInstance(this);
 
 	/*if(GI == nullptr)
 	{

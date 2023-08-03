@@ -59,11 +59,11 @@ bool Defcon::CWeaponsTrainingMission::Update(float fElapsed)
 
 	if(!TargetsMade)
 	{
-		this->DoMakeTargets(fElapsed);
+		DoMakeTargets(fElapsed);
 		TargetsMade = true;
 	}
 
-	if(this->AreAllTargetsHit(fElapsed))
+	if(AreAllTargetsHit(fElapsed))
 	{
 		// We're done.
 		return false;
@@ -83,10 +83,10 @@ void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 		p->Lifespan = 2.0f;
 		p->MakeHurtable();
 		p->Position.Set(
-			MAP(i, 0, 6, gpArena->GetDisplayWidth()*.66f, gpArena->GetWidth() * 0.9f),
-			SFRAND * 0.33f * gpArena->GetHeight() + gpArena->GetHeight()/2);
+			MAP(i, 0, 6, GArena->GetDisplayWidth()*.66f, GArena->GetWidth() * 0.9f),
+			SFRAND * 0.33f * GArena->GetHeight() + GArena->GetHeight()/2);
 
-		gpArena->GetObjects().Add(p);
+		GArena->GetObjects().Add(p);
 	}
 }
 
@@ -94,7 +94,7 @@ void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 
 bool Defcon::CWeaponsTrainingMission::AreAllTargetsHit(float fElapsed)
 {
-	const int32 NumTargetsLeft = gpArena->GetObjects().CountOf(EObjType::BEACON);
+	const int32 NumTargetsLeft = GArena->GetObjects().CountOf(EObjType::BEACON);
 	const int32 NumHit         = NumTargets - NumTargetsLeft;
 
 	if(NumHit != NumTargetsHit)
@@ -112,10 +112,10 @@ bool Defcon::CWeaponsTrainingMission::AreAllTargetsHit(float fElapsed)
 			Str = TEXT("All targets destroyed.");
 		}
 
-		gpArena->AddMessage(Str);
+		GArena->AddMessage(Str);
 	}
 
-	return (gpArena->GetObjects().Find(EObjType::BEACON) == nullptr);
+	return (GArena->GetObjects().Find(EObjType::BEACON) == nullptr);
 }
 
 

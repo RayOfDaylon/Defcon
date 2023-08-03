@@ -6,7 +6,7 @@
 // gameobjlive.h
 
 
-#include "Common/PaintArguments.h"
+#include "Common/Painter.h"
 #include "Common/util_geom.h"
 #include "DaylonUtils.h"
 
@@ -50,7 +50,7 @@ namespace Defcon
 			virtual void   SetIsAlive            (bool b) { bAlive = b; }
 
 			void           ZeroThrust            () { ThrustVector.Set(0,0); }
-			void           ZeroMotion            () { this->ZeroVelocity(); this->ZeroThrust(); }
+			void           ZeroMotion            () { ZeroVelocity(); ZeroThrust(); }
 			void           ZeroInput             () { for(auto& Ctl : NavControls) { Ctl.bActive = false; } }
 
 			virtual void   ComputeThrustTimings  (float);

@@ -43,7 +43,7 @@ Defcon::CPlayer::CPlayer()
 	LaserWeapon.MountOnto(*this, CFPoint(0,0));
 	LaserWeapon.SetEmissionPt(CFPoint(0, -8)); // todo: could improve this
 
-	this->SetShieldStrength(1.0f);
+	SetShieldStrength(1.0f);
 
 	CreateSprite(Type);
 
@@ -104,7 +104,7 @@ void Defcon::CPlayer::OnAboutToDie()
 {
 	// UE_LOG(LogGame, Log, TEXT("%S"), __FUNCTION__);
 
-	CGameObjectCollection& Humans = gpArena->GetHumans();
+	CGameObjectCollection& Humans = GArena->GetHumans();
 
 	Humans.ForEach([this](IGameObject* pObj)
 	{
@@ -119,7 +119,7 @@ void Defcon::CPlayer::OnAboutToDie()
 
 bool Defcon::CPlayer::EmbarkPassenger(IGameObject* pObj, CGameObjectCollection& humans)
 {
-	if(this->MarkedForDeath())
+	if(MarkedForDeath())
 	{
 		return false;
 	}

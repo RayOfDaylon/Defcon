@@ -52,7 +52,7 @@ Defcon::CLander::CLander()
 
 	float ProbChaseHuman = 0.05f;
 
-	const float score = (float)gDefconGameInstance->GetScore();
+	const float score = (float)GDefconGameInstance->GetScore();
 
 	if(score > 10000 && score <= 60000)
 	{
@@ -187,7 +187,7 @@ void Defcon::CLander::Move(float DeltaTime)
 				
 			if(bChaseNearestHuman)
 			{
-				auto pHuman = (CHuman*)gpArena->FindHuman(Position.x);
+				auto pHuman = (CHuman*)GArena->FindHuman(Position.x);
 
 				if(pHuman != nullptr)
 				{
@@ -217,7 +217,7 @@ void Defcon::CLander::Move(float DeltaTime)
 
 			// Take terrain into account.
 			//float fAltDelta = Position.y - m_fnTerrainEval(Position.x, m_pvUserTerrainEval);
-			float fAltDelta = Position.y - gpArena->GetTerrainElev(Position.x);
+			float fAltDelta = Position.y - GArena->GetTerrainElev(Position.x);
 			fAltDelta -= HoverAltitude;
 			// If fAltDelta is +, we want to go down.
 			// Go down slower than up.
@@ -232,9 +232,9 @@ void Defcon::CLander::Move(float DeltaTime)
 			// 20 seconds, then switch to abduct mode.
 			if(bChaseNearestHuman || Age > LANDER_MATURE || FRAND <= LANDER_ABDUCTODDS)
 			{
-				if(gDefconGameInstance->GetMission()->HumansInvolved())
+				if(GDefconGameInstance->GetMission()->HumansInvolved())
 				{
-					TrackedHumanPtr = (CHuman*)gpArena->FindHuman(Position.x);
+					TrackedHumanPtr = (CHuman*)GArena->FindHuman(Position.x);
 
 					if(TrackedHumanPtr != nullptr)
 					{
@@ -342,7 +342,7 @@ void Defcon::CLander::Move(float DeltaTime)
 			if(bChaseNearestHuman)
 			{
 				//Defcon::CHuman* pHuman = gpGame->FindHuman(Position);
-				Defcon::CHuman* pHuman = (CHuman*) gpArena->FindHuman(Position.x);
+				Defcon::CHuman* pHuman = (CHuman*) GArena->FindHuman(Position.x);
 				if(pHuman != nullptr)
 				{
 					State = EState::Hovering;
@@ -361,7 +361,7 @@ void Defcon::CLander::Move(float DeltaTime)
 			else
 			{
 				// Target present, move towards it.
-				gpArena->ShortestDirection(Position, pTarget->Position, Orientation.Fwd);
+				GArena->ShortestDirection(Position, pTarget->Position, Orientation.Fwd);
 				//Orientation.Fwd = pTarget->Position;
 				//float dist = Orientation.Fwd.Distance(Position);
 				//Orientation.Fwd -= Position;
@@ -415,13 +415,13 @@ void Defcon::CLander::Move(float DeltaTime)
 
 void Defcon::CLander::ConsiderFiringBullet(float DeltaTime)
 {
-	if(!gpArena->IsPointVisible(Position) || TargetPtr == nullptr)
+	if(!GArena->IsPointVisible(Position) || TargetPtr == nullptr)
 	{
 		return;
 	}
 		
 	// Hold fire if target is below ground
-	if(TargetPtr->Position.y < gpArena->GetTerrainElev(TargetPtr->Position.x))
+	if(TargetPtr->Position.y < GArena->GetTerrainElev(TargetPtr->Position.x))
 	{
 		return;
 	}
@@ -430,11 +430,11 @@ void Defcon::CLander::ConsiderFiringBullet(float DeltaTime)
 
 	if(FiringCountdown <= 0.0f)
 	{
-		(void) gpArena->FireBullet(*this, Position, (FRAND <= 0.85f) ? 2 : 3, 1);
+		(void) GArena->FireBullet(*this, Position, (FRAND <= 0.85f) ? 2 : 3, 1);
 
 		// The time to fire goes down as the player XP increases.
 
-		const float XP = (float)gDefconGameInstance->GetScore();
+		const float XP = (float)GDefconGameInstance->GetScore();
 
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);

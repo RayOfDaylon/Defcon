@@ -93,7 +93,7 @@ void UDefconMissionPickerViewBase::NativeTick(const FGeometry& MyGeometry, float
 		if(ExpanderAge >= ExpanderLifetime)
 		{
 			Daylon::Hide(RootCanvas);
-			gDefconGameInstance->MissionID = (Defcon::EMissionID)(CurrentCell.Y * CellsAcross + CurrentCell.X);
+			GDefconGameInstance->MissionID = (Defcon::EMissionID)(CurrentCell.Y * CellsAcross + CurrentCell.X);
 			TransitionToArena(EDefconArena::Prewave);
 		}
 		else
@@ -293,10 +293,10 @@ void UDefconMissionPickerViewBase::OnChooseMission()
 
 	gpAudio->OutputSound(Defcon::EAudioTrack::Mission_chosen);
 
-	gDefconGameInstance->SetScore(0);
-	gDefconGameInstance->GetStats().Reset();
+	GDefconGameInstance->SetScore(0);
+	GDefconGameInstance->GetStats().Reset();
 
-	gDefconGameInstance->SetCurrentMission((Defcon::EMissionID)MissionID);
+	GDefconGameInstance->SetCurrentMission((Defcon::EMissionID)MissionID);
 }
 
 

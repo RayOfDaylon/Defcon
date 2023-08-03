@@ -40,7 +40,7 @@ Defcon::CHuman::CHuman()
 	Motion.Set(V.X, V.Y * 0.25f);
 	Motion.Normalize();
 
-	UE_LOG(LogGame, Log, TEXT("Creating human sprite"));
+	//UE_LOG(LogGame, Log, TEXT("Creating human sprite"));
 	CreateSprite(EObjType::HUMAN);
 }
 
@@ -52,9 +52,9 @@ Defcon::CHuman::~CHuman()
 
 bool Defcon::CHuman::IsFalling() const
 {
-	check(gpArena != nullptr);
+	check(GArena != nullptr);
 
-	return (!this->IsBeingCarried() && Position.y > gpArena->GetTerrainElev(Position.x));
+	return (!IsBeingCarried() && Position.y > GArena->GetTerrainElev(Position.x));
 }
 
 
@@ -132,10 +132,10 @@ void Defcon::CHuman::Move(float DeltaTime)
 	}
 
 
-	if(this->IsBeingCarried())
+	if(IsBeingCarried())
 	{
 		// Stay underneath the abductor.
-		IGameObject* pCarrier = this->GetCarrier();
+		IGameObject* pCarrier = GetCarrier();
 		// todo: this check failed after player died. We need to ensure that carrier is nulled out
 		check(pCarrier->GetType() == EObjType::LANDER || pCarrier->GetType() == EObjType::PLAYER);
 		Position = pCarrier->Position;
@@ -146,7 +146,7 @@ void Defcon::CHuman::Move(float DeltaTime)
 	}
 	else
 	{
-		float MaxH = gpArena->GetTerrainElev(Position.x);
+		float MaxH = GArena->GetTerrainElev(Position.x);
 
 		if(Position.y >= MaxH)
 		{
@@ -164,12 +164,12 @@ void Defcon::CHuman::Move(float DeltaTime)
 				if(Orientation.Fwd.y < -HUMAN_TERMINALVELOCITY)
 				{
 					// We landed too hard, so we're toast.
-					gpArena->ExplodeObject(this);
+					GArena->ExplodeObject(this);
 				}
 				else
 				{
 					// We landed okay.
-					gpArena->IncreaseScore(HUMAN_VALUE_LIBERATED, true, &Position);
+					GArena->IncreaseScore(HUMAN_VALUE_LIBERATED, true, &Position);
 				}
 			}
 		}
@@ -192,7 +192,7 @@ void Defcon::CHuman::Move(float DeltaTime)
 
 			Position.MulAdd(Motion, DeltaTime * WalkingSpeed);
 
-			MaxH = gpArena->GetTerrainElev(gpArena->WrapX(Position.x));
+			MaxH = GArena->GetTerrainElev(GArena->WrapX(Position.x));
 
 			Position.y = FMath::Min(Position.y, MaxH - 5);
 			Position.y = FMath::Max(Position.y, 20);

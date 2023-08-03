@@ -8,6 +8,7 @@
 #include "Widgets/UDaylonStarfield.h"
 #include "UMG/Public/Components/TextBlock.h"
 #include "UMG/Public/Components/HorizontalBox.h"
+#include "UMG/Public/Components/GridPanel.h"
 #include "DefconGameOverViewBase.generated.h"
 
 
@@ -60,7 +61,17 @@ class DEFCON_API UDefconGameOverViewBase : public UDefconViewBase
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* Subtitle;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UGridPanel* Stats;
 
+	FName  StatItemShotsFired;
+	FName  StatItemSmartbombsDetonated;
+	FName  StatItemLaserKills;
+	FName  StatItemSmartbombKills;
+	FName  StatItemFFIs;
+	FName  StatItemHits;
+	FName  StatItemCollisions;
+	FName  StatItemDeaths;
 
 	public:
 	

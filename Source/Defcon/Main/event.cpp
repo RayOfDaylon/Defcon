@@ -101,7 +101,7 @@ void Defcon::CEventQueue::DeleteAll()
 
 void Defcon::CRestartMissionEvent::Do()
 {
-	auto GI = gDefconGameInstance;
+	auto GI = GDefconGameInstance;
 
 	GI->SetCurrentMission(GI->GetMission()->GetID());
 	GI->TransitionToArena(EDefconArena::Prewave);
@@ -111,12 +111,12 @@ void Defcon::CRestartMissionEvent::Do()
 
 void Defcon::CEndMissionEvent::Do()
 {
-	SAFE_DELETE(gpArena->Terrain);
+	SAFE_DELETE(GArena->Terrain);
 
-	gpArena->PlayAreaMain->TerrainPtr = nullptr;
-	gpArena->PlayAreaRadar->SetTerrain(nullptr);
+	GArena->PlayAreaMain->TerrainPtr = nullptr;
+	GArena->PlayAreaRadar->SetTerrain(nullptr);
 
-	gDefconGameInstance->MissionEnded();
+	GDefconGameInstance->MissionEnded();
 }
 
 // --------------------------------------------------------
@@ -166,7 +166,7 @@ void Defcon::CCreateEnemyEvent::Do()
 	EnemyPtr->MakeHurtable();
 	EnemyPtr->SetCollisionInjurious();
 
-	gpArena->GetEnemies().Add(EnemyPtr);
+	GArena->GetEnemies().Add(EnemyPtr);
 
 	EnemyPtr->OnFinishedCreating();
 }
@@ -206,11 +206,11 @@ Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(EObjType kind, const CFPo
 		default: throw 0; break;
 	}
 
-	pE->MapperPtr = &gpArena->GetMainAreaMapper();
+	pE->MapperPtr = &GArena->GetMainAreaMapper();
 	pE->Position = where;
-	float w = gpArena->GetDisplayWidth();
+	float w = GArena->GetDisplayWidth();
 
-	pE->Init(CFPoint((float)gpArena->GetWidth(), (float)gpArena->GetHeight()), CFPoint(w, (float)gpArena->GetHeight()));
+	pE->Init(CFPoint((float)GArena->GetWidth(), (float)GArena->GetHeight()), CFPoint(w, (float)GArena->GetHeight()));
 
 	return pE;
 }
@@ -218,7 +218,7 @@ Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(EObjType kind, const CFPo
 
 
 #define SET_RANDOM_FWD_ORIENT   pE->Orientation.Fwd.x = SBRAND;
-#define SET_PLAYER_AS_TARGET    pE->SetTarget(&gpArena->GetPlayerShip());
+#define SET_PLAYER_AS_TARGET    pE->SetTarget(&GArena->GetPlayerShip());
 
 
 void Defcon::CCreateEnemyEvent::SpecializeForBouncer(Defcon::CEnemy* pE, const CFPoint& where)
@@ -275,8 +275,8 @@ void Defcon::CCreateEnemyEvent::SpecializeForLander(Defcon::CEnemy* pE, const CF
 
 	CLander* p = static_cast<CLander*>(pE);
 	//p->m_pvUserTerrainEval = gpArena;
-	p->Objects = &gpArena->GetObjects();
-	p->SetDoChaseHumans(gDefconGameInstance->GetMission()->HumansInvolved());
+	p->Objects = &GArena->GetObjects();
+	p->SetDoChaseHumans(GDefconGameInstance->GetMission()->HumansInvolved());
 }
 
 

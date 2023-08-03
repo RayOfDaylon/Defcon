@@ -40,9 +40,9 @@ void Defcon::IBullet::Move(float fTime)
 	}
 
 	// Self-destruct if we pass out of the vertical bounds.
-	if(Position.y < 0 || Position.y > gpArena->GetHeight())
+	if(Position.y < 0 || Position.y > GArena->GetHeight())
 	{
-		this->MarkAsDead();
+		MarkAsDead();
 	}
 
 	// todo: If the object processor is wrapping x-pos, why are we wrapping it here?
@@ -50,12 +50,12 @@ void Defcon::IBullet::Move(float fTime)
 	// it could do that in a single frame, so if we use xpos here we have to wrap it.
 	if(BULLETS_HIT_TERRAIN)
 	{
-		WRAP(Position.x, 0, gpArena->GetWidth());
-		check(Position.x >= 0.0f && Position.x < gpArena->GetWidth());
+		WRAP(Position.x, 0, GArena->GetWidth());
+		check(Position.x >= 0.0f && Position.x < GArena->GetWidth());
 
-		if(Position.y <= gpArena->GetTerrainElev(Position.x))
+		if(Position.y <= GArena->GetTerrainElev(Position.x))
 		{
-			this->MarkAsDead();
+			MarkAsDead();
 		}
 	}
 

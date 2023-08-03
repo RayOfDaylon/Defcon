@@ -46,7 +46,7 @@ Defcon::IGameObject::~IGameObject()
 	if(IsMissionTarget()) 
 	{
 		//UE_LOG(LogGame, Log, TEXT("    Game object was a mission target"));
-		gDefconGameInstance->HostileDestroyed(GetType());
+		GDefconGameInstance->HostileDestroyed(GetType());
 	}
 
 	if(Sprite)
@@ -118,7 +118,7 @@ Defcon::IGameObject* Defcon::IGameObject::CreateFireblast(CGameObjectCollection&
 	float fBrightRange;
 	CBitmapDisplayer* pFireblast = nullptr;
 
-	if(this->Fireblasts())
+	if(Fireblasts())
 	{
 		pFireblast = new CBitmapDisplayer;
 		if(BRAND)
@@ -162,7 +162,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	// for a brief while. But that causes a lot of problems 
 	// too with object relationships.
 
-	Position.x = gpArena->WrapX(Position.x); //  to be safe
+	Position.x = GArena->WrapX(Position.x); //  to be safe
 
 	// If the inertia is some crazy value, zero it.
 	if(ABS(Inertia.x) > 2000)
@@ -172,7 +172,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 
 	bMortal = true;
 	Lifespan = 0.0f;
-	this->OnAboutToDie();
+	OnAboutToDie();
 
 	//return;
 
@@ -192,10 +192,10 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 */
 
 	// Define which color to make the debris.
-	auto cby = this->GetExplosionColorBase();
-	maxsize *= this->GetExplosionMass();
+	auto cby = GetExplosionColorBase();
+	maxsize *= GetExplosionMass();
 	
-	if(this->GetType() != EObjType::HUMAN && IRAND(3) == 1)
+	if(GetType() != EObjType::HUMAN && IRAND(3) == 1)
 	{
 		//cby = EColor::Gray;
 	}
@@ -204,7 +204,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	int i;
 
 	float fBrightBase;
-	IGameObject* pFireball = this->CreateFireball(debris, fBrightBase);
+	IGameObject* pFireball = CreateFireball(debris, fBrightBase);
 
 	for(i = 0; i < n; i++)
 	{
@@ -248,13 +248,13 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 		maxsize = FRAND * 4 + 8.0f;
 		//maxsize = FMath::Min(maxsize, 9.0f);
 
-		if(this->GetType() != EObjType::HUMAN && IRAND(3) == 1)
+		if(GetType() != EObjType::HUMAN && IRAND(3) == 1)
 		{
 			cby = EColor::Gray;
 		}
 		else
 		{
-			cby = this->GetExplosionColorBase();
+			cby = GetExplosionColorBase();
 		}
 
 		for(i = 0; i < n; i++)
@@ -348,7 +348,7 @@ Defcon::IGameObject* Defcon::IGameObject::CreateFireball(CGameObjectCollection& 
 {
 	// Create fireball.
 
-	if(this->Fireballs())
+	if(Fireballs())
 	{
 		auto pFireball = new CBitmapDisplayer;
 		pFireball->SetType(EObjType::EXPLOSION);
@@ -372,7 +372,7 @@ Defcon::IGameObject* Defcon::IGameObject::CreateFireball(CGameObjectCollection& 
 	float fBrightRange;
 	CBitmapDisplayer* pFireball = nullptr;
 
-	if(this->Fireballs())
+	if(Fireballs())
 	{
 		pFireball = new CBitmapDisplayer;
 
@@ -462,7 +462,7 @@ bool                 Defcon::IGameObject::IsMissionTarget() const              {
 void                 Defcon::IGameObject::SetAsMissionTarget(bool b)           { bMissionTarget = b; }
 const FLinearColor&  Defcon::IGameObject::GetRadarColor() const                { return RadarColor; }
 Defcon::EColor       Defcon::IGameObject::GetExplosionColorBase() const        { return EColor::Gray; }
-bool                 Defcon::IGameObject::IsOurPositionVisible() const         { return gpArena->IsPointVisible(Position); }
+bool                 Defcon::IGameObject::IsOurPositionVisible() const         { return GArena->IsPointVisible(Position); }
 
 
 

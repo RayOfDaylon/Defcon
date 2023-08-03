@@ -38,11 +38,11 @@
 #define DURATION_IMPORTANT_MESSAGE   4.0f
 
 
-UDefconPlayViewBase* gpArena = nullptr;
+UDefconPlayViewBase* GArena = nullptr;
 
 
 
-float GameTime() { check(gpArena != nullptr); return UKismetSystemLibrary::GetGameTimeInSeconds(gpArena); }
+float GameTime() { check(GArena != nullptr); return UKismetSystemLibrary::GetGameTimeInSeconds(GArena); }
 
 
 
@@ -112,7 +112,7 @@ const Defcon::CGameObjectCollection& UDefconPlayViewBase::GetConstHumans() const
 
 Defcon::CGameObjectCollection& UDefconPlayViewBase::GetHumans()
 {
-	return gDefconGameInstance->GetHumans();
+	return GDefconGameInstance->GetHumans();
 }
 
 
@@ -141,7 +141,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 	LOG_UWIDGET_FUNCTION
 	Super::OnFinishActivating();
 
-	gpArena = this;
+	GArena = this;
 
 	bArenaDying = false;
 	Daylon::Hide(Fader);
@@ -149,27 +149,20 @@ void UDefconPlayViewBase::OnFinishActivating()
 	ShipThrustSoundLoop = gpAudio->CreateLoopedSound(Defcon::EAudioTrack::Playership_thrust);
 	WasShipUnderThrust = false;
 
-	PlayAreaMain->ClearMessages();
-
 	InitMapperAndTerrain();
 	InitPlayerShip();
 
-	PlayAreaMain->Humans     = &GetHumans();
-	PlayAreaMain->Objects    = &Objects; // todo: use Init method the way the rader widget does
-	PlayAreaMain->Enemies    = &Enemies;
-	PlayAreaMain->Debris     = &Debris;
-	PlayAreaMain->Blasts     = &Blasts;
-	PlayAreaMain->ArenaSize  = ArenaSize;
+	PlayAreaMain->Init(&GetHumans(), &Objects, &Enemies, &Debris, &Blasts, ArenaSize);
 
 	// Start the current mission.
-	auto GI = gDefconGameInstance;
+	auto GI = GDefconGameInstance;
 
 	if(!IsValid(GI))
 	{
 		return;
 	}
 
-	GI->InitMission(this);
+	GI->InitMission();
 
 	m_bHumansInMission = GI->GetMission()->HumansInvolved();
 
@@ -186,7 +179,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 		}
 	});
 
-	gDefconGameInstance->BindToSmartbombCount([WeakThis = TWeakObjectPtr<UDefconPlayViewBase>(this)](const int32& Value)
+	GDefconGameInstance->BindToSmartbombCount([WeakThis = TWeakObjectPtr<UDefconPlayViewBase>(this)](const int32& Value)
 	{
 		if(auto This = WeakThis.Get())
 		{
@@ -328,7 +321,7 @@ void UDefconPlayViewBase::TransportPlayerShip()
 
 	auto& PlayerShip = GetPlayerShip();
 
-	const auto Mission = static_cast<Defcon::CMilitaryMission*>(gDefconGameInstance->GetMission());
+	const auto Mission = static_cast<Defcon::CMilitaryMission*>(GDefconGameInstance->GetMission());
 
 	if(pt.y != 0.0f)
 	{
@@ -463,23 +456,7 @@ void UDefconPlayViewBase::AllStopPlayerShip()
 
 void UDefconPlayViewBase::IncreaseScore(int32 Points, bool bVis, const CFPoint* pPos)
 {
-	gDefconGameInstance->AdvanceScore((int32)Points);
-
-	if(bVis)
-	{
-		// Add an upwards floating score readout to drift across the play field.
-		check(pPos != nullptr);
-#if 0
-	// todo
-		CTextDisplayer* pScore = new CTextDisplayer;
-		pScore->Position = *pPos;
-		pScore->Position.x += (FRAND - 0.5f) * 30;
-		pScore->Position.y += 30;
-		pScore->Orientation.Fwd.Set((FRAND - 0.5f)*100, 50.0f);
-		pScore->Init((int)points);
-		this->AddDebris(pScore);
-#endif
-	}
+	GDefconGameInstance->AdvanceScore((int32)Points);
 }
 
 
@@ -775,7 +752,7 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 
 	PlayerShip.OnAboutToDie();
 
-	gDefconGameInstance->GetStats().PlayerDeaths++;
+	GDefconGameInstance->GetStats().PlayerDeaths++;
 
 	// Deassign target for all enemies so that they don't keep moving towards and firing at the dying (and soon nonexistant) player.
 	Enemies.ForEach([](Defcon::IGameObject* Obj){ static_cast<Defcon::CEnemy*>(Obj)->SetTarget(nullptr); });
@@ -812,17 +789,17 @@ void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& object
 			{
 				// PlayerShip ship has been hit by a bullet.
 
-				gDefconGameInstance->GetStats().PlayerHits++;
+				GDefconGameInstance->GetStats().PlayerHits++;
 
-				const bool bPlayerKilled = !gDefconGameInstance->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
+				const bool bPlayerKilled = !GDefconGameInstance->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
 
 				if(bPlayerKilled)
 				{
-					this->DestroyPlayerShip();
+					DestroyPlayerShip();
 				}
 				else
 				{
-					this->ShieldBonk(&PlayerShip, pObj->GetCollisionForce());
+					ShieldBonk(&PlayerShip, pObj->GetCollisionForce());
 				}
 
 				pObj->MarkAsDead();
@@ -865,17 +842,17 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 
 			if(rObj.Intersect(rPlayer))
 			{
-				gDefconGameInstance->GetStats().PlayerCollisions++;
+				GDefconGameInstance->GetStats().PlayerCollisions++;
 
-				const bool bPlayerKilled = !gDefconGameInstance->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
+				const bool bPlayerKilled = !GDefconGameInstance->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
 
 				if(bPlayerKilled)
 				{
-					this->DestroyPlayerShip();
+					DestroyPlayerShip();
 				}
 				else
 				{
-					this->ShieldBonk(&PlayerShip, pObj->GetCollisionForce());
+					ShieldBonk(&PlayerShip, pObj->GetCollisionForce());
 				}
 
 				// Process collision outcome for object.
@@ -883,11 +860,11 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 				{
 					if(!bPlayerKilled)
 					{
-						this->ExplodeObject(pObj);
+						ExplodeObject(pObj);
 					}
 					else
 					{
-						this->IncreaseScore(pObj->GetPointValue(), true, &pObj->Position);
+						IncreaseScore(pObj->GetPointValue(), true, &pObj->Position);
 						pObj->bMortal = true;
 						pObj->Lifespan = 0.0f;
 						pObj->OnAboutToDie();
@@ -925,7 +902,7 @@ void UDefconPlayViewBase::CreateTerrain()
 
 Defcon::CPlayer& UDefconPlayViewBase::GetPlayerShip() 
 {
-	return gDefconGameInstance->GetPlayerShip();
+	return GDefconGameInstance->GetPlayerShip();
 }
 
 
@@ -933,9 +910,9 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 {
 	if(!bArenaDying)
 	{
-		if(!gDefconGameInstance->Update(DeltaTime))
+		if(!GDefconGameInstance->Update(DeltaTime))
 		{
-			this->ConcludeMission();
+			ConcludeMission();
 		}
 	}
 
@@ -971,10 +948,10 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	}
 
 
-	this->ProcessWeaponsHits();
+	ProcessWeaponsHits();
 
-	this->CheckPlayerCollided();
-	this->CheckIfPlayerHit(Objects);
+	CheckPlayerCollided();
+	CheckIfPlayerHit(Objects);
 
 	// Move and draw everyone.
 	//m_virtualScreen.Clear(gGameColors.GetColor(0, (float)m_nFlashScreen/SMARTBOMB_MAX_FLASHSCREEN));
@@ -984,7 +961,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		m_nFlashScreen--;
 	}
 
-	const auto Mission = gDefconGameInstance->GetMission();
+	const auto Mission = GDefconGameInstance->GetMission();
 	
 	const bool HumansInvolved = Mission != nullptr ? Mission->HumansInvolved() : false;
 
@@ -1006,9 +983,9 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 	if(HumansInvolved)
 	{
-		const auto NumHumansBefore = this->GetHumans().Count();
-		this->GetHumans().Process(gop);
-		const auto NumHumansNow = this->GetHumans().Count();
+		const auto NumHumansBefore = GetHumans().Count();
+		GetHumans().Process(gop);
+		const auto NumHumansNow = GetHumans().Count();
 
 		if(NumHumansNow < NumHumansBefore)
 		{
@@ -1028,7 +1005,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 	gop.OnDeath = [this](Defcon::IGameObject* ObjPtr)
 	{
-		const auto Mission = gDefconGameInstance->GetMission();
+		const auto Mission = GDefconGameInstance->GetMission();
 		
 		if(!Mission->IsMilitary())
 		{
@@ -1060,7 +1037,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	const int32 w  = MainAreaSize.X;
 	const int32 h  = MainAreaSize.Y;
 	//const int32 hr = m_virtualRadarScreen.GetHeight();
-	const int32 wp = (int32)ArenaWidth;// this->GetWidth();
+	const int32 wp = (int32)ArenaWidth;// GetWidth();
 
 	const float now = GameTime();
 
@@ -1096,11 +1073,11 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 			//static int mod = 0;
 
 			// See if any carried humans can be debarked.
-			if(/*mod++ % 5 == 0 && */PlayerShip.Position.y < 5.0f + this->GetTerrainElev(PlayerShip.Position.x))
+			if(/*mod++ % 5 == 0 && */PlayerShip.Position.y < 5.0f + GetTerrainElev(PlayerShip.Position.x))
 			{
-				if(PlayerShip.DebarkOnePassenger(this->GetHumans()))
+				if(PlayerShip.DebarkOnePassenger(GetHumans()))
 				{
-					this->IncreaseScore((int32)HUMAN_VALUE_DEBARKED, true, &PlayerShip.Position);
+					IncreaseScore((int32)HUMAN_VALUE_DEBARKED, true, &PlayerShip.Position);
 				}
 			}
 			else
@@ -1115,7 +1092,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 					CFRect rPlayer(playerScreenPos);
 					rPlayer.Inflate(PlayerShip.GetPickupRadiusBox());
 
-					//Defcon::IGameObject* pObj = this->GetHumans().GetFirst();
+					//Defcon::IGameObject* pObj = GetHumans().GetFirst();
 					GetHumans().ForEachUntil([&](Defcon::IGameObject* pObj)
 					//while(pObj != nullptr)
 					{
@@ -1128,9 +1105,9 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 							if(Human.IsFalling())
 							{
-								if(PlayerShip.EmbarkPassenger(pObj, this->GetHumans()))
+								if(PlayerShip.EmbarkPassenger(pObj, GetHumans()))
 								{
-									this->IncreaseScore((int32)HUMAN_VALUE_EMBARKED, true, &PlayerShip.Position);
+									IncreaseScore((int32)HUMAN_VALUE_EMBARKED, true, &PlayerShip.Position);
 								}
 								return false;
 							}
@@ -1310,7 +1287,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 			if(GetPlayerShip().IsAlive())
 			{
 				GetPlayerShip().FireLaserWeapon(Objects);
-				gDefconGameInstance->GetStats().ShotsFired++;
+				GDefconGameInstance->GetStats().ShotsFired++;
 
 				if(true/*BRAND*/)
 					gpAudio->OutputSound(Defcon::EAudioTrack::Laserfire);
@@ -1323,7 +1300,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 
 		case EDefconPawnWeaponEvent::FireSmartbomb: 
 
-			if(GetPlayerShip().IsAlive() && gDefconGameInstance->AcquireSmartBomb())
+			if(GetPlayerShip().IsAlive() && GDefconGameInstance->AcquireSmartBomb())
 			{
 				FireSmartbomb();
 			}
@@ -1352,7 +1329,7 @@ float UDefconPlayViewBase::ShortestDirection(const CFPoint& WorldPosA, const CFP
 	// Return direction to achieve shortest travel time 
 	// from point A to point B. The distance is also returned.
 
-	const float W = this->GetWidth();
+	const float W = GetWidth();
 
 	const float FromTail1 = W - WorldPosA.x;
 	const float FromTail2 = W - WorldPosB.x;
@@ -1399,7 +1376,7 @@ void UDefconPlayViewBase::Lerp(const CFPoint& WorldPosA, const CFPoint& WorldPos
 	// Lerp locations lie along the shortest line between A and B.
 
 	CFPoint Dir;
-	const float Len = this->ShortestDirection(WorldPosA, WorldPosB, Dir);
+	const float Len = ShortestDirection(WorldPosA, WorldPosB, Dir);
 
 	Dir *= Len * T;
 	Result = WorldPosA + Dir;
@@ -1410,7 +1387,7 @@ void UDefconPlayViewBase::Lerp(const CFPoint& WorldPosA, const CFPoint& WorldPos
 
 float UDefconPlayViewBase::WrapX(float WorldX) const
 {
-	const auto W = this->GetWidth();
+	const auto W = GetWidth();
 
 	if(WorldX > W) return WorldX - W;
 	if(WorldX < 0) return WorldX + W;
@@ -1453,7 +1430,7 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 	const int32 FIRE_AT   = 10000;
 	const int32 FIRE_LEAD = 100000;
 
-	const int32 score = gDefconGameInstance->GetScore();
+	const int32 score = GDefconGameInstance->GetScore();
 
 	FiringAccuracy eAccuracy = fa_lead;
 
@@ -1469,7 +1446,7 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 	}
 
 	CFPoint dir;
-	this->ShortestDirection(from, GetPlayerShip().Position, dir);
+	ShortestDirection(from, GetPlayerShip().Position, dir);
 
 
 	switch(eAccuracy)
@@ -1500,14 +1477,14 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 
 			if(pt.x < 0)
 			{
-				pt.x += this->GetWidth();
+				pt.x += GetWidth();
 			}
-			else if (pt.x >= this->GetWidth())
+			else if (pt.x >= GetWidth())
 			{
-				pt.x -= this->GetWidth();
+				pt.x -= GetWidth();
 			}
 
-			const float speed = (1.0f / time) * this->ShortestDirection(from, pt, dir);
+			const float speed = (1.0f / time) * ShortestDirection(from, pt, dir);
 			pBullet->SetSpeed(speed);
 			break;
 	}
@@ -1551,15 +1528,15 @@ Defcon::IGameObject* UDefconPlayViewBase::FindHuman(float x) const
 	Defcon::IGameObject* pObj = GetConstHumans().GetFirst();
 
 	float bestX = 1.0e+10f;
-	float aw = this->GetWidth();
+	float aw = GetWidth();
 
 	while(pObj != nullptr)
 	{
 		if(!static_cast<Defcon::CHuman*>(pObj)->IsBeingCarried() && pObj->Lifespan > 0.1f)
 		{
-			const float dist = this->Xdistance(pObj->Position.x, x);
+			const float dist = Xdistance(pObj->Position.x, x);
 
-			if(dist < HUMAN_WITHINRANGE && pObj->Position.y < this->GetTerrainElev(pObj->Position.x))
+			if(dist < HUMAN_WITHINRANGE && pObj->Position.y < GetTerrainElev(pObj->Position.x))
 			{
 				return pObj;
 			}
@@ -1618,7 +1595,7 @@ void UDefconPlayViewBase::ExplodeObject(Defcon::IGameObject* pObj)
 
 	if(pObj->GetType() != Defcon::EObjType::PLAYER)
 	{
-		this->IncreaseScore(pObj->GetPointValue(), SCORETIPS_SHOWENEMYPOINTS, &pObj->Position);
+		IncreaseScore(pObj->GetPointValue(), SCORETIPS_SHOWENEMYPOINTS, &pObj->Position);
 	}
 }
 
@@ -1710,15 +1687,15 @@ void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& ob
 						{
 							if(Obj2Ptr->GetType() == Defcon::EObjType::HUMAN)
 							{
-								gDefconGameInstance->GetStats().FriendlyFireIncidents++;
+								GDefconGameInstance->GetStats().FriendlyFireIncidents++;
 							}
 							else
 							{
-								gDefconGameInstance->GetStats().HostilesDestroyedByLaser++;
+								GDefconGameInstance->GetStats().HostilesDestroyedByLaser++;
 							}
 						}
 
-						this->ExplodeObject(Obj2Ptr);
+						ExplodeObject(Obj2Ptr);
 					}
 				}
 
@@ -1801,14 +1778,14 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 
 void UDefconPlayViewBase::ProcessWeaponsHits()
 {
-	this->CheckIfObjectsGotHit(Objects);
-	this->CheckIfObjectsGotHit(Enemies);
+	CheckIfObjectsGotHit(Objects);
+	CheckIfObjectsGotHit(Enemies);
 
-	auto Mission = gDefconGameInstance->GetMission();
+	auto Mission = GDefconGameInstance->GetMission();
 
 	if(Mission != nullptr && Mission->HumansInvolved())
 	{
-		this->CheckIfObjectsGotHit(this->GetHumans());
+		CheckIfObjectsGotHit(GetHumans());
 	}
 }
 
@@ -1828,7 +1805,7 @@ void UDefconPlayViewBase::Hyperspace()
 
 #if 0
 	Defcon::CGameObjectCollection tempset;
-	Defcon::IGameObject* p2, *pObj = this->GetHumans().GetFirst();
+	Defcon::IGameObject* p2, *pObj = GetHumans().GetFirst();
 
 	while(pObj != nullptr)
 	{
@@ -1837,7 +1814,7 @@ void UDefconPlayViewBase::Hyperspace()
 		if(human.GetCarrier() == m_pPlayer)
 		{
 			human.Notify(EMessage::released, m_pPlayer);
-			this->GetHumans().Detach(pObj);
+			GetHumans().Detach(pObj);
 			tempset.Add(pObj);
 		}
 			
@@ -1872,7 +1849,7 @@ void UDefconPlayViewBase::Hyperspace()
 		pObj->Notify(EMessage::takenaboard, m_pPlayer);
 		pObj = pObj->GetNext();
 	}
-	this->GetHumans().Add(tempset);
+	GetHumans().Add(tempset);
 	*/
 	//check(tempset.Count() == 0);
 }
@@ -1882,7 +1859,7 @@ void UDefconPlayViewBase::FireSmartbomb()
 {
 	if(GetPlayerShip().IsAlive())
 	{
-		gDefconGameInstance->GetStats().SmartbombsDetonated++;
+		GDefconGameInstance->GetStats().SmartbombsDetonated++;
 
 		gpAudio->OutputSound(Defcon::EAudioTrack::Smartbomb);
 
@@ -1917,9 +1894,9 @@ namespace Defcon
 
 				Materialization->InitMaterialization(Params);
 
-				gpArena->AddDebris(Materialization);
+				GArena->AddDebris(Materialization);
 
-				if(gpArena->IsPointVisible(Params.P)) // todo: maybe check extents of materialization field i.e. if player gets even a partial glimpse
+				if(GArena->IsPointVisible(Params.P)) // todo: maybe check extents of materialization field i.e. if player gets even a partial glimpse
 				{
 					gpAudio->OutputSound(EAudioTrack::Ship_materialize);
 				}
@@ -2041,7 +2018,7 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, const CFPoint&
 
 		TimeToDeploy += MaterializationLifetime;
 
-		gDefconGameInstance->m_pMission->AddEvent(MaterializationEvent);
+		GDefconGameInstance->m_pMission->AddEvent(MaterializationEvent);
 	}
 
 	auto EventPtr = new Defcon::CCreateEnemyEvent;
@@ -2053,7 +2030,7 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, const CFPoint&
 	EventPtr->bMissionTarget	= (0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::IsMissionTarget));
 	EventPtr->When				= TimeToDeploy;
 
-	gDefconGameInstance->m_pMission->AddEvent(EventPtr);
+	GDefconGameInstance->m_pMission->AddEvent(EventPtr);
 }
 
 

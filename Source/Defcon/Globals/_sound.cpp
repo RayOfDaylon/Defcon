@@ -24,7 +24,7 @@ Defcon::CAudioManager::CAudioManager(UObject* InWorldContextObject)
 
 	WorldContextObject = InWorldContextObject;
 
-	if(!this->CreateSoundObjects())
+	if(!CreateSoundObjects())
 	{
 #ifdef _DEBUG
 		OutputDebugString("\n*** ERROR: Sound objects not created\n");
@@ -35,7 +35,7 @@ Defcon::CAudioManager::CAudioManager(UObject* InWorldContextObject)
 
 Defcon::CAudioManager::~CAudioManager()
 {
-    this->DestroySoundObjects();
+    DestroySoundObjects();
 }
 
 

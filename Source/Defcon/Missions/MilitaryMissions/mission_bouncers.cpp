@@ -31,13 +31,13 @@ void Defcon::CBouncersMission::Init()
 
 void Defcon::CBouncersMission::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(this->HostilesRemaining() > 0 
+	if(HostilesRemaining() > 0 
 		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 3
 			)
 	{
-		this->AddMissionCleaner(where);
+		AddMissionCleaner(where);
 	}
 
 	UpdateWaves(where);

@@ -65,7 +65,7 @@ void Defcon::CMaterialization::Draw(FPainter& Painter, const I2DCoordMapper& Map
 	{
 		// Particles use pure arena space, but we need to wrap X before using mapper.
 		auto P = Particle.P;
-		P.x = gpArena->WrapX(P.x);
+		P.x = GArena->WrapX(P.x);
 		Mapper.To(P, pt);
 
 		// Don't draw if particle out of frame.

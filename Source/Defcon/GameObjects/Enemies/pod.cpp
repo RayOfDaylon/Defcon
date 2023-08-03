@@ -86,7 +86,7 @@ void Defcon::CPod::OnAboutToDie()
 
 	for(int32 I = 0; I < SWARMERS_PER_POD; I++)
 	{
-		gpArena->CreateEnemy(EObjType::SWARMER, Position, 0.0f, EObjectCreationFlags::EnemyPart);
+		GArena->CreateEnemy(EObjType::SWARMER, Position, 0.0f, EObjectCreationFlags::EnemyPart);
 	}
 }
 
@@ -99,7 +99,7 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 
 	bMortal = true;
 	Lifespan = 0.0f;
-	this->OnAboutToDie();
+	OnAboutToDie();
 
 	int n = (int)(FRAND * 30 + 30);
 	float maxsize = FRAND * 5 + 3;
