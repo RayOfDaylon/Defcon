@@ -5,6 +5,7 @@ Extended remake of Williams Electronics Stargate 1981 arcade game using Unreal E
 Stargate was also known as Defender II in some locales.
 
 Example Videos
+
 Version 1.0: https://youtu.be/WTqya41q9xM
 
 The game differs from Stargate in these ways:
