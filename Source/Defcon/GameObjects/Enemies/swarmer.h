@@ -24,21 +24,20 @@ namespace Defcon
 			virtual bool  Fireballs          () const override { return false; }
 			virtual void  Explode            (CGameObjectCollection&) override;
 
-			void SetOriginalPosition(const CFPoint& pt)	{ m_posOrg = pt; }
+			void SetOriginalPosition(const CFPoint& pt)	{ OriginalPos = pt; }
 
 		private:
 
 			void ConsiderFiringBullet(float DeltaTime);
 
-			float FiringCountdown;
-
-			float VerticalOffset;
-			float Frequency;
-			float HorzFrequency;
-			float Amplitude;
-			float HalfwayAltitude;
-			float TimeTargetWithinRange;
-			float CountdownToMakeSound;
-			CFPoint	m_posOrg;
+			CFPoint	OriginalPos;
+			float   FiringCountdown;
+			float   VerticalOffset;
+			float   Frequency;
+			float   HorzFrequency;
+			float   Amplitude;
+			float   HalfwayAltitude;
+			float   TimeTargetWithinRange;
+			float   SoundCountdown;
 	};
 }

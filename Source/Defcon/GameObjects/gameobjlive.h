@@ -39,10 +39,9 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const = 0;
 #endif
-			virtual void   Notify                (EMessage, void*) override;
 			virtual void   Move                  (float DeltaTime) override;
 
-			virtual bool   Fireballs             () const { return true; }
+			virtual bool   Fireballs             () const override { return true; }
 
 			virtual void   ChangeThrust          (const CFPoint&);
 			void           EnableInput           (bool b = true) { bCanMove = b; }
@@ -50,9 +49,9 @@ namespace Defcon
 			bool           IsAlive               () const { return bAlive; }
 			virtual void   SetIsAlive            (bool b) { bAlive = b; }
 
-			void           ZeroThrust            ()   { ThrustVector.Set(0,0); }
-			void           ZeroMotion            ()   { this->ZeroVelocity(); this->ZeroThrust(); }
-			void           ZeroInput             ()    { for(auto& Ctl : NavControls) { Ctl.bActive = false; } }
+			void           ZeroThrust            () { ThrustVector.Set(0,0); }
+			void           ZeroMotion            () { this->ZeroVelocity(); this->ZeroThrust(); }
+			void           ZeroInput             () { for(auto& Ctl : NavControls) { Ctl.bActive = false; } }
 
 			virtual void   ComputeThrustTimings  (float);
 			virtual void   ComputeForces         (float);
@@ -60,11 +59,8 @@ namespace Defcon
 
 			const CFPoint& GetThrustVector       () const { return ThrustVector; }
 
-			virtual float  NavControl_Duration   (int) const;
-
+			virtual float  NavControlDuration    (int) const;
 			void           SetNavControl         (int, bool, float);
-
-			virtual void   OnAboutToDie          ();
 
 			virtual float  GetShieldStrength     () const    { return ShieldStrength; }
 			virtual void   SetShieldStrength     (float f);
@@ -76,15 +72,14 @@ namespace Defcon
 
 		protected:
 
-			bool        bCanMove;
+			FNavControl NavControls[numCtls];
 			CFPoint     ThrustVector;
 			float       MaxThrust;
-
 			float       ThrustDurationVertical;
 			float       ThrustDurationForwards;
 			float       ThrustDurationBackwards;
+			bool        bCanMove;
 
-			FNavControl NavControls[numCtls];
 
 		private:
 			Daylon::TBindableValue<float> ShieldStrength; // 0..1 value
@@ -92,7 +87,7 @@ namespace Defcon
 	};
 
 
-	// Return the shortest position delta from p1 to p2 given a modulus range aw.
+	// Return the shortest position delta from p1 to p2 given a modulus range ArenaWidth.
 	inline void PositionDelta(CFPoint& Result, const CFPoint& P1, const CFPoint& P2, float ArenaWidth)
 	{
 		Result = P2;

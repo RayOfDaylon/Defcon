@@ -20,7 +20,6 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 			virtual void  Move              (float DeltaTime) override;
-			virtual void  Draw              (FPaintArguments&, const I2DCoordMapper&) override;
 			virtual float GetExplosionMass  () const override { return 0.1f; }
 
 			bool          Fireballs         () const override { return false; }

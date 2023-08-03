@@ -252,8 +252,8 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 
 	void UpdatePlayerShip(float DeltaTime);
 
-	void DrawObjects    (const Defcon::CGameObjectCollection* Collection, FPaintArguments& FrameBuffer) const;
-	void DrawObjectBbox (Defcon::IGameObject* Object, FPaintArguments& FrameBuffer) const;
+	void DrawObjects    (const Defcon::CGameObjectCollection* Collection, FPainter& PaintArgs) const;
+	void DrawObjectBbox (Defcon::IGameObject* Object, FPainter& PaintArgs) const;
 
 	void OnFinishActivating();
 

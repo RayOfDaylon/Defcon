@@ -71,8 +71,8 @@ namespace Defcon
 #endif
 
 			virtual void Move		(float DeltaTime) override;
-			virtual void Draw		(FPaintArguments&, const Defcon::I2DCoordMapper&) override;
-			virtual void DrawSmall	(FPaintArguments&, const Defcon::I2DCoordMapper&, FSlateBrush&) override {}
+			virtual void Draw		(FPainter&, const Defcon::I2DCoordMapper&) override;
+			virtual void DrawSmall	(FPainter&, const Defcon::I2DCoordMapper&, FSlateBrush&) override {}
 
 
 		private:

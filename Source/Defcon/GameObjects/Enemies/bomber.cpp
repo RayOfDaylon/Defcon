@@ -164,11 +164,6 @@ void Defcon::CBomber::Move(float DeltaTime)
 }
 
 
-void Defcon::CBomber::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
-}
-
-
 Defcon::EColor Defcon::CBomber::GetExplosionColorBase() const
 {
 	return EColor::LightBlue;

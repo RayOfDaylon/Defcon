@@ -24,7 +24,7 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
+			virtual void Draw(FPainter&, const I2DCoordMapper&);
 
 			CFPoint                   Range;
 			I2DCoordMapper*           MapperPtr  = nullptr;

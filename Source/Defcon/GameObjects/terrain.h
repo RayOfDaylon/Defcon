@@ -10,7 +10,7 @@
 #include "gameobj.h"
 
 
-struct FPaintArguments;
+struct FPainter;
 
 
 namespace Defcon
@@ -32,8 +32,8 @@ namespace Defcon
 #endif
 
 			void          InitTerrain (float W, float H);
-			virtual void  Draw        (FPaintArguments&, const I2DCoordMapper&) override;
-			virtual void  DrawSmall   (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
+			virtual void  Draw        (FPainter&, const I2DCoordMapper&) override;
+			virtual void  DrawSmall   (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;
 			float	      GetElev     (float X) const;
 
 		private:

@@ -31,7 +31,7 @@ struct FSprite2D
 	void                Reset         ();
 
 
-	virtual int32 Paint(const FPaintArguments& FrameBuffer) const;
+	virtual int32 Paint(const FPainter& PaintArgs) const;
 
 
 	protected:

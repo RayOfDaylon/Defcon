@@ -82,11 +82,6 @@ void Defcon::CSpacehum::Move(float DeltaTime)
 }
 
 
-void Defcon::CSpacehum::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
-}
-
-
 void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 {
 	bMortal = true;

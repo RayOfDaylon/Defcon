@@ -201,11 +201,6 @@ void Defcon::CHuman::Move(float DeltaTime)
 }
 
 
-void Defcon::CHuman::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
-}
-
-
 Defcon::EColor Defcon::CHuman::GetExplosionColorBase() const
 {
 	return EColor::Red;

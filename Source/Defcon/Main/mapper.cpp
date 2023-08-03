@@ -191,3 +191,23 @@ void Defcon::CRadarCoordMapper::SlideBy(float f)
 		Offset.x -= PlanetCircumference;
 }
 
+
+#if 0
+	// Test mapper.
+	{
+		CFPoint in, out, final;
+		for(in.x = -50; in.x < 50; in.x++)
+		{
+			MapperPtr->To(in, out);
+			MapperPtr->From(out, final);
+			int32 inx = ROUND(in.x);
+			int32 fx  = ROUND(final.x);
+			if(inx != fx)
+			{
+				char sz[100];
+				UE_LOG(LogGame, Log, TEXT("Mapping x = %.3f to %.3f back to %.3f"), in.x, out.x, final.x);
+				OutputDebugString(sz);
+			}
+		}
+	}
+#endif

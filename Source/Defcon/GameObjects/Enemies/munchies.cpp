@@ -92,7 +92,7 @@ void Defcon::IMunchie::Move(float DeltaTime)
 				? ILiveGameObject::ctlFwd
 				: ILiveGameObject::ctlBack;
 
-		if(this->NavControl_Duration(ctl) == 0)
+		if(this->NavControlDuration(ctl) == 0)
 		{
 			ControlStartTime[ctl] = GameTime();
 		}
@@ -114,7 +114,7 @@ void Defcon::IMunchie::Move(float DeltaTime)
 		const int32 ctl  = (Delta.y < 0) ? ILiveGameObject::ctlDown : ILiveGameObject::ctlUp;
 		const int32 ctl2 = (ctl == ILiveGameObject::ctlDown) ? ILiveGameObject::ctlUp : ILiveGameObject::ctlDown;
 
-		if(NavControl_Duration(ctl) == 0)
+		if(NavControlDuration(ctl) == 0)
 		{
 			ControlStartTime[ctl] = GameTime();
 		}

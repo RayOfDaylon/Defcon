@@ -94,7 +94,7 @@ void Defcon::CLaserbeam::Move(float DeltaTime)
 }
 
 
-void Defcon::CLaserbeam::Draw(FPaintArguments& PaintArguments, const I2DCoordMapper& Mapper)
+void Defcon::CLaserbeam::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
 	// todo: make laserbeam draw using a random pick 
 	// of beam textures. If we make the textures
@@ -110,7 +110,7 @@ void Defcon::CLaserbeam::Draw(FPaintArguments& PaintArguments, const I2DCoordMap
 	Mapper.To(StartPosition, P1);
 	Mapper.To(PtEnd, P2);
 
-	if(P1.Distance(P2) > PaintArguments.GetWidth() * 2)
+	if(P1.Distance(P2) > Painter.GetWidth() * 2)
 	{
 		return;
 	}
@@ -137,31 +137,31 @@ void Defcon::CLaserbeam::Draw(FPaintArguments& PaintArguments, const I2DCoordMap
 
 
 #if 0
-	framebuf.ColorStraightLine(
+	Painter.ColorStraightLine(
 		(int)P1.x, (int)P1.y, (int)P2.x, (int)P2.y, 
 		MakeColorFromComponents(c1.x, c1.y, c1.z));
 
 	if(BeamAge > 0.5f)
 	{
-		framebuf.BrightenStraightLine((int)P1.x, (int)P1.y, (int)P2.x, (int)P2.y);
-		framebuf.BrightenStraightLine((int)P1.x, (int)P1.y+1, (int)P2.x, (int)P2.y+1);
+		Painter.BrightenStraightLine((int)P1.x, (int)P1.y, (int)P2.x, (int)P2.y);
+		Painter.BrightenStraightLine((int)P1.x, (int)P1.y+1, (int)P2.x, (int)P2.y+1);
 	}
 #else
-	PaintArguments.DrawLaserBeam(P1.x, P1.y, P2.x, Color);
+	Painter.DrawLaserBeam(P1.x, P1.y, P2.x, Color);
 
 #if 0
 	// todo: BrightenStraightLine is a no-op currently 
 	if(BeamAge > 0.5f)
 	{
-		PaintArguments.BrightenStraightLine((int32)P1.x, (int32)P1.y,     (int32)P2.x, (int)P2.y);
-		PaintArguments.BrightenStraightLine((int32)P1.x, (int32)P1.y + 1, (int32)P2.x, (int)P2.y + 1);
+		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y,     (int32)P2.x, (int)P2.y);
+		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y + 1, (int32)P2.x, (int)P2.y + 1);
 	}
 #endif
 #endif
 }
 
 
-void Defcon::CLaserbeam::DrawSmall(FPaintArguments&, const I2DCoordMapper&, FSlateBrush&)
+void Defcon::CLaserbeam::DrawSmall(FPainter&, const I2DCoordMapper&, FSlateBrush&)
 {
 }
 

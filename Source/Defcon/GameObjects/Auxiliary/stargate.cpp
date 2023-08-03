@@ -60,42 +60,36 @@ const char* Defcon::CStargate::GetClassname() const
 #endif
 
 
-
-void Defcon::CStargate::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
-}
-
-
-void Defcon::CStargate::DrawSmallPart(FPaintArguments& framebuf, const I2DCoordMapper& mapper, FSlateBrush& Brush, const CFPoint& TopLeft, const CFPoint& BottomRight, const CFPoint& BoxRad)
+void Defcon::CStargate::DrawSmallPart(FPainter& Painter, const I2DCoordMapper& mapper, FSlateBrush& Brush, const CFPoint& TopLeft, const CFPoint& BottomRight, const CFPoint& BoxRad)
 {
 	if(ABS(TopLeft.x - BottomRight.x) > BoxRad.x * 3)
 	{
 		// The rectangle intersects the screen edge, so draw two rectangles.
 
 		// Turns out this statement executes in both cases.
-		framebuf.ColorRect(0, TopLeft.y, BottomRight.x, BottomRight.y, C_BLUE);
+		Painter.ColorRect(0, TopLeft.y, BottomRight.x, BottomRight.y, C_BLUE);
 
-		const float ScreenWidth = framebuf.AllottedGeometry->GetLocalSize().X;
+		const float ScreenWidth = Painter.AllottedGeometry->GetLocalSize().X;
 
 		if(TopLeft.x < 0)
 		{
 			// Draw left half at right edge of screen
-			framebuf.ColorRect(ScreenWidth + TopLeft.x, TopLeft.y, ScreenWidth, BottomRight.y, C_BLUE);
+			Painter.ColorRect(ScreenWidth + TopLeft.x, TopLeft.y, ScreenWidth, BottomRight.y, C_BLUE);
 		}
 		else
 		{
 			// Draw right half at right edge of screen
-			framebuf.ColorRect(TopLeft.x, TopLeft.y, ScreenWidth, BottomRight.y, C_BLUE);
+			Painter.ColorRect(TopLeft.x, TopLeft.y, ScreenWidth, BottomRight.y, C_BLUE);
 		}
 
 		return;
 	}
 
-	framebuf.ColorRect(TopLeft.x, TopLeft.y, BottomRight.x, BottomRight.y, C_BLUE);
+	Painter.ColorRect(TopLeft.x, TopLeft.y, BottomRight.x, BottomRight.y, C_BLUE);
 }
 
 
-void Defcon::CStargate::DrawSmall(FPaintArguments& framebuf, const I2DCoordMapper& mapper, FSlateBrush& Brush)
+void Defcon::CStargate::DrawSmall(FPainter& Painter, const I2DCoordMapper& mapper, FSlateBrush& Brush)
 {
 	// Draw the gate using two rectangles.
 	// Note: we have to draw it twice if it is split across a horizontal edge.
@@ -105,7 +99,7 @@ void Defcon::CStargate::DrawSmall(FPaintArguments& framebuf, const I2DCoordMappe
 	mapper.To(Position - BboxRadius, TopLeft);
 	mapper.To(Position + BboxRadius, BottomRight);
 
-	DrawSmallPart(framebuf, mapper, Brush, TopLeft, BottomRight, BboxRadius);
+	DrawSmallPart(Painter, mapper, Brush, TopLeft, BottomRight, BboxRadius);
 
 	// Draw small rect inside large one
 	auto box = BboxRadius;
@@ -121,7 +115,7 @@ void Defcon::CStargate::DrawSmall(FPaintArguments& framebuf, const I2DCoordMappe
 	mapper.To(TL, TopLeft);
 	mapper.To(BR, BottomRight);
 
-	DrawSmallPart(framebuf, mapper, Brush, TopLeft, BottomRight, box);
+	DrawSmallPart(Painter, mapper, Brush, TopLeft, BottomRight, box);
 }
 
 

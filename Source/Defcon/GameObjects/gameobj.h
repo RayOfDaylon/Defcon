@@ -15,7 +15,7 @@
 //#define LIFESPAN_DEAD 0.0001f
 
 
-struct FPaintArguments;
+struct FPainter;
 
 
 namespace Defcon
@@ -69,8 +69,8 @@ namespace Defcon
 			void                  SetType               (EObjType n);
 								  
 			virtual void          Move                  (float DeltaTime);
-			virtual void          Draw                  (FPaintArguments&, const I2DCoordMapper&);
-			virtual void          DrawSmall             (FPaintArguments&, const I2DCoordMapper&, FSlateBrush& Brush);
+			virtual void          Draw                  (FPainter&, const I2DCoordMapper&);
+			virtual void          DrawSmall             (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush);
 
 			virtual void          Notify                (EMessage, void*);
 

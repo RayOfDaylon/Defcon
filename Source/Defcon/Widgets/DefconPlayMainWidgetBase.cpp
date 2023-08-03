@@ -247,7 +247,7 @@ void UDefconPlayMainWidgetBase::UpdatePlayerShip(float DeltaTime)
 }
 
 
-void UDefconPlayMainWidgetBase::DrawObjectBbox(Defcon::IGameObject* Object, FPaintArguments& FrameBuffer) const
+void UDefconPlayMainWidgetBase::DrawObjectBbox(Defcon::IGameObject* Object, FPainter& Painter) const
 {
 	CFPoint pt;
 	CoordMapperPtr->To(Object->Position, pt);
@@ -255,14 +255,14 @@ void UDefconPlayMainWidgetBase::DrawObjectBbox(Defcon::IGameObject* Object, FPai
 	CFRect r(pt);
 	r.Inflate(Object->BboxRadius);
 
-	if(r.UR.x > 0 && r.LL.x < FrameBuffer.AllottedGeometry->GetLocalSize().X)
+	if(r.UR.x > 0 && r.LL.x < Painter.AllottedGeometry->GetLocalSize().X)
 	{
-		FrameBuffer.ColorRect(r.LL.x, r.LL.y, r.UR.x, r.UR.y, C_RED);
+		Painter.ColorRect(r.LL.x, r.LL.y, r.UR.x, r.UR.y, C_RED);
 	}
 }
 
 
-void UDefconPlayMainWidgetBase::DrawObjects(const Defcon::CGameObjectCollection* Collection, FPaintArguments& FrameBuffer) const
+void UDefconPlayMainWidgetBase::DrawObjects(const Defcon::CGameObjectCollection* Collection, FPainter& Painter) const
 {
 	if(Collection == nullptr)
 	{
@@ -273,12 +273,12 @@ void UDefconPlayMainWidgetBase::DrawObjects(const Defcon::CGameObjectCollection*
 		{
 			if(!Object->Sprite)
 			{
-				Object->Draw(FrameBuffer, *CoordMapperPtr);
+				Object->Draw(Painter, *CoordMapperPtr);
 			}
 
 			if(bShowBoundingBoxes)
 			{
-				DrawObjectBbox(Object, FrameBuffer);
+				DrawObjectBbox(Object, Painter);
 			}
 		}
 	);
@@ -324,17 +324,17 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 		FSlateDrawElement::MakeLines(OutDrawElements, LayerId, AllottedGeometry.ToPaintGeometry(), LinePts, ESlateDrawEffect::None, C_WHITE, true, 2.0f);
 	}
 
-	FPaintArguments PaintArguments;
+	FPainter Painter;
 
 	auto PaintGeometry = AllottedGeometry.ToPaintGeometry();
 
-	PaintArguments.PaintGeometry    = &PaintGeometry;
-	PaintArguments.AllottedGeometry = &AllottedGeometry;
-	PaintArguments.Args             = &Args;
-	PaintArguments.LayerId          = LayerId;
-	PaintArguments.MyCullingRect    = &MyCullingRect;
-	PaintArguments.OutDrawElements  = &OutDrawElements;
-	PaintArguments.RenderOpacity    = InWidgetStyle.GetColorAndOpacityTint().A;
+	Painter.PaintGeometry    = &PaintGeometry;
+	Painter.AllottedGeometry = &AllottedGeometry;
+	Painter.Args             = &Args;
+	Painter.LayerId          = LayerId;
+	Painter.MyCullingRect    = &MyCullingRect;
+	Painter.OutDrawElements  = &OutDrawElements;
+	Painter.RenderOpacity    = InWidgetStyle.GetColorAndOpacityTint().A;
 
 
 	// Draw the stars underneath everything.
@@ -371,17 +371,17 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 
 	if(TerrainPtr != nullptr)
 	{
-		TerrainPtr->Draw(PaintArguments, *CoordMapperPtr);
+		TerrainPtr->Draw(Painter, *CoordMapperPtr);
 	}
 
-	DrawObjects(Objects, PaintArguments);
-	DrawObjects(Enemies, PaintArguments);
-	DrawObjects(Debris,  PaintArguments);
-	DrawObjects(Blasts,  PaintArguments);
+	DrawObjects(Objects, Painter);
+	DrawObjects(Enemies, Painter);
+	DrawObjects(Debris,  Painter);
+	DrawObjects(Blasts,  Painter);
 
 	if(bShowBoundingBoxes && PlayerShipPtr && PlayerShipPtr->IsAlive())
 	{
-		DrawObjectBbox(PlayerShipPtr, PaintArguments);
+		DrawObjectBbox(PlayerShipPtr, Painter);
 	}
 
 	return LayerId;

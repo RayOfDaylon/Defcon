@@ -23,7 +23,6 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 			virtual void Move(float) override;
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&) override;
 
 			void Explode(CGameObjectCollection&) override;
 			

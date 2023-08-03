@@ -71,7 +71,7 @@ void UDefconPlayRadarWidgetBase::NativeTick(const FGeometry& MyGeometry, float D
 }
 
 
-void UDefconPlayRadarWidgetBase::DrawObjects(const Defcon::CGameObjectCollection* Collection, const FPaintArguments& PaintArguments) const
+void UDefconPlayRadarWidgetBase::DrawObjects(const Defcon::CGameObjectCollection* Collection, const FPainter& Painter) const
 {
 	if(Collection == nullptr)
 	{
@@ -80,7 +80,7 @@ void UDefconPlayRadarWidgetBase::DrawObjects(const Defcon::CGameObjectCollection
 
 	Collection->ForEach([&](Defcon::IGameObject* Object)
 	{
-		Object->DrawSmall(const_cast<FPaintArguments&>(PaintArguments), CoordMapper, const_cast<FSlateColorBrush&>(RadarBrush));
+		Object->DrawSmall(const_cast<FPainter&>(Painter), CoordMapper, const_cast<FSlateColorBrush&>(RadarBrush));
 #if 0
 		// Quantize location. -- no, makes screen jitter too much unless we quantize coord mapper
 		pt.x = ROUND(pt.x / 9) * 9;
@@ -140,16 +140,16 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 		FSlateDrawElement::MakeLines(OutDrawElements, LayerId, PaintGeometry, LinePts, ESlateDrawEffect::None, C_DARKER, true, 2.0f);
 	}
 
-	FPaintArguments PaintArguments;
+	FPainter Painter;
 
-	PaintArguments.PaintGeometry    = &PaintGeometry;
-	PaintArguments.AllottedGeometry = &AllottedGeometry;
-	PaintArguments.Args             = &Args;
-	PaintArguments.LayerId          = LayerId;
-	PaintArguments.MyCullingRect    = &MyCullingRect;
-	PaintArguments.OutDrawElements  = &OutDrawElements;
-	PaintArguments.RenderOpacity    = InWidgetStyle.GetColorAndOpacityTint().A;
-	//PaintArguments.InWidgetStyle    = &InWidgetStyle;
+	Painter.PaintGeometry    = &PaintGeometry;
+	Painter.AllottedGeometry = &AllottedGeometry;
+	Painter.Args             = &Args;
+	Painter.LayerId          = LayerId;
+	Painter.MyCullingRect    = &MyCullingRect;
+	Painter.OutDrawElements  = &OutDrawElements;
+	Painter.RenderOpacity    = InWidgetStyle.GetColorAndOpacityTint().A;
+	//Painter.InWidgetStyle    = &InWidgetStyle;
 
 	// Draw two lines showing the main arena left/right edges.
 	// These should always be equidistant from the player.
@@ -158,13 +158,13 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 
 	if(TerrainPtr != nullptr)
 	{
-		TerrainPtr->DrawSmall(PaintArguments, CoordMapper, const_cast<FSlateColorBrush&>(RadarBrush));
+		TerrainPtr->DrawSmall(Painter, CoordMapper, const_cast<FSlateColorBrush&>(RadarBrush));
 	}
 
 	// Draw the arena objects. 
 
-	DrawObjects(Objects, PaintArguments);
-	DrawObjects(Enemies, PaintArguments);
+	DrawObjects(Objects, Painter);
+	DrawObjects(Enemies, Painter);
 
 
 	// If we have humans, draw them too.
@@ -174,7 +174,7 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 
 	if(Mission != nullptr && Mission->HumansInvolved())
 	{
-		DrawObjects(&GameInstance->GetHumans(), PaintArguments);
+		DrawObjects(&GameInstance->GetHumans(), Painter);
 	}
 
 	
@@ -182,7 +182,7 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 
 	if(PlayerShipPtr != nullptr)
 	{
-		PlayerShipPtr->DrawSmall(PaintArguments, CoordMapper, const_cast<FSlateColorBrush&>(RadarBrush));
+		PlayerShipPtr->DrawSmall(Painter, CoordMapper, const_cast<FSlateColorBrush&>(RadarBrush));
 	}
 
 

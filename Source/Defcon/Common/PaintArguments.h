@@ -11,7 +11,8 @@
 
 
 
-struct FPaintArguments
+
+struct FPainter
 {
 	// Anything that issues draw calls directly takes a reference to this structure e.g. GameObject::Draw
 

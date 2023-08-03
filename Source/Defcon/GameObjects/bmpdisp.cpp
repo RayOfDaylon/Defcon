@@ -14,16 +14,14 @@
 
 Defcon::CBitmapDisplayer::CBitmapDisplayer()
 {
-	UE_LOG(LogGame, Log, TEXT("Instancing bitmap displayer"));
-
 	ParentType = Type;
-	Type = EObjType::TEXTURE;
+	Type       = EObjType::TEXTURE;
 
 	Orientation.Fwd.Set(0.0f, 0.0f);
-	bMortal = true;
+	bMortal       = true;
 	bCanBeInjured = false;
-	Lifespan = 100.0f;
-	Age = 0.0f;
+	Lifespan      = 100.0f;
+	Age           = 0.0f;
 }
 
 

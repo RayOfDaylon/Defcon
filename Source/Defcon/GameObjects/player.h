@@ -38,10 +38,8 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 
-			virtual void  Move          (float) override;
-			virtual void  Draw          (FPaintArguments&, const I2DCoordMapper&) override;
-			virtual void  DrawSmall     (FPaintArguments&, const I2DCoordMapper&, FSlateBrush& Brush) override;
-			virtual void  Explode       (CGameObjectCollection&) override;
+			virtual void  Move          (float DeltaTime) override;
+			virtual void  DrawSmall     (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush) override;
 			virtual void  OnAboutToDie  () override;
 			virtual void  SetIsAlive    (bool b) override;
 			virtual void  ImpartForces  (float) override; // For the player ship, we need to customize vertical motion.
@@ -51,18 +49,19 @@ namespace Defcon
 			void DrawStats(FPaintArguments&, int, int);
 #endif
 
-			void FaceLeft   () { Orientation.Fwd.x = -1.0f; }
-			void FaceRight  () { Orientation.Fwd.x = 1.0f; }
+			void FaceLeft                     () { Orientation.Fwd.x = -1.0f; }
+			void FaceRight                    () { Orientation.Fwd.x = 1.0f; }
 
 			void FireLaserWeapon              (CGameObjectCollection&);
-			bool IsSolid                      () const;
 			bool EmbarkPassenger              (IGameObject*, CGameObjectCollection&);
 			bool DebarkOnePassenger           (CGameObjectCollection&);
 			const CFPoint& GetPickupRadiusBox () const { return PickupBboxRadius; }
 
 			FSlateBrush     RadarBrush;
 
+
 		private:
+
 			CLaserWeapon	LaserWeapon;
 			CFPoint         PickupBboxRadius;
 

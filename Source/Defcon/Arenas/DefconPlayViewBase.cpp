@@ -534,7 +534,7 @@ struct Particle
 		P += Inertia * DeltaTime;
 	}
 
-	void Draw(FPaintArguments& FrameBuffer, const Defcon::I2DCoordMapper& CoordMapper)
+	void Draw(FPainter& Painter, const Defcon::I2DCoordMapper& CoordMapper)
 	{
 		CFPoint pt;
 		CoordMapper.To(P, pt);
@@ -542,7 +542,7 @@ struct Particle
 
 		Color.A = 1.0f - CLAMP(NORM_(Age, 0.0f, Lifetime), 0.0f, 1.0f);
 
-		FrameBuffer.FillRect(pt.x - HalfS, pt.y - HalfS, pt.x + HalfS, pt.y + HalfS, Color);
+		Painter.FillRect(pt.x - HalfS, pt.y - HalfS, pt.x + HalfS, pt.y + HalfS, Color);
 	}
 };
 
@@ -599,13 +599,13 @@ struct ParticleGroup
 	}
 
 
-	void Draw(FPaintArguments& FrameBuffer, const Defcon::I2DCoordMapper& CoordMapper)
+	void Draw(FPainter& Painter, const Defcon::I2DCoordMapper& CoordMapper)
 	{
 		for(int32 y = 0; y < 2; y++)
 		{
 			for(int32 x = 0; x < 8; x++)
 			{
-				Particles[x][y].Draw(FrameBuffer, CoordMapper);
+				Particles[x][y].Draw(Painter, CoordMapper);
 			}
 		}
 	}
@@ -679,7 +679,7 @@ class CDestroyedPlayerShip : public Defcon::ILiveGameObject
 		}
 
 
-		virtual void Draw(FPaintArguments& FrameBuffer, const Defcon::I2DCoordMapper& CoordMapper)  override
+		virtual void Draw(FPainter& Painter, const Defcon::I2DCoordMapper& CoordMapper)  override
 		{
 			// Our sprite will autodraw for the first 0.5 seconds, after that
 			// we need to draw explosion debris.
@@ -701,7 +701,7 @@ class CDestroyedPlayerShip : public Defcon::ILiveGameObject
 				Color.A = NORM_(Age, DESTROYED_PLAYER_FLASH_DURATION, DESTROYED_PLAYER_FLASH_DURATION + DESTROYED_PLAYER_BLANK_DURATION);
 				Color.A = CLAMP(Color.A, 0.0f, 1.0f);
 				
-				FrameBuffer.FillRect(0.0f, 0.0f, FrameBuffer.GetWidth(), FrameBuffer.GetHeight(), Color);
+				Painter.FillRect(0.0f, 0.0f, Painter.GetWidth(), Painter.GetHeight(), Color);
 
 				return;
 			}
@@ -737,7 +737,7 @@ class CDestroyedPlayerShip : public Defcon::ILiveGameObject
 			{
 				auto& ParticleGroup = ParticleGroups[Index];
 			
-				ParticleGroup.Draw(FrameBuffer, CoordMapper);
+				ParticleGroup.Draw(Painter, CoordMapper);
 			}
 
 			NumParticleGroupsToDraw = FMath::Min(NumParticleGroupsToDraw + 2, (int32)array_size(ParticleGroups));
@@ -1090,7 +1090,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		}
 
 
-		if(PlayerShip.IsSolid())
+		//if(PlayerShip.IsSolid())
 		{
 			// Things to do if player is solid.
 			//static int mod = 0;
@@ -1333,36 +1333,33 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 }
 
 
-bool UDefconPlayViewBase::IsPointVisible(const CFPoint& pt) const
+bool UDefconPlayViewBase::IsPointVisible(const CFPoint& WorldPos) const
 {
-	// Given an arena location, convert to main 
-	// framebuffer space and see if within bounds.
+	// Given an arena location, convert to display space and see if within bounds.
 
-	CFPoint pt2;
-	MainAreaMapper.To(pt, pt2);
+	CFPoint DisplayPos;
+	MainAreaMapper.To(WorldPos, DisplayPos);
 
-	return (pt2.x >= 0 && pt2.x < GetDisplayWidth());
+	return (DisplayPos.x >= 0 && DisplayPos.x < GetDisplayWidth());
 }
 
 
 typedef enum { fa_wild, fa_at, fa_lead } FiringAccuracy;
 
 
-float UDefconPlayViewBase::ShortestDirection(const CFPoint& A, const CFPoint& B, CFPoint& Result) const
+float UDefconPlayViewBase::ShortestDirection(const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result) const
 {
 	// Return direction to achieve shortest travel time 
 	// from point A to point B. The distance is also returned.
 
-	//const CFPoint A(PtA), B(PtB);
-
 	const float W = this->GetWidth();
 
-	const float FromTail1 = W - A.x;
-	const float FromTail2 = W - B.x;
+	const float FromTail1 = W - WorldPosA.x;
+	const float FromTail2 = W - WorldPosB.x;
 
-	const float D0 = ABS(B.x - A.x);
-	const float D1 = A.x + FromTail2;
-	const float D2 = B.x + FromTail1;
+	const float D0 = ABS(WorldPosB.x - WorldPosA.x);
+	const float D1 = WorldPosA.x + FromTail2;
+	const float D2 = WorldPosB.x + FromTail1;
 
 	const float HorzDistance = FMath::Min(D0, FMath::Min(D1, D2));
 
@@ -1370,21 +1367,21 @@ float UDefconPlayViewBase::ShortestDirection(const CFPoint& A, const CFPoint& B,
 
 	if(D0 == HorzDistance)
 	{
-		Result = B - A;
+		Result = WorldPosB - WorldPosA;
 	}
 	else if(D1 == HorzDistance)
 	{
 		// B behind origin, A past it.
-		Result = B;
+		Result = WorldPosB;
 		Result.x -= W;
-		Result -= A;
+		Result -= WorldPosA;
 	}
 	else if(D2 == HorzDistance)
 	{
 		// A behind origin, B past it.
-		Result = A;
+		Result = WorldPosA;
 		Result.x -= W;
-		Result = B - Result;
+		Result = WorldPosB - Result;
 	}
 
 	const float Distance = Result.Length();
@@ -1396,29 +1393,29 @@ float UDefconPlayViewBase::ShortestDirection(const CFPoint& A, const CFPoint& B,
 }
 
 
-void UDefconPlayViewBase::Lerp(const CFPoint& A, const CFPoint& B, CFPoint& Result, float T) const
+void UDefconPlayViewBase::Lerp(const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result, float T) const
 {
 	// Lerp arena coords A and B.
 	// Lerp locations lie along the shortest line between A and B.
 
 	CFPoint Dir;
-	const float Len = this->ShortestDirection(A, B, Dir);
+	const float Len = this->ShortestDirection(WorldPosA, WorldPosB, Dir);
 
 	Dir *= Len * T;
-	Result = A + Dir;
+	Result = WorldPosA + Dir;
 
 	Result.x = WrapX(Result.x);
 }
 
 
-float UDefconPlayViewBase::WrapX(float x) const
+float UDefconPlayViewBase::WrapX(float WorldX) const
 {
 	const auto W = this->GetWidth();
 
-	if(x > W) return x - W;
-	if(x < 0) return x + W;
+	if(WorldX > W) return WorldX - W;
+	if(WorldX < 0) return WorldX + W;
 
-	return x;
+	return WorldX;
 }
 
 
@@ -1531,21 +1528,19 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 }
 
 
-float UDefconPlayViewBase::Xdistance(float x1, float x2) const
+float UDefconPlayViewBase::Xdistance(float WorldX1, float WorldX2) const
 {
 	// Return the shortest distance between two 
 	// horizontal locations on the arena.
 	
-	const float aw = this->GetWidth();
+	const float FromTail1 = ArenaWidth - WorldX1;
+	const float FromTail2 = ArenaWidth - WorldX2;
 
-	const float fFromTail1 = aw - x1;
-	const float fFromTail2 = aw - x2;
+	const float D0 = ABS(WorldX2 - WorldX1);
+	const float D1 = WorldX1 + FromTail2;
+	const float D2 = WorldX2 + FromTail1;
 
-	const float d0 = ABS(x2 - x1);
-	const float d1 = x1 + fFromTail2;
-	const float d2 = x2 + fFromTail1;
-
-	return FMath::Min(d0, FMath::Min(d1, d2));
+	return FMath::Min(D0, FMath::Min(D1, D2));
 }
 
 

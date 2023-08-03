@@ -29,10 +29,10 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 			virtual void Move      (float DeltaTime) override;
-			virtual void Draw      (FPaintArguments&, const I2DCoordMapper&) override;
-			virtual void DrawSmall (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override {}
+			virtual void Draw      (FPainter&, const I2DCoordMapper&) override;
+			virtual void DrawSmall (FPainter&, const I2DCoordMapper&, FSlateBrush&) override {}
 
-			virtual bool OccursFrequently () const { return true; }
+			virtual bool OccursFrequently () const override { return true; }
 
 			float	LargestSize = 6;
 			EColor	ColorbaseOld;
@@ -56,7 +56,7 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 			//virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
+			virtual void Draw(FPainter&, const I2DCoordMapper&) override;
 			//virtual void DrawSmall(FPaintArguments&, const I2DCoordMapper&);
 
 			//virtual bool OccursFrequently() const { return true; }

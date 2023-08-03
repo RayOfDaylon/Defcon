@@ -223,11 +223,6 @@ void Defcon::CGuppy::ConsiderFiringBullet()
 }
 
 
-void Defcon::CGuppy::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
-}
-
-
 Defcon::EColor Defcon::CGuppy::GetExplosionColorBase() const
 {
 	return EColor::Magenta;

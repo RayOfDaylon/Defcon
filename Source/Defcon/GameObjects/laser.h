@@ -45,20 +45,18 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			void          Create            (const CFPoint&, const Orient2D&);
-			virtual void  Move              (float) override;
-			virtual void  Draw              (FPaintArguments&, const I2DCoordMapper&) override;
-			virtual void  DrawSmall         (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
+			virtual void  Move              (float DeltaTime) override;
+			virtual void  Draw              (FPainter&, const I2DCoordMapper&) override;
+			virtual void  DrawSmall         (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;
 
 			virtual void  GetInjurePt       (CFPoint&) const override;
 			virtual bool  TestInjury        (const CFRect&) const override;
 
 			virtual bool  OccursFrequently  () const override { return true; }
 			virtual float GetCollisionForce () const override { return 1.1f; }
+			
+			void          Create            (const CFPoint&, const Orient2D&);
 			void          SetMaxLength      (float);
-
-
-			//float         m_fArenawidth;
 
 
 		protected:
@@ -67,6 +65,5 @@ namespace Defcon
 			float         Scale;
 			float         MaxAge;
 			float         MaxLength = BEAM_MAXLEN; // px
-
 	};
 }

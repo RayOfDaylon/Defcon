@@ -19,9 +19,9 @@ namespace Defcon
 		public:
 			IBullet();
 			virtual void Move         (float) override;
-			virtual void DrawSmall    (FPaintArguments& FrameBuffer, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush) {}
-			virtual void GetInjurePt  (CFPoint&) const;
-			virtual bool TestInjury   (const CFRect&) const;
+			virtual void DrawSmall    (FPainter& PaintArgs, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush) override {}
+			virtual void GetInjurePt  (CFPoint&) const override;
+			virtual bool TestInjury   (const CFRect&) const override;
 			virtual void SetSpeed     (float f) { Speed = f; }
 
 

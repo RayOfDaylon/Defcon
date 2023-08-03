@@ -56,7 +56,7 @@ const char* Defcon::CFlak::GetClassname() const
 #endif
 
 
-void Defcon::CFlak::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& Mapper)
+void Defcon::CFlak::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
 	// Determine a color, Size, and shape for a debris piece.
 
@@ -67,7 +67,7 @@ void Defcon::CFlak::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& Mappe
 
 	const int32 Size = (int32)((FRAND * 0.5f + 0.5f) * Youth * /*8*/	LargestSize + 1);
 
-	if(Pt.x >= -10 && Pt.x < PaintArgs.GetWidth() + 10)
+	if(Pt.x >= -10 && Pt.x < Painter.GetWidth() + 10)
 	{
 		// Make our display quad vary each frame in size and aspect.
 
@@ -102,15 +102,15 @@ void Defcon::CFlak::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& Mappe
 
 		const auto S = FVector2D(R.Width(), R.Height());
 		const FSlateLayoutTransform Translation(FVector2D(R.Left, R.Top));
-		const auto Geometry = PaintArgs.AllottedGeometry->MakeChild(S, Translation);
+		const auto Geometry = Painter.AllottedGeometry->MakeChild(S, Translation);
 
 		FSlateDrawElement::MakeBox(
-			*PaintArgs.OutDrawElements,
-			PaintArgs.LayerId,
+			*Painter.OutDrawElements,
+			Painter.LayerId,
 			Geometry.ToPaintGeometry(),
 			BrushPtr,
 			ESlateDrawEffect::None,
-			Color * PaintArgs.RenderOpacity);
+			Color * Painter.RenderOpacity);
 	}
 }
 
@@ -132,7 +132,7 @@ const char* Defcon::CGlowingFlak::GetClassname() const
 #endif
 
 
-void Defcon::CGlowingFlak::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& Mapper)
+void Defcon::CGlowingFlak::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
 	CFPoint Pt;
 	Mapper.To(Position, Pt);
@@ -143,7 +143,7 @@ void Defcon::CGlowingFlak::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper
 
 	int halfsize = Size / 2;
 
-	if(Pt.x >= -10 && Pt.x < PaintArgs.GetWidth() + 10)
+	if(Pt.x >= -10 && Pt.x < Painter.GetWidth() + 10)
 	{
 
 
@@ -155,11 +155,11 @@ void Defcon::CGlowingFlak::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper
 			: CBitmaps::bullet5x5 + IRAND(2));
 
 		int w = bmp.GetWidth();
-		if(Pt.x >= -w && Pt.x <= PaintArgs.GetWidth() + w)
+		if(Pt.x >= -w && Pt.x <= Painter.GetWidth() + w)
 		{
 			Pt.sub(CFPoint((float)w/2, (float)bmp.GetHeight()/2));
 			bmp.BlitAlphaBrighten(
-				PaintArgs, ROUND(Pt.x), ROUND(Pt.y), 
+				Painter, ROUND(Pt.x), ROUND(Pt.y), 
 				w, bmp.GetHeight(), 
 				0, 0, Youth);
 		}*/
@@ -167,15 +167,15 @@ void Defcon::CGlowingFlak::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper
 		auto Color = C_WHITE;
 		const auto S = FVector2D(Size, Size);
 		const FSlateLayoutTransform Translation(FVector2D(Pt.x, Pt.y) - S / 2);
-		const auto Geometry = PaintArgs.AllottedGeometry->MakeChild(S, Translation);
+		const auto Geometry = Painter.AllottedGeometry->MakeChild(S, Translation);
 
 		FSlateDrawElement::MakeBox(
-			*PaintArgs.OutDrawElements,
-			PaintArgs.LayerId,
+			*Painter.OutDrawElements,
+			Painter.LayerId,
 			Geometry.ToPaintGeometry(),
 			BrushPtr,
 			ESlateDrawEffect::None,
-			Color * PaintArgs.RenderOpacity);
+			Color * Painter.RenderOpacity);
 
 
 #else		
@@ -205,10 +205,10 @@ void Defcon::CGlowingFlak::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper
 		if(false || IRAND(7) > 0)
 		{
 			//Rectangle_(dc, R.left, R.top, R.right, R.bottom);
-			//PaintArgs.FillRect(R.left, R.top, R.right, R.bottom);
+			//Painter.FillRect(R.left, R.top, R.right, R.bottom);
 			CMaskMap& mask = gBitmaps.GetMask(Size+4, IRAND(3));
 			//Ellipse_(dc, R.left, R.top, R.right, R.bottom);
-			mask.ColorWith(color, PaintArgs, ROUND(Pt.x)-halfsize-2, ROUND(Pt.y)-halfsize-2); 
+			mask.ColorWith(color, Painter, ROUND(Pt.x)-halfsize-2, ROUND(Pt.y)-halfsize-2); 
 		}
 		if(IRAND(3) == 0)
 		{
@@ -217,13 +217,13 @@ void Defcon::CGlowingFlak::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper
 			R.right = ROUND(Pt.x + Size + BUDGE);
 			R.top = ROUND(Pt.y - Size + BUDGE);
 			R.bottom = ROUND(Pt.y + Size + BUDGE);
-			PaintArgs.FillRect(R.left, R.top, R.right, R.bottom, color);
+			Painter.FillRect(R.left, R.top, R.right, R.bottom, color);
 		}
 		else
 		{
 			CMaskMap& mask = gBitmaps.GetMask(Size+1, IRAND(3));
 			//Ellipse_(dc, R.left, R.top, R.right, R.bottom);
-			mask.ColorWith(color, PaintArgs, ROUND(Pt.x)-halfsize, ROUND(Pt.y)-halfsize); 
+			mask.ColorWith(color, Painter, ROUND(Pt.x)-halfsize, ROUND(Pt.y)-halfsize); 
 		}
 #endif
 	}
@@ -258,7 +258,7 @@ const char* Defcon::CPuff::GetClassname() const
 
 void Defcon::CPuff::Draw
 (
-	FPaintArguments& PaintArgs, 
+	FPaintArguments& Painter, 
 	const I2DCoordMapper& Mapper
 )
 {
@@ -283,9 +283,9 @@ void Defcon::CPuff::Draw
 
 	Size++;
 
-	if(Pt.x >= -10 && Pt.x < PaintArgs.GetWidth() + 10)
+	if(Pt.x >= -10 && Pt.x < Painter.GetWidth() + 10)
 	{
-		HDC_ dc = PaintArgs.GetDC();
+		HDC_ dc = Painter.GetDC();
 		HPEN_ orgpen = (HPEN_)SelectGdiObject_(dc, GetStockObject_(NULL_PEN_));
 
 #define _BUDGE 0
@@ -316,7 +316,7 @@ void Defcon::CPuff::Draw
 }
 
 
-void Defcon::CPuff::DrawSmall(FPaintArguments& PaintArgs, const I2DCoordMapper& map, FSlateBrush&)
+void Defcon::CPuff::DrawSmall(FPaintArguments& Painter, const I2DCoordMapper& map, FSlateBrush&)
 {
 	// Smoke doesn't appear on radar.
 }

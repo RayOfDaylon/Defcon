@@ -76,7 +76,7 @@ bool Defcon::IGameObject::ReduceLifespanBy(float f)
 }
 
 
-void Defcon::IGameObject::DrawSmall(FPaintArguments& FrameBuffer, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush)
+void Defcon::IGameObject::DrawSmall(FPainter& Painter, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush)
 {
 	CFPoint pt;
 	CoordMapper.To(Position, pt);
@@ -91,15 +91,15 @@ void Defcon::IGameObject::DrawSmall(FPaintArguments& FrameBuffer, const I2DCoord
 
 	const FSlateLayoutTransform Translation(FVector2D(pt.x, pt.y) - S / 2);
 
-	const auto Geometry = FrameBuffer.AllottedGeometry->MakeChild(S, Translation);
+	const auto Geometry = Painter.AllottedGeometry->MakeChild(S, Translation);
 
 	FSlateDrawElement::MakeBox(
-		*FrameBuffer.OutDrawElements,
-		FrameBuffer.LayerId,
+		*Painter.OutDrawElements,
+		Painter.LayerId,
 		Geometry.ToPaintGeometry(),
 		&Brush,
 		ESlateDrawEffect::None,
-		GetRadarColor() * FrameBuffer.RenderOpacity);
+		GetRadarColor() * Painter.RenderOpacity);
 }
 
 
@@ -424,7 +424,7 @@ void Defcon::IGameObject::UninstallSprite()
 
 
 void                 Defcon::IGameObject::Init(const CFPoint& InArenaSize, const CFPoint& InScreenSize) { ArenaSize = InArenaSize; ScreenSize = InScreenSize; }
-void                 Defcon::IGameObject::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper) {}
+void                 Defcon::IGameObject::Draw(FPainter& Painter, const I2DCoordMapper& mapper) {}
 
 void                 Defcon::IGameObject::OnFinishedCreating()                 {}
 void                 Defcon::IGameObject::OnAboutToDie()                       {}

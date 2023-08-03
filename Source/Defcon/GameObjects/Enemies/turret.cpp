@@ -154,35 +154,6 @@ void Defcon::CTurret::Move(float fTime)
 }
 
 
-void Defcon::CTurret::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
-#if 0
-	CEnemy::Draw(framebuf, mapper);
-	if(this->IsMaterializing())
-		return;
-
-	CFPoint pt;
-	mapper.To(Position, pt);
-
-
-	float f = (float)fmod(Age, AnimSpeed) / AnimSpeed;
-	//f = (float)cos(f * PI) + 1.0f;
-	f *= 0;
-	
-	CTrueBitmap& bmp = gBitmaps.GetBitmap(CBitmaps::turret + ROUND(f));
-	int w = bmp.GetWidth();
-	if(pt.x >= -w && pt.x <= framebuf.GetWidth() + w)
-	{
-		pt.sub(CFPoint(w / 2.0f, bmp.GetHeight() / 2.0f));
-		bmp.BlitAlphaBrighten(
-			framebuf, ROUND(pt.x), ROUND(pt.y), 
-			w, bmp.GetHeight(), 
-			0, 0, /*Brightness * */ (FRAND * 0.1f + 0.9f));
-	}
-#endif
-}
-
-
 void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 {
 	Super::Explode(debris);

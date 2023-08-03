@@ -35,7 +35,7 @@ class DEFCON_API UDefconPlayRadarWidgetBase : public UDefconPlayWidgetBase
 		const FWidgetStyle&        InWidgetStyle,
 		bool                       bParentEnabled) const override;
 
-	void DrawObjects(const Defcon::CGameObjectCollection* Collection, const FPaintArguments&) const;
+	void DrawObjects(const Defcon::CGameObjectCollection* Collection, const FPainter&) const;
 
 
 	FSlateColorBrush RadarBrush = FSlateColorBrush(C_WHITE);

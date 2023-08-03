@@ -177,11 +177,11 @@ float Defcon::CTerrain::GetElev(float X) const
 }
 
 
-void Defcon::CTerrain::Draw(FPaintArguments& PaintArguments, const I2DCoordMapper& Mapper)
+void Defcon::CTerrain::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
 	// In UE, we draw the terrain as a set of solid lines.
 
-	const float PaintWidth = PaintArguments.GetWidth();
+	const float PaintWidth = Painter.GetWidth();
 
 	CFPoint Pt;
 
@@ -238,11 +238,11 @@ void Defcon::CTerrain::Draw(FPaintArguments& PaintArguments, const I2DCoordMappe
 		LinePts.Add(FVector2f(Pt.x, Pt.y));
 	}
 
-	FSlateDrawElement::MakeLines(*PaintArguments.OutDrawElements, PaintArguments.LayerId, *PaintArguments.PaintGeometry, LinePts, ESlateDrawEffect::None, C_RED, true, 3.0f);
+	FSlateDrawElement::MakeLines(*Painter.OutDrawElements, Painter.LayerId, *Painter.PaintGeometry, LinePts, ESlateDrawEffect::None, C_RED, true, 3.0f);
 }
 
 
-void Defcon::CTerrain::DrawSmall(FPaintArguments& PaintArguments, const I2DCoordMapper& Mapper, FSlateBrush&)
+void Defcon::CTerrain::DrawSmall(FPainter& Painter, const I2DCoordMapper& Mapper, FSlateBrush&)
 {
 	// The entire terrain is visible, so don't search for start/end points.
 	// Note that the player is always in the center, so the terrain shifts left/right.
@@ -295,7 +295,7 @@ void Defcon::CTerrain::DrawSmall(FPaintArguments& PaintArguments, const I2DCoord
 
 	int32 I = 0;
 
-	const float OurWidth = PaintArguments.AllottedGeometry->GetLocalSize().X;
+	const float OurWidth = Painter.AllottedGeometry->GetLocalSize().X;
 
 	for(int32 Index = J; Index < J + NumVertices; Index++, I++)
 	{
@@ -327,7 +327,7 @@ void Defcon::CTerrain::DrawSmall(FPaintArguments& PaintArguments, const I2DCoord
 		LinePts.Add(FVector2f(Pt.x, Pt.y));
 	}
 
-	FSlateDrawElement::MakeLines(*PaintArguments.OutDrawElements, PaintArguments.LayerId, *PaintArguments.PaintGeometry, LinePts, ESlateDrawEffect::None, C_RED, true, 2.0f);
+	FSlateDrawElement::MakeLines(*Painter.OutDrawElements, Painter.LayerId, *Painter.PaintGeometry, LinePts, ESlateDrawEffect::None, C_RED, true, 2.0f);
 }
 
 

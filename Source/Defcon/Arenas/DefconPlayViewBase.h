@@ -183,12 +183,12 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	Defcon::CGameObjectCollection&        GetObjects              () { return Objects; }
 	Defcon::CGameObjectCollection&        GetEnemies              () { return Enemies; }
 
-	float                ShortestDirection            (const CFPoint& P1, const CFPoint& P2, CFPoint& Result) const;
-	void                 Lerp                 (const CFPoint& P1, const CFPoint& P2, CFPoint& Result, float T) const;
-	float                Xdistance            (float X1, float X2) const;
-	float                HorzDistance         (const CFPoint& PtFrom, const CFPoint& PtTo) const { return Xdistance(PtFrom.x, PtTo.x); }
-	float                WrapX                (float X) const;
-	bool                 IsPointVisible       (const CFPoint& Pt) const;
+	float                ShortestDirection    (const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result) const;
+	void                 Lerp                 (const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result, float T) const;
+	float                Xdistance            (float WorldX1, float WorldX2) const;
+	float                HorzDistance         (const CFPoint& WorldPosA, const CFPoint& WorldPosB) const { return Xdistance(WorldPosA.x, WorldPosB.x); }
+	float                WrapX                (float WorldX) const;
+	bool                 IsPointVisible       (const CFPoint& WorldPos) const;
 
 	float                GetWidth             () const { return ArenaWidth; }
 	float                GetHeight            () const { return ArenaSize.Y; }
@@ -238,7 +238,6 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 		Defcon::EObjType::BOUNCER_TRUE,
 		Defcon::EObjType::BOUNCER_WEAK
 	};
-
 };
 
 extern UDefconPlayViewBase* gpArena; // todo: globals are bad

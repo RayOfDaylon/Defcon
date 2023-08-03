@@ -7,7 +7,7 @@
 #include "Runtime/SlateCore/Public/Brushes/SlateColorBrush.h"
 
 
-void FPaintArguments::DrawLaserBeam(float X, float Y, float X2, const FLinearColor& Color)
+void FPainter::DrawLaserBeam(float X, float Y, float X2, const FLinearColor& Color)
 {
 	TArray<FVector2f> Points;
 
@@ -18,7 +18,7 @@ void FPaintArguments::DrawLaserBeam(float X, float Y, float X2, const FLinearCol
 }
 
 
-void FPaintArguments::ColorRect(float Left, float Top, float Right, float Bottom, const FLinearColor& Color, float Linewidth)
+void FPainter::ColorRect(float Left, float Top, float Right, float Bottom, const FLinearColor& Color, float Linewidth)
 {
 	TArray<FVector2f> Points;
 
@@ -32,7 +32,7 @@ void FPaintArguments::ColorRect(float Left, float Top, float Right, float Bottom
 }
 
 
-void FPaintArguments::FillRect(float Left, float Top, float Right, float Bottom, const FLinearColor& Color)
+void FPainter::FillRect(float Left, float Top, float Right, float Bottom, const FLinearColor& Color)
 {
 	const auto S = FVector2D(ABS(Right - Left), ABS(Bottom - Top));
 	const FSlateLayoutTransform Translation(FVector2D(AVG(Left, Right), AVG(Top, Bottom)) - S / 2);

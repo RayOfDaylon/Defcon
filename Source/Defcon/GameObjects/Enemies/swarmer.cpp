@@ -32,7 +32,7 @@ Defcon::CSwarmer::CSwarmer()
 	PointValue           = SWARMER_VALUE;
 	RadarColor           = C_ORANGE;
 	Frequency            = 2.0f;
-	CountdownToMakeSound = Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX);
+	SoundCountdown = Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX);
 	
 	HorzFrequency         = 2.0f * FRANDRANGE(0.5f, 1.5f);
 	bCanBeInjured         = true;
@@ -123,12 +123,12 @@ void Defcon::CSwarmer::Move(float DeltaTime)
 
 		if(TimeTargetWithinRange && Age > 1.0f)
 		{
-			CountdownToMakeSound -= DeltaTime;
+			SoundCountdown -= DeltaTime;
 
-			if(CountdownToMakeSound <= 0.0f)
+			if(SoundCountdown <= 0.0f)
 			{
 				gpAudio->OutputSound(EAudioTrack::Swarmer);
-				CountdownToMakeSound = Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX);
+				SoundCountdown = Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX);
 			}
 
 
@@ -160,7 +160,7 @@ void Defcon::CSwarmer::Move(float DeltaTime)
 
 	if(Age < 0.7f)
 	{
-		Position.y = LERP(m_posOrg.y, P.y, Age / 0.7f);
+		Position.y = LERP(OriginalPos.y, P.y, Age / 0.7f);
 	}
 
 	Inertia = Position - Inertia;

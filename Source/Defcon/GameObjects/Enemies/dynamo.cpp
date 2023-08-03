@@ -93,8 +93,3 @@ void Defcon::CDynamo::Move(float DeltaTime)
 
 	Inertia = Position - Inertia;
 }
-
-
-void Defcon::CDynamo::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
-}

@@ -53,11 +53,11 @@ void Defcon::CMaterialization::Move(float DeltaTime)
 }
 
 
-void Defcon::CMaterialization::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& Mapper)
+void Defcon::CMaterialization::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
-	const auto LayerId = PaintArgs.LayerId + 1;
+	const auto LayerId = Painter.LayerId + 1;
 
-	const auto Os = PaintArgs.RenderOpacity;
+	const auto Os = Painter.RenderOpacity;
 
 	CFPoint pt;
 
@@ -69,7 +69,7 @@ void Defcon::CMaterialization::Draw(FPaintArguments& PaintArgs, const I2DCoordMa
 		Mapper.To(P, pt);
 
 		// Don't draw if particle out of frame.
-		if(pt.x < 0 || pt.x >= PaintArgs.GetWidth())
+		if(pt.x < 0 || pt.x >= Painter.GetWidth())
 		{
 			//UE_LOG(LogGame, Warning, TEXT("Materialization particle out of frame at %d"), (int32)pt.x);
 			continue;
@@ -78,10 +78,10 @@ void Defcon::CMaterialization::Draw(FPaintArguments& PaintArgs, const I2DCoordMa
 		//UE_LOG(LogGame, Warning, TEXT("Materialization particle visible at %d"), (int32)pt.x);
 		const auto S = FVector2D(Particle.S);
 		const FSlateLayoutTransform Translation(FVector2D(pt.x, pt.y) - S / 2);
-		const auto Geometry = PaintArgs.AllottedGeometry->MakeChild(S, Translation);
+		const auto Geometry = Painter.AllottedGeometry->MakeChild(S, Translation);
 
 		FSlateDrawElement::MakeBox(
-			*PaintArgs.OutDrawElements,
+			*Painter.OutDrawElements,
 			LayerId,
 			Geometry.ToPaintGeometry(),
 			GameObjectResources.DebrisBrushRoundPtr,

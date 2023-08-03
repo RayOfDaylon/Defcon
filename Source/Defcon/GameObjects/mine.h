@@ -26,17 +26,11 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 
-			virtual void  Move               (float) override;
-			virtual void  DrawSmall          (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override {}
+			virtual void  Move               (float DeltaTime) override;
+			virtual void  DrawSmall          (FPainter&, const I2DCoordMapper&, FSlateBrush&) override {}
 
 			virtual void  GetInjurePt        (CFPoint&) const override;
 			virtual bool  TestInjury         (const CFRect&) const override;
 			virtual float GetCollisionForce  () const override { return 0.01f * MINE_DAMAGE; }
-
-
-		private:
-			//float	     m_maxAge;
-			//FLinearColor m_color;
-
 	};
 }

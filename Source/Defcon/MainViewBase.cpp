@@ -62,7 +62,7 @@ void FSprite2D::Tick(float DeltaTime)
 }
 
 
-int32 FSprite2D::Paint(const FPaintArguments& Args) const
+int32 FSprite2D::Paint(const FPainter& Args) const
 {
 	const FBox2D uvRegion = Atlas.GetUVsForCel(CurrentCelIndex);
 
@@ -120,7 +120,7 @@ int32 UMainViewBase::NativePaint
 	const FSlateLayoutTransform Translation(FVector2D(200, 100));
 	auto Geometry = AllottedGeometry.MakeChild(FVector2D(64), Translation);
 
-	const FPaintArguments PaintArguments = 
+	const FPaintArguments Painter = 
 	{
 		&Args,
 		&Geometry,
@@ -132,7 +132,7 @@ int32 UMainViewBase::NativePaint
 		InWidgetStyle.GetColorAndOpacityTint().A
 	};
 
-	return TestSprite.Paint(PaintArguments);
+	return TestSprite.Paint(Painter);
 #endif
 }
 

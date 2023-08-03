@@ -24,14 +24,14 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 			virtual void Move       (float DeltaTime) override;
-			virtual void Draw       (FPaintArguments&, const I2DCoordMapper&) override;
+			virtual void Draw       (FPainter&, const I2DCoordMapper&) override;
 			virtual void Explode    (CGameObjectCollection&) override;
 
 			virtual bool Fireballs  () const override { return true; }
 
 		protected:
 
-			virtual void DrawPart              (FPaintArguments&, const CFPoint&);
+			virtual void DrawPart              (FPainter&, const CFPoint&);
 			void         ConsiderFiringBullet  (float DeltaTime);
 
 
@@ -65,7 +65,7 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
+			virtual void Draw(FPainter&, const I2DCoordMapper&);
 			void Explode(CGameObjectCollection&);
 			
 

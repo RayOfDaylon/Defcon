@@ -100,11 +100,6 @@ void Defcon::IFirebomber::Move(float fTime)
 }
 
 
-void Defcon::IFirebomber::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
-{
-}
-
-
 void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 {
 	// Explode in a thick symmetrical pattern.

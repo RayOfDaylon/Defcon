@@ -90,7 +90,7 @@ void Defcon::CStarfield::Move(float f)
 }
 
 
-void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& mapper)
+void Defcon::CStarfield::Draw(FPaintArguments& Painter, const I2DCoordMapper& mapper)
 {
 	// The location of the field has Position as our center,
 	// so Position - w/2, h/2 to Position + (w/2,h/2) is the 
@@ -160,7 +160,7 @@ void Defcon::CStarfield::Draw(FPaintArguments& framebuf, const I2DCoordMapper& m
 				cf = MakeBlendedColor(m_stars[i].m_colorNear, cf,
 					m_stars[i].Position.z / 3.0f);
 
-			mask.ColorWith(cf, framebuf, ROUND(starproj.x), ROUND(starproj.y));
+			mask.ColorWith(cf, Painter, ROUND(starproj.x), ROUND(starproj.y));
 		}
 	}
 }

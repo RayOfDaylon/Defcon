@@ -214,7 +214,7 @@ int32 SDaylonStarfield::OnPaint
 			/*if(m_bMorphColor && m_stars[i].Position.z <= 3.0f)
 				cf = MakeBlendedColor(m_stars[i].m_colorNear, cf, m_stars[i].Position.z / 3.0f);*/
 
-			//mask.ColorWith(cf, framebuf, ROUND(starproj.x), ROUND(starproj.y));
+			//mask.ColorWith(cf, Painter, ROUND(starproj.x), ROUND(starproj.y));
 		}
 
 		float TSize = NORM_(Star.P.Z, kBackplaneMax_, kForeplane_);

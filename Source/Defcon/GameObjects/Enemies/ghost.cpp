@@ -176,7 +176,7 @@ void Defcon::CGhost::Move(float DeltaTime)
 }
 
 
-void Defcon::CGhost::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& mapper)
+void Defcon::CGhost::Draw(FPainter& Painter, const I2DCoordMapper& mapper)
 {
 	if(DispersalCountdown > 0.0f)
 	{
@@ -209,18 +209,18 @@ void Defcon::CGhost::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& mapp
 	{
 		CFPoint pt;
 		mapper.To(PartLocs[I], pt);
-		this->DrawPart(PaintArgs, pt);
+		this->DrawPart(Painter, pt);
 	}
 }
 
 
-void Defcon::CGhost::DrawPart(FPaintArguments& PaintArgs, const CFPoint& Pt)
+void Defcon::CGhost::DrawPart(FPainter& Painter, const CFPoint& Pt)
 {
 	auto& Info = GameObjectResources.Get(EObjType::GHOSTPART);
 
 	const int W = Info.Size.X;
 
-	if(Pt.x >= -W && Pt.x <= PaintArgs.GetWidth() + W)
+	if(Pt.x >= -W && Pt.x <= Painter.GetWidth() + W)
 	{
 		const int32 NumCels = Info.Atlas->Atlas.NumCels;
 		const float F = (NumCels - 1) * PSIN(PI * fmod(Age, AnimSpeed) / AnimSpeed);
@@ -229,19 +229,19 @@ void Defcon::CGhost::DrawPart(FPaintArguments& PaintArgs, const CFPoint& Pt)
 
 		const auto S = Info.Size;
 		const FSlateLayoutTransform Translation(FVector2D(Pt.x, Pt.y) - S / 2);
-		const auto Geometry = PaintArgs.AllottedGeometry->MakeChild(S, Translation);
+		const auto Geometry = Painter.AllottedGeometry->MakeChild(S, Translation);
 
 		const float F2 = Usize * ROUND(F);
 		FBox2f UVRegion(FVector2f(F2, 0.0f), FVector2f(F2 + Usize, 1.0f));
 		Info.Atlas->Atlas.AtlasBrush.SetUVRegion(UVRegion);
 
 		FSlateDrawElement::MakeBox(
-			*PaintArgs.OutDrawElements,
-			PaintArgs.LayerId,
+			*Painter.OutDrawElements,
+			Painter.LayerId,
 			Geometry.ToPaintGeometry(),
 			&Info.Atlas->Atlas.AtlasBrush,
 			ESlateDrawEffect::None,
-			C_WHITE * PaintArgs.RenderOpacity);
+			C_WHITE * Painter.RenderOpacity);
 	}
 }
 
@@ -463,7 +463,7 @@ void Defcon::CGhostPart::Move(float fTime)
 }
 
 
-void Defcon::CGhostPart::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& mapper)
+void Defcon::CGhostPart::Draw(FPainter& Painter, const I2DCoordMapper& mapper)
 {
 }
 

@@ -27,33 +27,31 @@ namespace Defcon
 			virtual const char* GetClassname() const;
 #endif
 
-			virtual void   InitHuman              (const CFPoint& pt) { Position = pt; Carrier = nullptr; Age = 0.0f; }
-						   				          
-			virtual void   Move                   (float);
-			virtual void   Draw                   (FPaintArguments&, const I2DCoordMapper&);
-			IGameObject*   GetCarrier             () const { return Carrier; }
-			bool           IsBeingCarried         () const { return (this->GetCarrier() != nullptr); }
-			bool           IsFalling              () const;
-			bool           IsOnGround             () const { return !(this->IsFalling() || this->IsBeingCarried()); }
-			void           SetToNotCarried        () { Carrier = nullptr; }
-						   
-			void           Notify                 (EMessage, void*);
-			bool           Fireballs              () const { return false; }
+			virtual void   Move                   (float DeltaTime) override;
+			virtual void   Notify                 (EMessage, void*) override;
+			virtual bool   Fireballs              () const override { return false; }
 
-			virtual void   OnAboutToDie           ();
+			virtual void   OnAboutToDie           () override;
 			virtual EColor GetExplosionColorBase  () const override;
-			virtual float  GetExplosionMass       () const;
+			virtual float  GetExplosionMass       () const override;
 
-			CGameObjectCollection*	Objects;
-			CGameObjectCollection*	Objects2;
+			void           InitHuman              (const CFPoint& pt) { Position = pt; Carrier = nullptr; Age = 0.0f; }
+			IGameObject*   GetCarrier             () const { return Carrier; }
+			bool           IsBeingCarried         () const { return (GetCarrier() != nullptr); }
+			bool           IsFalling              () const;
+			bool           IsOnGround             () const { return !(IsFalling() || IsBeingCarried()); }
+			void           SetToNotCarried        () { Carrier = nullptr; }
+
+			CGameObjectCollection*	Objects   = nullptr;
+			CGameObjectCollection*	Objects2  = nullptr;
 
 
 		private:
+			CFPoint         Motion;
+			IGameObject*	Carrier = nullptr;
 			float			SwitchFacingDirectionCountdown;
 			float           SwitchWalkingDirectionCountdown;
 			float           WalkingSpeed;
-			CFPoint         Motion;
-			IGameObject*	Carrier = nullptr;
 	};
 }
 

@@ -132,7 +132,7 @@ void Defcon::CSmartbomb::Move(float DeltaTime)
 }
 
 
-void Defcon::CSmartbomb::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& Mapper)
+void Defcon::CSmartbomb::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
 	check(GameObjectResources.SmartbombBrushPtr != nullptr);
 
@@ -159,15 +159,15 @@ void Defcon::CSmartbomb::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& 
 
 	const auto S = FVector2D(R.GetWidth(), R.GetHeight());
 	const FSlateLayoutTransform Translation(P - S / 2);
-	const auto Geometry = PaintArgs.AllottedGeometry->MakeChild(S, Translation);
+	const auto Geometry = Painter.AllottedGeometry->MakeChild(S, Translation);
 
 	FSlateDrawElement::MakeBox(
-		*PaintArgs.OutDrawElements,
-		PaintArgs.LayerId,
+		*Painter.OutDrawElements,
+		Painter.LayerId,
 		Geometry.ToPaintGeometry(),
 		GameObjectResources.SmartbombBrushPtr,
 		ESlateDrawEffect::None,
-		C_WHITE /* * PaintArgs.RenderOpacity * PaintArgs.InWidgetStyle->GetColorAndOpacityTint().A */);
+		C_WHITE /* * Painter.RenderOpacity * Painter.InWidgetStyle->GetColorAndOpacityTint().A */);
 }
 
 

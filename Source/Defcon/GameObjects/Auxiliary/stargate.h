@@ -16,10 +16,8 @@ namespace Defcon
 {
 	class CStargate : public IGameObject
 	{
-		// A hyperspace portal used to ferry picked-up
-		// humans to safety. Entering it ends the mission,
-		// so the more humans rescued and enemies killed,
-		// the better.
+		// A hyperspace portal used to conclude missions
+		// and to teleport to the highest priority abduction.
 
 		public:
 			CStargate();
@@ -27,14 +25,12 @@ namespace Defcon
 #ifdef _DEBUG
 			virtual const char* GetClassname() const;
 #endif
-			//virtual void Move      (float) override;
-			virtual void Draw      (FPaintArguments&, const I2DCoordMapper&) override;
-			virtual void DrawSmall (FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
+			virtual void DrawSmall (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;
 			
 
 		private:
 
-			void DrawSmallPart(FPaintArguments& framebuf, const I2DCoordMapper& mapper, FSlateBrush& Brush, const CFPoint& TopLeft, const CFPoint& BottomRight, const CFPoint&);
+			void DrawSmallPart(FPainter& PaintArgs, const I2DCoordMapper& mapper, FSlateBrush& Brush, const CFPoint& TopLeft, const CFPoint& BottomRight, const CFPoint&);
 	};
 }
 

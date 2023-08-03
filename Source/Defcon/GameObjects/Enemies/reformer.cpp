@@ -107,7 +107,7 @@ void Defcon::CReformer::ConsiderFiringBullet(float DeltaTime)
 }
 
 
-void Defcon::CReformer::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& Mapper)
+void Defcon::CReformer::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
 	PartLocations[0] = Position;
 
@@ -132,19 +132,19 @@ void Defcon::CReformer::Draw(FPaintArguments& PaintArgs, const I2DCoordMapper& M
 	{
 		CFPoint P;
 		Mapper.To(PartLocations[I], P);
-		DrawPart(PaintArgs, P);
+		DrawPart(Painter, P);
 	}
 }
 
 
-void Defcon::CReformer::DrawPart(FPaintArguments& PaintArgs, const CFPoint& Where)
+void Defcon::CReformer::DrawPart(FPainter& Painter, const CFPoint& Where)
 {
 	auto& Info = GameObjectResources.Get(EObjType::REFORMERPART);
 
 	CFPoint P = Where;
 	const float OurWidth = Info.Size.X;
 
-	if(P.x >= -OurWidth && P.x <= PaintArgs.GetWidth() + OurWidth)
+	if(P.x >= -OurWidth && P.x <= Painter.GetWidth() + OurWidth)
 	{
 		const int32 NumCels = Info.Atlas->Atlas.NumCels;
 		const float F = (NumCels - 1) * PSIN(PI * fmod(Age, AnimSpeed) / AnimSpeed);
@@ -153,19 +153,19 @@ void Defcon::CReformer::DrawPart(FPaintArguments& PaintArgs, const CFPoint& Wher
 
 		const auto S = Info.Size;
 		const FSlateLayoutTransform Translation(FVector2D(P.x, P.y) - S / 2);
-		const auto Geometry = PaintArgs.AllottedGeometry->MakeChild(S, Translation);
+		const auto Geometry = Painter.AllottedGeometry->MakeChild(S, Translation);
 
 		const float F2 = Usize * ROUND(F);
 		FBox2f UVRegion(FVector2f(F2, 0.0f), FVector2f(F2 + Usize, 1.0f));
 		Info.Atlas->Atlas.AtlasBrush.SetUVRegion(UVRegion);
 
 		FSlateDrawElement::MakeBox(
-			*PaintArgs.OutDrawElements,
-			PaintArgs.LayerId,
+			*Painter.OutDrawElements,
+			Painter.LayerId,
 			Geometry.ToPaintGeometry(),
 			&Info.Atlas->Atlas.AtlasBrush,
 			ESlateDrawEffect::None,
-			C_WHITE * PaintArgs.RenderOpacity);
+			C_WHITE * Painter.RenderOpacity);
 	}
 }
 

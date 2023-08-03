@@ -39,11 +39,12 @@ Defcon::ILiveGameObject::ILiveGameObject()
 }
 
 
-bool Defcon::ILiveGameObject::RegisterImpact(float f)
+bool Defcon::ILiveGameObject::RegisterImpact(float Force)
 {
 	// Lower shields by <f>, and return true if shields go below zero.
 
-  	ShieldStrength -= f;
+  	ShieldStrength -= Force;
+
 	const bool b = (ShieldStrength < 0.0f);
 	ShieldStrength = FMath::Max(0.0f, ShieldStrength);
 	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
@@ -51,19 +52,10 @@ bool Defcon::ILiveGameObject::RegisterImpact(float f)
 }
 
 
-void Defcon::ILiveGameObject::SetShieldStrength(float f)	
+void Defcon::ILiveGameObject::SetShieldStrength(float Strength)	
 {
-	ShieldStrength = f; 
+	ShieldStrength = Strength; 
 	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
-}
-
-
-void Defcon::ILiveGameObject::OnAboutToDie() {}
-
-
-void Defcon::ILiveGameObject::Notify(Defcon::EMessage msg, void* pObj)
-{
-	IGameObject::Notify(msg, pObj);
 }
 
 
@@ -86,7 +78,7 @@ void Defcon::ILiveGameObject::ChangeThrust(const CFPoint& f)
 }
 
 
-float Defcon::ILiveGameObject::NavControl_Duration(int i) const
+float Defcon::ILiveGameObject::NavControlDuration(int i) const
 {
 	// Report how long a nav control has been continually used, in seconds.
 
@@ -120,8 +112,8 @@ void Defcon::ILiveGameObject::ComputeThrustTimings(float frameTime)
 
 	check(frameTime > 0.0f);
 
-	ThrustDurationForwards  = this->NavControl_Duration(ctlFwd);
-	ThrustDurationBackwards = this->NavControl_Duration(ctlBack);
+	ThrustDurationForwards  = this->NavControlDuration(ctlFwd);
+	ThrustDurationBackwards = this->NavControlDuration(ctlBack);
 	ThrustDurationForwards  = FMath::Min(ThrustDurationForwards, frameTime);
 	ThrustDurationBackwards = FMath::Min(ThrustDurationBackwards, frameTime);
 	
@@ -133,8 +125,8 @@ void Defcon::ILiveGameObject::ComputeThrustTimings(float frameTime)
 		return;
 	}
 
-	ThrustDurationVertical += this->NavControl_Duration(ctlUp);
-	ThrustDurationVertical -= this->NavControl_Duration(ctlDown);
+	ThrustDurationVertical += this->NavControlDuration(ctlUp);
+	ThrustDurationVertical -= this->NavControlDuration(ctlDown);
 
 	// Clamp vertical thrust duration to the frametime.
 	ThrustDurationVertical = FMath::Min(ThrustDurationVertical, frameTime);
