@@ -23,10 +23,10 @@ extern "C"
 
 
 #define array_size(_a)	(sizeof(_a) / sizeof((_a)[0]))
-//#define STRLOOKUP(n, s)	(strlookup((int)(n), (s), array_size(s)))
+//#define STRLOOKUP(n, s)	(strlookup((int32)(n), (s), array_size(s)))
 #define ZEROFILL(obj)	memset(&obj, 0, sizeof(obj))
 
-//char* strlookup(int n, char** ppsz, int tablelen);
+//char* strlookup(int32 n, char** ppsz, int32 tablelen);
 
 
 // Some DLLs just can't link to MSVCRT's stricmp(), 

@@ -131,7 +131,7 @@ void Defcon::IMunchie::Move(float DeltaTime)
 	if(HorzDistance < 350 && FRAND < 0.02f && SquakTime == 0.0f)
 	{
 		SquakTime = 0.0001f;
-		gpAudio->OutputSound(AudioTrack);
+		GAudio->OutputSound(AudioTrack);
 	}
 
 	if(SquakTime != 0.0f)

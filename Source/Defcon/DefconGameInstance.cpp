@@ -33,16 +33,16 @@ void UDefconGameInstance::Init()
 
 	GDefconGameInstance = this;
 
-	Defcon::ObjectTypeManager.Init();
+	Defcon::GObjectTypeManager.Init();
 
-	gPrefs.Init(FString(TEXT("prefs.txt")));
+	GPrefs.Init(FString(TEXT("prefs.txt")));
 
-	gpAudio = new Defcon::CAudioManager(this);
+	GAudio = new Defcon::CAudioManager(this);
 
 
 #define ADD_AUDIO_TRACK(_track, _asset)	\
-	gpAudio->AddTrack(_track, _asset);	\
-	gpAudio->OutputSound(_track, 0.01f); // Force sound to preload.
+	GAudio->AddTrack(_track, _asset);	\
+	GAudio->OutputSound(_track, 0.01f); // Force sound to preload.
 
 	ADD_AUDIO_TRACK(Defcon::EAudioTrack::Focus_changed,         FocusChangedSound);
 	ADD_AUDIO_TRACK(Defcon::EAudioTrack::Invalid_selection,     InvalidSelectionSound);
@@ -99,7 +99,7 @@ void UDefconGameInstance::Shutdown()
 
 	SAFE_DELETE(PlayerShipPtr);
 	SAFE_DELETE(m_pMission);
-	SAFE_DELETE(gpAudio);
+	SAFE_DELETE(GAudio);
 
 	Super::Shutdown();
 }
@@ -107,7 +107,7 @@ void UDefconGameInstance::Shutdown()
 
 bool UDefconGameInstance::IsLive() const 
 {
-	return (gpAudio != nullptr); 
+	return (GAudio != nullptr); 
 }
 
 
@@ -475,8 +475,8 @@ int32 UDefconGameInstance::AdvanceScore(int32 Amount)
 	if(Score / PLAYER_REWARD_POINTS > oldplayer)
 	{
 		//m_nPlayerLivesLeft++;
-		gpAudio->StopPlayingSound();
-		gpAudio->OutputSound(CAudioManager::extra_ship);
+		GAudio->StopPlayingSound();
+		GAudio->OutputSound(CAudioManager::extra_ship);
 	}
 #endif
 

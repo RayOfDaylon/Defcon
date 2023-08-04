@@ -101,7 +101,7 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 	Lifespan = 0.0f;
 	OnAboutToDie();
 
-	int n = (int)(FRAND * 30 + 30);
+	int32 n = (int32)(FRAND * 30 + 30);
 	float maxsize = FRAND * 5 + 3;
 
 /*
@@ -118,7 +118,7 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 
 
 	bool bDieOff = (FRAND >= 0.25f);
-	int i;
+	int32 i;
 
 
 	for(i = 0; i < n; i++)
@@ -157,7 +157,7 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 	if(FRAND <= DEBRIS_DUAL_PROB)
 	{
 		bDieOff = (FRAND >= 0.25f);
-		n = (int)(FRAND * 20 + 20);
+		n = (int32)(FRAND * 20 + 20);
 		maxsize = FRAND * 4 + 8.0f;
 		//maxsize = FMath::Min(maxsize, 9.0f);
 

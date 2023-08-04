@@ -139,9 +139,9 @@ void Defcon::CGlowingFlak::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 
 	float Youth = Lifespan / MaxAge;
 
-	int Size = (int)((FRAND * 0.5f + 0.5f) * Youth * /*8*/	LargestSize + 1);
+	int32 Size = (int32)((FRAND * 0.5f + 0.5f) * Youth * /*8*/	LargestSize + 1);
 
-	int halfsize = Size / 2;
+	int32 halfsize = Size / 2;
 
 	if(Pt.x >= -10 && Pt.x < Painter.GetWidth() + 10)
 	{
@@ -154,7 +154,7 @@ void Defcon::CGlowingFlak::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 			? CBitmaps::fireball0 + IRAND(3)
 			: CBitmaps::bullet5x5 + IRAND(2));
 
-		int w = bmp.GetWidth();
+		int32 w = bmp.GetWidth();
 		if(Pt.x >= -w && Pt.x <= Painter.GetWidth() + w)
 		{
 			Pt.sub(CFPoint((float)w/2, (float)bmp.GetHeight()/2));
@@ -269,16 +269,16 @@ void Defcon::CPuff::Draw
 
 	// Make puff grow from small to large quickly 
 	// at the start, and then shrink to small slowly.
-	int Size;
+	int32 Size;
 	if(Youth >= 0.95f)
 	{
 		float t = CLAMP(Youth, 0.95f, 1.0f);
 		t = NORM_(t, 0.95f, 1.0f);
 		
-		Size = (int)(LERP(LargestSize, 0.0f, t));
+		Size = (int32)(LERP(LargestSize, 0.0f, t));
 	}
 	else
-		Size = (int)((FRAND*.05f+.95f) * Youth * 
+		Size = (int32)((FRAND*.05f+.95f) * Youth * 
 						LargestSize);
 
 	Size++;
@@ -298,7 +298,7 @@ void Defcon::CPuff::Draw
 		R.top = ROUND(Pt.y - Size + _BUDGE);
 		R.bottom = ROUND(Pt.y + Size + _BUDGE);
 
-		int rop = SetROP2_(dc, R2_MERGEPEN_);
+		int32 rop = SetROP2_(dc, R2_MERGEPEN_);
 
 		HBRUSH_ orgbr;
 		

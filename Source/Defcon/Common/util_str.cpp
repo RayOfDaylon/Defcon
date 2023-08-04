@@ -132,7 +132,7 @@ char* strtoupper(char* psz)
 }
 
 
-FString GetNumberSpelling(int32 n, int eCap)
+FString GetNumberSpelling(int32 n, int32 eCap)
 {
 	char sz[20];
 

@@ -45,7 +45,7 @@ Defcon::CGhost::CGhost()
 	DispersalCountdown = 0.0f;
 	FiringCountdown    = FRANDRANGE(2.0f, 4.0f);
 
-	for(int I = 1; I < NumParts; I++)
+	for(int32 I = 1; I < NumParts; I++)
 	{
 		PartRadiiMin[I] = FRANDRANGE(0.5f, 1.0f);
 		PartRadiiMax[I] = FRANDRANGE(PartRadiiMin[I], 1.5f);
@@ -170,7 +170,7 @@ void Defcon::CGhost::Move(float DeltaTime)
 			Position   = NewPos;
 			Position.x = GArena->WrapX(Position.x);
 		
-			gpAudio->OutputSound(EAudioTrack::Ghostflight);
+			GAudio->OutputSound(EAudioTrack::Ghostflight);
 		}
 	}
 }
@@ -218,7 +218,7 @@ void Defcon::CGhost::DrawPart(FPainter& Painter, const CFPoint& Pt)
 {
 	auto& Info = GameObjectResources.Get(EObjType::GHOSTPART);
 
-	const int W = Info.Size.X;
+	const int32 W = Info.Size.X;
 
 	if(Pt.x >= -W && Pt.x <= Painter.GetWidth() + W)
 	{

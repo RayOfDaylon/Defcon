@@ -138,13 +138,13 @@ void Defcon::CLaserbeam::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 
 #if 0
 	Painter.ColorStraightLine(
-		(int)P1.x, (int)P1.y, (int)P2.x, (int)P2.y, 
+		(int32)P1.x, (int32)P1.y, (int32)P2.x, (int32)P2.y, 
 		MakeColorFromComponents(c1.x, c1.y, c1.z));
 
 	if(BeamAge > 0.5f)
 	{
-		Painter.BrightenStraightLine((int)P1.x, (int)P1.y, (int)P2.x, (int)P2.y);
-		Painter.BrightenStraightLine((int)P1.x, (int)P1.y+1, (int)P2.x, (int)P2.y+1);
+		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y, (int32)P2.x, (int32)P2.y);
+		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y+1, (int32)P2.x, (int32)P2.y+1);
 	}
 #else
 	Painter.DrawLaserBeam(P1.x, P1.y, P2.x, Color);
@@ -153,8 +153,8 @@ void Defcon::CLaserbeam::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 	// todo: BrightenStraightLine is a no-op currently 
 	if(BeamAge > 0.5f)
 	{
-		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y,     (int32)P2.x, (int)P2.y);
-		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y + 1, (int32)P2.x, (int)P2.y + 1);
+		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y,     (int32)P2.x, (int32)P2.y);
+		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y + 1, (int32)P2.x, (int32)P2.y + 1);
 	}
 #endif
 #endif

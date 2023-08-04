@@ -293,7 +293,7 @@ void Defcon::CLander::Move(float DeltaTime)
 					// them have been tracking him, they will
 					// stop doing so.
 					HumanPtr->Notify(Defcon::EMessage::TakenAboard, this);
-					gpAudio->OutputSound(EAudioTrack::Human_abducted);
+					GAudio->OutputSound(EAudioTrack::Human_abducted);
 				}
 			}
 		}
@@ -378,7 +378,7 @@ void Defcon::CLander::Move(float DeltaTime)
 			IGameObject* pObj = Objects->GetFirst();
 			while(pObj != nullptr)
 			{
-				int id = pObj->GetID();
+				int32 id = pObj->GetID();
 				if(id != 1 && id != 6) // not the player or human
 				{
 					float dist1 = Position.distance(pObj->Position);

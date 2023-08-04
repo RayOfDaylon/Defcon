@@ -41,7 +41,7 @@ void Defcon::CMilitaryMission::Init()
 
 	if(gpArena->HasTerrain())
 	{
-		for(int i = 0; i < 10; i++)
+		for(int32 i = 0; i < 10; i++)
 		{
 			//auto pEvt = new CCreateEnemyEvent;
 			pEvt->Init(p);

@@ -172,10 +172,10 @@ namespace Defcon
 
 
 
-extern Defcon::CPrefs	gPrefs;
+extern Defcon::CPrefs	GPrefs;
 
 
-#define PREFVAL(_key)                  gPrefs.m_pref[Defcon::CPrefs::Pref::_key].Value
+#define PREFVAL(_key)                  GPrefs.m_pref[Defcon::CPrefs::Pref::_key].Value
 #define FPREFVAL(_key)                 PREFVAL(_key)
 #define IPREFVAL(_key)                 (int32)PREFVAL(_key)
 #define BPREFVAL(_key)                 (bool)(1.0f == PREFVAL(_key))

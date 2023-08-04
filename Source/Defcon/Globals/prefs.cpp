@@ -6,7 +6,7 @@
 #include "Common/util_core.h"
 #include "Common/util_str.h"
 
-Defcon::CPrefs	gPrefs;
+Defcon::CPrefs	GPrefs;
 
 
 Defcon::CPrefs::CPrefs() {}
@@ -41,8 +41,8 @@ void Defcon::CPrefs::Construct()
 	INITPREF( player_reward_points,     10000.0f,    "",             type_int,    1000,      100000,      "Number of points needed to earn an extra ship"                                             );
 	INITPREF( player_posmargin,           400.0f,    "px",           type_int,      50,         500,      "Minimum distance between player's ship and edge of screen"                                 );
 	INITPREF( player_marginsettlespeed,  1400.0f,    "px/sec",       type_int,      50,        3000,      "How quickly the player ship settles to the edge of the screen after reversing direction"   );
-	//INITPREF( player_maxthrust,             2.7f,    "",             type_float,     0.1f,        5.0f,   "Maximum thrust force applicable to player ship"                                            );
-	INITPREF( player_maxthrust,             3.5f,    "",             type_float,     0.1f,        5.0f,   "Maximum thrust force applicable to player ship"                                            );
+	//INITPREF( player_maxthrust,             3.5f,    "",             type_float,     0.1f,        5.0f,   "Maximum thrust force applicable to player ship"                                            );
+	INITPREF( player_maxthrust,             4.5f,    "",             type_float,     0.1f,        5.0f,   "Maximum thrust force applicable to player ship"                                            );
 	INITPREF( player_mass,                  0.08f,   "",             type_float,     0.001f,      1.0f,   "Mass of player ship"                                                                       );
 	INITPREF( player_drag,                  0.06f,   "",             type_float,     0.001f,      1.0f,   "Drag acting upon player ship"                                                              );
 	INITPREF( smartbomb_initial,            3.0f,    "",             type_int,       0,          20,      "Initial number of smart bombs when starting a game"                                        );

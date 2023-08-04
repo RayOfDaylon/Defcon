@@ -46,7 +46,7 @@ bool Defcon::ILiveGameObject::RegisterImpact(float Force)
 
 	const bool b = (ShieldStrength < 0.0f);
 	ShieldStrength = FMath::Max(0.0f, ShieldStrength);
-	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
+	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *GObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
 	return b;
 }
 
@@ -54,7 +54,7 @@ bool Defcon::ILiveGameObject::RegisterImpact(float Force)
 void Defcon::ILiveGameObject::SetShieldStrength(float Strength)	
 {
 	ShieldStrength = Strength; 
-	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *ObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
+	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *GObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
 }
 
 
@@ -77,7 +77,7 @@ void Defcon::ILiveGameObject::ChangeThrust(const CFPoint& f)
 }
 
 
-float Defcon::ILiveGameObject::NavControlDuration(int i) const
+float Defcon::ILiveGameObject::NavControlDuration(int32 i) const
 {
 	// Report how long a nav control has been continually used, in seconds.
 
@@ -96,7 +96,7 @@ float Defcon::ILiveGameObject::NavControlDuration(int i) const
 }
 
 
-void Defcon::ILiveGameObject::SetNavControl(int i, bool b, float f)
+void Defcon::ILiveGameObject::SetNavControl(int32 i, bool b, float f)
 {
 	NavControls[i].bActive = b;
 	NavControls[i].TimeDown = f;
@@ -164,18 +164,17 @@ void Defcon::ILiveGameObject::ComputeForces(float frametime)
 void Defcon::ILiveGameObject::ImpartForces(float DeltaTime)
 {
 	check(Mass > 0.0f);
+	check(Drag > 0.0f);
 
 	if(!bCanMove)
 	{
 		return;
 	}
 
-	check(Drag > 0);
-
 	const float FT = DeltaTime;
 
 	//do thrust & drag
-	int count = (int)(DeltaTime / FT);
+	int32 count = (int32)(DeltaTime / FT);
 	const double r = fmod(DeltaTime, FT);
 	const double k = r / FT;
 

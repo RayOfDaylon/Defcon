@@ -250,7 +250,7 @@ void UDefconMissionPickerViewBase::ChangeCurrentCell(int32 ColumnInc, int32 RowI
 		return;
 	}
 
-	gpAudio->OutputSound(Defcon::EAudioTrack::Focus_changed);
+	GAudio->OutputSound(Defcon::EAudioTrack::Focus_changed);
 
 	CurrentCell.X = ((CurrentCell.X + ColumnInc) + CellsAcross) % CellsAcross;
 	CurrentCell.Y = ((CurrentCell.Y + RowInc)    + CellsDown  ) % CellsDown;
@@ -280,7 +280,7 @@ void UDefconMissionPickerViewBase::OnChooseMission()
 
 	if(MissionID >= (int32)Defcon::EMissionID::Count)
 	{
-		gpAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
+		GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
 		return;
 	}
 
@@ -291,7 +291,7 @@ void UDefconMissionPickerViewBase::OnChooseMission()
 
 	Daylon::Show(StartMissionExpander);
 
-	gpAudio->OutputSound(Defcon::EAudioTrack::Mission_chosen);
+	GAudio->OutputSound(Defcon::EAudioTrack::Mission_chosen);
 
 	GDefconGameInstance->SetScore(0);
 	GDefconGameInstance->GetStats().Reset();

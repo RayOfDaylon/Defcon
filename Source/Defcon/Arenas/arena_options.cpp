@@ -76,7 +76,7 @@ void Defcon::options_arena_inputs::process(const ControllerEvent& evt)
 	switch(evt.what)
 	{
 		case Defcon::EventType::navigate_up:
-			gpAudio->OutputSound(select);
+			GAudio->OutputSound(select);
 			if(gpArena->State == Defcon::COptionsArena::State::viewing)
 			{
 				if(sCurrentItem_arena_optons == 0)
@@ -88,7 +88,7 @@ void Defcon::options_arena_inputs::process(const ControllerEvent& evt)
 
 
 		case Defcon::EventType::navigate_down:
-			gpAudio->OutputSound(select);
+			GAudio->OutputSound(select);
 			if(gpArena->State == Defcon::COptionsArena::State::viewing)
 			{
 				if(sCurrentItem_arena_optons == array_size(gPrefs.m_pref)-1)
@@ -477,9 +477,9 @@ void Defcon::COptionsArena::Update(float DeltaTime)
 	Objects.Process(gop);
 
 
-	int x1, y1, x2, y2;
+	int32 x1, y1, x2, y2;
 	m_box.Classicize(x1, y1, x2, y2);
-	for(int off = 0; off < 2; off++)
+	for(int32 off = 0; off < 2; off++)
 		m_virtualScreen.ColorRect(
 			x1+off, y1+off, x2-off, y2-off, C_BLUE);
 
@@ -496,12 +496,12 @@ void Defcon::COptionsArena::Update(float DeltaTime)
 		CFRect r;
 		int32 i = sCurrentItem_arena_optons - m_topItem;
 		r.UR = r.LL = m_items[i].Position;
-		r.UR += CFPoint(-20, -(int)m_items[i].GetLeading()*2);
+		r.UR += CFPoint(-20, -(int32)m_items[i].GetLeading()*2);
 		r.LL += CFPoint(540, 10);
 		r.order();
 		r.Classicize(x1, y1, x2, y2);
 		m_virtualScreen.FillRect(x1, y1, x2, y2, C_BLACK);
-		for(int off = 0; off < 2; off++)
+		for(int32 off = 0; off < 2; off++)
 			m_virtualScreen.ColorRect(
 				x1+off, y1+off, x2-off, y2-off, C_BLUE);
 		m_items[i].SetColor(C_WHITE);
@@ -536,7 +536,7 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 {
 	m_keys[key].fTimeLastFired = gettime_secs();
 
-	gpAudio->OutputSound(select);
+	GAudio->OutputSound(select);
 
 	switch(key)
 	{

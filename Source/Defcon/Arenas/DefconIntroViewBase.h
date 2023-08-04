@@ -6,6 +6,7 @@
 
 #include "DefconViewBase.h"
 #include "Widgets/SLerpedLines.h"
+#include "UMG/Public/Components/TextBlock.h"
 #include "DefconIntroViewBase.generated.h"
 
 
@@ -16,22 +17,13 @@ class DEFCON_API UDefconIntroViewBase : public UDefconViewBase
 
 	protected:
 
-	virtual void NativeOnInitialized() override;
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UTextBlock* CompanyName;
 
-	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
-
-	/*virtual int32 NativePaint(
-		const FPaintArgs& Args,
-		const FGeometry& AllottedGeometry,
-		const FSlateRect& MyCullingRect,
-		FSlateWindowElementList& OutDrawElements,
-		int32 LayerId,
-		const FWidgetStyle& InWidgetStyle,
-		bool bParentEnabled) const override;*/
-
+	virtual void NativeOnInitialized  () override;
+	virtual void NativeTick           (const FGeometry& MyGeometry, float DeltaTime) override;
 
 	virtual void OnEnterPressed() override;
-
 
 
 	TSharedPtr<SDaylonLerpedLines> TitleWidget;
@@ -39,5 +31,4 @@ class DEFCON_API UDefconIntroViewBase : public UDefconViewBase
 	TArray<FDaylonLerpedLine> TitleLines;
 
 	bool bFirstTime                = true;
-	//bool bIsTitleWidgetInstalled = false;
 };

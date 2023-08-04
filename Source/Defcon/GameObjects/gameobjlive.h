@@ -59,8 +59,8 @@ namespace Defcon
 
 			const CFPoint& GetThrustVector       () const { return ThrustVector; }
 
-			virtual float  NavControlDuration    (int) const;
-			void           SetNavControl         (int, bool, float);
+			virtual float  NavControlDuration    (int32) const;
+			void           SetNavControl         (int32, bool, float);
 
 			virtual float  GetShieldStrength     () const    { return ShieldStrength; }
 			virtual void   SetShieldStrength     (float f);

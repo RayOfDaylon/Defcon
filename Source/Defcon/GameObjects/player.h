@@ -46,7 +46,7 @@ namespace Defcon
 
 
 #ifdef SHOW_STATS
-			void DrawStats(FPaintArguments&, int, int);
+			void DrawStats(FPaintArguments&, int32, int32);
 #endif
 
 			void FaceLeft                     () { Orientation.Fwd.x = -1.0f; }

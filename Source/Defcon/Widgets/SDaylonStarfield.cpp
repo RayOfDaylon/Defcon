@@ -203,7 +203,7 @@ int32 SDaylonStarfield::OnPaint
 			}
 			
 #if 0
-			int x1, y1, x2, y2;
+			int32 x1, y1, x2, y2;
 			r.order();
 			r.Classicize(x1, y1, x2, y2);
 #endif

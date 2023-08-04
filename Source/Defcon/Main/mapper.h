@@ -17,6 +17,7 @@ namespace Defcon
 	class I2DCoordMapper
 	{
 		public:
+
 			virtual void To		(const CFPoint&, CFPoint&) const = 0;
 			virtual void From	(const CFPoint&, CFPoint&) const = 0;
 
@@ -26,8 +27,9 @@ namespace Defcon
 	class CNull2DCoordMapper : public I2DCoordMapper
 	{
 		public:
-			virtual void To		(const CFPoint& from, CFPoint& to) const override { to = from; }
-			virtual void From	(const CFPoint& from, CFPoint& to) const override { to = from; }
+
+			virtual void To		(const CFPoint& From_, CFPoint& To_) const override { To_ = From_; }
+			virtual void From	(const CFPoint& From_, CFPoint& To_) const override { To_ = From_; }
 	};
 
 
@@ -37,21 +39,25 @@ namespace Defcon
 	class CArenaCoordMapper : public I2DCoordMapper
 	{
 		public:
+
 			CArenaCoordMapper() {}
 
-			virtual void To    (const CFPoint&, CFPoint&) const override;
-			virtual void From  (const CFPoint&, CFPoint&) const override;
+			virtual void    To         (const CFPoint&, CFPoint&) const override;
+			virtual void    From       (const CFPoint&, CFPoint&) const override;
 
-			void            Init       (int, int, int);
-			void            ScrollTo   (const CFPoint& pt) { Offset = pt; }
-			void            SlideBy    (float);
+			void            Init       (float, float, float);
+			void            ScrollTo   (const CFPoint& P) { Offset = P; }
+			void            SlideBy    (float XAmount);
 			const CFPoint&  GetOffset  () const { return Offset; }
 
 			float	PlanetCircumference = 0.0f;
 
+
 		private:
+
 			CFPoint	Offset;
 			CFPoint	ScreenSize;
+			float   HalfCircumference = 0.0f;
 
 	};
 
@@ -59,25 +65,29 @@ namespace Defcon
 	class CRadarCoordMapper : public I2DCoordMapper
 	{
 		public:
+
 			CRadarCoordMapper() {}
 
-			virtual void To    (const CFPoint&, CFPoint&) const override;
-			virtual void From  (const CFPoint&, CFPoint&) const override;
+			virtual void    To            (const CFPoint&, CFPoint&) const override;
+			virtual void    From          (const CFPoint&, CFPoint&) const override;
 
-			void            Init          (int, int, int);
-			void            ScrollTo      (const CFPoint& pt) { Offset = pt; }
-			void            SlideBy       (float);
+			void            Init          (float, float, float);
+			void            ScrollTo      (const CFPoint& P) { Offset = P; }
+			void            SlideBy       (float XAmount);
 			const CFPoint&  GetOffset     () const { return Offset; }
 			const CFPoint&  GetScreenSize () const { return ScreenSize; }
 
 			float	        PlanetCircumference = 0.0f;
 
-			CFPoint         m_radarSize;
-			IGameObject*    m_pPlayer = nullptr;
+			CFPoint         RadarSize;
+			IGameObject*    Player = nullptr;
+
 
 		private:
+
 			mutable CFPoint	Offset;
 			CFPoint	        ScreenSize;
 			CFPoint         Scale;
+			float           HalfCircumference = 0.0f;
 	};
 }

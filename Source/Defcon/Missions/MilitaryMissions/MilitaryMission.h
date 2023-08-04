@@ -413,7 +413,7 @@ namespace Defcon
 			static IMission* MakeNext(IMission* pCurrent)
 			{
 				// nullptr is returned if there is no next mission.
-				return CMissionFactory::Make((EMissionID)((int)pCurrent->GetID() + 1));
+				return CMissionFactory::Make((EMissionID)((int32)pCurrent->GetID() + 1));
 			}
 	};
 }

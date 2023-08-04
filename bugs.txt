@@ -5,6 +5,8 @@ Repository: https://github.com/RayOfDaylon/Defcon
 July 31, 2023
 
 
+FIXED: More framerate vs. time fixes.
+
 FIXED: Baiters fired based on framerate instead of time.
 
 FIXED: Guppies didn't face left when traveling that way.

@@ -127,7 +127,7 @@ void Defcon::CTurret::Move(float fTime)
 			/*&& SGN(Orientation.Fwd.x) == SGN(dir.x)*/)
 		{
 			GArena->FireBullet(*this, Position, 1, 1);
-			//gpAudio->OutputSound(Defcon::swarmer);
+			//GAudio->OutputSound(Defcon::swarmer);
 		}
 	}
 
@@ -158,7 +158,7 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 {
 	Super::Explode(debris);
 #if 0
-	const int cby = EColor::Red;
+	const int32 cby = EColor::Red;
 
 	bMortal = true;
 	Lifespan = 0.0f;

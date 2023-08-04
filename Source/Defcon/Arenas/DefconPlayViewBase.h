@@ -197,8 +197,8 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	bool                 HasTerrain           () const { return true; } // todo: support no-terrain missions
 	void                 CreateTerrain        ();
 	void                 AddDebris            (Defcon::IGameObject* Obj);
-	void                 LayMine              (Defcon::IGameObject& Obj, const CFPoint& From, int, int);
-	Defcon::IBullet*     FireBullet           (Defcon::IGameObject&, const CFPoint& From, int SoundID, int);
+	void                 LayMine              (Defcon::IGameObject& Obj, const CFPoint& From, int32, int32);
+	Defcon::IBullet*     FireBullet           (Defcon::IGameObject&, const CFPoint& From, int32 SoundID, int32);
 	bool                 IsEnding             () const { return bArenaDying; }
 	void                 ExplodeObject        (Defcon::IGameObject* Obj);
 	void                 IncreaseScore        (int32 Points, bool bVis, const CFPoint* P);

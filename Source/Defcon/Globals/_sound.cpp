@@ -14,7 +14,7 @@
 #include "DefconUtils.h"
 
 
-Defcon::CAudioManager* gpAudio = nullptr;
+Defcon::CAudioManager* GAudio = nullptr;
 
 
 

@@ -78,7 +78,7 @@ namespace Daylon
 	UENUM()
 	enum class EListNavigationDirection : int32
 	{
-		// These values are casted to int
+		// These values are casted to int32
 		Backwards = -1,
 		Forwards  =  1,
 	};
@@ -88,7 +88,7 @@ namespace Daylon
 	UENUM()
 	enum class ERotationDirection : int32
 	{
-		// These values are casted to int
+		// These values are casted to int32
 		CounterClockwise = -1,
 		Clockwise        =  1,
 	};
@@ -261,10 +261,10 @@ namespace Daylon
 			TBindableValue& operator *= (const T& Val) { *this = *this * Val; return *this;	}
 			TBindableValue& operator /= (const T& Val) { *this = *this / Val; return *this; }
 
-			T operator -- (int)  { T temp = *this; *this -= (T)1; return temp; }
+			T operator -- (int32)  { T temp = *this; *this -= (T)1; return temp; }
 			TBindableValue& operator -- ()  { *this -= (T)1; return *this; }
 
-			T operator ++ (int)  { T temp = *this; *this += (T)1; return temp; }
+			T operator ++ (int32)  { T temp = *this; *this += (T)1; return temp; }
 			TBindableValue& operator ++ ()  { *this += (T)1; return *this; }
 
 			bool operator <  (const T& Val) const { return (Value < Val); }

@@ -22,7 +22,7 @@ char* CPrefVar::GetValueText(char* psz) const
 			break;
 
 		case type_int:
-			MySprintf(psz, "%d", (int)Value);
+			MySprintf(psz, "%d", (int32)Value);
 			break;
 
 		case type_float:

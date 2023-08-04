@@ -81,4 +81,4 @@ namespace Defcon
 	};
 }
 
-extern Defcon::CAudioManager*	gpAudio;
+extern Defcon::CAudioManager*	GAudio;

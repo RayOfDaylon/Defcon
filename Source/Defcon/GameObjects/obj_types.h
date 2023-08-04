@@ -90,5 +90,5 @@ namespace Defcon
 		TMap<EObjType, FString> TypeNames;
 	};
 
-	extern FObjectTypeManager ObjectTypeManager;
+	extern FObjectTypeManager GObjectTypeManager;
 }

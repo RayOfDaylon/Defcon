@@ -74,7 +74,7 @@ void UDefconPostwaveViewBase::OnFinishActivating()
 	});
 
 
-	gpAudio->OutputSound(Defcon::EAudioTrack::Warp);
+	GAudio->OutputSound(Defcon::EAudioTrack::Warp);
 
 	// Start by collapsing the dead human images at the right edge of the box.
 	// and hiding (NOT collapsing) all the other human images. 
@@ -134,7 +134,7 @@ void UDefconPostwaveViewBase::NativeTick(const FGeometry& MyGeometry, float Delt
 		if(!bPlayedWaveEndSound)
 		{
 			bPlayedWaveEndSound = true;
-			gpAudio->OutputSound(Defcon::EAudioTrack::Wave_end);
+			GAudio->OutputSound(Defcon::EAudioTrack::Wave_end);
 		}
 
 		// Populate the HumansRemainingGraph box, at one human per 1/8 second.

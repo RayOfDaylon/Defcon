@@ -146,7 +146,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 	bArenaDying = false;
 	Daylon::Hide(Fader);
 
-	ShipThrustSoundLoop = gpAudio->CreateLoopedSound(Defcon::EAudioTrack::Playership_thrust);
+	ShipThrustSoundLoop = GAudio->CreateLoopedSound(Defcon::EAudioTrack::Playership_thrust);
 	WasShipUnderThrust = false;
 
 	InitMapperAndTerrain();
@@ -193,7 +193,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	GetPlayerShip().EnableInput();
 
-	gpAudio->OutputSound(Defcon::EAudioTrack::Wave_start);
+	GAudio->OutputSound(Defcon::EAudioTrack::Wave_start);
 }
 
 
@@ -638,7 +638,7 @@ class CDestroyedPlayerShip : public Defcon::ILiveGameObject
 					UninstallSprite();
 					Sprite.Reset();
 
-					gpAudio->OutputSound(Defcon::EAudioTrack::Ship_exploding2b);
+					GAudio->OutputSound(Defcon::EAudioTrack::Ship_exploding2b);
 				}
 
 				// Move the particle groups.
@@ -748,7 +748,7 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 
 	Objects.Add(pShip);
 
-	gpAudio->OutputSound(Defcon::EAudioTrack::Player_dying);
+	GAudio->OutputSound(Defcon::EAudioTrack::Player_dying);
 
 	PlayerShip.OnAboutToDie();
 
@@ -1070,7 +1070,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		//if(PlayerShip.IsSolid())
 		{
 			// Things to do if player is solid.
-			//static int mod = 0;
+			//static int32 mod = 0;
 
 			// See if any carried humans can be debarked.
 			if(/*mod++ % 5 == 0 && */PlayerShip.Position.y < 5.0f + GetTerrainElev(PlayerShip.Position.x))
@@ -1290,9 +1290,9 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 				GDefconGameInstance->GetStats().ShotsFired++;
 
 				if(true/*BRAND*/)
-					gpAudio->OutputSound(Defcon::EAudioTrack::Laserfire);
+					GAudio->OutputSound(Defcon::EAudioTrack::Laserfire);
 				else
-					gpAudio->OutputSound(Defcon::EAudioTrack::Laserfire_alt);
+					GAudio->OutputSound(Defcon::EAudioTrack::Laserfire_alt);
 			}
 
 		break;
@@ -1396,7 +1396,7 @@ float UDefconPlayViewBase::WrapX(float WorldX) const
 }
 
 
-void UDefconPlayViewBase::LayMine(Defcon::IGameObject& Obj, const CFPoint& from, int, int)
+void UDefconPlayViewBase::LayMine(Defcon::IGameObject& Obj, const CFPoint& from, int32, int32)
 {
 	auto Mine = new Defcon::CMine;
 
@@ -1407,7 +1407,7 @@ void UDefconPlayViewBase::LayMine(Defcon::IGameObject& Obj, const CFPoint& from,
 }
 
 
-Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const CFPoint& from, int soundid, int)
+Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const CFPoint& from, int32 soundid, int32)
 {
 	//check(m_pPlayer != nullptr);
 	Defcon::IBullet* pBullet;
@@ -1497,7 +1497,7 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& obj, const
 	// but that would deny interesting friendly fire.
 	pBullet->Position = from + pBullet->Orientation.Fwd * (2 * FMath::Max(obj.BboxRadius.x, obj.BboxRadius.y));
 
-	gpAudio->OutputSound((Defcon::EAudioTrack)(soundid - 1 + (int32)Defcon::EAudioTrack::Bullet));
+	GAudio->OutputSound((Defcon::EAudioTrack)(soundid - 1 + (int32)Defcon::EAudioTrack::Bullet));
 
 	Objects.Add(pBullet);
 
@@ -1590,7 +1590,7 @@ void UDefconPlayViewBase::ExplodeObject(Defcon::IGameObject* pObj)
 			track = Defcon::EAudioTrack::Ship_exploding_small;
 		}
 
-		gpAudio->OutputSound(track);
+		GAudio->OutputSound(track);
 	}
 
 	if(pObj->GetType() != Defcon::EObjType::PLAYER)
@@ -1772,7 +1772,7 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 
 	m_fRadarFritzed = FMath::Max(1.5f, fForce * 10);//MAX_RADARFRITZ;
 
-	gpAudio->OutputSound(Defcon::EAudioTrack::Shieldbonk);
+	GAudio->OutputSound(Defcon::EAudioTrack::Shieldbonk);
 }
 
 
@@ -1861,7 +1861,7 @@ void UDefconPlayViewBase::FireSmartbomb()
 	{
 		GDefconGameInstance->GetStats().SmartbombsDetonated++;
 
-		gpAudio->OutputSound(Defcon::EAudioTrack::Smartbomb);
+		GAudio->OutputSound(Defcon::EAudioTrack::Smartbomb);
 
 		auto BombPtr = new Defcon::CSmartbomb;
 
@@ -1898,7 +1898,7 @@ namespace Defcon
 
 				if(GArena->IsPointVisible(Params.P)) // todo: maybe check extents of materialization field i.e. if player gets even a partial glimpse
 				{
-					gpAudio->OutputSound(EAudioTrack::Ship_materialize);
+					GAudio->OutputSound(EAudioTrack::Ship_materialize);
 				}
 			}
 	};
@@ -2056,7 +2056,7 @@ void UDefconPlayViewBase::OnSelectEnemyToSpawn()
 {
 	SpawnedEnemyIndex = (SpawnedEnemyIndex + 1) % array_size(SpawnedEnemyTypes);
 
-	FString Str = FString::Printf(TEXT("Enemy type %s chosen"), *Defcon::ObjectTypeManager.GetName(SpawnedEnemyTypes[SpawnedEnemyIndex]));
+	FString Str = FString::Printf(TEXT("Enemy type %s chosen"), *Defcon::GObjectTypeManager.GetName(SpawnedEnemyTypes[SpawnedEnemyIndex]));
 
 	AddMessage(Str, 0.25f);
 }

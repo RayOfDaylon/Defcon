@@ -148,7 +148,7 @@ void Defcon::CStarfield::Draw(FPaintArguments& Painter, const I2DCoordMapper& ma
 				r.UR += inc;
 			
 #if 0
-			int x1, y1, x2, y2;
+			int32 x1, y1, x2, y2;
 			r.order();
 			r.Classicize(x1, y1, x2, y2);
 #endif

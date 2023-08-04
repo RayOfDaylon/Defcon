@@ -113,7 +113,7 @@ namespace Defcon
 			IEditor*				m_pEditor;
 #endif
 			float					m_fadeInEditor;
-			int						m_valueLeft;
+			int32						m_valueLeft;
 
 			CFRect					m_box;
 

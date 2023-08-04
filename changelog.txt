@@ -1,0 +1,17 @@
+Change log for Defense Condition game project
+
+Author(s): Ray Gardener (support@daylongraphics.com)
+Repository: https://github.com/RayOfDaylon/Defcon
+August 3, 2023
+
+
+Intro screen moved company name to center, then fades it out
+as title collapses around it.
+
+Player ship's max thrust preference increased to make 
+speed closer to the arcade version.
+
+Global replace of 'int' with 'int32'.
+
+Code cleanup of mapper classes.
+

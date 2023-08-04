@@ -486,7 +486,7 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 			{
 				if(Object->Sprite && !Object->Sprite->IsVisible())
 				{
-					UE_LOG(LogGame, Error, TEXT("Enemy object %s is hidden"), *Defcon::ObjectTypeManager.GetName(Object->GetType()));
+					UE_LOG(LogGame, Error, TEXT("Enemy object %s is hidden"), *Defcon::GObjectTypeManager.GetName(Object->GetType()));
 					Count++;
 				}
 			});
@@ -507,7 +507,7 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 			{
 				if(Object->Position.y < 0 || Object->Position.y > ArenaHeight)
 				{
-					UE_LOG(LogGame, Error, TEXT("Enemy object %s is out of bounds"), *Defcon::ObjectTypeManager.GetName(Object->GetType()));
+					UE_LOG(LogGame, Error, TEXT("Enemy object %s is out of bounds"), *Defcon::GObjectTypeManager.GetName(Object->GetType()));
 					Count++;
 				}
 			});

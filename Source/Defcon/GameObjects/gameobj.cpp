@@ -41,7 +41,7 @@ Defcon::IGameObject::IGameObject()
 
 Defcon::IGameObject::~IGameObject() 
 {
-	//UE_LOG(LogGame, Log, TEXT("Game object destructing, type = %s"), *ObjectTypeManager.GetName(GetType()));
+	//UE_LOG(LogGame, Log, TEXT("Game object destructing, type = %s"), *GObjectTypeManager.GetName(GetType()));
 
 	if(IsMissionTarget()) 
 	{
@@ -181,7 +181,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	// Create an explosion by making
 	// several debris objects and 
 	// adding them to the debris set.
-	int n = (int)(FRAND * 30 + 30);
+	int32 n = (int32)(FRAND * 30 + 30);
 	float maxsize = FRAND * 5 + 3;
 
 /*
@@ -201,7 +201,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	}
 
 	bool bDieOff = (FRAND >= 0.25f);
-	int i;
+	int32 i;
 
 	float fBrightBase;
 	IGameObject* pFireball = CreateFireball(debris, fBrightBase);
@@ -244,7 +244,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	if(FRAND <= DEBRIS_DUAL_PROB)
 	{
 		bDieOff = (FRAND >= 0.25f);
-		n = (int)(FRAND * 20 + 20);
+		n = (int32)(FRAND * 20 + 20);
 		maxsize = FRAND * 4 + 8.0f;
 		//maxsize = FMath::Min(maxsize, 9.0f);
 
@@ -292,8 +292,8 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	{
 		const float fLife = FRAND * 10.0f + 3.0f;
 		const float fBrightness = fBrightBase;
-		//n = (int)(FRAND * 20 + 30);
-		n = (int)(FRAND * 30 + 70);
+		//n = (int32)(FRAND * 20 + 30);
+		n = (int32)(FRAND * 30 + 70);
 
 		for(i = 0; i < n; i++)
 		{
@@ -407,7 +407,7 @@ void Defcon::IGameObject::InstallSprite()
 {
 	if(Sprite) 
 	{
-		//UE_LOG(LogGame, Log, TEXT("Installing sprite for object class %s"), *ObjectTypeManager.GetName(Type));
+		//UE_LOG(LogGame, Log, TEXT("Installing sprite for object class %s"), *GObjectTypeManager.GetName(Type));
 		Daylon::Install<SDaylonSprite>(Sprite, 0.5f); 
 	} 
 }
@@ -417,7 +417,7 @@ void Defcon::IGameObject::UninstallSprite()
 {
 	if(Sprite) 
 	{
-		//UE_LOG(LogGame, Log, TEXT("Uninstalling sprite for object class %s"), *ObjectTypeManager.GetName(Type));
+		//UE_LOG(LogGame, Log, TEXT("Uninstalling sprite for object class %s"), *GObjectTypeManager.GetName(Type));
 		Daylon::Uninstall(Sprite); 
 	} 
 }

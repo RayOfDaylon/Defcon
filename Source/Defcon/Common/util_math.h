@@ -51,8 +51,8 @@
 // ROUND is the classic fast rounder, but it 
 // moves negative values incorrectly, e.g. -2.7 --> -2.0.
 // SROUND takes the sign into account.
-#define ROUND(_f)	(int)((_f) + 0.5f)
-#define SROUND(_f)	(int)((_f) + (0.5f * SGN(_f)))
+#define ROUND(_f)	(int32)((_f) + 0.5f)
+#define SROUND(_f)	(int32)((_f) + (0.5f * SGN(_f)))
 
 // Signed min/max work like their normal namesakes, 
 // except that the absolute magnitude of the numbers 

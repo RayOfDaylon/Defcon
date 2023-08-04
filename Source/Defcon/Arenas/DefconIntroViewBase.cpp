@@ -4,6 +4,7 @@
 #include "DefconIntroViewBase.h"
 #include "DefconLogging.h"
 #include "DaylonUtils.h"
+#include "Common/util_math.h"
 #include "Runtime/Core/Public/Misc/FileHelper.h"
 
 
@@ -14,10 +15,10 @@
 #endif
 
 
-const float TITLE_START    = 2.0f; // Show the title forming after this many seconds from game launch.
-const float TITLE_LIFESPAN = 8.0f;
-const float MinTitleDistortion =  100.0f;
-const float MaxTitleDistortion = 400.0f;
+constexpr float TITLE_START        =   2.0f; // Show the title forming after this many seconds from game launch.
+constexpr float TITLE_LIFESPAN     =   8.0f;
+constexpr float MinTitleDistortion = 100.0f;
+constexpr float MaxTitleDistortion = 400.0f;
 
 // -----------------------------------------------------------------------------------------
 
@@ -68,8 +69,8 @@ void UDefconIntroViewBase::NativeOnInitialized()
 
 	bool bLineDefined = false;
 	FDaylonLine Line;
-	FVector2D pt;
-	FBox2d bbox;
+	FVector2D Pt;
+	FBox2d Bbox;
 	TArray<FDaylonLine> Lines;
 
 	for(auto& TextLine : TextLines)
@@ -96,40 +97,40 @@ void UDefconIntroViewBase::NativeOnInitialized()
 			continue;
 		}
 
-		pt.Set(FCString::Atof(*Parts[0]), FCString::Atof(*Parts[1]));
+		Pt.Set(FCString::Atof(*Parts[0]), FCString::Atof(*Parts[1]));
 
 
 		switch(Code)
 		{
 			case 'M':
 				bLineDefined = false;
-				Line.Start = pt;
+				Line.Start = Pt;
 				break;
 
 			case 'L':
 				if(bLineDefined)
 				{
 					Line.Start = Lines[Lines.Num() - 1].End;
-					Line.End = pt;
+					Line.End = Pt;
 				}
 				else
 				{
-					Line.End = pt;
+					Line.End = Pt;
 					bLineDefined = true;
 				}
 				break;
 		}
 
-#define FBOX2D_UNION(bbox_, Line_)	\
-	bbox_.Min.X = FMath::Min(bbox_.Min.X, FMath::Min(Line_.Start.X, Line_.End.X));	\
-	bbox_.Max.X = FMath::Max(bbox_.Max.X, FMath::Max(Line_.Start.X, Line_.End.X));	\
-	bbox_.Min.Y = FMath::Min(bbox_.Min.Y, FMath::Min(Line_.Start.Y, Line_.End.Y));	\
-	bbox_.Max.Y = FMath::Max(bbox_.Max.Y, FMath::Max(Line_.Start.Y, Line_.End.Y));
+#define FBOX2D_UNION(Bbox_, Line_)	\
+	Bbox_.Min.X = FMath::Min(Bbox_.Min.X, FMath::Min(Line_.Start.X, Line_.End.X));	\
+	Bbox_.Max.X = FMath::Max(Bbox_.Max.X, FMath::Max(Line_.Start.X, Line_.End.X));	\
+	Bbox_.Min.Y = FMath::Min(Bbox_.Min.Y, FMath::Min(Line_.Start.Y, Line_.End.Y));	\
+	Bbox_.Max.Y = FMath::Max(Bbox_.Max.Y, FMath::Max(Line_.Start.Y, Line_.End.Y));
 
 		
 		if(bLineDefined)
 		{
-			FBOX2D_UNION(bbox, Line);
+			FBOX2D_UNION(Bbox, Line);
 
 			Lines.Add(Line);
 #ifdef _DEBUG
@@ -146,23 +147,22 @@ void UDefconIntroViewBase::NativeOnInitialized()
 	// Now translate so that vertices are centered 
 	// within the bbox, upside down, and reform the bbox.
 
-	pt = bbox.GetCenter();
+	Pt = Bbox.GetCenter();
 
 	const FVector2D targetSize(1.0f * 351.0f, 1.0f * 69.0f);
 
-	const FVector2D fscale(targetSize.X / bbox.GetSize().X, -targetSize.Y / bbox.GetSize().Y); 
+	const FVector2D fscale(targetSize.X / Bbox.GetSize().X, -targetSize.Y / Bbox.GetSize().Y); 
 
-	bbox = FBox2d(FVector2D(0), FVector2D(0));
+	Bbox = FBox2d(FVector2D(0), FVector2D(0));
 
-	int32 i;
-	for(i = 0; i < Lines.Num(); i++)
+	for(int32 i = 0; i < Lines.Num(); i++)
 	{
-		Lines[i].Start -= pt;
-		Lines[i].End -= pt;
+		Lines[i].Start -= Pt;
+		Lines[i].End -= Pt;
 		Lines[i].Start *= fscale;
 		Lines[i].End *= fscale;
 
-		FBOX2D_UNION(bbox, Lines[i]);
+		FBOX2D_UNION(Bbox, Lines[i]);
 	}
 
 	// Break up the lines into smaller ones.
@@ -175,7 +175,7 @@ void UDefconIntroViewBase::NativeOnInitialized()
 #if 1
 	// Now randomize the drawing order.
 	// This is needed if we're drawing more lines as time goes by.
-	for(i = 0; i < Lines.Num(); i++)
+	for(int32 i = 0; i < Lines.Num(); i++)
 	{
 		const int32 j = FMath::RandRange(0, Lines.Num() - 1);
 		Lines.Swap(i, j);
@@ -188,14 +188,14 @@ void UDefconIntroViewBase::NativeOnInitialized()
 	{
 		FDaylonLerpedLine LerpedLine;
 
-		auto src = Line2;
+		auto Src = Line2;
 
-		src.Start.Normalize();
-		src.End.Normalize();
-		src.Start *= FMath::FRandRange(MinTitleDistortion, MaxTitleDistortion);
-		src.End   *= FMath::FRandRange(MinTitleDistortion, MaxTitleDistortion);
+		Src.Start.Normalize();
+		Src.End.Normalize();
+		Src.Start *= FMath::FRandRange(MinTitleDistortion, MaxTitleDistortion);
+		Src.End   *= FMath::FRandRange(MinTitleDistortion, MaxTitleDistortion);
 
-		LerpedLine.Src = src;
+		LerpedLine.Src = Src;
 
 		LerpedLine.Dst = Line2;
 		TitleLines.Add(LerpedLine);
@@ -240,12 +240,6 @@ void UDefconIntroViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTi
 	}
 
 
-	/*if(!bIsTitleWidgetInstalled && Age >= TITLE_START / 2)
-	{
-		bIsTitleWidgetInstalled = true;
-
-	}*/
-
 	if(Age >= TITLE_START)
 	{
 		Daylon::Show(TitleWidget.Get());
@@ -256,35 +250,18 @@ void UDefconIntroViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTi
 
 		if(!TitleWidget->Update(DeltaTime))
 		{
-			// let widget linger on screen for now. Otherwise, we shrink to zero/black and transition to main menu
+			// Let widget linger on screen for now. Otherwise, we shrink to zero/black and transition to main menu
 			//RootCanvas->GetCanvasWidget()->RemoveSlot(TitleWidget.ToSharedRef());
 			//TitleWidget.Reset();
 		}
+
+		// As the title starts collapsing, outro the company name.
+
+		const float CompanyNameOs = FMath::Max(0.0f, 1.0f - NORM_(Age, TITLE_START, TITLE_START + TITLE_LIFESPAN / 2));
+
+		CompanyName->SetRenderOpacity(CompanyNameOs);
 	}
 }
-
-
-#if 0
-int32 UDefconIntroViewBase::NativePaint(
-		const FPaintArgs& Args,
-		const FGeometry& AllottedGeometry,
-		const FSlateRect& MyCullingRect,
-		FSlateWindowElementList& OutDrawElements,
-		int32 LayerId,
-		const FWidgetStyle& InWidgetStyle,
-		bool bParentEnabled) const
-{
-	LOG_UWIDGET_FUNCTION
-	return Super::NativePaint(
-		Args,
-		AllottedGeometry,
-		MyCullingRect,
-		OutDrawElements,
-		LayerId,
-		InWidgetStyle,
-		bParentEnabled);
-}
-#endif
 
 
 void UDefconIntroViewBase::OnEnterPressed()

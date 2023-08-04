@@ -4,7 +4,7 @@
 #include "obj_types.h"
 
 
-Defcon::FObjectTypeManager Defcon::ObjectTypeManager;
+Defcon::FObjectTypeManager Defcon::GObjectTypeManager;
 
 
 void Defcon::FObjectTypeManager::Init()

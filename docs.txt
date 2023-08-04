@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 1, 2023
+August 3, 2023
 
 Chapters:
 
@@ -174,10 +174,12 @@ Event, etc. don't do any sprite processing elsewhere.
 
 Global variables are:
 
-gpArena              The play arena where a mission is played out.
-gpAudio              The collection of available audio tracks (sounds).
-gDefconGameInstance  The singular game instance (has player, humans, missions, stats).
+GArena               The play arena where a mission is played out.
+GAudio               The collection of available audio tracks (sounds).
+GDefconGameInstance  The singular game instance (has player, humans, missions, stats).
 GameObjectResources  Maps object types to their sprite atlases.
+GPrefs               Preference settings.
+GObjectTypeManager   Maps game object types to typenames (used for debugging).
 
 The global function GameTime() abstracts UKismetLibrary::GetGameTimeInSeconds.
 It's declared in util_core.h but implemented in UDefconPlayViewBase.
