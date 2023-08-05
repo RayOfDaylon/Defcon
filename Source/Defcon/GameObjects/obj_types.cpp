@@ -11,56 +11,65 @@ void Defcon::FObjectTypeManager::Init()
 {
 	TypeNames.Reset();
 
-	TypeNames.Add(EObjType::BAITER          , "BAITER");
-	TypeNames.Add(EObjType::BEACON          , "BEACON");
-	TypeNames.Add(EObjType::BIGRED          , "BIGRED");
-	TypeNames.Add(EObjType::BOMBER          , "BOMBER");
-	TypeNames.Add(EObjType::BOUNCER         , "BOUNCER");
-	TypeNames.Add(EObjType::BOUNCER_TRUE    , "BOUNCER_TRUE");
-	TypeNames.Add(EObjType::BOUNCER_WEAK    , "BOUNCER_WEAK");
-	TypeNames.Add(EObjType::BULLET          , "BULLET");
-	TypeNames.Add(EObjType::BULLET_ROUND    , "BULLET_ROUND");
-	TypeNames.Add(EObjType::BULLET_THIN     , "BULLET_THIN");
-	TypeNames.Add(EObjType::DESTROYED_PLAYER, "DESTROYED_PLAYER");
-	TypeNames.Add(EObjType::DRAWING         , "DRAWING");
-	TypeNames.Add(EObjType::DYNAMO          , "DYNAMO");
-	TypeNames.Add(EObjType::EXPLOSION       , "EXPLOSION");
-	TypeNames.Add(EObjType::FIREBALL        , "FIREBALL");
-	TypeNames.Add(EObjType::FIREBOMBER      , "FIREBOMBER");
-	TypeNames.Add(EObjType::FIREBOMBER_TRUE , "FIREBOMBER_TRUE");
-	TypeNames.Add(EObjType::FIREBOMBER_WEAK , "FIREBOMBER_WEAK");
-	TypeNames.Add(EObjType::FLAK            , "FLAK");
-	TypeNames.Add(EObjType::GHOST           , "GHOST");
-	TypeNames.Add(EObjType::GHOSTPART       , "GHOSTPART");
-	TypeNames.Add(EObjType::GUPPY           , "GUPPY");
-	TypeNames.Add(EObjType::HUMAN           , "HUMAN");
-	TypeNames.Add(EObjType::HUNTER          , "HUNTER");
-	TypeNames.Add(EObjType::LANDER          , "LANDER");
-	TypeNames.Add(EObjType::LASERBEAM       , "LASERBEAM");
-	TypeNames.Add(EObjType::MATERIALIZATION , "MATERIALIZATION");
-	TypeNames.Add(EObjType::MINE            , "MINE");
-	TypeNames.Add(EObjType::MISSIONTILE     , "MISSIONTILE");
-	TypeNames.Add(EObjType::IMUNCHIE        , "IMUNCHIE");
-	TypeNames.Add(EObjType::MUNCHIE         , "MUNCHIE");
-	TypeNames.Add(EObjType::PHRED           , "PHRED");
-	TypeNames.Add(EObjType::PLAYER          , "PLAYER");
-	TypeNames.Add(EObjType::POD             , "POD");
-	TypeNames.Add(EObjType::REFORMER        , "REFORMER");
-	TypeNames.Add(EObjType::REFORMERPART    , "REFORMERPART");
-	TypeNames.Add(EObjType::SLIDER          , "SLIDER");
-	TypeNames.Add(EObjType::SMARTBOMB       , "SMARTBOMB");
-	TypeNames.Add(EObjType::SPACEHUM        , "SPACEHUM");
-	TypeNames.Add(EObjType::STAR            , "STAR");
-	TypeNames.Add(EObjType::STARGATE        , "STARGATE");
-	TypeNames.Add(EObjType::STATICTEXT      , "STATICTEXT");
-	TypeNames.Add(EObjType::SWARMER         , "SWARMER");
-	TypeNames.Add(EObjType::TEXT            , "TEXT");
-	TypeNames.Add(EObjType::TEXTURE         , "TEXTURE");
-	TypeNames.Add(EObjType::TURRET          , "TURRET");
-	TypeNames.Add(EObjType::UNKNOWN         , "UNKNOWN");
+#define ADD_TYPENAME(_name)  TypeNames.Add(EObjType::_name, #_name);
+
+	ADD_TYPENAME(BAITER);
+
+
+	ADD_TYPENAME(BAITER               )
+	ADD_TYPENAME(BEACON               )
+	ADD_TYPENAME(BIGRED               )
+	ADD_TYPENAME(BOMBER               )
+	ADD_TYPENAME(BOUNCER              )
+	ADD_TYPENAME(BOUNCER_TRUE         )
+	ADD_TYPENAME(BOUNCER_WEAK         )
+	ADD_TYPENAME(BULLET               )
+	ADD_TYPENAME(BULLET_ROUND         )
+	ADD_TYPENAME(BULLET_THIN          )
+	ADD_TYPENAME(DESTROYED_PLAYER     )
+	ADD_TYPENAME(DRAWING              )
+	ADD_TYPENAME(DYNAMO               )
+	ADD_TYPENAME(EXPLOSION            )
+	ADD_TYPENAME(FIREBALL             )
+	ADD_TYPENAME(FIREBOMBER           )
+	ADD_TYPENAME(FIREBOMBER_TRUE      )
+	ADD_TYPENAME(FIREBOMBER_WEAK      )
+	ADD_TYPENAME(FLAK                 )
+	ADD_TYPENAME(GHOST                )
+	ADD_TYPENAME(GHOSTPART            )
+	ADD_TYPENAME(GUPPY                )
+	ADD_TYPENAME(HUMAN                )
+	ADD_TYPENAME(HUNTER               )
+	ADD_TYPENAME(LANDER               )
+	ADD_TYPENAME(LASERBEAM            )
+	ADD_TYPENAME(MATERIALIZATION      )
+	ADD_TYPENAME(MINE                 )
+	ADD_TYPENAME(MISSIONTILE          )
+	ADD_TYPENAME(IMUNCHIE             )
+	ADD_TYPENAME(MUNCHIE              )
+	ADD_TYPENAME(PHRED                )
+	ADD_TYPENAME(PLAYER               )
+	ADD_TYPENAME(POD                  )
+	ADD_TYPENAME(POWERUP              )
+	ADD_TYPENAME(POWERUP_SHIELDS      )
+	ADD_TYPENAME(POWERUP_DOUBLEGUNS   )
+	ADD_TYPENAME(POWERUP_INVINCIBILITY)
+	ADD_TYPENAME(REFORMER             )
+	ADD_TYPENAME(REFORMERPART         )
+	ADD_TYPENAME(SLIDER               )
+	ADD_TYPENAME(SMARTBOMB            )
+	ADD_TYPENAME(SPACEHUM             )
+	ADD_TYPENAME(STAR                 )
+	ADD_TYPENAME(STARGATE             )
+	ADD_TYPENAME(STATICTEXT           )
+	ADD_TYPENAME(SWARMER              )
+	ADD_TYPENAME(TEXT                 )
+	ADD_TYPENAME(TEXTURE              )
+	ADD_TYPENAME(TURRET               )
+	ADD_TYPENAME(UNKNOWN              )
 }
 	
-	
+#undef ADD_TYPENAME
 
 
 

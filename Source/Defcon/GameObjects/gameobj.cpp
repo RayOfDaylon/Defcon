@@ -109,42 +109,9 @@ void Defcon::IGameObject::Move(float DeltaTime)
 }
 
 
-Defcon::IGameObject* Defcon::IGameObject::CreateFireblast(CGameObjectCollection& debris, float& fBrightBase)
+void Defcon::IGameObject::AddExplosionDebris(const FExplosionParams& Params, CGameObjectCollection& Debris)
 {
-	// Create fireball.
-#if 0
-	// todo: maybe we want to implement this with UE sprite? Some stuff like ghost and pod use it, I think.
-
-	float fBrightRange;
-	CBitmapDisplayer* pFireblast = nullptr;
-
-	if(Fireblasts())
-	{
-		pFireblast = new CBitmapDisplayer;
-		if(BRAND)
-		{
-			fBrightRange= FRAND * 0.75f;
-			fBrightBase = FRAND * 0.1f + 0.15f;
-		}
-		else
-		{
-			fBrightRange= FRAND * 0.25f;
-			fBrightBase = FRAND * 0.1f + 0.65f;
-		}
-		const int32 frames_per_blast = 12;
-		int32 ex = rand() % 3 * frames_per_blast;
-		pFireblast->Init(CBitmaps::explo0 + ex,
-			frames_per_blast, FRAND * 0.5f + 0.7f,
-			fBrightRange, fBrightBase);
-		pFireblast->Position = Position;
-		const CTrueBitmap& fbb = gBitmaps.GetBitmap(CBitmaps::explo0);
-		pFireblast->Position -= CFPoint((float)fbb.GetWidth()/2, -0.5f * fbb.GetHeight());
-		pFireblast->Orientation = Orientation;
-		debris.Add(pFireblast);
-		return pFireblast;
-	}
-#endif
-	return nullptr;
+	// todo: finish this so we can consolidate a lot of the debris generator loops.
 }
 
 
@@ -204,17 +171,17 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 	int32 i;
 
 	float fBrightBase;
-	IGameObject* pFireball = CreateFireball(debris, fBrightBase);
+	IGameObject* pFireball = CreateExplosionFireball(debris, fBrightBase);
 
 	for(i = 0; i < n; i++)
 	{
-		CFlak* pFlak				= new CFlak;
+		CFlak* pFlak			= new CFlak;
 		pFlak->ColorbaseYoung	= cby;
 		pFlak->LargestSize		= maxsize;
-		pFlak->bFade				= bDieOff;
+		pFlak->bFade			= bDieOff;
 
-		pFlak->Position				= Position;
-		pFlak->Orientation				= Orientation;
+		pFlak->Position			= Position;
+		pFlak->Orientation		= Orientation;
 
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
@@ -344,62 +311,29 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 }
 
 
-Defcon::IGameObject* Defcon::IGameObject::CreateFireball(CGameObjectCollection& debris, float& fBrightBase)
+Defcon::IGameObject* Defcon::IGameObject::CreateExplosionFireball(CGameObjectCollection& Debris, float& /*fBrightBase*/)
 {
 	// Create fireball.
 
-	if(Fireballs())
+	if(ExplosionHasFireball())
 	{
-		auto pFireball = new CBitmapDisplayer;
-		pFireball->SetType(EObjType::EXPLOSION);
-		pFireball->Position = Position;
-		pFireball->Orientation = Orientation;
+		auto ExplosionFireball = new CBitmapDisplayer;
+		ExplosionFireball->SetType(EObjType::EXPLOSION);
+		ExplosionFireball->Position = Position;
+		ExplosionFireball->Orientation = Orientation;
 
 		const auto& Info = GameObjectResources.Get(EObjType::EXPLOSION);
-		pFireball->Lifespan =  1.0f / Info.Atlas->Atlas.FrameRate * Info.Atlas->Atlas.NumCels;
+		ExplosionFireball->Lifespan =  1.0f / Info.Atlas->Atlas.FrameRate * Info.Atlas->Atlas.NumCels;
 
-		pFireball->Sprite = Daylon::SpawnSpritePlayObject2D(Info.Atlas->Atlas, Info.Size, Info.Radius);
-		pFireball->Sprite->FlipHorizontal = Daylon::RandBool();
-		pFireball->Sprite->FlipVertical   = Daylon::RandBool();
+		ExplosionFireball->Sprite = Daylon::SpawnSpritePlayObject2D(Info.Atlas->Atlas, Info.Size, Info.Radius);
+		ExplosionFireball->Sprite->FlipHorizontal = Daylon::RandBool();
+		ExplosionFireball->Sprite->FlipVertical   = Daylon::RandBool();
 
-		debris.Add(pFireball);
-		return pFireball;
+		Debris.Add(ExplosionFireball);
+		return ExplosionFireball;
 	}
 
 	return nullptr; 
-
-#if 0
-	float fBrightRange;
-	CBitmapDisplayer* pFireball = nullptr;
-
-	if(Fireballs())
-	{
-		pFireball = new CBitmapDisplayer;
-
-		if(BRAND)
-		{
-			fBrightRange= FRAND * 0.75f;
-			fBrightBase = FRAND * 0.1f + 0.15f;
-		}
-		else
-		{
-			fBrightRange= FRAND * 0.25f;
-			fBrightBase = FRAND * 0.1f + 0.65f;
-		}
-
-		const int32 frames_per_blast = 12;
-		int32 ex = rand() % 3 * frames_per_blast;
-		pFireball->Init(CBitmaps::explo0 + ex,
-			frames_per_blast, FRAND * 0.5f + 0.7f, fBrightRange, fBrightBase);
-		pFireball->Position = Position;
-		const CTrueBitmap& fbb = gBitmaps.GetBitmap(CBitmaps::explo0);
-		pFireball->Position -= CFPoint(fbb.GetWidth() / 2.0f, -0.5f * fbb.GetHeight());
-		pFireball->Orientation = Orientation;
-		debris.Add(pFireball);
-		return pFireball;
-	}
-	return nullptr;
-#endif
 }
 
 
@@ -441,9 +375,8 @@ void                 Defcon::IGameObject::SetCreatorType(EObjType n)           {
 Defcon::EObjType     Defcon::IGameObject::GetType() const                      { return Type; }
 void                 Defcon::IGameObject::SetType(EObjType n)                  { Type = n; }
 bool                 Defcon::IGameObject::OccursFrequently() const             { return false; }
-bool                 Defcon::IGameObject::Fireballs() const                    { return false; }
+bool                 Defcon::IGameObject::ExplosionHasFireball() const                    { return false; }
 float                Defcon::IGameObject::GetExplosionMass() const             { return 1.0f; }
-bool                 Defcon::IGameObject::Fireblasts() const                   { return false; }
 void                 Defcon::IGameObject::ZeroVelocity()                       { Velocity.Set(0,0); }
 const CFPoint&       Defcon::IGameObject::GetVelocity() const                  { return Velocity; }
 void                 Defcon::IGameObject::MakeHurtable(bool b)                 { bCanBeInjured = b; }
@@ -456,8 +389,8 @@ void                 Defcon::IGameObject::SetCollisionInjurious(bool b)        {
 bool                 Defcon::IGameObject::IsInjurious() const                  { return bInjurious; }
 bool                 Defcon::IGameObject::CanBeInjured() const                 { return bCanBeInjured; }
 int32                Defcon::IGameObject::GetPointValue() const                { return PointValue; }
-bool                 Defcon::IGameObject::ExternallyOwned() const              { return bExternallyOwned; }
-void                 Defcon::IGameObject::SetExternalOwnership(bool b)         { bExternallyOwned = b; }
+//bool                 Defcon::IGameObject::ExternallyOwned() const              { return bExternallyOwned; }
+//void                 Defcon::IGameObject::SetExternalOwnership(bool b)         { bExternallyOwned = b; }
 bool                 Defcon::IGameObject::IsMissionTarget() const              { return bMissionTarget; }
 void                 Defcon::IGameObject::SetAsMissionTarget(bool b)           { bMissionTarget = b; }
 const FLinearColor&  Defcon::IGameObject::GetRadarColor() const                { return RadarColor; }

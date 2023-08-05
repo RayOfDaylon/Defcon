@@ -19,9 +19,6 @@ namespace Defcon
 			CPod();
 			virtual ~CPod();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 			virtual void Move          (float DeltaTime) override;
 			virtual void OnAboutToDie  () override;
 			virtual void Explode       (CGameObjectCollection&) override;

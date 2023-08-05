@@ -18,7 +18,7 @@ namespace Defcon
 	{
 		public:
 			IBullet();
-			virtual void Move         (float) override;
+			virtual void Move         (float DeltaTime) override;
 			virtual void DrawSmall    (FPainter& PaintArgs, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush) override {}
 			virtual void GetInjurePt  (CFPoint&) const override;
 			virtual bool TestInjury   (const CFRect&) const override;
@@ -40,10 +40,6 @@ namespace Defcon
 		// The harmful particles fired by enemies.
 		public:
 			CBullet();
-
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 	};
 
 
@@ -52,10 +48,6 @@ namespace Defcon
 		// The harmful particles fired by space guppies.
 		public:
 			CThinBullet();
-
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 	}; 
 }
 

@@ -16,14 +16,10 @@ namespace Defcon
 		public:
 			CSpacehum();
 			
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void  Move              (float DeltaTime) override;
-			virtual float GetExplosionMass  () const override { return 0.1f; }
-
-			bool          Fireballs         () const override { return false; }
-			void          Explode           (CGameObjectCollection&) override;
+			virtual void  Move                  (float DeltaTime) override;
+			virtual float GetExplosionMass      () const override { return 0.1f; }
+			bool          ExplosionHasFireball  () const override { return false; }
+			void          Explode               (CGameObjectCollection&) override;
 			
 
 		private:

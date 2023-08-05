@@ -23,15 +23,12 @@ namespace Defcon
 			CReformer();
 			virtual ~CReformer();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void Move          (float DeltaTime) override;
-			virtual void Draw          (FPainter&, const I2DCoordMapper&) override;
-			virtual void OnAboutToDie  () override;
-			virtual void Explode       (CGameObjectCollection&) override;
-			virtual bool Fireballs     () const override { return false; }
-			virtual void DrawPart      (FPainter&, const CFPoint&);
+			virtual void Move                  (float DeltaTime) override;
+			virtual void Draw                  (FPainter&, const I2DCoordMapper&) override;
+			virtual void OnAboutToDie          () override;
+			virtual void Explode               (CGameObjectCollection&) override;
+			virtual bool ExplosionHasFireball  () const override { return false; }
+			virtual void DrawPart              (FPainter&, const CFPoint&);
 
 
 		protected:
@@ -58,9 +55,6 @@ namespace Defcon
 			CReformerPart();
 			virtual ~CReformerPart();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 			virtual void  Move              (float DeltaTime) override;
 			virtual float GetExplosionMass  () const override { return 0.25f; }
 			virtual void  Explode           (CGameObjectCollection&) override;

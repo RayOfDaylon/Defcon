@@ -278,8 +278,8 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 	bool bDieOff = (FRAND >= 0.25f);
 	int32 I;
 
-	float BrightBase;
-	IGameObject* pFireblast = CreateFireblast(Debris, BrightBase);
+	//float BrightBase;
+	//IGameObject* pFireblast = CreateFireblast(Debris, BrightBase);
 
 	for(I = 0; I < N; I++)
 	{

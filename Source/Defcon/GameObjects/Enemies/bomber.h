@@ -19,14 +19,11 @@ namespace Defcon
 		public:
 			CBomber();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 			virtual void    OnFinishedCreating    () override;
 
-			virtual void    Move                  (float DeltaTime);
+			virtual void    Move                  (float DeltaTime) override;
 			virtual EColor  GetExplosionColorBase () const override;
-			virtual float   GetExplosionMass      () const;
+			virtual float   GetExplosionMass      () const override;
 
 		private:
 			float           StopLayingMinesCountdown;

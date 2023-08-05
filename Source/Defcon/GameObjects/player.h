@@ -34,10 +34,6 @@ namespace Defcon
 
 			void InitPlayer(float);
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-
 			virtual void  Move          (float DeltaTime) override;
 			virtual void  DrawSmall     (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush) override;
 			virtual void  OnAboutToDie  () override;

@@ -17,10 +17,7 @@ namespace Defcon
 			CBaiter();
 			virtual ~CBaiter();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void   Move                   (float) override;
+			virtual void   Move                   (float DeltaTime) override;
 			virtual EColor GetExplosionColorBase  () const override;
 
 

@@ -36,12 +36,9 @@ namespace Defcon
 		public:
 			ILiveGameObject();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const = 0;
-#endif
 			virtual void   Move                  (float DeltaTime) override;
 
-			virtual bool   Fireballs             () const override { return true; }
+			virtual bool   ExplosionHasFireball  () const override { return true; }
 
 			virtual void   ChangeThrust          (const CFPoint&);
 			void           EnableInput           (bool b = true) { bCanMove = b; }

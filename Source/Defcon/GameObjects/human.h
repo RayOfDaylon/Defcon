@@ -22,14 +22,9 @@ namespace Defcon
 			CHuman();
 			virtual ~CHuman();
 
-
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-
 			virtual void   Move                   (float DeltaTime) override;
 			virtual void   Notify                 (EMessage, void*) override;
-			virtual bool   Fireballs              () const override { return false; }
+			virtual bool   ExplosionHasFireball   () const override { return false; }
 
 			virtual void   OnAboutToDie           () override;
 			virtual EColor GetExplosionColorBase  () const override;

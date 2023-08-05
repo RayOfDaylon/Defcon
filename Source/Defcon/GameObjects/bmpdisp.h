@@ -20,11 +20,7 @@ namespace Defcon
 			CBitmapDisplayer();
 			virtual ~CBitmapDisplayer();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-
-			virtual void Move(float DeltaTime);
+			virtual void Move(float DeltaTime) override;
 
 	}; // CBitmapDisplayer
 }

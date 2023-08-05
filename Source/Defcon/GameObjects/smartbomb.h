@@ -20,11 +20,9 @@ namespace Defcon
 	{
 		public:
 			CSmartbomb();
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void Move(float);
-			virtual void Draw(FPainter&, const I2DCoordMapper&);
+
+			virtual void Move (float DeltaTime) override;
+			virtual void Draw (FPainter&, const I2DCoordMapper&) override;
 
 			CFPoint                   Range;
 			I2DCoordMapper*           MapperPtr  = nullptr;

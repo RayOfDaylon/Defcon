@@ -27,10 +27,6 @@ namespace Defcon
 			CTerrain();
 			virtual ~CTerrain();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-
 			void          InitTerrain (float W, float H);
 			virtual void  Draw        (FPainter&, const I2DCoordMapper&) override;
 			virtual void  DrawSmall   (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;

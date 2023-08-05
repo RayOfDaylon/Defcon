@@ -18,13 +18,10 @@ namespace Defcon
 			CTurret();
 			virtual ~CTurret();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 			virtual void   Move                  (float DeltaTime) override;
 			virtual float  GetExplosionMass      () const override { return 1.25f; }
 			virtual EColor GetExplosionColorBase () const override;
-			virtual bool   Fireballs             () const override { return false; }
+			virtual bool   ExplosionHasFireball  () const override { return false; }
 			virtual void   Explode               (CGameObjectCollection&) override;
 
 			void           SetOriginalPosition   (const CFPoint& pt) { m_posOrg = pt; }

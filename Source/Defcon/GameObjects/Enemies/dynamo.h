@@ -17,10 +17,7 @@ namespace Defcon
 			CDynamo();
 			virtual ~CDynamo();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void Move(float);
+			virtual void Move (float DeltaTime) override;
 
 		private:
 			float	 OriginalY;

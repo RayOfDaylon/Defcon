@@ -16,19 +16,16 @@ namespace Defcon
 			CSwarmer();
 			virtual ~CSwarmer();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void  Move               (float DeltaTime) override;
-			virtual float GetExplosionMass   () const override { return 0.1f; }
-			virtual bool  Fireballs          () const override { return false; }
-			virtual void  Explode            (CGameObjectCollection&) override;
+			virtual void  Move                  (float DeltaTime) override;
+			virtual float GetExplosionMass      () const override { return 0.1f; }
+			virtual bool  ExplosionHasFireball  () const override { return false; }
+			virtual void  Explode               (CGameObjectCollection&) override;
 
-			void SetOriginalPosition(const CFPoint& pt)	{ OriginalPos = pt; }
+			void SetOriginalPosition  (const CFPoint& pt) { OriginalPos = pt; }
 
 		private:
 
-			void ConsiderFiringBullet(float DeltaTime);
+			void ConsiderFiringBullet (float DeltaTime);
 
 			CFPoint	OriginalPos;
 			float   FiringCountdown;

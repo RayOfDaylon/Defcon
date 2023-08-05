@@ -33,13 +33,6 @@ namespace Defcon
 
 
 		public:
-#ifdef _DEBUG
-			virtual const char* GetClassname() const
-			{
-				static const char* psz = "OptionsEditor";
-				return psz;
-			}
-#endif
 
 			virtual void OnDisplaySizeChanged(int32, int32);
 			virtual void Init(const ArenaParams&);

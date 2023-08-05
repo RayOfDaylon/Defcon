@@ -82,6 +82,8 @@ void Defcon::CBomber::OnFinishedCreating()
 
 	// Make a spline we will march along
 
+	// todo: s/b able to consolidate some code with Move()
+
 	CurrentPath.Pts[0] = Position;
 
 	CurrentPath.Pts[3] = Position + CFPoint(Orientation.Fwd.x * Daylon::FRandRange(SPLINE_WIDTH_MIN, SPLINE_WIDTH_MAX), VDir * (float)Daylon::FRandRange(ArenaSize.y / 5, ArenaSize.y / 2));

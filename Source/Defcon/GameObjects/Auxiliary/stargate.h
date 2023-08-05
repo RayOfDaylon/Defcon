@@ -22,9 +22,6 @@ namespace Defcon
 		public:
 			CStargate();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 			virtual void DrawSmall (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;
 			
 

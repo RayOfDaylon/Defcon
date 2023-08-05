@@ -20,14 +20,11 @@ namespace Defcon
 			CGhost();
 			virtual ~CGhost();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 			virtual void Move       (float DeltaTime) override;
 			virtual void Draw       (FPainter&, const I2DCoordMapper&) override;
 			virtual void Explode    (CGameObjectCollection&) override;
 
-			virtual bool Fireballs  () const override { return true; }
+			virtual bool ExplosionHasFireball  () const override { return true; }
 
 		protected:
 
@@ -61,16 +58,13 @@ namespace Defcon
 			CGhostPart();
 			virtual ~CGhostPart();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void Move(float);
-			virtual void Draw(FPainter&, const I2DCoordMapper&);
-			void Explode(CGameObjectCollection&);
+			virtual void Move     (float DeltaTime) override;
+			virtual void Draw     (FPainter&, const I2DCoordMapper&) override;
+			virtual void Explode  (CGameObjectCollection&) override;
 			
 
-			void SetFlightPath(const CFPoint&, const CFPoint&);
-			void SetFlightDuration(float t) { MaxAge = t; }
+			void SetFlightPath     (const CFPoint&, const CFPoint&);
+			void SetFlightDuration (float t) { MaxAge = t; }
 
 		protected:
 			CBezierSpline2D	Path;

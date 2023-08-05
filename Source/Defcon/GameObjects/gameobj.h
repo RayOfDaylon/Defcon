@@ -35,6 +35,18 @@ namespace Defcon
 	class CGameObjectCollection;
 
 
+	struct FExplosionParams
+	{
+		EColor YoungColor      = EColor::LightYellow;
+		EColor OldColor        = EColor::Orange;
+		float  Speed           = 300.0f;
+		float  MinParticleSize =   3.0f;
+		float  MaxParticleSize =  10.0f;
+		int32  NumParticles    =  50;
+		bool   bFade           = true; // Debris fades over time
+	};
+
+
 	class IGameObject
 	{
 		// Base class for all game entities.
@@ -46,10 +58,6 @@ namespace Defcon
 
 			IGameObject();
 			virtual ~IGameObject();
-
-#ifdef _DEBUG
-			virtual const char* GetClassname() const = 0;
-#endif
 
 			virtual void          Init                  (const CFPoint& ArenaSize, const CFPoint& ScreenSize);
 			virtual void          OnFinishedCreating    ();
@@ -74,14 +82,13 @@ namespace Defcon
 
 			virtual void          Notify                (EMessage, void*);
 
-			bool                  IsOurPositionVisible  () const;
-			virtual IGameObject*  CreateFireball        (CGameObjectCollection&, float&);
-			virtual bool          Fireballs             () const;
-			virtual void          Explode               (CGameObjectCollection&);
-			virtual EColor        GetExplosionColorBase () const;
-			virtual float         GetExplosionMass      () const;
-			IGameObject*          CreateFireblast       (CGameObjectCollection& debris, float& fBrightBase);
-			virtual bool          Fireblasts            () const;
+			bool                  IsOurPositionVisible    () const;
+			virtual IGameObject*  CreateExplosionFireball (CGameObjectCollection&, float&);
+			virtual bool          ExplosionHasFireball    () const;
+			virtual void          Explode                 (CGameObjectCollection&);
+			virtual EColor        GetExplosionColorBase   () const;
+			virtual float         GetExplosionMass        () const;
+			virtual void          AddExplosionDebris      (const FExplosionParams& Params, CGameObjectCollection& Debris);
 			
 			void                  ZeroVelocity          ();
 			const CFPoint&        GetVelocity           () const;
@@ -103,8 +110,11 @@ namespace Defcon
 
 			virtual int32         GetPointValue         () const;
 
-			bool                  ExternallyOwned       () const; // todo: smart pointers would be better for this
-			void                  SetExternalOwnership  (bool b);
+			// todo: external ownership is only used by the options arena, which we currently don't use,
+			// and we should revisit why it was externally owning stuff because maybe we can drop it.
+			// If we add a settings view, it won't use any GameObject subclasses anyway.
+			//bool                  ExternallyOwned       () const; // todo: smart pointers would be better for this
+			//void                  SetExternalOwnership  (bool b);
 
 			bool                  IsMissionTarget       () const;
 			void                  SetAsMissionTarget    (bool b = true);
@@ -143,7 +153,7 @@ namespace Defcon
 			EObjType        Type                    = EObjType::UNKNOWN;
 			EObjType        CreatorType             = EObjType::UNKNOWN;
 
-			bool            bExternallyOwned        = false;
+			//bool            bExternallyOwned        = false;
 
 			CFPoint         ScreenSize; // todo: env data s/b obtained thru APIs? But cache coherency...
 			CFPoint         ArenaSize;

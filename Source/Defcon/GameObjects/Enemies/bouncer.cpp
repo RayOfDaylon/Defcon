@@ -112,8 +112,8 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 	Lifespan = 0.0f;
 	OnAboutToDie();
 
-	float fBrightBase;
-	CreateFireblast(debris, fBrightBase);
+	//float fBrightBase;
+	//CreateFireblast(debris, fBrightBase);
 
 	int32 a, i;
 	const float off = SFRAND * 0.2f;

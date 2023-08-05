@@ -35,9 +35,6 @@ namespace Defcon
 			CPhred();
 			virtual ~CPhred() {}
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const { static char* psz = "Phred"; return psz; }
-#endif
 			virtual EColor GetExplosionColorBase  () const override { return EColor::Gray; }
 	};
 
@@ -48,9 +45,6 @@ namespace Defcon
 			CBigRed();
 			virtual ~CBigRed() {}
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const { static char* psz = "BigRed"; return psz; }
-#endif
 			virtual EColor GetExplosionColorBase  () const override { return EColor::Red; }
 	};
 
@@ -61,9 +55,6 @@ namespace Defcon
 			CMunchie();
 			virtual ~CMunchie() {}
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const { static char* psz = "Munchie"; return psz; }
-#endif
 			virtual EColor GetExplosionColorBase () const override { return EColor::Green; }
 			virtual float  GetExplosionMass      () const override { return 0.6f; }
 	};

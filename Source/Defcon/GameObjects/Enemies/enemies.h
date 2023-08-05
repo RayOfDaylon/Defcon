@@ -28,10 +28,10 @@ namespace Defcon
 			CEnemy();
 			virtual ~CEnemy();
 
-			virtual void   Move          (float) override;
+			virtual void   Move                  (float DeltaTime) override;
 
-			virtual void   SetTarget     (IGameObject* p)    { TargetPtr = p; }
-			virtual bool   Fireballs     () const override   { return true; }
+			virtual void   SetTarget             (IGameObject* p)    { TargetPtr = p; }
+			virtual bool   ExplosionHasFireball  () const override   { return true; }
 
 
 		protected:

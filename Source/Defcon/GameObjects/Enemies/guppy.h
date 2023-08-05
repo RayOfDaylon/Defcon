@@ -14,12 +14,9 @@ namespace Defcon
 		public:
 			CGuppy();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void   Move                   (float) override;
+			virtual void   Move                   (float DeltaTime) override;
 			virtual void   OnAboutToDie           () override;
-			virtual bool   Fireballs              () const override { return false; }
+			virtual bool   ExplosionHasFireball   () const override { return false; }
 			virtual void   Explode                (CGameObjectCollection&) override;
 			virtual float  GetExplosionMass       () const override;
 			virtual EColor GetExplosionColorBase  () const override;

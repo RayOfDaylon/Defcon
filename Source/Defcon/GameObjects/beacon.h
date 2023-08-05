@@ -16,9 +16,6 @@ namespace Defcon
 			CBeacon();
 			~CBeacon();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const override { return "Beacon"; }
-#endif
 			virtual void    Move   (float DeltaTime) override;
 	};
 }

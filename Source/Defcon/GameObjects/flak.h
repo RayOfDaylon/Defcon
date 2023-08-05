@@ -25,9 +25,6 @@ namespace Defcon
 			CFlak();
 			virtual ~CFlak();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 			virtual void Move      (float DeltaTime) override;
 			virtual void Draw      (FPainter&, const I2DCoordMapper&) override;
 			virtual void DrawSmall (FPainter&, const I2DCoordMapper&, FSlateBrush&) override {}
@@ -52,16 +49,7 @@ namespace Defcon
 			//CGlowingFlak();
 			//virtual ~CGlowingFlak();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			//virtual void Move(float);
 			virtual void Draw(FPainter&, const I2DCoordMapper&) override;
-			//virtual void DrawSmall(FPaintArguments&, const I2DCoordMapper&);
-
-			//virtual bool OccursFrequently() const { return true; }
-
-
 	};
 
 
@@ -78,21 +66,15 @@ namespace Defcon
 			CPuff();
 			virtual ~CPuff();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void Move(float);
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&);
+			virtual void Move(float DeltaTime) override;
+			virtual void Draw(FPaintArguments&, const I2DCoordMapper&) override;
 			virtual void DrawSmall(FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
-			virtual void DrawBbox(FPaintArguments&, const I2DCoordMapper&) {}
 
-			virtual bool OccursFrequently() const { return true; }
+			virtual bool OccursFrequently() const override { return true; }
 
 			float	LargestSize;
 			float	m_fBrightest;
 			float	MaxAge;
-
-
 	}; // CPuff
 #endif
 }

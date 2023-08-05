@@ -41,10 +41,6 @@ namespace Defcon
 		public:
 			CLaserbeam();
 
-
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 			virtual void  Move              (float DeltaTime) override;
 			virtual void  Draw              (FPainter&, const I2DCoordMapper&) override;
 			virtual void  DrawSmall         (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;

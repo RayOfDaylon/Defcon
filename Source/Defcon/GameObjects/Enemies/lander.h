@@ -15,9 +15,6 @@ namespace Defcon
 			virtual ~CLander();
 
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 			virtual void   Move                   (float DeltaTime) override;
 			virtual EColor GetExplosionColorBase  () const override;
 			virtual void   Notify                 (Defcon::EMessage, void*) override;

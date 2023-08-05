@@ -22,10 +22,6 @@ namespace Defcon
 		public:
 			CMine();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-
 			virtual void  Move               (float DeltaTime) override;
 			virtual void  DrawSmall          (FPainter&, const I2DCoordMapper&, FSlateBrush&) override {}
 

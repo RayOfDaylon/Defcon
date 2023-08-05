@@ -16,10 +16,7 @@ namespace Defcon
 			IBouncer();
 			virtual ~IBouncer();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void Move    (float DeltaTime);
+			virtual void Move    (float DeltaTime) override;
 			virtual void Explode (CGameObjectCollection&) override;
 			
 		protected:
@@ -42,9 +39,6 @@ namespace Defcon
 			CBouncer();
 			virtual ~CBouncer();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 			virtual void FireWeapon           () override;
 			virtual void ResetFiringCountdown () override;
 	};
@@ -58,9 +52,6 @@ namespace Defcon
 			CWeakBouncer();
 			virtual ~CWeakBouncer();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
 			virtual void FireWeapon           () override;
 			virtual void ResetFiringCountdown () override;
 	};

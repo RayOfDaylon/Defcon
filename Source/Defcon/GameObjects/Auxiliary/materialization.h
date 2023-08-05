@@ -66,10 +66,6 @@ namespace Defcon
 
 			void InitMaterialization(const FMaterializationParams& InParams);
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const override { return "Materialization"; }
-#endif
-
 			virtual void Move		(float DeltaTime) override;
 			virtual void Draw		(FPainter&, const Defcon::I2DCoordMapper&) override;
 			virtual void DrawSmall	(FPainter&, const Defcon::I2DCoordMapper&, FSlateBrush&) override {}

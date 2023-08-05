@@ -19,10 +19,7 @@ namespace Defcon
 			IFirebomber();
 			virtual ~IFirebomber();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void Move(float) override;
+			virtual void Move(float DeltaTime) override;
 
 			void Explode(CGameObjectCollection&) override;
 			
@@ -44,10 +41,7 @@ namespace Defcon
 			CFirebomber();
 			virtual ~CFirebomber();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void Move(float) override;
+			virtual void Move(float DeltaTime) override;
 	};
 
 
@@ -61,10 +55,7 @@ namespace Defcon
 			CWeakFirebomber();
 			virtual ~CWeakFirebomber();
 
-#ifdef _DEBUG
-			virtual const char* GetClassname() const;
-#endif
-			virtual void Move(float) override;
+			virtual void Move(float DeltaTime) override;
 	};
 }
 

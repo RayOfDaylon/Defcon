@@ -98,7 +98,7 @@ void Defcon::CGameObjectCollection::Delete(IGameObject* p)
 {
 	Detach(p);
 
-	if(!p->ExternallyOwned())
+	//if(!p->ExternallyOwned())
 	{
 		delete p;
 	}
@@ -206,12 +206,11 @@ bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
 		if(pObj->IsMortal() && pObj->ReduceLifespanBy(params.DeltaTime))
 		{
 			IGameObject* pObj2 = pObj->GetNext();
-#ifdef _DEBUG
+			
+#ifdef TRACE_GAMEOBJ_DEATHS
 			if(!pObj->OccursFrequently())
 			{
-				char sz[100];
-				MySprintf(sz, "Mortal object of class %s deleted\n", pObj->GetClassname());
-				OutputDebugString(sz);
+				UE_LOG(LogGame, Log, "Mortal object of class %s deleted\n", *GObjectTypeManager.GetName(pObj->GetType());
 			}
 #endif
 			if(params.OnDeath != nullptr)
