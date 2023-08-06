@@ -15,38 +15,32 @@
 
 #include "util_math.h"
 
-#ifndef TRUE
-#define TRUE	1
-#endif
-
-#ifndef FALSE
-#define FALSE	0
-#endif
-
 
 #define FEPSILON	((float)1e-5)
 #define DEPSILON	1e-12
 
-
+#if 0
 #ifndef PI
-#define PI	3.1415926535897932384626433832795
+#define PI	3.1415926535897932384626433832795f
 #endif
 
 #ifndef TWO_PI
-#define TWO_PI	6.283185307179586476925286766559
+#define TWO_PI	6.283185307179586476925286766559f
 #endif
 
 #ifndef HALF_PI
-#define HALF_PI	1.5707963267948966192313216916398
+#define HALF_PI	1.5707963267948966192313216916398f
+#endif
 #endif
 
-#define M_PI_360	 0.00872664625997164788
-#define D2R	         0.017453292
-#define R2D         57.29578121996
+
+#define M_PI_360	 0.00872664625997164788f
+#define D2R	         0.017453292f
+#define R2D         57.29578121996f
 
 #define DEG2RAD(d)	((d) * D2R)
 #define RAD2DEG(r)	((r) * R2D)
-#define SQUARED(a)  ((a)*(a))
+#define SQUARED(a)  ((a) * (a))
 
 // Common 2D vector macros.
 #define DDISTANCE(dx, dy)         (sqrt(SQUARED(dx) + SQUARED(dy)))
@@ -80,6 +74,8 @@ class CFPoint
 		//void  Set  (double a, double b) { x = (float)a; y = (float)b; }
 		//void  Set  (int32 a, int32 b) { x = (float)a; y = (float)b; }
 
+		void SetRandomVector() { const float T = FRAND * TWO_PI; x = cosf(T); y = sinf(T); }
+
 		void  Add  (const CFPoint& pt) { x += pt.x; y += pt.y; }
 		void  Sub  (const CFPoint& pt) { x -= pt.x; y -= pt.y; }
 		void  Mul  (float f)           { x *= f; y *= f; }
@@ -100,21 +96,22 @@ class CFPoint
 		void   MulAdd      (const CFPoint& pt, const CFPoint& off)	{ x += pt.x * off.x; y += pt.y * off.y; }
 		void   Normalize   ()                                       { Div(Length()); }
 		void   Lerp        (const CFPoint& pt, float t)             { x = LERP(x, pt.x, t); y = LERP(y, pt.y, t); }
-		void   Avg         (const CFPoint& pt)                      { x = AVG(x, pt.x); y = AVG(y, pt.y); }
-
-		float  Dot         (const CFPoint& v) const                 { return (x * v.x + y * v.y); }
-		float  AngleDelta  (const CFPoint& pt) const                { return Angle() - pt.Angle(); }
-		float  Length      () const                                 { return (float)PTLEN(*this); }
-		float  Distance    (const CFPoint& pt) const                { return (float)PTSLEN(*this, pt); }
-		bool   IsZero      () const                                 { return (x == 0 && y == 0); }
-		float  Ordinal     (float w) const                          { return y * w + x; }
+		void   Average     (const CFPoint& pt)                      { x = AVG(x, pt.x); y = AVG(y, pt.y); }
 
 		// angle() returns degrees, negative if ccw and positive if cw. X-axis = 0 deg.
 		float  Angle       () const                                 { return (float)RAD2DEG(atan2(y, x)); }
+		float  AngleDelta  (const CFPoint& pt) const                { return Angle() - pt.Angle(); }
+		float  Length      () const                                 { return (float)PTLEN(*this); }
+		float  Distance    (const CFPoint& pt) const                { return (float)PTSLEN(*this, pt); }
+		//float  Dot         (const CFPoint& v) const                 { return (x * v.x + y * v.y); }
+		//bool   IsZero      () const                                 { return (x == 0 && y == 0); }
+		//float  Ordinal     (float w) const                          { return y * w + x; }
+
 
 		// Like angle(), but returns 0-360 values.
-		float  PosAngle    () const                                 { const float a = Angle(); return (a >= 0.0f ? a : a + 360.0f); }
+		//float  PosAngle    () const                                 { const float a = Angle(); return (a >= 0.0f ? a : a + 360.0f); }
 
+#if 0
 		// Like angledelta(), but it always returns 
 		// the positive smallest angular difference.
 		float AngleDelta2(const CFPoint& pt) const
@@ -137,19 +134,20 @@ class CFPoint
 				y = FMath::Max(y, lower.y);
 				y = FMath::Min(y, upper.y);
 			}
+#endif
 
-		void Rotate(double dAng)
+		void Rotate(float dAng)
 		{
 			CFPoint pt;
 			const double a = DEG2RAD(dAng);
-			pt.x = x * (float)cos(a) - y * (float)sin(a);
-			pt.y = x * (float)sin(a) + y * (float)cos(a);
+			pt.x = x * cosf(a) - y * sinf(a);
+			pt.y = x * sinf(a) + y * cosf(a);
 
 			*this = pt;
 		}
 
 
-		void Rotate(CFPoint& pt, double dAng)
+		void Rotate(CFPoint& pt, float dAng)
 		{
 			dAng = fmod(dAng, 360.0);
 
@@ -176,10 +174,10 @@ class CFPoint
 			}
 			
 			
-			const double a = DEG2RAD(dAng);
+			const float a = DEG2RAD(dAng);
 
-			pt.x = x * (float)cos(a) - y * (float)sin(a);
-			pt.y = x * (float)sin(a) + y * (float)cos(a);
+			pt.x = x * cosf(a) - y * sinf(a);
+			pt.y = x * sinf(a) + y * cosf(a);
 		}
 
 		float	x, y;
@@ -226,10 +224,10 @@ class CFRect
 		void            Add         (const CFPoint& pt)        { LL += pt; UR += pt; }
 		void            Sub         (const CFPoint& pt)        { LL -= pt; UR -= pt; }
 		void            Mul         (float f)                  { LL *= f; UR *= f; }
-		bool            IsZero      () const                   { return (LL.IsZero() && UR.IsZero()); }
+		//bool            IsZero      () const                   { return (LL.IsZero() && UR.IsZero()); }
 		float           Diagonal    () const                   { return LL.Distance(UR); }
 		bool            IsEmpty     () const                   { return (Diagonal() == 0); }
-		void            GetCenter   (CFPoint& pt) const        { pt = LL; pt.Avg(UR); }
+		void            GetCenter   (CFPoint& pt) const        { pt = LL; pt.Average(UR); }
 		float           GetWidth    () const                   { return ABS(UR.x - LL.x); }
 		float           GetHeight   () const                   { return ABS(UR.y - LL.y); }
 		bool            PtInside    (const CFPoint& pt) const  { return (pt.x >= LL.x && pt.x <= UR.x && pt.y >= LL.y && pt.y <= UR.y); }
@@ -283,34 +281,6 @@ class CFRect
 }; // CFRect
 
 
-
-typedef struct
-{
-	float x, y, z;
-} FVector_;
-
-
-// Floating-point vector class. Should be a template, ideally.
-class CFVector : public FVector_
-{
-public:
-	CFVector ()                             { x = y = z = 0; }
-	CFVector (const CFVector& v)            { *this = v; }
-	CFVector (const FVector_& v)            { x = v.x; y = v.y; z = v.z; }
-	CFVector (const FVector_* pv)           { x = pv->x; y = pv->y; z = pv->z; }
-	CFVector (float a, float b, float c)	{ x = a; y = b; z = c; }
-
-	virtual ~CFVector() {}
-
-	operator FVector_*       () { return this; }
-	operator const FVector_* () const { return this; }
-
-	void Set (float tx, float ty, float tz) { x = tx; y = ty; z = tz; }
-	void Mul (const float f)                { x *= f; y *= f; z *= f; }
-
-};
-
-
 class CBezierSpline2D
 {
 	public:
@@ -339,3 +309,33 @@ class CBezierSpline2D
 				);
 		}
 };
+
+
+#if 0
+
+typedef struct
+{
+	float x, y, z;
+} FVector_;
+
+
+// Floating-point vector class. Should be a template, ideally.
+class CFVector : public FVector_
+{
+public:
+	CFVector ()                             { x = y = z = 0; }
+	CFVector (const CFVector& v)            { *this = v; }
+	CFVector (const FVector_& v)            { x = v.x; y = v.y; z = v.z; }
+	CFVector (const FVector_* pv)           { x = pv->x; y = pv->y; z = pv->z; }
+	CFVector (float a, float b, float c)	{ x = a; y = b; z = c; }
+
+	virtual ~CFVector() {}
+
+	operator FVector_*       () { return this; }
+	operator const FVector_* () const { return this; }
+
+	void Set (float tx, float ty, float tz) { x = tx; y = ty; z = tz; }
+	void Mul (const float f)                { x *= f; y *= f; z *= f; }
+
+};
+#endif

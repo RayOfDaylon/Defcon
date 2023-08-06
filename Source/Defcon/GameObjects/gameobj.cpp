@@ -184,9 +184,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 		pFlak->Orientation		= Orientation;
 
 		CFPoint dir;
-		double t = FRAND * TWO_PI;
-		
-		dir.Set((float)cos(t), (float)sin(t));
+		dir.SetRandomVector();
 
 		if(bGrounded)
 		{
@@ -237,11 +235,12 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 			pFlak->Orientation = Orientation;
 
 			CFPoint dir;
-			double t = FRAND * TWO_PI;
-			
-			dir.Set((float)cos(t), (float)sin(t));
+			dir.SetRandomVector();
+
 			if(bGrounded)
+			{
 				dir.y = abs(dir.y);
+			}
 
 			pFlak->Orientation.Fwd = Inertia;
 
@@ -280,12 +279,12 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& debris)
 			//pPuff->Orientation = Orientation;
 
 			CFPoint dir;
-			double t = FRAND * TWO_PI;
-			
-			dir.Set((float)cos(t), (float)sin(t));
+			dir.SetRandomVector();
 
 			if(bGrounded)
+			{
 				dir.y = abs(dir.y);
+			}
 
 			// Puff has at least the object's momentum.
 			//pPuff->Orientation.Fwd = pObj->Inertia;

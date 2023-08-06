@@ -160,10 +160,9 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 
 				float angle = MAP(a, 0, 7, 0, 5.5f);
 				angle += off2 + SFRAND * 0.05f;
-				pFlak->Orientation.Fwd.Set(
-					sinf(angle), cosf(angle));
+				pFlak->Orientation.Fwd.Set(sinf(angle), cosf(angle));
 				
-				pFlak->Orientation.Fwd *= (SFRAND*5+6) * (i+2);
+				pFlak->Orientation.Fwd *= (SFRAND * 5 + 6) * (i + 2);
 				pFlak->Orientation.Fwd += Inertia;
 
 				debris.Add(pFlak);

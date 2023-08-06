@@ -27,7 +27,8 @@
 static void Check(bool Condition) { check(Condition); }
 
 
-void UDefconPlayMainWidgetBase::Init(
+void UDefconPlayMainWidgetBase::Init
+(
 	Defcon::CGameObjectCollection* InHumans, 
 	Defcon::CGameObjectCollection* InObjects, 
 	Defcon::CGameObjectCollection* InEnemies, 

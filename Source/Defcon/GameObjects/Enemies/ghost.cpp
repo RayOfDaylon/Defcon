@@ -118,7 +118,7 @@ void Defcon::CGhost::Move(float DeltaTime)
 
 	Inertia = Position;
 
-	Orientation.Fwd.y = 0.1f * (float)sin(Frequency * (OffsetY + Age)); 
+	Orientation.Fwd.y = 0.1f * sinf(Frequency * (OffsetY + Age)); 
 
 	ConsiderFiringBullet(DeltaTime);
 
@@ -197,7 +197,7 @@ void Defcon::CGhost::Draw(FPainter& Painter, const I2DCoordMapper& mapper)
 	for(int32 I = 0; I < N; I++)
 	{
 		const float T = SpinDir * (float)(TWO_PI * (float)I / N + ((SpinAngle + PSIN(Age)/*FRAND * 0.1f*/) * TWO_PI));
-		CFPoint Pt2((float)cos(T), (float)sin(T));
+		CFPoint Pt2(cosf(T), sinf(T));
 		const float Radius = (float)(sin((F /*+ FRAND * 3*/) * PI) * R * LERP(PartRadiiMin[I + 1], PartRadiiMax[I + 1], PSIN(Age * PartRadiiSpeed[I + 1])) /*+ 5.0f*/);
 
 		Pt2 *= Radius;
@@ -293,9 +293,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 		FlakPtr->Orientation = Orientation;
 
 		CFPoint Direction;
-		double T = FRAND * TWO_PI;
-		
-		Direction.Set((float)cos(T), (float)sin(T));
+		Direction.SetRandomVector();
 
 		// Debris has at least the object's momentum.
 		FlakPtr->Orientation.Fwd = Inertia;
@@ -341,9 +339,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 			FlakPtr->Orientation = Orientation;
 
 			CFPoint Direction;
-			double T = FRAND * TWO_PI;
-			
-			Direction.Set((float)cos(T), (float)sin(T));
+			Direction.SetRandomVector();
 
 			FlakPtr->Orientation.Fwd = Inertia;
 			FlakPtr->Orientation.Fwd *= FRANDRANGE(30, 42) * 1.5f;
@@ -375,9 +371,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 		FlakPtr->Orientation = Orientation;
 
 		CFPoint Direction;
-		double T = FRAND * TWO_PI;
-		
-		Direction.Set((float)cos(T), (float)sin(T));
+		Direction.SetRandomVector();
 
 		// Debris has at least the object's momentum.
 		FlakPtr->Orientation.Fwd = Inertia;

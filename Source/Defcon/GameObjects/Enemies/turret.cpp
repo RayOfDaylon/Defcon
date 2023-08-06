@@ -142,7 +142,7 @@ void Defcon::CTurret::Move(float fTime)
 	else
 		pos.x = Position.x + Orientation.Fwd.x * m_xFreq * fTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 	pos.y = 
-		(float)sin(Frequency * (m_yoff + Age)) 
+		sinf(Frequency * (m_yoff + Age)) 
 		* m_amp + m_halfwayAltitude;
 
 	Position = pos;
@@ -181,7 +181,7 @@ void Defcon::CTurret::Explode(CGameObjectCollection& debris)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.Set((float)cos(t), (float)abs(sin(t)));
+		dir.Set(cosf(t), (float)abs(sin(t)));
 
 #if 1
 		pFlak->Orientation.Fwd.Set(0.0f, 0.0f);

@@ -65,7 +65,7 @@ void Defcon::CPod::Move(float DeltaTime)
 
 	//UE_LOG(LogGame, Log, TEXT("%S: Pod is at %d, %d"), __FUNCTION__, (int32)Position.x, (int32)Position.y);
 
-	Orientation.Fwd.y = 0.1f * (float)sin(Frequency * (OffsetY + Age)); 
+	Orientation.Fwd.y = 0.1f * sinf(Frequency * (OffsetY + Age)); 
 
 	// Cause radar blip to blink
 	const float T = PSIN(Age * PI * 2.0f);
@@ -134,9 +134,7 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 		pFlak->Orientation = Orientation;
 
 		CFPoint dir;
-		double t = FRAND * TWO_PI;
-		
-		dir.Set((float)cos(t), (float)sin(t));
+		dir.SetRandomVector();
 
 		// Debris has at least the object's momentum.
 		pFlak->Orientation.Fwd = Inertia;
@@ -176,9 +174,7 @@ void Defcon::CPod::Explode(CGameObjectCollection& debris)
 			pFlak->Orientation = Orientation;
 
 			CFPoint dir;
-			double t = FRAND * TWO_PI;
-			
-			dir.Set((float)cos(t), (float)sin(t));
+			dir.SetRandomVector();
 
 			pFlak->Orientation.Fwd = Inertia;
 

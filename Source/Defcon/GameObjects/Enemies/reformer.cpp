@@ -63,7 +63,7 @@ void Defcon::CReformer::Move(float DeltaTime)
 	CEnemy::Move(DeltaTime);
 	Inertia = Position;
 
-	Orientation.Fwd.y = 0.1f * (float)sin(Frequency * (VerticalOffset + Age)); 
+	Orientation.Fwd.y = 0.1f * sinf(Frequency * (VerticalOffset + Age)); 
 
 	ConsiderFiringBullet(DeltaTime);
 
@@ -120,7 +120,7 @@ void Defcon::CReformer::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 	for(I = 0; I < N; I++)
 	{
 		const float T = (float)(TWO_PI * I / N + (SpinAngle * TWO_PI));
-		CFPoint P((float)cos(T), (float)sin(T));
+		CFPoint P(cosf(T), sinf(T));
 		const float R = (float)(sin(F * PI) * 5 + 10);
 		BboxRadius.Set(R, R);
 		P *= R;
@@ -202,9 +202,7 @@ void Defcon::CReformer::Explode(CGameObjectCollection& Debris)
 		Flak->Orientation    = Orientation;
 
 		CFPoint Direction;
-		const double T = FRAND * TWO_PI;
-		
-		Direction.Set((float)cos(T), (float)sin(T));
+		Direction.SetRandomVector();
 
 		// Debris has at least the object's momentum.
 		Flak->Orientation.Fwd = Inertia;
@@ -384,7 +382,7 @@ void Defcon::CReformerPart::Move(float DeltaTime)
 			P.x = Position.x + Orientation.Fwd.x * HorzFrequency * DeltaTime * ScreenSize.x * FRANDRANGE(0.25f, 0.3f);
 		}
 
-		P.y = (float)sin(Frequency * (VerticalOffset + Age)) * Amplitude + HalfwayAltitude;
+		P.y = sinf(Frequency * (VerticalOffset + Age)) * Amplitude + HalfwayAltitude;
 
 		Position = P;
 
@@ -409,7 +407,7 @@ void Defcon::CReformerPart::Move(float DeltaTime)
 			{
 				MarkAsDead();
 				ClosestObject->MarkAsDead();
-				Position.Avg(ClosestObject->Position);
+				Position.Average(ClosestObject->Position);
 
 				GArena->CreateEnemy(EObjType::REFORMER, Position, 0.0f, 
 					(EObjectCreationFlags)((int32)EObjectCreationFlags::NotMissionTarget | (int32)EObjectCreationFlags::NoMaterialization));
@@ -442,9 +440,7 @@ void Defcon::CReformerPart::Explode(CGameObjectCollection& debris)
 		pFlak->Orientation = Orientation;
 
 		CFPoint dir;
-		double t = FRAND * TWO_PI;
-		
-		dir.Set((float)cos(t), (float)sin(t));
+		dir.SetRandomVector();
 
 		// Debris has at least the object's momentum.
 		pFlak->Orientation.Fwd = Inertia;

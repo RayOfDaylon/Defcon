@@ -18,7 +18,7 @@
 
 Defcon::CGameColors::CGameColors()
 {
-	CFVector ColorBases[(int32)EColor::Count];
+	FVector3f ColorBases[(int32)EColor::Count];
 	
 	ColorBases[(int32)EColor::Gray        ].Set(1.0f, 1.0f, 1.0f);
 	ColorBases[(int32)EColor::Yellow      ].Set(1.0f, 1.0f, 0.0f);
@@ -37,10 +37,10 @@ Defcon::CGameColors::CGameColors()
 		{
 			const float G = (float)I / (array_size(Colors[0]) - 1);
 			//G = gamma(G);
-			CFVector V(ColorBases[J]);
-			V.Mul(G);
+			FVector V(ColorBases[J]);
+			V *= G;
 
-			Colors[J][I] = FLinearColor(V.x, V.y, V.z, 1.0f);
+			Colors[J][I] = FLinearColor(V);
 		}
 	}
 }

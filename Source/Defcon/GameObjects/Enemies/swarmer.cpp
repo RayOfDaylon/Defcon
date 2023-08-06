@@ -154,7 +154,7 @@ void Defcon::CSwarmer::Move(float DeltaTime)
 		P.x = Position.x + Orientation.Fwd.x * HorzFrequency * DeltaTime * ScreenSize.x * (FRAND * .05f + 0.25f);
 	}
 
-	P.y = (float)sin(Frequency * (VerticalOffset + Age)) * Amplitude + HalfwayAltitude;
+	P.y = sinf(Frequency * (VerticalOffset + Age)) * Amplitude + HalfwayAltitude;
 
 	Position = P;
 
@@ -219,9 +219,8 @@ void Defcon::CSwarmer::Explode(CGameObjectCollection& Debris)
 		Flak->Position    = Position;
 		Flak->Orientation = Orientation;
 
-		double T = FRAND * TWO_PI;
-		
-		const CFPoint Direction((float)cos(T), (float)sin(T));
+		CFPoint Direction;
+		Direction.SetRandomVector();
 
 		// Debris has at least the object's momentum.
 		Flak->Orientation.Fwd = Inertia;

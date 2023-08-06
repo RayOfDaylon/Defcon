@@ -98,7 +98,7 @@ void Defcon::CBaiter::Move(float DeltaTime)
 		const float vsign = bPreferTargetUnderside ? -1.0f : 1.0f;
 
 		target += CFPoint(
-			(float)cos(Age) * 300.0f * SGN(TargetPtr->Orientation.Fwd.x),
+			cosf(Age) * 300.0f * SGN(TargetPtr->Orientation.Fwd.x),
 			vsign * (float)fabs(sin(Age)) * 50.0f + vsign * 50.0f);
 
 		const float Xd = GArena->ShortestDirection(Position, target, delta);

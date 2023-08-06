@@ -15,13 +15,14 @@
 #include "util_core.h"
 #include "compat.h"
 
-
+#if 0
 #ifndef FALSE
 	#define FALSE	0
 #endif
 
 #ifndef TRUE
 	#define TRUE	1
+#endif
 #endif
 
 #ifndef MAX
@@ -80,21 +81,24 @@ char* trimwhitespace(char* psz)
 }
 
 
-int isnum(const char* psz)
+bool isnum(const char* psz)
 {
 	if(psz == nullptr)
-		return FALSE;
+	{
+		return false;
+	}
+
 	double d = atof(psz);
 	if(d == 0)
 	{
 		for(unsigned int i = 0; i < strlen(psz); i++)
 		{
 			if((psz[i] < '0' || psz[i] > '9') && psz[i] != '.' && psz[i] != '-')
-				return FALSE;
+				return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 

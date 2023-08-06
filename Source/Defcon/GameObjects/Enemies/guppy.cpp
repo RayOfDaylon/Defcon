@@ -258,7 +258,7 @@ void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
 		CFPoint dir;
 		double t = FRAND * TWO_PI;
 		
-		dir.Set((float)cos(t), (float)sin(t));
+		dir.Set(cosf(t), sinf(t));
 
 		// Debris has at least the object's momentum.
 		pFlak->Orientation.Fwd = Inertia;

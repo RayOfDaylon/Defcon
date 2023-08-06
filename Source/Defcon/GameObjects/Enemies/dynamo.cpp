@@ -84,9 +84,9 @@ void Defcon::CDynamo::Move(float DeltaTime)
 		// todo: maybe have dynamo take a break after spitting out lots of hums, then resume.
 	}
 
-	Position.x += (float)sin(WiggleAnimSpeed.x * Age) * 1.5f;
+	Position.x += sinf(WiggleAnimSpeed.x * Age) * 1.5f;
 	
-	const float Sn = (float)sin(WiggleAnimSpeed.y * Age) * 15.0f;
+	const float Sn = sinf(WiggleAnimSpeed.y * Age) * 15.0f;
 	Position.y = OriginalY + Sn;
 
 	Position.y = CLAMP(Position.y, 0, GArena->GetHeight() - 1);

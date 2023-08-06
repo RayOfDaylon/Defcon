@@ -76,7 +76,7 @@ void Defcon::IMunchie::Move(float DeltaTime)
 	const float VertSgn = bPreferTargetUnderside ? -1.0f : 1.0f;
 
 	const CFPoint TargetPos = TargetPtr->Position + CFPoint(
-		(float)cos(Age) * 300.0f * SGN(TargetPtr->Orientation.Fwd.x),
+		cosf(Age) * 300.0f * SGN(TargetPtr->Orientation.Fwd.x),
 		VertSgn * (float)fabs(sin(Age)) * 50.0f + VertSgn * 50.0f);
 
 	const float HorzDistance = GArena->ShortestDirection(Position, TargetPos, Delta);

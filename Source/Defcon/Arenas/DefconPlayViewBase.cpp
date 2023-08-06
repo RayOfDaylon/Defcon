@@ -1752,9 +1752,7 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 		FlakPtr->Orientation = pObj->Orientation;
 
 		CFPoint Direction;
-		const double T = FRAND * TWO_PI;
-		
-		Direction.Set((float)cos(T), (float)sin(T));
+		Direction.SetRandomVector();
 
 		// Debris has at least the object's momentum.
 		FlakPtr->Orientation.Fwd = pObj->Inertia;

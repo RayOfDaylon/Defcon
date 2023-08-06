@@ -64,7 +64,7 @@ void Defcon::CSpacehum::Move(float DeltaTime)
 	{
 		GArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
 		
-		CFPoint Budge((float)sin(FRAND * PI * 2), (float)cos(FRAND * PI * 2));
+		CFPoint Budge(sinf(FRAND * PI * 2), cosf(FRAND * PI * 2));
 
 		// todo: initially fly away quickly from the parent dynamo toward player
 		if(Age < 2.0f)
@@ -99,8 +99,6 @@ void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 		FlakPtr->Position    = Position;
 		FlakPtr->Orientation = Orientation;
 
-		double T = FRAND * TWO_PI;
-
 		// Debris has at least the object's momentum.
 		FlakPtr->Orientation.Fwd = Inertia;
 
@@ -108,7 +106,8 @@ void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
 		// the explosion looks like it's standing still.
 		FlakPtr->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
 
-		const CFPoint Direction((float)cos(T), (float)sin(T));
+		CFPoint Direction;
+		Direction.SetRandomVector();
 		const float FlakSpeed = FRAND * 30 + 110;
 
 		FlakPtr->Orientation.Fwd.MulAdd(Direction, FlakSpeed);

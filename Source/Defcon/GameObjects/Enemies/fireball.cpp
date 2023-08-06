@@ -158,10 +158,8 @@ void Defcon::CFireball::Explode(CGameObjectCollection& Debris)
 		Flak->Position       = Position;
 		Flak->Orientation    = Orientation;
 
-
-		const double T = FRAND * TWO_PI;
-		
-		CFPoint Direction((float)cos(T), (float)sin(T));
+		CFPoint Direction;
+		Direction.SetRandomVector();
 
 		// Debris has at least the object's momentum.
 		Flak->Orientation.Fwd = Inertia;

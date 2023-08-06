@@ -26,7 +26,7 @@ char* str_delleadingchar(char*);
 char* trimleadingwhitespace(char*);
 char* trimtrailingwhitespace(char*);
 char* trimwhitespace(char*);
-int isnum(const char*);
+bool isnum(const char*);
 char* strtoupper(char*);
 FString GetNumberSpelling(int32, int32);
 char* fnicesprintf(char* dst, double d, int prec, char sep = 0);
