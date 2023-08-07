@@ -113,7 +113,7 @@ void Defcon::CFireball::Move(float fTime)
 		{
 			if(FIREBALLS_EXPLODE_ON_GROUND)
 			{
-				GArena->ExplodeObject(this);	
+				GArena->DestroyObject(this);	
 			}
 			else
 			{
@@ -138,40 +138,14 @@ float Defcon::CFireball::GetExplosionMass() const
 
 void Defcon::CFireball::Explode(CGameObjectCollection& Debris)
 {
-	const auto ColorBase = BRAND ? EColor::Yellow : EColor::Orange;
+	FExplosionParams Params;
 
-	bMortal  = true;
-	Lifespan = 0.0f;
+	Params.NumParticles = 20;
+	Params.YoungColor[0] = 
+	Params.YoungColor[1] = BRAND ? EColor::Yellow : EColor::Orange;
+	Params.OldColor[0] = EColor::Yellow;
+	Params.OldColor[1] = EColor::Red;
+	Params.MaxParticleSize = 5;
 
-	OnAboutToDie();
-
-	for(int32 I = 0; I < 20; I++)
-	{
-		CFlak* Flak = new CFlak;
-
-		Flak->ColorbaseYoung = ColorBase;
-		Flak->ColorbaseOld   = BRAND ? EColor::Yellow : EColor::Red;
-		Flak->bCold          = true;
-		Flak->LargestSize    = 5;
-		Flak->bFade          = true;
-
-		Flak->Position       = Position;
-		Flak->Orientation    = Orientation;
-
-		CFPoint Direction;
-		Direction.SetRandomVector();
-
-		// Debris has at least the object's momentum.
-		Flak->Orientation.Fwd = Inertia;
-
-		// Scale the momentum up a bit, otherwise 
-		// the explosion looks like it's standing still.
-		Flak->Orientation.Fwd *= FRANDRANGE(20, 32);
-
-		float OurSpeed = FRANDRANGE(110, 140);
-
-		Flak->Orientation.Fwd.MulAdd(Direction, OurSpeed);
-
-		Debris.Add(Flak);
-	}
+	AddExplosionDebris(Params, Debris);
 }

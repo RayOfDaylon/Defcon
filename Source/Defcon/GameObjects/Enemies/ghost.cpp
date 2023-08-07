@@ -248,15 +248,6 @@ void Defcon::CGhost::DrawPart(FPainter& Painter, const CFPoint& Pt)
 
 void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 {
-	//CEnemy::Explode(Debris);
-
-	bMortal = true;
-	Lifespan = 0.0f;
-	OnAboutToDie();
-
-	// Create an explosion by making
-	// several Debris objects and 
-	// adding them to the Debris set.
 	int32 N = (int32)(FRAND * 30 + 30);
 	float MaxSize = FRAND * 5 + 3;
 
@@ -277,6 +268,7 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 
 	bool bDieOff = (FRAND >= 0.25f);
 	int32 I;
+
 
 	//float BrightBase;
 	//IGameObject* pFireblast = CreateFireblast(Debris, BrightBase);
@@ -353,40 +345,21 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 	}
 
 
-#if 1
-	ColorBase = EColor::Gray;
+	FExplosionParams Params;
 
+	Params.NumParticles    = 20;
+	Params.bFade           = bDieOff;
+	Params.bCold           = true;
+	Params.MaxParticleSize = 8;
+	Params.InertiaScale    = 1.5f;
+	Params.YoungColor[0]   = 
+	Params.YoungColor[1]   = 
+	Params.OldColor[0]     = 
+	Params.OldColor[1]     = EColor::Gray;
+	Params.MinSpeed        = 110;
+	Params.MaxSpeed        = 140;
 
-	for(I = 0; I < 20; I++)
-	{
-		CFlak* FlakPtr = new CFlak;
-
-		FlakPtr->ColorbaseYoung = ColorBase;
-		FlakPtr->ColorbaseOld = ColorBase;
-		FlakPtr->bCold = true;
-		FlakPtr->LargestSize = 8;
-		FlakPtr->bFade = true;//bDieOff;
-
-		FlakPtr->Position = Position;
-		FlakPtr->Orientation = Orientation;
-
-		CFPoint Direction;
-		Direction.SetRandomVector();
-
-		// Debris has at least the object's momentum.
-		FlakPtr->Orientation.Fwd = Inertia;
-
-		// Scale the momentum up a bit, otherwise 
-		// the explosion looks like it's standing still.
-			FlakPtr->Orientation.Fwd *= FRANDRANGE(20, 32) * 1.5f;
-		//ndir *= FRAND * 0.4f + 0.2f;
-		const float Speed = FRANDRANGE(110, 140);
-
-		FlakPtr->Orientation.Fwd.MulAdd(Direction, Speed);
-
-		Debris.Add(FlakPtr);
-	}
-#endif
+	AddExplosionDebris(Params, Debris);
 }
 
 // --------------------------------------------------------

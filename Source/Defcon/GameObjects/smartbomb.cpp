@@ -98,8 +98,7 @@ void Defcon::CSmartbomb::Move(float DeltaTime)
 			{
 				GDefconGameInstance->GetStats().HostilesDestroyedBySmartbomb++;
 
-				GArena->ExplodeObject(Target);
-				Target->MarkAsDead();
+				GArena->DestroyObject(Target);
 			}
 		}
 	});

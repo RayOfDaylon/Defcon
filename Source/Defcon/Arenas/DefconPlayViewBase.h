@@ -200,7 +200,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	void                 LayMine              (Defcon::IGameObject& Obj, const CFPoint& From, int32, int32);
 	Defcon::IBullet*     FireBullet           (Defcon::IGameObject&, const CFPoint& From, int32 SoundID, int32);
 	bool                 IsEnding             () const { return bArenaDying; }
-	void                 ExplodeObject        (Defcon::IGameObject* Obj);
+	void                 DestroyObject        (Defcon::IGameObject* Obj, bool bExplode = true);
 	void                 IncreaseScore        (int32 Points, bool bVis, const CFPoint* P);
 	void                 CreateEnemy          (Defcon::EObjType Kind, const CFPoint& Where, float When, Defcon::EObjectCreationFlags Flags);
 	Defcon::CEnemy*      CreateEnemyNow       (Defcon::EObjType Kind, const CFPoint& Where, Defcon::EObjectCreationFlags Flags);

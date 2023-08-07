@@ -164,7 +164,7 @@ void Defcon::CHuman::Move(float DeltaTime)
 				if(Orientation.Fwd.y < -HUMAN_TERMINALVELOCITY)
 				{
 					// We landed too hard, so we're toast.
-					GArena->ExplodeObject(this);
+					GArena->DestroyObject(this);
 				}
 				else
 				{

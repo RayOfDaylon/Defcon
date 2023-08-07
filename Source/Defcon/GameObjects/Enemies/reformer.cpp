@@ -115,9 +115,8 @@ void Defcon::CReformer::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 
 	// Draw the parts in a circle around a central part.
 	const int32 N = NumParts - 1;
-	int32 I;
 
-	for(I = 0; I < N; I++)
+	for(int32 I = 0; I < N; I++)
 	{
 		const float T = (float)(TWO_PI * I / N + (SpinAngle * TWO_PI));
 		CFPoint P(cosf(T), sinf(T));
@@ -128,7 +127,7 @@ void Defcon::CReformer::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 		PartLocations[I + 1] = P;
 	}
 
-	for(I = 0; I < NumParts; I++)
+	for(int32 I = 0; I < NumParts; I++)
 	{
 		CFPoint P;
 		Mapper.To(PartLocations[I], P);
@@ -183,37 +182,17 @@ void Defcon::CReformer::OnAboutToDie()
 
 void Defcon::CReformer::Explode(CGameObjectCollection& Debris)
 {
-	bMortal = true;
-	Lifespan = 0.0f;
-	OnAboutToDie();
+	FExplosionParams Params;
 
-	const auto ColorBase = EColor::Gray;
+	Params.NumParticles    = 20;
+	Params.MaxParticleSize =  4;
+	Params.bCold           = true;
+	Params.YoungColor[0]   =
+	Params.YoungColor[1]   =
+	Params.OldColor[0]     =
+	Params.OldColor[1]     = EColor::Gray;
 
-	for(int32 i = 0; i < 20; i++)
-	{
-		auto Flak = new CFlak;
-
-		Flak->ColorbaseYoung = ColorBase;
-		Flak->ColorbaseOld   = ColorBase;
-		Flak->bCold          = true;
-		Flak->LargestSize    = 4;
-		Flak->bFade          = true;
-		Flak->Position       = Position;
-		Flak->Orientation    = Orientation;
-
-		CFPoint Direction;
-		Direction.SetRandomVector();
-
-		// Debris has at least the object's momentum.
-		Flak->Orientation.Fwd = Inertia;
-
-		// Scale the momentum up a bit, otherwise 
-		// the explosion looks like it's standing still.
-		Flak->Orientation.Fwd *= FRANDRANGE(20, 32);
-		Flak->Orientation.Fwd.MulAdd(Direction, FRANDRANGE(110, 140));
-
-		Debris.Add(Flak);
-	}
+	AddExplosionDebris(Params, Debris);
 }
 
 // ----------------------------------------------------------------------------
@@ -419,40 +398,17 @@ void Defcon::CReformerPart::Move(float DeltaTime)
 }
 
 
-void Defcon::CReformerPart::Explode(CGameObjectCollection& debris)
+void Defcon::CReformerPart::Explode(CGameObjectCollection& Debris)
 {
-	const auto cby = EColor::Gray;
+	FExplosionParams Params;
 
-	bMortal = true;
-	Lifespan = 0.0f;
-	OnAboutToDie();
+	Params.NumParticles    = 20;
+	Params.MaxParticleSize =  4;
+	Params.bCold           = true;
+	Params.YoungColor[0]   =
+	Params.YoungColor[1]   =
+	Params.OldColor[0]     =
+	Params.OldColor[1]     = EColor::Gray;
 
-	for(int32 i = 0; i < 20; i++)
-	{
-		CFlak* pFlak = new CFlak;
-		pFlak->ColorbaseYoung = cby;
-		pFlak->ColorbaseOld = cby;
-		pFlak->bCold = true;
-		pFlak->LargestSize = 4;
-		pFlak->bFade = true;
-
-		pFlak->Position = Position;
-		pFlak->Orientation = Orientation;
-
-		CFPoint dir;
-		dir.SetRandomVector();
-
-		// Debris has at least the object's momentum.
-		pFlak->Orientation.Fwd = Inertia;
-
-		// Scale the momentum up a bit, otherwise 
-		// the explosion looks like it's standing still.
-		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
-		//ndir *= FRAND * 0.4f + 0.2f;
-		float speed = FRAND * 30 + 110;
-
-		pFlak->Orientation.Fwd.MulAdd(dir, speed);
-
-		debris.Add(pFlak);
-	}
+	AddExplosionDebris(Params, Debris);
 }

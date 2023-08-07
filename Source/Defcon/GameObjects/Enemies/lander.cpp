@@ -314,7 +314,9 @@ void Defcon::CLander::Move(float DeltaTime)
 			{
 				// Got the human, proceed to orbit.
 				if(bAscendStraight)
+				{
 					Orientation.Fwd.x = 0.0f;
+				}
 
 				Orientation.Fwd.y = 1.0f;
 				Position.MulAdd(Orientation.Fwd, DeltaTime * LANDER_ASCENTRATE);
@@ -352,8 +354,7 @@ void Defcon::CLander::Move(float DeltaTime)
 
 			float speed = MaxSpeed * 0.33f;
 
-			IGameObject* pTarget = TargetPtr;
-			if(pTarget == nullptr)
+			if(TargetPtr == nullptr)
 			{
 				// No target, just coast.
 				Orientation.Fwd.y = 0;
@@ -361,7 +362,7 @@ void Defcon::CLander::Move(float DeltaTime)
 			else
 			{
 				// Target present, move towards it.
-				GArena->ShortestDirection(Position, pTarget->Position, Orientation.Fwd);
+				GArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
 				//Orientation.Fwd = pTarget->Position;
 				//float dist = Orientation.Fwd.Distance(Position);
 				//Orientation.Fwd -= Position;

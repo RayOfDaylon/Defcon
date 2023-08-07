@@ -104,35 +104,31 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 {
 	// Explode in a thick symmetrical pattern.
 
-	bMortal = true;
-	Lifespan = 0.0f;
-	OnAboutToDie();
-
 	float fBrightBase;
 	CreateExplosionFireball(debris, fBrightBase);
 
-	int32 a, i;
-	const float off = SFRAND * 0.2f;
-	const float off2 = SFRAND * 0.2f;
+	int32 A, I;
+	const float Off = SFRAND * 0.2f;
+	const float Off2 = SFRAND * 0.2f;
 
-	for(a = 0; a < 8; a++)
+	for(A = 0; A < 8; A++)
 	{
-		for(i = 0; i < 10; i++)
+		for(I = 0; I < 10; I++)
 		{
 			CFlak* pFlak = new CFlak;
 			pFlak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
-			float largest = FRAND * 6 + 5;
-			pFlak->LargestSize = MAP(i, 0, 9, largest, 4);
+			float Largest = FRANDRANGE(5, 11);
+			pFlak->LargestSize = MAP(I, 0, 9, Largest, 4);
 			pFlak->bFade = true;
 
 			pFlak->Position = Position;
 
-			float angle = MAP(a, 0, 7, 0, 5.5f);
-			angle += off + SFRAND * 0.05f;
-			pFlak->Orientation.Fwd.Set(sinf(angle), cosf(angle));
+			float Angle = MAP(A, 0, 7, 0, 5.5f);
+			Angle += Off + SFRAND * 0.05f;
+			pFlak->Orientation.Fwd.Set(sinf(Angle), cosf(Angle));
 			
-			pFlak->Orientation.Fwd *= (SFRAND*15+30) * (i+2);
+			pFlak->Orientation.Fwd *= (SFRAND * 15 + 30) * (I + 2);
 			pFlak->Orientation.Fwd += Inertia;
 
 			debris.Add(pFlak);
@@ -141,24 +137,24 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 
 	if(FRAND <= DEBRIS_DUAL_PROB)
 	{
-		for(a = 0; a < 8; a++)
+		for(A = 0; A < 8; A++)
 		{
-			for(i = 0; i < 10; i++)
+			for(I = 0; I < 10; I++)
 			{
 				CFlak* pFlak = new CFlak;
 				pFlak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
-				float largest = FRAND * 6 + 5;
-				pFlak->LargestSize = MAP(i, 0, 9, largest, 4);
+				float Largest = FRAND * 6 + 5;
+				pFlak->LargestSize = MAP(I, 0, 9, Largest, 4);
 				pFlak->bFade = true;
 
 				pFlak->Position = Position;
 
-				float angle = MAP(a, 0, 7, 0, 5.5f);
-				angle += off2 + SFRAND * 0.05f;
-				pFlak->Orientation.Fwd.Set(sinf(angle), cosf(angle));
+				float Angle = MAP(A, 0, 7, 0, 5.5f);
+				Angle += Off2 + SFRAND * 0.05f;
+				pFlak->Orientation.Fwd.Set(sinf(Angle), cosf(Angle));
 				
-				pFlak->Orientation.Fwd *= (SFRAND*5+6) * (i+2);
+				pFlak->Orientation.Fwd *= (SFRAND * 5 + 6) * (I + 2);
 				pFlak->Orientation.Fwd += Inertia;
 
 				debris.Add(pFlak);
@@ -172,7 +168,7 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 Defcon::CFirebomber::CFirebomber()
 {
 	ParentType = Type;
-	Type = EObjType::FIREBOMBER_TRUE;
+	Type       = EObjType::FIREBOMBER_TRUE;
 
 	CreateSprite(Type);
 }
@@ -218,7 +214,7 @@ Defcon::CWeakFirebomber::~CWeakFirebomber()
 Defcon::CWeakFirebomber::CWeakFirebomber()
 {
 	ParentType = Type;
-	Type = EObjType::FIREBOMBER_WEAK;
+	Type       = EObjType::FIREBOMBER_WEAK;
 
 	CreateSprite(Type);
 }

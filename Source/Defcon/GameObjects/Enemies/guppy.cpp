@@ -47,11 +47,6 @@ Defcon::CGuppy::CGuppy()
 }
 
 
-
-void Defcon::CGuppy::OnAboutToDie()
-{
-}
-
 #ifdef _DEBUG
 const char* Defcon::CGuppy::GetClassname() const
 {
@@ -235,42 +230,20 @@ float Defcon::CGuppy::GetExplosionMass() const
 }
 
 
-void Defcon::CGuppy::Explode(CGameObjectCollection& debris)
+void Defcon::CGuppy::Explode(CGameObjectCollection& Debris)
 {
-	const auto cby = EColor::Magenta;
+	FExplosionParams Params;
 
-	bMortal = true;
-	Lifespan = 0.0f;
-	OnAboutToDie();
+	Params.bCold           = true;
+	Params.bFade           = true;
+	Params.MaxParticleSize =   6;
+	Params.NumParticles    =  20;
+	Params.MinSpeed        = 110;
+	Params.MaxSpeed        = 140;
+	Params.OldColor[0]     = EColor::Magenta;
+	Params.OldColor[1]     = EColor::Orange;
+	Params.YoungColor[0]   = EColor::Magenta;
+	Params.YoungColor[1]   = EColor::Red;
 
-	for(int32 i = 0; i < 20; i++)
-	{
-		CFlak* pFlak = new CFlak;
-		pFlak->ColorbaseYoung = BRAND ? EColor::Magenta : EColor::Red;
-		pFlak->ColorbaseOld = BRAND ? EColor::Magenta : EColor::Orange;
-		pFlak->bCold = true;
-		pFlak->LargestSize = 6;
-		pFlak->bFade = true;//bDieOff;
-
-		pFlak->Position = Position;
-		pFlak->Orientation = Orientation;
-
-		CFPoint dir;
-		double t = FRAND * TWO_PI;
-		
-		dir.Set(cosf(t), sinf(t));
-
-		// Debris has at least the object's momentum.
-		pFlak->Orientation.Fwd = Inertia;
-
-		// Scale the momentum up a bit, otherwise 
-		// the explosion looks like it's standing still.
-		pFlak->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
-		//ndir *= FRAND * 0.4f + 0.2f;
-		float speed = FRAND * 30 + 110;
-
-		pFlak->Orientation.Fwd.MulAdd(dir, speed);
-
-		debris.Add(pFlak);
-	}
+	AddExplosionDebris(Params, Debris);
 }

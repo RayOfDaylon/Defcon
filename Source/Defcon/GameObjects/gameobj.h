@@ -37,13 +37,15 @@ namespace Defcon
 
 	struct FExplosionParams
 	{
-		EColor YoungColor      = EColor::LightYellow;
-		EColor OldColor        = EColor::Orange;
-		float  Speed           = 300.0f;
-		float  MinParticleSize =   3.0f;
+		EColor YoungColor[2];
+		EColor OldColor[2]     = { EColor::Red, EColor::Red };
+		float  MinSpeed        = 110.0f;
+		float  MaxSpeed        = 140.0f;
 		float  MaxParticleSize =  10.0f;
+		float  InertiaScale    =   1.0f;
 		int32  NumParticles    =  50;
 		bool   bFade           = true; // Debris fades over time
+		bool   bCold           = false;
 	};
 
 

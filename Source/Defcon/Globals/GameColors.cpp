@@ -60,5 +60,5 @@ FLinearColor Defcon::CGameColors::GetColor(Defcon::EColor Color, float Brightnes
 }
 
 
-Defcon::CGameColors	gGameColors;
+Defcon::CGameColors	GGameColors;
 

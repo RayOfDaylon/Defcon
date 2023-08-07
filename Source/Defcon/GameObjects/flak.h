@@ -51,32 +51,6 @@ namespace Defcon
 
 			virtual void Draw(FPainter&, const I2DCoordMapper&) override;
 	};
-
-
-#if 0
-	class CPuff : public IGameObject
-	{
-		// A puff object is a gray ellipse that
-		// grows smaller and darker over time. It is used
-		// to simulate fading smoke from an explosion. 
-		// If the player is destroying a lot of targets,
-		// the smoke can become pretty abdundant and
-		// introduce a 'fog of war' condition.
-		public:
-			CPuff();
-			virtual ~CPuff();
-
-			virtual void Move(float DeltaTime) override;
-			virtual void Draw(FPaintArguments&, const I2DCoordMapper&) override;
-			virtual void DrawSmall(FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override;
-
-			virtual bool OccursFrequently() const override { return true; }
-
-			float	LargestSize;
-			float	m_fBrightest;
-			float	MaxAge;
-	}; // CPuff
-#endif
 }
 
 

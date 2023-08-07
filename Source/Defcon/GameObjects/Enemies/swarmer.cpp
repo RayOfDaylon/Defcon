@@ -29,17 +29,17 @@ Defcon::CSwarmer::CSwarmer()
 	ParentType = Type;
 	Type       = EObjType::SWARMER;
 
-	PointValue           = SWARMER_VALUE;
-	RadarColor           = C_ORANGE;
-	Frequency            = 2.0f;
-	SoundCountdown = Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX);
-	
-	HorzFrequency         = 2.0f * FRANDRANGE(0.5f, 1.5f);
+	PointValue            = SWARMER_VALUE;
+	RadarColor            = C_ORANGE;
 	bCanBeInjured         = true;
 	bIsCollisionInjurious = true;
+
+	Frequency             = 2.0f;
+	HorzFrequency         = 2.0f * FRANDRANGE(0.5f, 1.5f);
 	VerticalOffset        = (float)(FRAND * PI);
 	TimeTargetWithinRange = 0.0f;
 	FiringCountdown       = FRANDRANGE(1.0f, 3.0f);
+	SoundCountdown        = Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX);
 
 	Orientation.Fwd.Set(1.0f, 0.0f);
 
@@ -120,7 +120,6 @@ void Defcon::CSwarmer::Move(float DeltaTime)
 			}
 		}
 
-
 		if(TimeTargetWithinRange && Age > 1.0f)
 		{
 			SoundCountdown -= DeltaTime;
@@ -200,36 +199,17 @@ void Defcon::CSwarmer::ConsiderFiringBullet(float DeltaTime)
 
 void Defcon::CSwarmer::Explode(CGameObjectCollection& Debris)
 {
-	const auto ColorBase = EColor::Red;
+	FExplosionParams Params;
 
-	bMortal = true;
-	Lifespan = 0.0f;
-	OnAboutToDie();
+	Params.NumParticles    =  20;
+	Params.MaxParticleSize =   4;
+	Params.MinSpeed        =  90;
+	Params.MaxSpeed        = 270;
+	Params.bCold           = true;
+	Params.YoungColor[0]   = 
+	Params.YoungColor[1]   = 
+	Params.OldColor[0]     = 
+	Params.OldColor[1]     = EColor::Red;
 
-	for(int32 i = 0; i < 20; i++)
-	{
-		CFlak* Flak = new CFlak;
-
-		Flak->ColorbaseYoung = ColorBase;
-		Flak->ColorbaseOld = ColorBase;
-		Flak->bCold = true;
-		Flak->LargestSize = 4;
-		Flak->bFade = true;
-
-		Flak->Position    = Position;
-		Flak->Orientation = Orientation;
-
-		CFPoint Direction;
-		Direction.SetRandomVector();
-
-		// Debris has at least the object's momentum.
-		Flak->Orientation.Fwd = Inertia;
-
-		// Scale the momentum up a bit, otherwise 
-		// the explosion looks like it's standing still.
-		Flak->Orientation.Fwd *= FRANDRANGE(20, 32);
-		Flak->Orientation.Fwd.MulAdd(Direction, FRANDRANGE(110, 140));
-
-		Debris.Add(Flak);
-	}
+	AddExplosionDebris(Params, Debris);
 }

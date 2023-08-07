@@ -91,99 +91,35 @@ void Defcon::CPod::OnAboutToDie()
 }
 
 
-void Defcon::CPod::Explode(CGameObjectCollection& debris)
+void Defcon::CPod::Explode(CGameObjectCollection& Debris)
 {
 	// Pods explode normally (but deep purple or red)
 	// but if collided with perfectly, even more so because 
 	// all the swarmers are biting it.
 
-	bMortal = true;
-	Lifespan = 0.0f;
-	OnAboutToDie();
+	FExplosionParams Params;
 
-	int32 n = (int32)(FRAND * 30 + 30);
-	float maxsize = FRAND * 5 + 3;
+	Params.NumParticles    = (int32)FRANDRANGE(30, 60);
+	Params.MaxParticleSize = FRANDRANGE(3, 8) * 1.5f;
+	Params.MinSpeed        =  90;
+	Params.MaxSpeed        = 270;
+	Params.bFade           = (FRAND >= 0.25f);
+	Params.bCold           = true;
+	Params.YoungColor[0]   = 
+	Params.YoungColor[1]   = 
+	Params.OldColor[0]     = 
+	Params.OldColor[1]     = EColor::Purple;
 
-/*
-	// Don't use huge particles ever; it 
-	// just looks silly in the end.
-	if(FRAND < .08)
-		maxsize = 14;
-*/
-
-	// Define which color to make the debris.
-
-	const auto cby = EColor::Purple;
-	maxsize *= 1.5f;
-
-
-	bool bDieOff = (FRAND >= 0.25f);
-	int32 i;
-
-
-	for(i = 0; i < n; i++)
-	{
-		CFlak* pFlak = new CFlak;
-		pFlak->ColorbaseYoung = cby;
-		pFlak->ColorbaseOld   = cby;
-		pFlak->LargestSize    = maxsize;
-		pFlak->bFade = bDieOff;
-		pFlak->bCold = true;
-
-		pFlak->Position = Position;
-		pFlak->Orientation = Orientation;
-
-		CFPoint dir;
-		dir.SetRandomVector();
-
-		// Debris has at least the object's momentum.
-		pFlak->Orientation.Fwd = Inertia;
-
-		// Scale the momentum up a bit, otherwise 
-		// the explosion looks like it's standing still.
-		pFlak->Orientation.Fwd *= FRAND * 12.0f + 30.0f;
-		// Make the particle have a velocity vector
-		// as if it were standing still.
-		float speed = FRAND * 180 + 90;
-
-
-		pFlak->Orientation.Fwd.MulAdd(dir, speed);
-
-		debris.Add(pFlak);
-	}
+	AddExplosionDebris(Params, Debris);
 
 	if(FRAND <= DEBRIS_DUAL_PROB)
 	{
-		bDieOff = (FRAND >= 0.25f);
-		n = (int32)(FRAND * 20 + 20);
-		maxsize = FRAND * 4 + 8.0f;
-		//maxsize = FMath::Min(maxsize, 9.0f);
+		Params.NumParticles    = (int32)FRANDRANGE(20, 40);
+		Params.MaxParticleSize = FRANDRANGE(8, 12);
+		Params.MinSpeed        = 22;
+		Params.MaxSpeed        = 67;
+		Params.bFade           = (FRAND >= 0.25f);
 
-
-		for(i = 0; i < n; i++)
-		{
-			CFlak* pFlak = new CFlak;
-			pFlak->ColorbaseYoung = cby;
-			pFlak->ColorbaseOld = cby;
-			pFlak->LargestSize = maxsize;
-			pFlak->bFade = bDieOff;
-			//pFlak->bDrawsOnRadar = false;
-			pFlak->bCold = true;
-
-			pFlak->Position = Position;
-			pFlak->Orientation = Orientation;
-
-			CFPoint dir;
-			dir.SetRandomVector();
-
-			pFlak->Orientation.Fwd = Inertia;
-
-			pFlak->Orientation.Fwd *= FRAND * 12.0f + 30.0f;
-			float speed = FRAND * 45 + 22;
-
-			pFlak->Orientation.Fwd.MulAdd(dir, speed);
-
-			debris.Add(pFlak);
-		}
+		AddExplosionDebris(Params, Debris);
 	}
 }

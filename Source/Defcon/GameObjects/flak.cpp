@@ -65,7 +65,7 @@ void Defcon::CFlak::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 
 	float Youth = Lifespan / MaxAge;
 
-	const int32 Size = (int32)((FRAND * 0.5f + 0.5f) * Youth * /*8*/	LargestSize + 1);
+	const float Size = FRANDRANGE(0.5f, 1.0f) * Youth * LargestSize + 1;
 
 	if(Pt.x >= -10 && Pt.x < Painter.GetWidth() + 10)
 	{
@@ -88,16 +88,16 @@ void Defcon::CFlak::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 
 		if(Youth < 0.5f || bCold)
 		{
-			// flak piece is old.
+			// Particle is old.
 
-			Color = IRAND(4) != 0 ? gGameColors.GetColor(ColorbaseOld, Youth) : gGameColors.GetColor(EColor::Red, Youth);
+			Color = IRAND(4) != 0 ? GGameColors.GetColor(ColorbaseOld, Youth) : GGameColors.GetColor(EColor::Red, Youth);
 		}
 		else
 		{
-			// flak piece is young.
+			// Particle is young.
 			Color = IRAND(4) != 0 ? 
-				(BRAND ? C_WHITE : gGameColors.GetColor(ColorbaseYoung, Youth))
-				: gGameColors.GetColor((Defcon::EColor)IRAND(3), Youth);
+				(BRAND ? C_WHITE : GGameColors.GetColor(ColorbaseYoung, Youth))
+				: GGameColors.GetColor((Defcon::EColor)IRAND(3), Youth);
 		}
 
 		const auto S = FVector2D(R.Width(), R.Height());
@@ -137,33 +137,11 @@ void Defcon::CGlowingFlak::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 	CFPoint Pt;
 	Mapper.To(Position, Pt);
 
-	float Youth = Lifespan / MaxAge;
-
-	int32 Size = (int32)((FRAND * 0.5f + 0.5f) * Youth * /*8*/	LargestSize + 1);
-
-	int32 halfsize = Size / 2;
+	const float Youth = Lifespan / MaxAge;
+	const float Size  = FRANDRANGE(0.5f, 1.0f) * Youth * LargestSize + 1.0f;
 
 	if(Pt.x >= -10 && Pt.x < Painter.GetWidth() + 10)
 	{
-
-
-#if 1
-		//FLinearColor color;
-		/*CTrueBitmap& bmp = gBitmaps.GetBitmap(
-			IRAND(10) == 0
-			? CBitmaps::fireball0 + IRAND(3)
-			: CBitmaps::bullet5x5 + IRAND(2));
-
-		int32 w = bmp.GetWidth();
-		if(Pt.x >= -w && Pt.x <= Painter.GetWidth() + w)
-		{
-			Pt.sub(CFPoint((float)w/2, (float)bmp.GetHeight()/2));
-			bmp.BlitAlphaBrighten(
-				Painter, ROUND(Pt.x), ROUND(Pt.y), 
-				w, bmp.GetHeight(), 
-				0, 0, Youth);
-		}*/
-
 		auto Color = C_WHITE;
 		const auto S = FVector2D(Size, Size);
 		const FSlateLayoutTransform Translation(FVector2D(Pt.x, Pt.y) - S / 2);
@@ -176,158 +154,8 @@ void Defcon::CGlowingFlak::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 			BrushPtr,
 			ESlateDrawEffect::None,
 			Color * Painter.RenderOpacity);
-
-
-#else		
-		{
-			if(!bFade)
-				Youth = 1.0f;
-			if(Youth < 0.5f || bCold)
-			{
-				// flak piece is old.
-				color = (
-					rand()%4 ? 
-					gGameColors.GetColor(ColorbaseOld, Youth) :
-					gGameColors.GetColor(EColor::Red, Youth));
-
-			}
-			else
-			{
-				// flak piece is young.
-				color = (
-					rand()%4 ? 
-					(BRAND ? C_WHITE :
-					gGameColors.GetColor(ColorbaseYoung, Youth) ) :
-					gGameColors.GetColor(rand()%3, Youth));
-
-			}
-		}
-		if(false || IRAND(7) > 0)
-		{
-			//Rectangle_(dc, R.left, R.top, R.right, R.bottom);
-			//Painter.FillRect(R.left, R.top, R.right, R.bottom);
-			CMaskMap& mask = gBitmaps.GetMask(Size+4, IRAND(3));
-			//Ellipse_(dc, R.left, R.top, R.right, R.bottom);
-			mask.ColorWith(color, Painter, ROUND(Pt.x)-halfsize-2, ROUND(Pt.y)-halfsize-2); 
-		}
-		if(IRAND(3) == 0)
-		{
-			IntRect R;
-			R.left = ROUND(Pt.x - Size + BUDGE);
-			R.right = ROUND(Pt.x + Size + BUDGE);
-			R.top = ROUND(Pt.y - Size + BUDGE);
-			R.bottom = ROUND(Pt.y + Size + BUDGE);
-			Painter.FillRect(R.left, R.top, R.right, R.bottom, color);
-		}
-		else
-		{
-			CMaskMap& mask = gBitmaps.GetMask(Size+1, IRAND(3));
-			//Ellipse_(dc, R.left, R.top, R.right, R.bottom);
-			mask.ColorWith(color, Painter, ROUND(Pt.x)-halfsize, ROUND(Pt.y)-halfsize); 
-		}
-#endif
 	}
 }
 
-#if 0
-// ------------------------------------------------------
-
-Defcon::CPuff::CPuff()
-	:
-	m_fBrightest(1.0f)
-{
-	bMortal = true;
-	bInjurious = false;
-	bCanBeInjured = false;
-
-}
-
-
-Defcon::CPuff::~CPuff()
-{
-}
-
-
-#ifdef _DEBUG
-const char* Defcon::CPuff::GetClassname() const
-{
-	static char* psz = "Flak";
-	return psz;
-}
-#endif
-
-void Defcon::CPuff::Draw
-(
-	FPaintArguments& Painter, 
-	const I2DCoordMapper& Mapper
-)
-{
-	CFPoint Pt;
-	Mapper.To(Position, Pt);
-
-	float Youth = Lifespan / MaxAge;
-
-	// Make puff grow from small to large quickly 
-	// at the start, and then shrink to small slowly.
-	int32 Size;
-	if(Youth >= 0.95f)
-	{
-		float t = CLAMP(Youth, 0.95f, 1.0f);
-		t = NORM_(t, 0.95f, 1.0f);
-		
-		Size = (int32)(LERP(LargestSize, 0.0f, t));
-	}
-	else
-		Size = (int32)((FRAND*.05f+.95f) * Youth * 
-						LargestSize);
-
-	Size++;
-
-	if(Pt.x >= -10 && Pt.x < Painter.GetWidth() + 10)
-	{
-		HDC_ dc = Painter.GetDC();
-		HPEN_ orgpen = (HPEN_)SelectGdiObject_(dc, GetStockObject_(NULL_PEN_));
-
-#define _BUDGE 0
-//(rand() % 3 - 1)
-
-		float stretch = ((1.0f - Youth))*6+1.5f;
-		IntRect R;
-		R.left = ROUND(Pt.x - Size*stretch + _BUDGE);
-		R.right = ROUND(Pt.x + Size*stretch + _BUDGE);
-		R.top = ROUND(Pt.y - Size + _BUDGE);
-		R.bottom = ROUND(Pt.y + Size + _BUDGE);
-
-		int32 rop = SetROP2_(dc, R2_MERGEPEN_);
-
-		HBRUSH_ orgbr;
-		
-		orgbr = (HBRUSH_)SelectGdiObject_(
-			dc, 
-			gGameColors.GetBrush(EColor::Gray, m_fBrightest*Youth*0.5f));		
-
-		Ellipse_(dc, R.left, R.top, R.right, R.bottom);
-
-		(void)SelectGdiObject_(dc, orgpen);
-		(void)SelectGdiObject_(dc, orgbr);
-		SetROP2_(dc, rop);
-	}
-
-}
-
-
-void Defcon::CPuff::DrawSmall(FPaintArguments& Painter, const I2DCoordMapper& map, FSlateBrush&)
-{
-	// Smoke doesn't appear on radar.
-}
-
-
-
-void Defcon::CPuff::Move(float DeltaTime)
-{
-	Position.MulAdd(Orientation.Fwd, DeltaTime);
-}
-
-#endif
 
 #undef BUDGE

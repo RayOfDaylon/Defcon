@@ -82,36 +82,14 @@ void Defcon::CSpacehum::Move(float DeltaTime)
 }
 
 
-void Defcon::CSpacehum::Explode(CGameObjectCollection& debris)
+void Defcon::CSpacehum::Explode(CGameObjectCollection& Debris)
 {
-	bMortal = true;
-	Lifespan = 0.0f;
-	OnAboutToDie();
+	FExplosionParams Params;
 
-	for(int32 I = 0; I < 10; I++)
-	{
-		CFlak* FlakPtr = new CFlak;
+	Params.NumParticles    = 10;
+	Params.MaxParticleSize = 4;
+	Params.YoungColor[0]   = 
+	Params.YoungColor[1]   = EColor::Gray;
 
-		FlakPtr->ColorbaseYoung = EColor::Gray;
-		FlakPtr->LargestSize = 4;
-		FlakPtr->bFade = true;
-
-		FlakPtr->Position    = Position;
-		FlakPtr->Orientation = Orientation;
-
-		// Debris has at least the object's momentum.
-		FlakPtr->Orientation.Fwd = Inertia;
-
-		// Scale the momentum up a bit, otherwise 
-		// the explosion looks like it's standing still.
-		FlakPtr->Orientation.Fwd *= FRAND * 12.0f + 20.0f;
-
-		CFPoint Direction;
-		Direction.SetRandomVector();
-		const float FlakSpeed = FRAND * 30 + 110;
-
-		FlakPtr->Orientation.Fwd.MulAdd(Direction, FlakSpeed);
-
-		debris.Add(FlakPtr);
-	}
+	AddExplosionDebris(Params, Debris);
 }

@@ -2,8 +2,17 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 3, 2023
+August 7, 2023
 
+
+ExplodeObject renamed to DestroyObject; explosion 
+is a boolean parameter.
+
+Game object processor marks objects as dead and calls 
+their OnAboutToDie method instead of each object class 
+doing it in their Explode() method.
+
+Most Explode() method code now uses AddExplosionDebris().
 
 Intro screen moved company name to center, then fades it out
 as title collapses around it.

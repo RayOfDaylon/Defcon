@@ -858,17 +858,7 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 				// Process collision outcome for object.
 				if(pObj->CanBeInjured())
 				{
-					if(!bPlayerKilled)
-					{
-						ExplodeObject(pObj);
-					}
-					else
-					{
-						IncreaseScore(pObj->GetPointValue(), true, &pObj->Position);
-						pObj->bMortal = true;
-						pObj->Lifespan = 0.0f;
-						pObj->OnAboutToDie();
-					}
+					DestroyObject(pObj, !bPlayerKilled);
 				}
 
 				if(bPlayerKilled)
@@ -1547,29 +1537,36 @@ Defcon::IGameObject* UDefconPlayViewBase::FindHuman(float x) const
 }
 
 
-void UDefconPlayViewBase::ExplodeObject(Defcon::IGameObject* pObj)
+void UDefconPlayViewBase::DestroyObject(Defcon::IGameObject* pObj, bool bExplode)
 {
 	check(pObj != nullptr);
 
-	// If object is already dying, then don't 
-	// blow it up again. This fixes the problem 
-	// where player got rewarded for killing
-	// the same enemy multiple times.
+	// If object is already dying, then don't kill it again. 
+	// This fixes the problem where player got rewarded for 
+	// killing the same enemy multiple times.
 
 	if(pObj->MarkedForDeath())
 	{
 		return;
 	}
 
-	pObj->Explode(Debris);
+	pObj->MarkAsDead();
+	pObj->OnAboutToDie();
 
-	// Not sure what the player ship being intact has to do with an object exploding
-	//if(GetPlayerShip().IsAlive() && GetPlayerShip().IsSolid() /*&& Debris.Count() < 800*/)
+	if(pObj->GetType() != Defcon::EObjType::PLAYER)
 	{
-		const float em = pObj->GetExplosionMass();
+		IncreaseScore(pObj->GetPointValue(), SCORETIPS_SHOWENEMYPOINTS, &pObj->Position);
+	}
+
+	if(bExplode)
+	{
+		pObj->Explode(Debris);
+
+		const float ExplosionMass = pObj->GetExplosionMass();
 		
 		Defcon::EAudioTrack track;
-		if(em >= 1.0f) 
+
+		if(ExplosionMass >= 1.0f) 
 		{
 			const Defcon::EAudioTrack LargeExplosionSounds[] =
 			{
@@ -1581,7 +1578,7 @@ void UDefconPlayViewBase::ExplodeObject(Defcon::IGameObject* pObj)
 
 			track = LargeExplosionSounds[IRAND(array_size(LargeExplosionSounds))] ;
 		}
-		else if(em >= 0.3f)
+		else if(ExplosionMass >= 0.3f)
 		{
 			track = Defcon::EAudioTrack::Ship_exploding_medium;
 		}
@@ -1592,13 +1589,7 @@ void UDefconPlayViewBase::ExplodeObject(Defcon::IGameObject* pObj)
 
 		GAudio->OutputSound(track);
 	}
-
-	if(pObj->GetType() != Defcon::EObjType::PLAYER)
-	{
-		IncreaseScore(pObj->GetPointValue(), SCORETIPS_SHOWENEMYPOINTS, &pObj->Position);
-	}
 }
-
 
 
 void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& objects)
@@ -1695,7 +1686,7 @@ void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& ob
 							}
 						}
 
-						ExplodeObject(Obj2Ptr);
+						DestroyObject(Obj2Ptr);
 					}
 				}
 

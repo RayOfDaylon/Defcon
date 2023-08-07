@@ -41,5 +41,5 @@ namespace Defcon
 	};
 }
 
-extern Defcon::CGameColors	gGameColors;
+extern Defcon::CGameColors	GGameColors;
 

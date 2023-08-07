@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 3, 2023
+August 7, 2023
 
 Chapters:
 
@@ -180,9 +180,12 @@ GDefconGameInstance  The singular game instance (has player, humans, missions, s
 GameObjectResources  Maps object types to their sprite atlases.
 GPrefs               Preference settings.
 GObjectTypeManager   Maps game object types to typenames (used for debugging).
+GGameColors          A table of common colors in a range of brightnesses.
 
 The global function GameTime() abstracts UKismetLibrary::GetGameTimeInSeconds.
 It's declared in util_core.h but implemented in UDefconPlayViewBase.
+Using the current time, however, is a discouraged practice as it will 
+cause problems when implementing bullet time.
 
 DefconGameInstance::IsLive is used to tell if the game is actually 
 running or not. Some UUserWidget functions get called as part of the 
@@ -202,10 +205,9 @@ Future Work
 -------------------------------------------------------------------------------------
 Some declarations are outside the Defcon namespace when they shouldn't be.
 
-A lot of Hungarian notation is still present e.g. m_varname for class member variables, 
-"p" prefixes for pointers, "f" for floats, etc. "int" and "size_t" are used instead 
-of "int32", varnames and argnames start lowercase, etc. A sweep is needed to convert 
-all that stuff to Epic coding standards.
-
 GameObject::m_inertia is computed by each game object class, when it should be 
 possible to compute it in a game object collection processing loop.
+
+Relative time should be preferred over current time. E.g. CEvent should 
+work like FScheduledTask.
+ 

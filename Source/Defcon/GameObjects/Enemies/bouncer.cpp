@@ -108,10 +108,6 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 {
 	// Explode in a thick symmetrical pattern.
 
-	bMortal = true;
-	Lifespan = 0.0f;
-	OnAboutToDie();
-
 	//float fBrightBase;
 	//CreateFireblast(debris, fBrightBase);
 
