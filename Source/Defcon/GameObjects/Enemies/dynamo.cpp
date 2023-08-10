@@ -72,7 +72,7 @@ void Defcon::CDynamo::Move(float DeltaTime)
 		&& GArena->GetPlayerShip().IsAlive()
 		&& IsOurPositionVisible())
 	{
-		GArena->CreateEnemy(EObjType::SPACEHUM, Position, 0.0f, EObjectCreationFlags::EnemyPart);
+		GArena->CreateEnemy(EObjType::SPACEHUM, GetType(), Position, 0.0f, EObjectCreationFlags::EnemyPart);
 
 		const auto XP = GDefconGameInstance->GetScore();
 		float T = NORM_(XP, 0.0f, 50000.0f);

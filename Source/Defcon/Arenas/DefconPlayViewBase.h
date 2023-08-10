@@ -202,8 +202,8 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	bool                 IsEnding             () const { return bArenaDying; }
 	void                 DestroyObject        (Defcon::IGameObject* Obj, bool bExplode = true);
 	void                 IncreaseScore        (int32 Points, bool bVis, const CFPoint* P);
-	void                 CreateEnemy          (Defcon::EObjType Kind, const CFPoint& Where, float When, Defcon::EObjectCreationFlags Flags);
-	Defcon::CEnemy*      CreateEnemyNow       (Defcon::EObjType Kind, const CFPoint& Where, Defcon::EObjectCreationFlags Flags);
+	void                 CreateEnemy          (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags);
+	Defcon::CEnemy*      CreateEnemyNow       (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags);
 	Defcon::IGameObject* FindHuman            (float X) const;
 	Defcon::IGameObject* FindEnemy            (Defcon::EObjType Kind, Defcon::IGameObject* Obj = nullptr) const { return Enemies.Find(Kind, Obj); }
 	void                 CheckIfObjectsGotHit (Defcon::CGameObjectCollection& Objects);

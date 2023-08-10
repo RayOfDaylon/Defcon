@@ -157,7 +157,7 @@ void Defcon::CGhost::Move(float DeltaTime)
 
 			for(int32 i = 1; i < NumParts; i++)
 			{
-				auto GhostPart = (CGhostPart*)GArena->CreateEnemyNow(EObjType::GHOSTPART, PartLocs[i], EObjectCreationFlags::EnemyPart);
+				auto GhostPart = (CGhostPart*)GArena->CreateEnemyNow(EObjType::GHOSTPART, GetType(), PartLocs[i], EObjectCreationFlags::EnemyPart);
 
 				GhostPart->SetCollisionInjurious(false);
 				GhostPart->SetFlightDuration(FlightTime);

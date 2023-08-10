@@ -86,7 +86,7 @@ void Defcon::CPod::OnAboutToDie()
 
 	for(int32 I = 0; I < SWARMERS_PER_POD; I++)
 	{
-		GArena->CreateEnemy(EObjType::SWARMER, Position, 0.0f, EObjectCreationFlags::EnemyPart);
+		GArena->CreateEnemy(EObjType::SWARMER, GetType(), Position, 0.0f, EObjectCreationFlags::EnemyPart);
 	}
 }
 

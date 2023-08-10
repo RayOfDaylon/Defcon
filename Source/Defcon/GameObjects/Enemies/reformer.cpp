@@ -175,7 +175,7 @@ void Defcon::CReformer::OnAboutToDie()
 
 	for(int32 I = 0; I < NumParts; I++)
 	{
-		GArena->CreateEnemy(EObjType::REFORMERPART, PartLocations[I], 0.0f, EObjectCreationFlags::EnemyPart);
+		GArena->CreateEnemy(EObjType::REFORMERPART, GetType(), PartLocations[I], 0.0f, EObjectCreationFlags::EnemyPart);
 	}
 }
 
@@ -388,7 +388,7 @@ void Defcon::CReformerPart::Move(float DeltaTime)
 				ClosestObject->MarkAsDead();
 				Position.Average(ClosestObject->Position);
 
-				GArena->CreateEnemy(EObjType::REFORMER, Position, 0.0f, 
+				GArena->CreateEnemy(EObjType::REFORMER, GetType(), Position, 0.0f, 
 					(EObjectCreationFlags)((int32)EObjectCreationFlags::NotMissionTarget | (int32)EObjectCreationFlags::NoMaterialization));
 			}
 		}

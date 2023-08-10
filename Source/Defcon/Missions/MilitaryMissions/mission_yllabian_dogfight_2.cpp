@@ -86,7 +86,7 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 				P.x = (float)fmod(P.x, wp);
 				P.y *= GArena->GetHeight();
 
-				GArena->CreateEnemy(waves[i].Kind, P, FRANDRANGE(0.0f, 0.1f * j), EObjectCreationFlags::StandardEnemy);
+				GArena->CreateEnemy(waves[i].Kind, EObjType::UNKNOWN, P, FRANDRANGE(0.0f, 0.1f * j), EObjectCreationFlags::StandardEnemy);
 			}
 		}
 

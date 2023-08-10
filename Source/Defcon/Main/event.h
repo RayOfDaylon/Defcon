@@ -20,8 +20,7 @@ namespace Defcon
 			virtual ~CEvent() {}
 			virtual void Init() {}
 
-			float	When = 0.0f; // todo: s/b a countdown value instead of an absolute timestamp
-			CFPoint Where;
+			float   Countdown = 0.0f;
 
 			virtual void Do() = 0;
 	};
@@ -64,14 +63,16 @@ namespace Defcon
 
 			CCreateEnemyEvent() {}
 
+			CFPoint   Where;
 			EObjType  EnemyType      = EObjType::UNKNOWN;
+			EObjType  CreatorType    = EObjType::UNKNOWN;
 			bool      bMissionTarget = false;
 
 			virtual void Do() override;
 
 		protected:
 
-			CEnemy* CreateEnemy                 (EObjType, const CFPoint&);
+			CEnemy* CreateEnemy                 ();
 
 			void SpecializeForLander			(CEnemy*, const CFPoint&);
 			void SpecializeForGuppy				(CEnemy*, const CFPoint&);

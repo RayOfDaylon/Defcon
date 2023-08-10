@@ -46,7 +46,7 @@ void Defcon::CMilitaryMission::Init()
 			//auto pEvt = new CCreateEnemyEvent;
 			pEvt->Init(p);
 			pEvt->EnemyType = EObjType::TURRET;
-			pEvt->When = GameTime();
+			pEvt->Countdown = 0.0f;
 			float wp = gpArena->GetWidth();
 			float x = FRAND * wp;
 			x = (float)fmod(x, wp);
@@ -154,7 +154,7 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 
 			y *= GArena->GetHeight();	
 
-			GArena->CreateEnemy(EnemySpawnCountsArray[i].Kind, CFPoint(x, y), FRANDRANGE(0.0f, JFactor * j), EObjectCreationFlags::StandardEnemy);	
+			GArena->CreateEnemy(EnemySpawnCountsArray[i].Kind, EObjType::UNKNOWN, CFPoint(x, y), FRANDRANGE(0.0f, JFactor * j), EObjectCreationFlags::StandardEnemy);	
 		}	
 	}	
 	
@@ -263,7 +263,7 @@ void Defcon::CMilitaryMission::AddNonMissionTarget(EObjType objType, const CFPoi
 	x = (float)fmod(x, wp);
 	float y = FRANDRANGE(0.3f, 0.8f) * GArena->GetHeight();
 
-	GArena->CreateEnemy(objType, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
+	GArena->CreateEnemy(objType, EObjType::UNKNOWN, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
 }
 
 
@@ -276,7 +276,7 @@ void Defcon::CMilitaryMission::AddBaiter(const CFPoint& where)
 	x = (float)fmod(x, wp);
 	float y = FRANDRANGE(0.2f, 0.8f) * GArena->GetHeight();
 
-	GArena->CreateEnemy(EObjType::BAITER, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
+	GArena->CreateEnemy(EObjType::BAITER, EObjType::UNKNOWN, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
 }
 
 

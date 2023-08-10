@@ -478,7 +478,7 @@ void UDefconPlayViewBase::ConcludeMission()
 		auto pEvt = new Defcon::CEndMissionEvent;
 		pEvt->Init();
 		//pEvt->m_what = CEvent::Type::endmission;
-		pEvt->When = GameTime() + FADE_DURATION_NORMAL;
+		pEvt->Countdown = FADE_DURATION_NORMAL;
 		Events.Add(pEvt);
 
 		FadeAge = FADE_DURATION_NORMAL;
@@ -1146,7 +1146,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 				auto pEvt = new Defcon::CRestartMissionEvent;
 				pEvt->Init();
 
-				pEvt->When = now + FADE_DURATION_NORMAL;
+				pEvt->Countdown = FADE_DURATION_NORMAL;
 				Events.Add(pEvt);
 
 				FadeAge = FADE_DURATION_NORMAL;
@@ -1711,14 +1711,13 @@ void UDefconPlayViewBase::OnPlayerShipDestroyed()
 	if(!bArenaDying)
 	{
 		bArenaDying = true;
+		FadeAge = DESTROYED_PLAYER_LIFETIME * 2;
 
 		auto pEvt = new Defcon::CRestartMissionEvent;
 		pEvt->Init();
+		pEvt->Countdown = FadeAge;
 
-		pEvt->When = GameTime() + DESTROYED_PLAYER_LIFETIME * 2;
 		Events.Add(pEvt);
-
-		FadeAge = DESTROYED_PLAYER_LIFETIME * 2;
 	}
 }
 
@@ -1974,11 +1973,9 @@ void UDefconPlayViewBase::SpecializeMaterialization(Defcon::FMaterializationPara
 }
 
 
-void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, const CFPoint& Where, float RelativeWhen, Defcon::EObjectCreationFlags Flags)
+void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags)
 {
-	// todo: we should take a parent type argument.
-
-	auto TimeToDeploy = GameTime() + RelativeWhen;
+	// todo: we should take a creator type argument.
 
 	const auto MaterializationLifetime = ENEMY_BIRTHDURATION;
 
@@ -2003,9 +2000,9 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, const CFPoint&
 
 		auto MaterializationEvent = new Defcon::CCreateMaterializationEvent;
 		MaterializationEvent->InitMaterializationEvent(Params);
-		MaterializationEvent->When = TimeToDeploy;
+		MaterializationEvent->Countdown = Countdown;
 
-		TimeToDeploy += MaterializationLifetime;
+		Countdown += MaterializationLifetime;
 
 		GDefconGameInstance->m_pMission->AddEvent(MaterializationEvent);
 	}
@@ -2015,15 +2012,16 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, const CFPoint&
 	EventPtr->Init();
 
 	EventPtr->EnemyType			= EnemyType;
+	EventPtr->CreatorType       = CreatorType;
 	EventPtr->Where				= Where;
 	EventPtr->bMissionTarget	= (0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::IsMissionTarget));
-	EventPtr->When				= TimeToDeploy;
+	EventPtr->Countdown         = Countdown; 
 
 	GDefconGameInstance->m_pMission->AddEvent(EventPtr);
 }
 
 
-Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::EObjType EnemyType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags)
+Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::EObjType EnemyType, Defcon::EObjType CreatorType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags)
 {
 	// Create an enemy immediately by executing its Do method and not putting the event into the event queue.
 
@@ -2032,6 +2030,7 @@ Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::EObjType EnemyType, 
 	EventPtr->Init();
 
 	EventPtr->EnemyType      = EnemyType;
+	EventPtr->CreatorType    = CreatorType;
 	EventPtr->Where          = Where;
 	EventPtr->bMissionTarget = (0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::IsMissionTarget));
 	
@@ -2058,7 +2057,7 @@ void UDefconPlayViewBase::OnSpawnEnemy()
 	auto pt = GetPlayerShip().Position;
 	pt.x = WrapX(pt.x + 300 * SGN(GetPlayerShip().Orientation.Fwd.x));
 
-	CreateEnemy(SpawnedEnemyTypes[SpawnedEnemyIndex], pt, 0.0f, 
+	CreateEnemy(SpawnedEnemyTypes[SpawnedEnemyIndex], Defcon::EObjType::UNKNOWN, pt, 0.0f, 
 		(Defcon::EObjectCreationFlags)((int32)Defcon::EObjectCreationFlags::Materializes | (int32)Defcon::EObjectCreationFlags::NotMissionTarget));
 }
 

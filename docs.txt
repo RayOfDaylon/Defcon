@@ -185,7 +185,8 @@ GGameColors          A table of common colors in a range of brightnesses.
 The global function GameTime() abstracts UKismetLibrary::GetGameTimeInSeconds.
 It's declared in util_core.h but implemented in UDefconPlayViewBase.
 Using the current time, however, is a discouraged practice as it will 
-cause problems when implementing bullet time.
+cause problems when implementing bullet time. Calls to it were removed 
+from event creation but still remain in the ILiveGameObject motion physics.
 
 DefconGameInstance::IsLive is used to tell if the game is actually 
 running or not. Some UUserWidget functions get called as part of the 
@@ -208,6 +209,29 @@ Some declarations are outside the Defcon namespace when they shouldn't be.
 GameObject::m_inertia is computed by each game object class, when it should be 
 possible to compute it in a game object collection processing loop.
 
-Relative time should be preferred over current time. E.g. CEvent should 
-work like FScheduledTask.
- 
+Relative time should be preferred over current time in ILiveGameObject's motion physics.
+Those physics should also be reevaluated, maybe we can do a better job.
+
+Powerups. Different possibilities for how/when they would appear e.g. 
+emitted by the stargate, by a factory on the ground, or dropped 
+by enemies when they're destroyed, etc.
+
+Difficulty balancing. The game is currently too easy/slow at the start, 
+and some parts are overly hard. Smart bombs also need to be awarded 
+less often or handled by powerups. The player should have to hoard 
+smart bombs to deal with later "boss" levels. On that note, missions 
+like Firebomber Pack and Yllabian Dogfight should spread out the 
+enemies so that winning them isn't a simple matter of detonating 
+smartbombs.
+   Enemy slowness basically stems from our using a larger coordinate space;
+the Windows version was tuned for a 1024 px wide screen, but 
+now we're at 1920. 4K (3840) doesn't have to be accounted for because 
+we're now working in Slate units which UE autoscales for us -- we can 
+remain at 1920 w/o caring what the actual screen resolution is.
+
+
+
+
+
+
+

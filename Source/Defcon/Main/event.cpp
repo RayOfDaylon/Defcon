@@ -51,25 +51,25 @@ Defcon::CEventQueue::~CEventQueue()
 }
 
 
-void Defcon::CEventQueue::Add(CEvent* pE)
+void Defcon::CEventQueue::Add(CEvent* Event)
 {
-	check(pE != nullptr);
+	check(Event != nullptr);
 
-	Events.Add(pE);
+	Events.Add(Event);
 }
 
 
 void Defcon::CEventQueue::Process(float DeltaTime)
 {
-	const float now = GameTime();
-
 	for(int32 Index = Events.Num() - 1; Index >= 0; Index--)
 	{
-		auto EvtPtr = Events[Index];
+		auto Event = Events[Index];
 
-		if(EvtPtr->When <= now)
+		Event->Countdown -= DeltaTime;
+
+		if(Event->Countdown <= 0.0f)
 		{
-			EvtPtr->Do();
+			Event->Do();
 
 			// If the event caused an arena transition, the event queue may have emptied, so check for that.
 			if(Events.IsEmpty())
@@ -77,7 +77,7 @@ void Defcon::CEventQueue::Process(float DeltaTime)
 				return;
 			}
 
-			delete EvtPtr;
+			delete Event;
 
 			Events.RemoveAtSwap(Index);
 		}
@@ -125,255 +125,260 @@ void Defcon::CEndMissionEvent::Do()
 void Defcon::CCreateEnemyEvent::Do()
 {
 	// Create generic enemy.
-	CEnemy* EnemyPtr = CreateEnemy(EnemyType, Where);
 
-	check(EnemyPtr != nullptr);
+	CEnemy* Enemy = CreateEnemy();
+
+	check(Enemy != nullptr);
 
 
 	// Specialize it.
 	switch(EnemyType)
 	{
-		case EObjType::GHOST:           SpecializeForGhost          (EnemyPtr, Where); break;
-		case EObjType::GHOSTPART:       SpecializeForGhostPart      (EnemyPtr, Where); break;
-		case EObjType::GUPPY:           SpecializeForGuppy          (EnemyPtr, Where); break;
-		case EObjType::HUNTER:          SpecializeForHunter         (EnemyPtr, Where); break;
-		case EObjType::LANDER:          SpecializeForLander         (EnemyPtr, Where); break;
-		case EObjType::BOMBER:          SpecializeForBomber         (EnemyPtr, Where); break;
-		case EObjType::FIREBOMBER_TRUE: SpecializeForFirebomber     (EnemyPtr, Where); break;
-		case EObjType::FIREBOMBER_WEAK: SpecializeForWeakFirebomber (EnemyPtr, Where); break;
-		case EObjType::FIREBALL:        SpecializeForFireball       (EnemyPtr, Where); break;
-		case EObjType::DYNAMO:          SpecializeForDynamo         (EnemyPtr, Where); break;
-		case EObjType::SPACEHUM:        SpecializeForSpacehum       (EnemyPtr, Where); break;
-		case EObjType::BAITER:          SpecializeForBaiter         (EnemyPtr, Where); break;
-		case EObjType::POD:             SpecializeForPod            (EnemyPtr, Where); break;
-		case EObjType::SWARMER:         SpecializeForSwarmer        (EnemyPtr, Where); break;
-		case EObjType::REFORMER:        SpecializeForReformer       (EnemyPtr, Where); break;
-		case EObjType::REFORMERPART:    SpecializeForReformerPart   (EnemyPtr, Where); break;
-		case EObjType::BOUNCER_TRUE:    SpecializeForBouncer        (EnemyPtr, Where); break;
-		case EObjType::BOUNCER_WEAK:    SpecializeForWeakBouncer    (EnemyPtr, Where); break;
-		case EObjType::PHRED:           SpecializeForPhred          (EnemyPtr, Where); break;
-		case EObjType::BIGRED:          SpecializeForBigRed         (EnemyPtr, Where); break;
-		case EObjType::MUNCHIE:         SpecializeForMunchie        (EnemyPtr, Where); break;
-		case EObjType::TURRET:          SpecializeForTurret         (EnemyPtr, Where); break;
+		case EObjType::GHOST:           SpecializeForGhost          (Enemy, Where); break;
+		case EObjType::GHOSTPART:       SpecializeForGhostPart      (Enemy, Where); break;
+		case EObjType::GUPPY:           SpecializeForGuppy          (Enemy, Where); break;
+		case EObjType::HUNTER:          SpecializeForHunter         (Enemy, Where); break;
+		case EObjType::LANDER:          SpecializeForLander         (Enemy, Where); break;
+		case EObjType::BOMBER:          SpecializeForBomber         (Enemy, Where); break;
+		case EObjType::FIREBOMBER_TRUE: SpecializeForFirebomber     (Enemy, Where); break;
+		case EObjType::FIREBOMBER_WEAK: SpecializeForWeakFirebomber (Enemy, Where); break;
+		case EObjType::FIREBALL:        SpecializeForFireball       (Enemy, Where); break;
+		case EObjType::DYNAMO:          SpecializeForDynamo         (Enemy, Where); break;
+		case EObjType::SPACEHUM:        SpecializeForSpacehum       (Enemy, Where); break;
+		case EObjType::BAITER:          SpecializeForBaiter         (Enemy, Where); break;
+		case EObjType::POD:             SpecializeForPod            (Enemy, Where); break;
+		case EObjType::SWARMER:         SpecializeForSwarmer        (Enemy, Where); break;
+		case EObjType::REFORMER:        SpecializeForReformer       (Enemy, Where); break;
+		case EObjType::REFORMERPART:    SpecializeForReformerPart   (Enemy, Where); break;
+		case EObjType::BOUNCER_TRUE:    SpecializeForBouncer        (Enemy, Where); break;
+		case EObjType::BOUNCER_WEAK:    SpecializeForWeakBouncer    (Enemy, Where); break;
+		case EObjType::PHRED:           SpecializeForPhred          (Enemy, Where); break;
+		case EObjType::BIGRED:          SpecializeForBigRed         (Enemy, Where); break;
+		case EObjType::MUNCHIE:         SpecializeForMunchie        (Enemy, Where); break;
+		case EObjType::TURRET:          SpecializeForTurret         (Enemy, Where); break;
 
 		default:
 			check(false);
 			break;
 	}
 	
-	EnemyPtr->InstallSprite();
-	EnemyPtr->SetAsMissionTarget(bMissionTarget);
-	EnemyPtr->MakeHurtable();
-	EnemyPtr->SetCollisionInjurious();
+	Enemy->InstallSprite();
+	Enemy->SetAsMissionTarget(bMissionTarget);
+	Enemy->MakeHurtable();
+	Enemy->SetCollisionInjurious();
 
-	GArena->GetEnemies().Add(EnemyPtr);
+	GArena->GetEnemies().Add(Enemy);
 
-	EnemyPtr->OnFinishedCreating();
+	Enemy->OnFinishedCreating();
 }
 
 
-Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy(EObjType kind, const CFPoint& where)
+Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy()
 {
 	// Generic enemy game object creation routine.
 
-	CEnemy* pE = nullptr;
+	CEnemy* Enemy = nullptr;
 
-	switch(kind)
+	switch(EnemyType)
 	{
-		case EObjType::LANDER:          pE = new CLander;           break;
-		case EObjType::GUPPY:           pE = new CGuppy;            break;
-		case EObjType::HUNTER:          pE = new CHunter;           break;
-		case EObjType::BOMBER:          pE = new CBomber;           break;
-		case EObjType::BAITER:          pE = new CBaiter;           break;
-		case EObjType::POD:             pE = new CPod;              break;
-		case EObjType::SWARMER:         pE = new CSwarmer;          break;
-		case EObjType::FIREBOMBER_TRUE: pE = new CFirebomber;       break;
-		case EObjType::FIREBOMBER_WEAK: pE = new CWeakFirebomber;   break;
-		case EObjType::FIREBALL:        pE = new CFireball;         break;
-		case EObjType::DYNAMO:          pE = new CDynamo;           break;
-		case EObjType::SPACEHUM:        pE = new CSpacehum;         break;
-		case EObjType::REFORMER:        pE = new CReformer;         break;
-		case EObjType::REFORMERPART:    pE = new CReformerPart;     break;
-		case EObjType::BOUNCER_TRUE:    pE = new CBouncer;          break;
-		case EObjType::BOUNCER_WEAK:    pE = new CWeakBouncer;      break;
-		case EObjType::PHRED:           pE = new CPhred;            break;
-		case EObjType::BIGRED:          pE = new CBigRed;           break;
-		case EObjType::MUNCHIE:         pE = new CMunchie;          break;
-		case EObjType::GHOST:           pE = new CGhost;            break;
-		case EObjType::GHOSTPART:       pE = new CGhostPart;        break;
-		case EObjType::TURRET:          pE = new CTurret;           break;
+		case EObjType::LANDER:          Enemy = new CLander;           break;
+		case EObjType::GUPPY:           Enemy = new CGuppy;            break;
+		case EObjType::HUNTER:          Enemy = new CHunter;           break;
+		case EObjType::BOMBER:          Enemy = new CBomber;           break;
+		case EObjType::BAITER:          Enemy = new CBaiter;           break;
+		case EObjType::POD:             Enemy = new CPod;              break;
+		case EObjType::SWARMER:         Enemy = new CSwarmer;          break;
+		case EObjType::FIREBOMBER_TRUE: Enemy = new CFirebomber;       break;
+		case EObjType::FIREBOMBER_WEAK: Enemy = new CWeakFirebomber;   break;
+		case EObjType::FIREBALL:        Enemy = new CFireball;         break;
+		case EObjType::DYNAMO:          Enemy = new CDynamo;           break;
+		case EObjType::SPACEHUM:        Enemy = new CSpacehum;         break;
+		case EObjType::REFORMER:        Enemy = new CReformer;         break;
+		case EObjType::REFORMERPART:    Enemy = new CReformerPart;     break;
+		case EObjType::BOUNCER_TRUE:    Enemy = new CBouncer;          break;
+		case EObjType::BOUNCER_WEAK:    Enemy = new CWeakBouncer;      break;
+		case EObjType::PHRED:           Enemy = new CPhred;            break;
+		case EObjType::BIGRED:          Enemy = new CBigRed;           break;
+		case EObjType::MUNCHIE:         Enemy = new CMunchie;          break;
+		case EObjType::GHOST:           Enemy = new CGhost;            break;
+		case EObjType::GHOSTPART:       Enemy = new CGhostPart;        break;
+		case EObjType::TURRET:          Enemy = new CTurret;           break;
 
-		default: throw 0; break;
+		default: 
+			check(false); 
+			break;
 	}
 
-	pE->MapperPtr = &GArena->GetMainAreaMapper();
-	pE->Position = where;
+	Enemy->SetCreatorType(CreatorType);
+	Enemy->MapperPtr = &GArena->GetMainAreaMapper();
+	Enemy->Position = Where;
+
 	float w = GArena->GetDisplayWidth();
 
-	pE->Init(CFPoint((float)GArena->GetWidth(), (float)GArena->GetHeight()), CFPoint(w, (float)GArena->GetHeight()));
+	Enemy->Init(CFPoint((float)GArena->GetWidth(), (float)GArena->GetHeight()), CFPoint(w, (float)GArena->GetHeight()));
 
-	return pE;
+	return Enemy;
 }
 
 
 
-#define SET_RANDOM_FWD_ORIENT   pE->Orientation.Fwd.x = SBRAND;
-#define SET_PLAYER_AS_TARGET    pE->SetTarget(&GArena->GetPlayerShip());
+#define SET_RANDOM_FWD_ORIENT   Enemy->Orientation.Fwd.x = SBRAND;
+#define SET_PLAYER_AS_TARGET    Enemy->SetTarget(&GArena->GetPlayerShip());
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForBouncer(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForBouncer(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
-	pE->Orientation.Fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
+	Enemy->Orientation.Fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForWeakBouncer(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForWeakBouncer(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
-	pE->Orientation.Fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
+	Enemy->Orientation.Fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForPhred(Defcon::CEnemy* pE, const CFPoint& where)
-{
-	SET_PLAYER_AS_TARGET
-	SET_RANDOM_FWD_ORIENT
-}
-
-
-void Defcon::CCreateEnemyEvent::SpecializeForBigRed(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForPhred(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForMunchie(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForBigRed(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForGhost(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForMunchie(Defcon::CEnemy* Enemy, const CFPoint& where)
+{
+	SET_PLAYER_AS_TARGET
+	SET_RANDOM_FWD_ORIENT
+}
+
+
+void Defcon::CCreateEnemyEvent::SpecializeForGhost(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForGhostPart(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForGhostPart(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
-	pE->SetCollisionInjurious(false);
+	Enemy->SetCollisionInjurious(false);
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForLander(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForLander(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 
-	CLander* p = static_cast<CLander*>(pE);
+	CLander* p = static_cast<CLander*>(Enemy);
 	//p->m_pvUserTerrainEval = gpArena;
 	p->Objects = &GArena->GetObjects();
 	p->SetDoChaseHumans(GDefconGameInstance->GetMission()->HumansInvolved());
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForGuppy(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForGuppy(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForHunter(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForHunter(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForBomber(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForBomber(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForFirebomber(Defcon::CEnemy* pE, const CFPoint& where)
-{
-	SET_PLAYER_AS_TARGET
-	SET_RANDOM_FWD_ORIENT
-}
-
-
-void Defcon::CCreateEnemyEvent::SpecializeForWeakFirebomber(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForFirebomber(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForFireball(Defcon::CEnemy* pE, const CFPoint& where)
-{
-	SET_PLAYER_AS_TARGET
-}
-
-
-void Defcon::CCreateEnemyEvent::SpecializeForDynamo(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForWeakFirebomber(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForSpacehum(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForFireball(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForPod(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForDynamo(Defcon::CEnemy* Enemy, const CFPoint& where)
+{
+	SET_PLAYER_AS_TARGET
+	SET_RANDOM_FWD_ORIENT
+}
+
+
+void Defcon::CCreateEnemyEvent::SpecializeForSpacehum(Defcon::CEnemy* Enemy, const CFPoint& where)
+{
+	SET_PLAYER_AS_TARGET
+}
+
+
+void Defcon::CCreateEnemyEvent::SpecializeForPod(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForSwarmer(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForSwarmer(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
-	pE->Orientation.Fwd.x = SBRAND;
+	Enemy->Orientation.Fwd.x = SBRAND;
 
-	CSwarmer* p = static_cast<CSwarmer*>(pE);
+	CSwarmer* p = static_cast<CSwarmer*>(Enemy);
 	p->SetOriginalPosition(where);
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForTurret(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForTurret(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 
-	auto p = static_cast<CTurret*>(pE);
+	auto p = static_cast<CTurret*>(Enemy);
 	p->SetOriginalPosition(where);
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForReformerPart(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForReformerPart(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
-	CReformerPart* p = static_cast<CReformerPart*>(pE);
+	CReformerPart* p = static_cast<CReformerPart*>(Enemy);
 	p->SetOriginalPosition(where);
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForBaiter(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForBaiter(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForReformer(Defcon::CEnemy* pE, const CFPoint& where)
+void Defcon::CCreateEnemyEvent::SpecializeForReformer(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT

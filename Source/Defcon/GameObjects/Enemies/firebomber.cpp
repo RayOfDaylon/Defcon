@@ -190,7 +190,7 @@ void Defcon::CFirebomber::Move(float fTime)
 
 	if(FiringCountdown <= 0.0f)
 	{
-		GArena->CreateEnemy(EObjType::FIREBALL, Position, 0.0f, EObjectCreationFlags::EnemyPart);
+		GArena->CreateEnemy(EObjType::FIREBALL, GetType(), Position, 0.0f, EObjectCreationFlags::EnemyPart);
 
 		// The time to fire goes down as the player XP increases.
 

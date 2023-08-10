@@ -61,7 +61,7 @@ void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 			x = (float)fmod(x, wp);
 			float y = FRANDRANGE(0.25f, 0.85f) * GArena->GetHeight();
 
-			GArena->CreateEnemy((i & 1) == 1 ? EObjType::FIREBOMBER_TRUE : EObjType::FIREBOMBER_WEAK, 
+			GArena->CreateEnemy((i & 1) == 1 ? EObjType::FIREBOMBER_TRUE : EObjType::FIREBOMBER_WEAK, EObjType::UNKNOWN,
 					CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), EObjectCreationFlags::StandardEnemy);
 		}
 
@@ -72,7 +72,7 @@ void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 			x = (float)fmod(x, wp);
 			float y = FRANDRANGE(0.25f, 0.85f) * GArena->GetHeight();
 
-			GArena->CreateEnemy(EObjType::DYNAMO, CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), EObjectCreationFlags::StandardEnemy);
+			GArena->CreateEnemy(EObjType::DYNAMO, EObjType::UNKNOWN, CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), EObjectCreationFlags::StandardEnemy);
 		}
 		WaveIndex++;
 	}
