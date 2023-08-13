@@ -33,11 +33,6 @@ namespace Defcon
 	};
 }
 
-struct FDefconInputState
-{
-	bool    bActive   = false;
-	double  TimeDown = 0.0;
-};
 
 
 /*
@@ -97,20 +92,19 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	virtual void OnToggleShowOrigin        () override;
 
 
-	void InitMapperAndTerrain   ();
-	void InitPlayerShip         ();
-	void SettlePlayer           (float DeltaTime);
-	void DoThrustSound          (float DeltaTime);
-	bool IsPlayerShipThrustActive() const;
-	void UpdatePlayerShipInputs ();
-	void UpdateGameObjects      (float DeltaTime);
-	void ConcludeMission        ();
+	void InitMapperAndTerrain     ();
+	void InitPlayerShip           ();
+	void SettlePlayer             (float DeltaTime);
+	void DoThrustSound            (float DeltaTime);
+	bool IsPlayerShipThrustActive () const;
+	void UpdateGameObjects        (float DeltaTime);
+	void ConcludeMission          ();
 
 	void CheckPlayerCollided    ();
 	void CheckIfPlayerHit       (Defcon::CGameObjectCollection& Objects);
 
 	void Hyperspace             ();
-	void FireSmartbomb          ();
+	void DetonateSmartbomb          ();
 	void DeleteAllObjects       ();
 	void OnPlayerShipDestroyed  ();
 	void DestroyPlayerShip      ();
@@ -137,8 +131,6 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 
 
-
-
 	Defcon::CTerrain*              Terrain;
 	Defcon::CGameObjectCollection  Enemies;
 	Defcon::CGameObjectCollection  Objects;  // stuff like beacons, stars, text, etc.
@@ -150,11 +142,6 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 	Defcon::CArenaCoordMapper      MainAreaMapper;
 
-	FDefconInputState     MoveShipUpState;
-	FDefconInputState     MoveShipDownState;
-	FDefconInputState     MoveShipLeftState;
-	FDefconInputState     MoveShipRightState;
-
 	Daylon::FLoopedSound  ShipThrustSoundLoop;
 	bool                  WasShipUnderThrust = false;
 
@@ -165,7 +152,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	bool 	bFinishActivating = false;
 
 	bool    m_bHumansInMission = false;
-	bool    bArenaDying    = false;
+	bool    bArenaClosing    = false;
 	bool    m_bRunSlow       = false;
 	float   m_fRadarFritzed  = 0.0f;
 	float   FadeAge       = 0.0f;
@@ -178,6 +165,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	const Defcon::I2DCoordMapper&         GetConstMainAreaMapper  () const { return MainAreaMapper; }
 	
 	Defcon::CPlayer&                      GetPlayerShip           ();
+	const Defcon::CPlayer&                GetPlayerShip           () const;
 	const Defcon::CGameObjectCollection&  GetConstHumans          () const;
 	Defcon::CGameObjectCollection&        GetHumans               ();
 	Defcon::CGameObjectCollection&        GetObjects              () { return Objects; }
@@ -199,7 +187,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	void                 AddDebris            (Defcon::IGameObject* Obj);
 	void                 LayMine              (Defcon::IGameObject& Obj, const CFPoint& From, int32, int32);
 	Defcon::IBullet*     FireBullet           (Defcon::IGameObject&, const CFPoint& From, int32 SoundID, int32);
-	bool                 IsEnding             () const { return bArenaDying; }
+	bool                 IsEnding             () const { return bArenaClosing; }
 	void                 DestroyObject        (Defcon::IGameObject* Obj, bool bExplode = true);
 	void                 IncreaseScore        (int32 Points, bool bVis, const CFPoint* P);
 	void                 CreateEnemy          (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags);

@@ -33,8 +33,6 @@ namespace Defcon
 
 	class CBouncer : public IBouncer
 	{
-		// A bouncer bounces on the terrain. 
-
 		public:
 			CBouncer();
 			virtual ~CBouncer();
@@ -46,8 +44,6 @@ namespace Defcon
 
 	class CWeakBouncer : public IBouncer
 	{
-		// A bouncer bounces on the terrain. 
-
 		public:
 			CWeakBouncer();
 			virtual ~CWeakBouncer();

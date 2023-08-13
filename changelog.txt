@@ -2,8 +2,16 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 7, 2023
+August 12, 2023
 
+
+Player ship input handling directly updates its 
+navigation control state instead of using an 
+intermediate state array; UpdatePlayerShipInputs removed.
+
+ILiveGameObject's motion physics changed to use 
+explicit duration instead of computed from current game time.
+GameTime() function commented out since we shouldn't use it.
 
 ExplodeObject renamed to DestroyObject; explosion 
 is a boolean parameter.

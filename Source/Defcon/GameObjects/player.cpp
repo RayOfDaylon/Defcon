@@ -263,14 +263,14 @@ void Defcon::CPlayer::ImpartForces(float DeltaTime)
 	// Now handle vertical force in our way.
 	const float kVertMotionPxPerSec = 300.0f;
 
-	if(NavControls[ctlUp].bActive)
+	if(NavControls[ENavControl::Up].bActive)
 	{
-		const float TimeHeld = GameTime() - NavControls[ctlUp].TimeDown;
+		const float TimeHeld = NavControlDuration(ENavControl::Up);
 		Position.MulAdd({ 0.0f, FMath::Min((kVertMotionPxPerSec * TimeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, DeltaTime);
 	}
-	else if(NavControls[ctlDown].bActive)
+	else if(NavControls[ENavControl::Down].bActive)
 	{
-		const float TimeHeld = GameTime() - NavControls[ctlDown].TimeDown;
+		const float TimeHeld = NavControlDuration(ENavControl::Down);
 		Position.MulAdd({ 0.0f, -FMath::Min((kVertMotionPxPerSec * TimeHeld * 2) + kVertMotionPxPerSec/2, kVertMotionPxPerSec) }, DeltaTime);
 	}
 }

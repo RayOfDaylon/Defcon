@@ -9,7 +9,7 @@
 */
 
 
-float GameTime();
+//float GameTime();
 
 #ifdef __cplusplus
 extern "C"

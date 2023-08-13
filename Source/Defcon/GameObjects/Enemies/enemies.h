@@ -37,9 +37,7 @@ namespace Defcon
 		protected:
 
 			IGameObject*    TargetPtr = nullptr;
-
 			float           Brightness;
-			float           ControlStartTime[Super::numCtls];
 	};
 }
 

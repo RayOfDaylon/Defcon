@@ -458,16 +458,16 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 	Str = FString::Printf(TEXT("%.4f, %.4f"), PlayerShipPtr->ThrustVector.x, PlayerShipPtr->ThrustVector.y);
 	Thrust->SetText(FText::FromString(Str)); 
 
-	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlBack].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlBack].TimeDown);
+	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ENavControl::Back].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ENavControl::Back].Duration);
 	ThrustLeftKey->SetText(FText::FromString(Str)); 
 
-	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlFwd].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlFwd].TimeDown);
+	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ENavControl::Fwd].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ENavControl::Fwd].Duration);
 	ThrustRightKey->SetText(FText::FromString(Str)); 
 
-	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlUp].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlUp].TimeDown);
+	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ENavControl::Up].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ENavControl::Up].Duration);
 	ThrustUpKey->SetText(FText::FromString(Str)); 
 
-	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlDown].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ctlDown].TimeDown);
+	Str = FString::Printf(TEXT("%d, %.4f"), (int32)PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ENavControl::Down].bActive, PlayerShipPtr->NavControls[Defcon::ILiveGameObject::ENavControl::Down].Duration);
 	ThrustDownKey->SetText(FText::FromString(Str)); 
 
 	Str = FString::Printf(TEXT("%.4f, %.4f"), PlayerShipPtr->ThrustDurationForwards, PlayerShipPtr->ThrustDurationBackwards);

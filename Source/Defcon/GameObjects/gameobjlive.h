@@ -16,7 +16,7 @@
 
 struct FNavControl
 {
-	float	TimeDown = 0.0f;
+	float   Duration = 0.0f;
 	bool	bActive  = false;
 };
 
@@ -36,40 +36,38 @@ namespace Defcon
 		public:
 			ILiveGameObject();
 
-			virtual void   Move                  (float DeltaTime) override;
+			virtual void       Move                  (float DeltaTime) override;
 
-			virtual bool   ExplosionHasFireball  () const override { return true; }
+			virtual bool       ExplosionHasFireball  () const override { return true; }
 
-			virtual void   ChangeThrust          (const CFPoint&);
-			void           EnableInput           (bool b = true) { bCanMove = b; }
-			bool           IsInputEnabled        () const { return bCanMove; }
-			bool           IsAlive               () const { return bAlive; }
-			virtual void   SetIsAlive            (bool b) { bAlive = b; }
+			virtual void       ChangeThrust          (const CFPoint&);
+			void               EnableInput           (bool b = true) { bCanMove = b; }
+			bool               IsInputEnabled        () const { return bCanMove; }
+			bool               IsAlive               () const { return bAlive; }
+			virtual void       SetIsAlive            (bool b) { bAlive = b; }
 
-			void           ZeroThrust            () { ThrustVector.Set(0,0); }
-			void           ZeroMotion            () { ZeroVelocity(); ZeroThrust(); }
-			void           ZeroInput             () { for(auto& Ctl : NavControls) { Ctl.bActive = false; } }
+			const FNavControl& GetNavControl         (int32 Index) const { return NavControls[Index]; }
+			void               SetNavControl         (int32 Index, bool bActive, float Duration);
+			float              NavControlDuration    (int32 Index) const;
+			void               ZeroThrust            () { ThrustVector.Set(0,0); }
+			void               ZeroMotion            () { ZeroVelocity(); ZeroThrust(); }
+			void               ZeroInput             () { for(auto& Ctl : NavControls) { Ctl.bActive = false; } }
+			virtual void       ComputeThrustTimings  (float);
+			virtual void       ComputeForces         (float);
+			virtual void       ImpartForces          (float);
+			const CFPoint&     GetThrustVector       () const { return ThrustVector; }
 
-			virtual void   ComputeThrustTimings  (float);
-			virtual void   ComputeForces         (float);
-			virtual void   ImpartForces          (float);
+			virtual float      GetShieldStrength     () const    { return ShieldStrength; }
+			virtual void       SetShieldStrength     (float f);
+			virtual bool       RegisterImpact        (float f);
+			void               BindToShieldValue     (TFunction<void(const float& Val)> Delegate) { ShieldStrength.Bind(Delegate); }
 
-			const CFPoint& GetThrustVector       () const { return ThrustVector; }
-
-			virtual float  NavControlDuration    (int32) const;
-			void           SetNavControl         (int32, bool, float);
-
-			virtual float  GetShieldStrength     () const    { return ShieldStrength; }
-			virtual void   SetShieldStrength     (float f);
-			virtual bool   RegisterImpact        (float f);
-			void           BindToShieldValue     (TFunction<void(const float& Val)> Delegate) { ShieldStrength.Bind(Delegate); }
-
-			enum { ctlUp, ctlDown, ctlFwd, ctlBack, numCtls };
+			enum ENavControl { Up, Down, Fwd, Back, Count };
 
 
 		protected:
 
-			FNavControl NavControls[numCtls];
+			FNavControl NavControls[ENavControl::Count];
 			CFPoint     ThrustVector;
 			float       MaxThrust;
 			float       ThrustDurationVertical;

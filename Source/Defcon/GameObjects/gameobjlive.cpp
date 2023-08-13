@@ -91,56 +91,65 @@ float Defcon::ILiveGameObject::NavControlDuration(int32 i) const
 		return 0.0f;
 	}
 
-	const float f = (float)(GameTime() - NavControls[i].TimeDown);
+	const float f = NavControls[i].Duration;
 	return FMath::Max(0.0f, f);
 }
 
 
-void Defcon::ILiveGameObject::SetNavControl(int32 i, bool b, float f)
+void Defcon::ILiveGameObject::SetNavControl(int32 Index, bool bActive, float Duration)
 {
-	NavControls[i].bActive = b;
-	NavControls[i].TimeDown = f;
+	NavControls[Index].bActive  = bActive;
+	NavControls[Index].Duration = Duration;
 }
 
 
-void Defcon::ILiveGameObject::ComputeThrustTimings(float frameTime)
+void Defcon::ILiveGameObject::ComputeThrustTimings(float DeltaTime)
 {
 	// Determine how long the object has had a thrust 
 	// applied to it. If it is longer than the frametime, 
 	// make it equal to the frametime.
 
-	check(frameTime > 0.0f);
+	check(DeltaTime > 0.0f);
 
-	ThrustDurationForwards  = NavControlDuration(ctlFwd);
-	ThrustDurationBackwards = NavControlDuration(ctlBack);
-	ThrustDurationForwards  = FMath::Min(ThrustDurationForwards, frameTime);
-	ThrustDurationBackwards = FMath::Min(ThrustDurationBackwards, frameTime);
+	for(auto& NavControl : NavControls)
+	{
+		if(NavControl.bActive)
+		{
+			NavControl.Duration += DeltaTime;
+		}
+	}
+
+
+	ThrustDurationForwards  = NavControlDuration(ENavControl::Fwd);
+	ThrustDurationBackwards = NavControlDuration(ENavControl::Back);
+	ThrustDurationForwards  = FMath::Min(ThrustDurationForwards, DeltaTime);
+	ThrustDurationBackwards = FMath::Min(ThrustDurationBackwards, DeltaTime);
 	
 
 	// If neither up or down thrusts active, set the vert. thrust to zero.
-	if(!NavControls[ctlUp].bActive && !NavControls[ctlDown].bActive)
+	if(!NavControls[ENavControl::Up].bActive && !NavControls[ENavControl::Down].bActive)
 	{
 		ThrustDurationVertical = 0;
 		return;
 	}
 
-	ThrustDurationVertical += NavControlDuration(ctlUp);
-	ThrustDurationVertical -= NavControlDuration(ctlDown);
+	ThrustDurationVertical += NavControlDuration(ENavControl::Up);
+	ThrustDurationVertical -= NavControlDuration(ENavControl::Down);
 
 	// Clamp vertical thrust duration to the frametime.
-	ThrustDurationVertical = FMath::Min(ThrustDurationVertical, frameTime);
-	ThrustDurationVertical = FMath::Max(ThrustDurationVertical, -frameTime);
+	ThrustDurationVertical = FMath::Min(ThrustDurationVertical, DeltaTime);
+	ThrustDurationVertical = FMath::Max(ThrustDurationVertical, -DeltaTime);
 }
 
 
-void Defcon::ILiveGameObject::ComputeForces(float frametime)
+void Defcon::ILiveGameObject::ComputeForces(float DeltaTime)
 {
-	check(frametime > 0.0f);
+	check(DeltaTime > 0.0f);
 
 	const float kHorzSpeedScaler = 1.66f;
 	const float kVertSpeedScaler = 0.75f;
 
-	if(frametime > 0.0f)
+	if(DeltaTime > 0.0f)
 	{
 		ThrustVector = Orientation.Fwd;
 
@@ -156,7 +165,7 @@ void Defcon::ILiveGameObject::ComputeForces(float frametime)
 		}
 
 		ThrustVector.MulAdd(Orientation.Up, ThrustDurationVertical * kVertSpeedScaler);
-		ThrustVector.Mul(MaxThrust / frametime);
+		ThrustVector.Mul(MaxThrust / DeltaTime);
 	}
 }
 

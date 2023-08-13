@@ -186,7 +186,7 @@ The global function GameTime() abstracts UKismetLibrary::GetGameTimeInSeconds.
 It's declared in util_core.h but implemented in UDefconPlayViewBase.
 Using the current time, however, is a discouraged practice as it will 
 cause problems when implementing bullet time. Calls to it were removed 
-from event creation but still remain in the ILiveGameObject motion physics.
+from event creation and in ILiveGameObject's motion physics.
 
 DefconGameInstance::IsLive is used to tell if the game is actually 
 running or not. Some UUserWidget functions get called as part of the 
@@ -208,9 +208,6 @@ Some declarations are outside the Defcon namespace when they shouldn't be.
 
 GameObject::m_inertia is computed by each game object class, when it should be 
 possible to compute it in a game object collection processing loop.
-
-Relative time should be preferred over current time in ILiveGameObject's motion physics.
-Those physics should also be reevaluated, maybe we can do a better job.
 
 Powerups. Different possibilities for how/when they would appear e.g. 
 emitted by the stargate, by a factory on the ground, or dropped 

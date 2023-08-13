@@ -37,12 +37,11 @@ Defcon::CBaiter::CBaiter()
 	MaxThrust              = PLAYER_MAXTHRUST * 9.0f;
 	Mass                   = PLAYER_MASS * 20;
 	bIsCollisionInjurious  = true;
-	bPreferTargetUnderside = FRAND >= 0.5f;
+	bPreferTargetUnderside = BRAND;
 	FireWeaponCountdown    = FRANDRANGE(0.75f, 2.0f);
 
 	CreateSprite(Type);
-	const auto& SpriteInfo = GameObjectResources.Get(Type);
-	BboxRadius.Set(SpriteInfo.Size.X, SpriteInfo.Size.Y);
+	BboxRadius = GameObjectResources.Get(Type).Size;
 }
 
 
@@ -86,12 +85,10 @@ void Defcon::CBaiter::Move(float DeltaTime)
 
 	Inertia = Position;
 
-	// Don't move until after materialization is complete.
-	//if(Age > ENEMY_BIRTHDURATION)
+	
 	{
-		// Thrust in a way that will take us towards 
-		// the player. Only thrust vertically if we 
-		// are not within range.
+		// Thrust in a way that will take us towards the player. 
+		// Only thrust vertically if we are not within range.
 
 		CFPoint delta, target;
 		target = TargetPtr->Position;
@@ -106,22 +103,17 @@ void Defcon::CBaiter::Move(float DeltaTime)
 
 		if(bMoveTowards)
 		{
-			const int32 ctl = (delta.x < 0)	? ILiveGameObject::ctlBack : ILiveGameObject::ctlFwd;
-			const int32 ctl2 = (ctl ==  ILiveGameObject::ctlBack) ? ILiveGameObject::ctlFwd : ILiveGameObject::ctlBack;
+			const int32 ctl = (delta.x < 0)	? ENavControl::Back : ENavControl::Fwd;
+			const int32 ctl2 = (ctl ==  ENavControl::Back) ? ENavControl::Fwd : ENavControl::Back;
 
-			if(NavControlDuration(ctl) == 0)
-			{
-				ControlStartTime[ctl] = GameTime();
-			}
-
-			SetNavControl(ctl, true, ControlStartTime[ctl]);
+			SetNavControl(ctl, true, NavControlDuration(ctl));
 			SetNavControl(ctl2, false, 0);
 		}
 		else
 		{
 			// Parallel the player.
-			SetNavControl(ILiveGameObject::ctlBack, false, 0);
-			SetNavControl(ILiveGameObject::ctlFwd, false, 0);
+			SetNavControl(ENavControl::Back, false, 0);
+			SetNavControl(ENavControl::Fwd,  false, 0);
 		}
 
 		// Vertical.
@@ -129,21 +121,16 @@ void Defcon::CBaiter::Move(float DeltaTime)
 
 		if(bMoveTowards)
 		{
-			const int32 ctl  = (delta.y < 0) ? ILiveGameObject::ctlDown : ILiveGameObject::ctlUp;
-			const int32 ctl2 = (ctl ==  ILiveGameObject::ctlDown) ? ILiveGameObject::ctlUp : ILiveGameObject::ctlDown;
+			const int32 ctl  = (delta.y < 0) ? ENavControl::Down : ENavControl::Up;
+			const int32 ctl2 = (ctl ==  ENavControl::Down) ? ENavControl::Up : ENavControl::Down;
 
-			if(NavControlDuration(ctl) == 0)
-			{
-				ControlStartTime[ctl] = GameTime();
-			}
-
-			SetNavControl(ctl, true, ControlStartTime[ctl]);
+			SetNavControl(ctl, true, NavControlDuration(ctl));
 			SetNavControl(ctl2, false, 0);
 		}
 		else
 		{
-			SetNavControl(ILiveGameObject::ctlDown, false, 0);
-			SetNavControl(ILiveGameObject::ctlUp, false, 0);
+			SetNavControl(ENavControl::Down, false, 0);
+			SetNavControl(ENavControl::Up, false, 0);
 		}
 
 		if(IsOurPositionVisible())
