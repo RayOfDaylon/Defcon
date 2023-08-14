@@ -41,7 +41,7 @@ Defcon::CBaiter::CBaiter()
 	FireWeaponCountdown    = FRANDRANGE(0.75f, 2.0f);
 
 	CreateSprite(Type);
-	BboxRadius = GameObjectResources.Get(Type).Size;
+	BboxRadius = GGameObjectResources.Get(Type).Size;
 }
 
 

@@ -42,7 +42,7 @@ Defcon::CGuppy::CGuppy()
 	FiringCountdown = 1.0f;
 
 	CreateSprite(Type);
-	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	const auto& SpriteInfo = GGameObjectResources.Get(Type);
 	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2 - 1);
 }
 

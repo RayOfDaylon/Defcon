@@ -14,13 +14,13 @@
 #include "util_str.h"
 
 
-typedef enum
+enum class EVarType
 {
-	type_bool,
-	type_int,
-	type_float,
-	type_choice
-} EVarType;
+	Boolean,
+	Integer,
+	Float,
+	Choice
+};
 
 
 class CChoiceNames

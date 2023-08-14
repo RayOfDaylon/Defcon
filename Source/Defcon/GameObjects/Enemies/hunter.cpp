@@ -38,7 +38,7 @@ Defcon::CHunter::CHunter()
 	Orientation.Fwd.Set(Speed, 0);
 	
 	CreateSprite(Type);
-	const auto& Info = GameObjectResources.Get(Type);
+	const auto& Info = GGameObjectResources.Get(Type);
 	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 

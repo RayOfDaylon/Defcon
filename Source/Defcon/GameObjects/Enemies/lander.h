@@ -39,6 +39,7 @@ namespace Defcon
 			float         MaxSpeed;
 			float         HoverAltitude; // Distance above ground, not absolute Y value.
 			float         DescentSpeed;
+			float         AscentSpeed;
 			float         FiringCountdown;
 			EState        State;
 			bool          bChaseNearestHuman;

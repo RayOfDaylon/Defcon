@@ -12,7 +12,7 @@
 #include "GameObjectResources.h"
 
 
-FGameObjectResources GameObjectResources;
+FGameObjectResources GGameObjectResources;
 
 
 

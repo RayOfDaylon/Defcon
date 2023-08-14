@@ -36,7 +36,7 @@ Defcon::CFlak::CFlak()
 
 	MaxAge = Lifespan = Daylon::FRandRange(0.5f, 2.0f);
 
-	BrushPtr = FRAND > 0.1f ? GameObjectResources.DebrisBrushRoundPtr : GameObjectResources.DebrisBrushSquarePtr;
+	BrushPtr = FRAND > 0.1f ? GGameObjectResources.DebrisBrushRoundPtr : GGameObjectResources.DebrisBrushSquarePtr;
 
 	check(BrushPtr != nullptr);
 }

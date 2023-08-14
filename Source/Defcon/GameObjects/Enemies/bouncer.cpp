@@ -37,7 +37,7 @@ Defcon::IBouncer::IBouncer()
 	Gravity = FRANDRANGE(5, 15);
 	FiringCountdown = FRANDRANGE(1.0f, 5.0f);
 
-	const auto& Info = GameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
+	const auto& Info = GGameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
 	BboxRadius = Info.Size / 2;
 }
 

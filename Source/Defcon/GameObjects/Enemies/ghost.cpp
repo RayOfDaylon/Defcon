@@ -52,7 +52,7 @@ Defcon::CGhost::CGhost()
 		PartRadiiSpeed[I] = FRANDRANGE(1.0f, 2.0f);
 	}
 
-	const auto& Info = GameObjectResources.Get(EObjType::GHOSTPART);
+	const auto& Info = GGameObjectResources.Get(EObjType::GHOSTPART);
 	BboxRadius = Info.Size * 0.5f; // seems too small, yet... here we are
 }
 
@@ -216,7 +216,7 @@ void Defcon::CGhost::Draw(FPainter& Painter, const I2DCoordMapper& mapper)
 
 void Defcon::CGhost::DrawPart(FPainter& Painter, const CFPoint& Pt)
 {
-	auto& Info = GameObjectResources.Get(EObjType::GHOSTPART);
+	auto& Info = GGameObjectResources.Get(EObjType::GHOSTPART);
 
 	const int32 W = Info.Size.X;
 
@@ -378,7 +378,7 @@ Defcon::CGhostPart::CGhostPart()
 	bIsCollisionInjurious = false;
 
 	CreateSprite(Type);
-	const auto& Info = GameObjectResources.Get(Type);
+	const auto& Info = GGameObjectResources.Get(Type);
 	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 

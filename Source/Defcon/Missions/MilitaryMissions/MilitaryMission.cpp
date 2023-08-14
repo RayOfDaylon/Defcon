@@ -129,32 +129,33 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 			return;
 	}
 	
-	for(int32 i = 0; i < EnemySpawnCountsArray.Num(); i++)	
+	const float ArenaWidth = GArena->GetWidth();
+
+	for(int32 I = 0; I < EnemySpawnCountsArray.Num(); I++)	
 	{	
-		for(int32 j = 0; j < EnemySpawnCountsArray[i].NumPerWave[WaveIndex] && HostilesRemaining() > 0; j++)	
+		for(int32 J = 0; J < EnemySpawnCountsArray[I].NumPerWave[WaveIndex] && HostilesRemaining() > 0; J++)	
 		{	
-			const float wp = GArena->GetWidth();
 
-			float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + Where.x;	
-			x = (float)fmod(x, wp);	
+			float X = FRANDRANGE(-0.5f, 0.5f) * ATTACK_INITIALDISTANCE * ArenaWidth + Where.x;	
+			X = (float)fmod(X, ArenaWidth);	
 
-			float y;	
+			float Y;	
 
-			switch(EnemySpawnCountsArray[i].Kind)	
+			switch(EnemySpawnCountsArray[I].Kind)	
 			{	
-				// Make these enemies spawn high up
+				// Make these enemies spawn in upper half
 				case EObjType::LANDER:	
 				case EObjType::BOUNCER:	
-					y = FRANDRANGE(0.85f, 1.0f);	
+					Y = FRANDRANGE(0.5f, 0.95f);	
 					break;	
 					
 				default:	
-					y = FRANDRANGE(MinSpawnAlt, MaxSpawnAlt);	
+					Y = FRANDRANGE(MinSpawnAlt, MaxSpawnAlt);	
 			}	
 
-			y *= GArena->GetHeight();	
+			Y *= GArena->GetHeight();	
 
-			GArena->CreateEnemy(EnemySpawnCountsArray[i].Kind, EObjType::UNKNOWN, CFPoint(x, y), FRANDRANGE(0.0f, JFactor * j), EObjectCreationFlags::StandardEnemy);	
+			GArena->CreateEnemy(EnemySpawnCountsArray[I].Kind, EObjType::UNKNOWN, CFPoint(X, Y), FRANDRANGE(0.0f, JFactor * J), EObjectCreationFlags::StandardEnemy);	
 		}	
 	}	
 	

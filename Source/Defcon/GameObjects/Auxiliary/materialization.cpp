@@ -84,7 +84,7 @@ void Defcon::CMaterialization::Draw(FPainter& Painter, const I2DCoordMapper& Map
 			*Painter.OutDrawElements,
 			LayerId,
 			Geometry.ToPaintGeometry(),
-			GameObjectResources.DebrisBrushRoundPtr,
+			GGameObjectResources.DebrisBrushRoundPtr,
 			ESlateDrawEffect::None,
 			Particle.Color * Os);
 	}

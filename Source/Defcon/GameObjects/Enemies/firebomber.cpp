@@ -45,7 +45,7 @@ Defcon::IFirebomber::IFirebomber()
 	Orientation.Fwd.Set(SBRAND, SBRAND);
 	OurInertia = Orientation.Fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
 
-	const auto& Info = GameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
+	const auto& Info = GGameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
 	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
 }
 

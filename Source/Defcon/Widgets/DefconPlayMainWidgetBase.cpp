@@ -60,9 +60,9 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 
 	// Load up the GameObjectResources global.
 
-	GameObjectResources.SmartbombBrushPtr     = &SmartbombBrush;
-	GameObjectResources.DebrisBrushRoundPtr   = &DebrisBrushRound;
-	GameObjectResources.DebrisBrushSquarePtr  = &DebrisBrushSquare;
+	GGameObjectResources.SmartbombBrushPtr     = &SmartbombBrush;
+	GGameObjectResources.DebrisBrushRoundPtr   = &DebrisBrushRound;
+	GGameObjectResources.DebrisBrushSquarePtr  = &DebrisBrushSquare;
 
 	// Our textures were 3x the arcade, but need to be 4.25x larger. So for now scale the widget sizes that much.
 	// Note: player ship is already okay. Once we have our 4K textures the factor should be 0.5f.
@@ -71,7 +71,7 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 #define ADD_ATLAS(_ObjType, _Atlas) \
 	Check(_Atlas != nullptr); /* Did you forget to add Atlas asset to UUserWidget's texture list? */	\
 	_Atlas->Atlas.InitCache();	\
-	GameObjectResources.Add(Defcon::EObjType::_ObjType, { _Atlas, _Atlas->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f });
+	GGameObjectResources.Add(Defcon::EObjType::_ObjType, { _Atlas, _Atlas->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f });
 
 	ADD_ATLAS(STARGATE,         StargateAtlas           );
 	ADD_ATLAS(DESTROYED_PLAYER, DestroyedPlayerAtlas    );

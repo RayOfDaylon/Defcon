@@ -36,7 +36,14 @@ Defcon::CLander::CLander()
 	PointValue      = LANDER_VALUE;
 	State           = EState::Descending;
 	MaxSpeed        = FRANDRANGE(0.5f, 1.0f);
-	DescentSpeed    = FRANDRANGE(1.0f, 2.0f);
+
+	{
+		float N = NORM_(GDefconGameInstance->GetScore(), 0, 75000) + FRANDRANGE(-0.05f, 0.05f);
+		N = CLAMP(N, 0.0f, 1.0f);
+		DescentSpeed = LERP(LANDER_DESCENT_SPEED_MIN, LANDER_DESCENT_SPEED_MAX, N);
+		AscentSpeed  = LERP(LANDER_ASCENT_SPEED_MIN, LANDER_ASCENT_SPEED_MAX, N);
+	}
+
 	RadarColor      = MakeColorFromComponents(255, 255, 0);
 	HoverAltitude   = FRAND * 20 + 40;
 	FiringCountdown = FRANDRANGE(1.0f, 3.0f);
@@ -68,7 +75,7 @@ Defcon::CLander::CLander()
 
 	CreateSprite(EObjType::LANDER);
 
-	const auto& Info = GameObjectResources.Get(Type);
+	const auto& Info = GGameObjectResources.Get(Type);
 	BboxRadius.Set(Info.Size.X * 0.5f * 0.75f, Info.Size.Y * 0.5f * 0.75f);
 }
 
@@ -169,7 +176,7 @@ void Defcon::CLander::Move(float DeltaTime)
 			{
 				// Lower ourself.
 				Orientation.Fwd.y = -1.0f;
-				Position.MulAdd(Orientation.Fwd, DeltaTime * DescentSpeed * LANDER_DESCENT_SPEED);
+				Position.MulAdd(Orientation.Fwd, DeltaTime * DescentSpeed);
 			}
 			break;
 
@@ -319,7 +326,7 @@ void Defcon::CLander::Move(float DeltaTime)
 				}
 
 				Orientation.Fwd.y = 1.0f;
-				Position.MulAdd(Orientation.Fwd, DeltaTime * LANDER_ASCENTRATE);
+				Position.MulAdd(Orientation.Fwd, DeltaTime * AscentSpeed);
 			
 				// Did we reach orbit?
 				if(HumanPtr->Position.y > ArenaSize.y + HumanPtr->BboxRadius.y)

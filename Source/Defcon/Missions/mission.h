@@ -124,12 +124,12 @@ namespace Defcon
 			virtual bool HumansInvolved	() const override { return false; }
 
 		private:
-			void DoMakeTargets		(float);
-			void CheckTargetHit		(float);
-			bool AreAllTargetsHit	() const;
+			void DoMakeTargets		    (float);
+			void CheckTargetCollided	(float);
+			bool AreAllTargetsCollided	() const;
 
-			bool  TargetsMade = false;
-			int32 NumTargets = 0;
+			bool  TargetsMade         = false;
+			int32 NumTargetsRemaining = 0;
 	};
 
 
@@ -150,7 +150,7 @@ namespace Defcon
 			void DoMakeTargets		(float);
 			bool AreAllTargetsHit	(float);
 
-			bool  TargetsMade = false;
+			bool  TargetsMade   = false;
 			int32 NumTargetsHit = 0;
 	};
 }

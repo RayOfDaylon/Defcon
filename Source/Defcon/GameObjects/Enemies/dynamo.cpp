@@ -34,7 +34,7 @@ Defcon::CDynamo::CDynamo()
 	WiggleAnimSpeed.Set(FRANDRANGE(4.0f, 8.0f), FRANDRANGE(2.0f, 6.0f));
 
 	CreateSprite(Type);
-	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	const auto& SpriteInfo = GGameObjectResources.Get(Type);
 	BboxRadius = SpriteInfo.Size / 2;
 }
 

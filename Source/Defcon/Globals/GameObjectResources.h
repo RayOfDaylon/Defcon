@@ -39,4 +39,4 @@ struct FGameObjectResources
 };
 
 
-extern FGameObjectResources GameObjectResources;
+extern FGameObjectResources GGameObjectResources;

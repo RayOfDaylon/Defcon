@@ -26,7 +26,7 @@ namespace Defcon
 			virtual ~CPrefs() {}
 			void Construct();
 
-			enum Pref 
+			enum EPref 
 			{
 				arena_bogdown,
 				attack_initialdistance,
@@ -34,14 +34,10 @@ namespace Defcon
 				baiter_prob,
 				baiter_spawn_frequency,
 				baiter_value,
-				//baiters_in_first_wave,
-				//baiters_per_attack,
 
 				bigred_value,
 
 				bomber_value,
-				//bombers_in_first_wave,
-				//bombers_per_attack,
 				bouncer_value,
 
 				bullet_damage,
@@ -56,17 +52,7 @@ namespace Defcon
 				delay_before_attack,
 				delay_between_reattack,
 
-				display_blur,
-				display_blur_method,
-				display_fullscreen,
-				display_hidewindowframe,
-				display_height,
-				display_interlace,
-				display_width,
-
 				dynamo_value,
-				//dynamos_in_first_wave,
-				//dynamos_per_attack,
 
 				enemy_birthdebrisdist,
 				enemy_birthduration,
@@ -99,22 +85,19 @@ namespace Defcon
 				hunter_speedmax,
 				hunter_speedmin,
 				hunter_value,
-				//hunters_in_first_wave,
-				//hunters_per_attack,
 
 				lander_abductodds,
-				lander_ascentrate,
-				lander_descent_speed,
+				lander_ascent_speed_min,
+				lander_ascent_speed_max,
+				lander_descent_speed_min,
+				lander_descent_speed_max,
 				lander_mature,
 				lander_value,
-				//landers_in_first_wave,
-				//landers_per_attack,
 
 				laser_age_max,
 				laser_extra_count,
 				laser_multi_prob,
 
-				memcopy_method,
 				menutext_uppercase,
 
 				mine_damage,
@@ -132,18 +115,14 @@ namespace Defcon
 				player_birthdebrisdist,
 				player_birthduration,
 				player_drag,
-				//player_initial_livesleft,
 				player_marginsettlespeed,
 				player_mass,
 				player_maxthrust,
 				player_posmargin,
 				player_rebirth_delay,
-				player_reward_points,
 				pod_value,
 				reformer_value,
 				reformerpart_value,
-				//pods_in_first_wave,
-				//pods_per_attack,
 				scoretips_showenemypoints,
 				smartbomb_initial,
 				smartbomb_lifespan,
@@ -158,15 +137,13 @@ namespace Defcon
 				swarmer_value,
 				swarmers_per_pod,
 
-				time_precise,
-
 				count
 			};
-			void Init(const FString& Str);
-			CPrefVar& Translate(const FString& Str) const;
 
+			void      Init      (const FString& Str);
+			CPrefVar& Translate (const FString& Str) const;
 
-			CPrefVar	m_pref[Pref::count];
+			CPrefVar  Pref[EPref::count];
 	};
 }
 
@@ -175,7 +152,7 @@ namespace Defcon
 extern Defcon::CPrefs	GPrefs;
 
 
-#define PREFVAL(_key)                  GPrefs.m_pref[Defcon::CPrefs::Pref::_key].Value
+#define PREFVAL(_key)                  GPrefs.Pref[Defcon::CPrefs::EPref::_key].Value
 #define FPREFVAL(_key)                 PREFVAL(_key)
 #define IPREFVAL(_key)                 (int32)PREFVAL(_key)
 #define BPREFVAL(_key)                 (bool)(1.0f == PREFVAL(_key))
@@ -217,100 +194,72 @@ extern Defcon::CPrefs	GPrefs;
 // before more enemies appear.
 #define DELAY_BETWEEN_REATTACK      FPREFVAL(delay_between_reattack)
 
-#define LANDER_DESCENT_SPEED        FPREFVAL(lander_descent_speed)
+#define LANDER_DESCENT_SPEED_MIN    FPREFVAL(lander_descent_speed_min)
+#define LANDER_DESCENT_SPEED_MAX    FPREFVAL(lander_descent_speed_max)
+#define LANDER_ASCENT_SPEED_MIN     FPREFVAL(lander_ascent_speed_min)
+#define LANDER_ASCENT_SPEED_MAX     FPREFVAL(lander_ascent_speed_max)
 
-/*
-#define LANDERS_PER_ATTACK          IPREFVAL(landers_per_attack)
-#define BOMBERS_PER_ATTACK          IPREFVAL(bombers_per_attack)
-#define HUNTERS_PER_ATTACK          IPREFVAL(hunters_per_attack)
-#define BAITERS_PER_ATTACK          IPREFVAL(baiters_per_attack)
-#define FIREBOMBERS_PER_ATTACK      IPREFVAL(firebombers_per_attack)
-#define DYNAMOS_PER_ATTACK          IPREFVAL(dynamos_per_attack)
-#define PODS_PER_ATTACK             IPREFVAL(pods_per_attack)
-*/
 #define ATTACK_INITIALDISTANCE      FPREFVAL(attack_initialdistance)
 
-/*
-#define LANDERS_IN_FIRST_WAVE       IPREFVAL(landers_in_first_wave)
-#define HUNTERS_IN_FIRST_WAVE       IPREFVAL(hunters_in_first_wave)
-#define BOMBERS_IN_FIRST_WAVE       IPREFVAL(bombers_in_first_wave)
-#define BAITERS_IN_FIRST_WAVE       IPREFVAL(baiters_in_first_wave)
-#define FIREBOMBERS_IN_FIRST_WAVE   IPREFVAL(firebombers_in_first_wave)
-#define DYNAMOS_IN_FIRST_WAVE       IPREFVAL(dynamos_in_first_wave)
-#define PODS_IN_FIRST_WAVE          IPREFVAL(pods_in_first_wave)
-*/
-
-
-#define ARENA_BOGDOWN              BPREFVAL(arena_bogdown)
-#define BAITER_PROB                FPREFVAL(baiter_prob)
-#define BAITER_SPAWN_FREQUENCY     FPREFVAL(baiter_spawn_frequency)
-#define BAITER_VALUE               IPREFVAL(baiter_value)
-#define BIGRED_VALUE               IPREFVAL(bigred_value)
-#define BOMBER_VALUE               IPREFVAL(bomber_value)
-#define BOUNCER_VALUE              IPREFVAL(bouncer_value)
-#define BULLET_DAMAGE              IPREFVAL(bullet_damage)
-#define BULLETS_HIT_TERRAIN        BPREFVAL(bullets_hit_terrain)
-#define COLLISION_DAMAGE           IPREFVAL(collision_damage)
-#define DEBRIS_DRAWRADAR           BPREFVAL(debris_drawradar)
-#define DEBRIS_DUAL_PROB           FPREFVAL(debris_dual_prob)
-#define DEBRIS_SMOKE               BPREFVAL(debris_smoke)
-#define DISPLAY_BLUR               IPREFVAL(display_blur)
-#define DISPLAY_BLUR_METHOD        IPREFVAL(display_blur_method)
-#define DISPLAY_FULLSCREEN         BPREFVAL(display_fullscreen)
-#define DISPLAY_HEIGHT             IPREFVAL(display_height)
-#define DISPLAY_HIDEWINDOWFRAME    BPREFVAL(display_hidewindowframe)
-#define DISPLAY_INTERLACE          BPREFVAL(display_interlace)
-#define DISPLAY_WIDTH              IPREFVAL(display_width)
-#define DYNAMO_VALUE               IPREFVAL(dynamo_value)
-#define ENEMIES_CANTHURTEACHOTHER  BPREFVAL(enemies_canthurteachother)
-#define ENEMIES_MINESDONTHURT      BPREFVAL(enemies_minesdonthurt)
-#define ENEMY_BIRTHDEBRISDIST      FPREFVAL(enemy_birthdebrisdist)
-#define ENEMY_BIRTHDURATION        FPREFVAL(enemy_birthduration)
+#define ARENA_BOGDOWN                BPREFVAL(arena_bogdown)
+#define BAITER_PROB                  FPREFVAL(baiter_prob)
+#define BAITER_SPAWN_FREQUENCY       FPREFVAL(baiter_spawn_frequency)
+#define BAITER_VALUE                 IPREFVAL(baiter_value)
+#define BIGRED_VALUE                 IPREFVAL(bigred_value)
+#define BOMBER_VALUE                 IPREFVAL(bomber_value)
+#define BOUNCER_VALUE                IPREFVAL(bouncer_value)
+#define BULLET_DAMAGE                IPREFVAL(bullet_damage)
+#define BULLETS_HIT_TERRAIN          BPREFVAL(bullets_hit_terrain)
+#define COLLISION_DAMAGE             IPREFVAL(collision_damage)
+#define DEBRIS_DRAWRADAR             BPREFVAL(debris_drawradar)
+#define DEBRIS_DUAL_PROB             FPREFVAL(debris_dual_prob)
+#define DEBRIS_SMOKE                 BPREFVAL(debris_smoke)
+#define DYNAMO_VALUE                 IPREFVAL(dynamo_value)
+#define ENEMIES_CANTHURTEACHOTHER    BPREFVAL(enemies_canthurteachother)
+#define ENEMIES_MINESDONTHURT        BPREFVAL(enemies_minesdonthurt)
+#define ENEMY_BIRTHDEBRISDIST        FPREFVAL(enemy_birthdebrisdist)
+#define ENEMY_BIRTHDURATION          FPREFVAL(enemy_birthduration)
 #define FIREBALLS_EXPLODE_ON_GROUND  BPREFVAL(fireballs_explode_on_ground)
-#define FIREBALL_VALUE             IPREFVAL(fireball_value)
+#define FIREBALL_VALUE               IPREFVAL(fireball_value)
 
-#define FIREBOMBER_SPEED_MIN       FPREFVAL(firebomber_speed_min)
-#define FIREBOMBER_SPEED_MAX       FPREFVAL(firebomber_speed_max)
-#define FIREBOMBER_TRAVEL_TIME_MIN FPREFVAL(firebomber_travel_time_min)
-#define FIREBOMBER_TRAVEL_TIME_MAX FPREFVAL(firebomber_travel_time_max)
+#define FIREBOMBER_SPEED_MIN         FPREFVAL(firebomber_speed_min)
+#define FIREBOMBER_SPEED_MAX         FPREFVAL(firebomber_speed_max)
+#define FIREBOMBER_TRAVEL_TIME_MIN   FPREFVAL(firebomber_travel_time_min)
+#define FIREBOMBER_TRAVEL_TIME_MAX   FPREFVAL(firebomber_travel_time_max)
+#define FIREBOMBER_VALUE             IPREFVAL(firebomber_value)
 
-#define FIREBOMBER_VALUE           IPREFVAL(firebomber_value)
-
-
-#define GHOST_PLAYER_DIST_MIN      IPREFVAL(ghost_player_dist_min) 
-#define GHOST_VALUE                IPREFVAL(ghost_value) 
-#define GUPPY_SPEEDMAX             FPREFVAL(guppy_speedmax)
-#define GUPPY_SPEEDMIN             FPREFVAL(guppy_speedmin)
-#define GUPPY_VALUE                IPREFVAL(guppy_value)
-#define HUMAN_VALUE_DEBARKED       IPREFVAL(human_value_debarked)
-#define HUMAN_VALUE_EMBARKED       IPREFVAL(human_value_embarked)
-#define HUMAN_VALUE_LIBERATED      IPREFVAL(human_value_liberated)
-#define HUNTER_SPEEDMAX            FPREFVAL(hunter_speedmax)
-#define HUNTER_SPEEDMIN            FPREFVAL(hunter_speedmin)
-#define HUNTER_VALUE               IPREFVAL(hunter_value)
-#define LANDER_ABDUCTODDS          FPREFVAL(lander_abductodds)
-#define LANDER_ASCENTRATE          FPREFVAL(lander_ascentrate)
-#define LANDER_MATURE              FPREFVAL(lander_mature)
-#define LANDER_VALUE               IPREFVAL(lander_value)
-#define LASER_AGE_MAX              FPREFVAL(laser_age_max)
-#define LASER_EXTRA_COUNT          IPREFVAL(laser_extra_count)
-#define LASER_MULTI_PROB           FPREFVAL(laser_multi_prob)
-#define MEMCOPY_METHOD             (MemcopyMethod)(IPREFVAL(memcopy_method))
-#define MENUTEXT_UPPERCASE         BPREFVAL(menutext_uppercase)
-#define MINE_DAMAGE                IPREFVAL(mine_damage)
-#define MINE_LIFESPAN              FPREFVAL(mine_lifespan)
-#define MISSIONNAME_UPPERCASE      BPREFVAL(missionname_uppercase)
-#define MUNCHIE_VALUE              IPREFVAL(munchie_value)
-#define OBJECT_DRAWBBOX            BPREFVAL(object_drawbbox)
-#define PHRED_VALUE                IPREFVAL(phred_value)
-#define POD_VALUE                  IPREFVAL(pod_value)
-#define REFORMER_VALUE             IPREFVAL(reformer_value) 
-#define REFORMERPART_VALUE         IPREFVAL(reformerpart_value) 
-#define SCORETIPS_SHOWENEMYPOINTS  BPREFVAL(scoretips_showenemypoints)
-#define SOUND_ACTIVE               BPREFVAL(sound_active)
-#define SPACEHUM_VALUE             IPREFVAL(spacehum_value)
-#define STARS_COUNT                IPREFVAL(stars_count)
-#define SWARMER_VALUE              IPREFVAL(swarmer_value)
-#define SWARMERS_PER_POD           IPREFVAL(swarmers_per_pod)
-#define TIME_PRECISE               BPREFVAL(time_precise)
+#define GHOST_PLAYER_DIST_MIN        IPREFVAL(ghost_player_dist_min) 
+#define GHOST_VALUE                  IPREFVAL(ghost_value) 
+#define GUPPY_SPEEDMAX               FPREFVAL(guppy_speedmax)
+#define GUPPY_SPEEDMIN               FPREFVAL(guppy_speedmin)
+#define GUPPY_VALUE                  IPREFVAL(guppy_value)
+#define HUMAN_VALUE_DEBARKED         IPREFVAL(human_value_debarked)
+#define HUMAN_VALUE_EMBARKED         IPREFVAL(human_value_embarked)
+#define HUMAN_VALUE_LIBERATED        IPREFVAL(human_value_liberated)
+#define HUNTER_SPEEDMAX              FPREFVAL(hunter_speedmax)
+#define HUNTER_SPEEDMIN              FPREFVAL(hunter_speedmin)
+#define HUNTER_VALUE                 IPREFVAL(hunter_value)
+#define LANDER_ABDUCTODDS            FPREFVAL(lander_abductodds)
+#define LANDER_ASCENTRATE            FPREFVAL(lander_ascentrate)
+#define LANDER_MATURE                FPREFVAL(lander_mature)
+#define LANDER_VALUE                 IPREFVAL(lander_value)
+#define LASER_AGE_MAX                FPREFVAL(laser_age_max)
+#define LASER_EXTRA_COUNT            IPREFVAL(laser_extra_count)
+#define LASER_MULTI_PROB             FPREFVAL(laser_multi_prob)
+#define MENUTEXT_UPPERCASE           BPREFVAL(menutext_uppercase)
+#define MINE_DAMAGE                  IPREFVAL(mine_damage)
+#define MINE_LIFESPAN                FPREFVAL(mine_lifespan)
+#define MISSIONNAME_UPPERCASE        BPREFVAL(missionname_uppercase)
+#define MUNCHIE_VALUE                IPREFVAL(munchie_value)
+#define OBJECT_DRAWBBOX              BPREFVAL(object_drawbbox)
+#define PHRED_VALUE                  IPREFVAL(phred_value)
+#define POD_VALUE                    IPREFVAL(pod_value)
+#define REFORMER_VALUE               IPREFVAL(reformer_value) 
+#define REFORMERPART_VALUE           IPREFVAL(reformerpart_value) 
+#define SCORETIPS_SHOWENEMYPOINTS    BPREFVAL(scoretips_showenemypoints)
+#define SOUND_ACTIVE                 BPREFVAL(sound_active)
+#define SPACEHUM_VALUE               IPREFVAL(spacehum_value)
+#define STARS_COUNT                  IPREFVAL(stars_count)
+#define SWARMER_VALUE                IPREFVAL(swarmer_value)
+#define SWARMERS_PER_POD             IPREFVAL(swarmers_per_pod)
 

@@ -47,7 +47,7 @@ Defcon::CPlayer::CPlayer()
 
 	CreateSprite(Type);
 
-	const auto& Info = GameObjectResources.Get(Type);
+	const auto& Info = GGameObjectResources.Get(Type);
 	BboxRadius = Info.Size * 0.25f;
 
 	// Make our "pickup human" bboxrad more generous than hitbox.

@@ -84,7 +84,7 @@ Defcon::CBullet::CBullet()
 	CreateSprite(Type);
 	Sprite->IsStatic = true;
 
-	NumSpriteCels = GameObjectResources.Get(Type).Atlas->Atlas.NumCels;
+	NumSpriteCels = GGameObjectResources.Get(Type).Atlas->Atlas.NumCels;
 }
 
 
@@ -107,7 +107,7 @@ Defcon::CThinBullet::CThinBullet()
 	CreateSprite(Type);
 	Sprite->IsStatic = true;
 
-	NumSpriteCels = GameObjectResources.Get(Type).Atlas->Atlas.NumCels;
+	NumSpriteCels = GGameObjectResources.Get(Type).Atlas->Atlas.NumCels;
 }
 
 

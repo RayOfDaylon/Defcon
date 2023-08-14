@@ -86,8 +86,8 @@ void UDefconGameInstance::Init()
 	HumanAtlas     ->Atlas.InitCache();
 	PlayerShipAtlas->Atlas.InitCache();
 
-	GameObjectResources.Add(Defcon::EObjType::HUMAN,    { HumanAtlas,      HumanAtlas      ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f });
-	GameObjectResources.Add(Defcon::EObjType::PLAYER,   { PlayerShipAtlas, PlayerShipAtlas ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f } );
+	GGameObjectResources.Add(Defcon::EObjType::HUMAN,    { HumanAtlas,      HumanAtlas      ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f });
+	GGameObjectResources.Add(Defcon::EObjType::PLAYER,   { PlayerShipAtlas, PlayerShipAtlas ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f } );
 
 	PlayerShipPtr = new Defcon::CPlayer;
 }

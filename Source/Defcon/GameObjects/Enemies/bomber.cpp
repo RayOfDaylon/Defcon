@@ -46,7 +46,7 @@ Defcon::CBomber::CBomber()
 	AnimSpeed = FRAND * 0.35f + 0.15f;
 
 	CreateSprite(Type);
-	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	const auto& SpriteInfo = GGameObjectResources.Get(Type);
 	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 
 	SecondsPerPath = Daylon::FRandRange(SECONDS_PER_PATH_MIN, SECONDS_PER_PATH_MAX);
@@ -71,7 +71,7 @@ void Defcon::CBomber::OnFinishedCreating()
 	if(Orientation.Fwd.x < 0)
 	{
 		// Use left-facing texture atlas.
-		const auto& SpriteInfo = GameObjectResources.Get(EObjType::BOMBER_LEFT);
+		const auto& SpriteInfo = GGameObjectResources.Get(EObjType::BOMBER_LEFT);
 		Sprite->SetAtlas(SpriteInfo.Atlas->Atlas);
 	}
 

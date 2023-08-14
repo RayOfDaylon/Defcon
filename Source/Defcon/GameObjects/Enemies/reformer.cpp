@@ -138,7 +138,7 @@ void Defcon::CReformer::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 
 void Defcon::CReformer::DrawPart(FPainter& Painter, const CFPoint& Where)
 {
-	auto& Info = GameObjectResources.Get(EObjType::REFORMERPART);
+	auto& Info = GGameObjectResources.Get(EObjType::REFORMERPART);
 
 	CFPoint P = Where;
 	const float OurWidth = Info.Size.X;
@@ -216,7 +216,7 @@ Defcon::CReformerPart::CReformerPart()
 	Orientation.Fwd.Set(1.0f, 0.0f);
 
 	CreateSprite(Type);
-	BboxRadius = GameObjectResources.Get(Type).Size / 2;
+	BboxRadius = GGameObjectResources.Get(Type).Size / 2;
 }
 
 

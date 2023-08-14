@@ -50,7 +50,7 @@ Defcon::CFireball::CFireball()
 
 	CreateSprite(Type);
 
-	BboxRadius = GameObjectResources.Get(Type).Size / 2;
+	BboxRadius = GGameObjectResources.Get(Type).Size / 2;
 }
 
 

@@ -174,19 +174,13 @@ Event, etc. don't do any sprite processing elsewhere.
 
 Global variables are:
 
-GArena               The play arena where a mission is played out.
-GAudio               The collection of available audio tracks (sounds).
-GDefconGameInstance  The singular game instance (has player, humans, missions, stats).
-GameObjectResources  Maps object types to their sprite atlases.
-GPrefs               Preference settings.
-GObjectTypeManager   Maps game object types to typenames (used for debugging).
-GGameColors          A table of common colors in a range of brightnesses.
-
-The global function GameTime() abstracts UKismetLibrary::GetGameTimeInSeconds.
-It's declared in util_core.h but implemented in UDefconPlayViewBase.
-Using the current time, however, is a discouraged practice as it will 
-cause problems when implementing bullet time. Calls to it were removed 
-from event creation and in ILiveGameObject's motion physics.
+GArena                The play arena where a mission is played out.
+GAudio                The collection of available audio tracks (sounds).
+GDefconGameInstance   The singular game instance (has player, humans, missions, stats).
+GGameObjectResources  Maps object types to their sprite atlases.
+GPrefs                Preference settings.
+GObjectTypeManager    Maps game object types to typenames (used for debugging).
+GGameColors           A table of common colors in a range of brightnesses.
 
 DefconGameInstance::IsLive is used to tell if the game is actually 
 running or not. Some UUserWidget functions get called as part of the 
@@ -198,8 +192,15 @@ their own Draw method, instead of (like in Stellar Mayhem) using a
 particles widget that holds all the debris in a more efficient TArray 
 and renders them in a tighter loop inside one Paint call. This will 
 probably not change because smartbomb explosions also push debris 
-away from the shockwave, and that's easier to do if each debris piece 
+away from their shockwaves, and that's easier to do if each debris piece 
 is its own game object.
+
+The global function GameTime() abstracts UKismetLibrary::GetGameTimeInSeconds.
+It's declared in util_core.h but implemented in UDefconPlayViewBase.
+Using the current time, however, is a discouraged practice as it will 
+cause problems when implementing bullet time. Calls to it were removed 
+from event creation and in ILiveGameObject's motion physics.
+
 
 
 Future Work

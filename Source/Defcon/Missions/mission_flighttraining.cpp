@@ -53,9 +53,9 @@ bool Defcon::CFlightTrainingMission::Update(float DeltaTime)
 		return true;
 	}
 
-	CheckTargetHit(DeltaTime);
+	CheckTargetCollided(DeltaTime);
 
-	if(AreAllTargetsHit())
+	if(AreAllTargetsCollided())
 	{
 		// We're done.
 		return false;
@@ -67,36 +67,36 @@ bool Defcon::CFlightTrainingMission::Update(float DeltaTime)
 
 void Defcon::CFlightTrainingMission::DoMakeTargets(float DeltaTime)
 {
-	for(int32 i = 0; i < NumBeacons; i++)
+	for(int32 Index = 0; Index < NumBeacons; Index++)
 	{
 		CBeacon* Beacon = new CBeacon;
 
 		Beacon->InstallSprite();
 
 		Beacon->Position.Set(
-			MAP(i, 0, 6, GArena->GetDisplayWidth()*.66f, GArena->GetWidth() * 0.9f),
+			MAP(Index, 0, 6, GArena->GetDisplayWidth() * 0.66f, GArena->GetWidth() * 0.9f),
 			SFRAND * 0.33f * GArena->GetHeight() + GArena->GetHeight() / 2);
 
 		GArena->GetObjects().Add(Beacon);
 	}
 
-	NumTargets = NumBeacons;
+	NumTargetsRemaining = NumBeacons;
 }
 
 
-void Defcon::CFlightTrainingMission::CheckTargetHit(float DeltaTime)
+void Defcon::CFlightTrainingMission::CheckTargetCollided(float DeltaTime)
 {
-	auto ObjPtr = GArena->GetObjects().GetFirst();
-
 	CFRect rPlayer;
 	rPlayer.Set(GArena->GetPlayerShip().Position);
 	rPlayer.Inflate(GArena->GetPlayerShip().BboxRadius);
 
-	while(ObjPtr != nullptr)
+	auto Obj = GArena->GetObjects().GetFirst();
+
+	while(Obj != nullptr)
 	{
-		if(ObjPtr->GetType() == EObjType::BEACON)
+		if(Obj->GetType() == EObjType::BEACON)
 		{
-			auto BeaconPtr = static_cast<CBeacon*>(ObjPtr);
+			auto BeaconPtr = static_cast<CBeacon*>(Obj);
 			
 			CFRect rBeacon;
 
@@ -106,18 +106,18 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float DeltaTime)
 			if(rPlayer.Intersect(rBeacon))
 			{
 				GAudio->OutputSound(EAudioTrack::Gulp);
-				ObjPtr->UninstallSprite();
-				GArena->GetObjects().Delete(ObjPtr);
-				NumTargets--;
+				Obj->UninstallSprite();
+				GArena->GetObjects().Delete(Obj);
+				NumTargetsRemaining--;
 
 				// Show message.
 				FString Str;
 
-				if(NumTargets > 0)
+				if(NumTargetsRemaining > 0)
 				{
-					auto TargetsDown = NumBeacons - NumTargets;
+					auto TargetsDown = NumBeacons - NumTargetsRemaining;
 
-					Str = FString::Printf(TEXT("%d target%s down, %d to go"), TargetsDown, TargetsDown == 1 ? TEXT("") : TEXT("s"), NumTargets);
+					Str = FString::Printf(TEXT("%d target%s down, %d to go"), TargetsDown, TargetsDown == 1 ? TEXT("") : TEXT("s"), NumTargetsRemaining);
 				}
 				else
 				{
@@ -129,13 +129,13 @@ void Defcon::CFlightTrainingMission::CheckTargetHit(float DeltaTime)
 				break;
 			}
 		}
-		ObjPtr = ObjPtr->GetNext();
+		Obj = Obj->GetNext();
 	}
 }
 
 
-bool Defcon::CFlightTrainingMission::AreAllTargetsHit() const
+bool Defcon::CFlightTrainingMission::AreAllTargetsCollided() const
 {
-	return (NumTargets == 0);
+	return (NumTargetsRemaining == 0);
 }
 

@@ -42,16 +42,16 @@ Defcon::CSmartbomb::CSmartbomb()
 	NameColor = TEXT("Color");
 	NameOs    = TEXT("Os");
 
-	MID = Cast<UMaterialInstanceDynamic>(GameObjectResources.SmartbombBrushPtr->GetResourceObject());
+	MID = Cast<UMaterialInstanceDynamic>(GGameObjectResources.SmartbombBrushPtr->GetResourceObject());
 
 	if(MID == nullptr)
 	{
-		auto ParentMaterial = Cast<UMaterialInterface>(GameObjectResources.SmartbombBrushPtr->GetResourceObject());
+		auto ParentMaterial = Cast<UMaterialInterface>(GGameObjectResources.SmartbombBrushPtr->GetResourceObject());
 
 		if(ParentMaterial != nullptr)
 		{
 			MID = UMaterialInstanceDynamic::Create(ParentMaterial, nullptr);
-			GameObjectResources.SmartbombBrushPtr->SetResourceObject(MID);
+			GGameObjectResources.SmartbombBrushPtr->SetResourceObject(MID);
 
 			const FVector4 Color(1.0f, 1.0f, 1.0f, 1.0f);
 			MID->SetVectorParameterValue(NameColor, Color);
@@ -133,7 +133,7 @@ void Defcon::CSmartbomb::Move(float DeltaTime)
 
 void Defcon::CSmartbomb::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
-	check(GameObjectResources.SmartbombBrushPtr != nullptr);
+	check(GGameObjectResources.SmartbombBrushPtr != nullptr);
 
 	if(MID == nullptr)
 	{
@@ -164,7 +164,7 @@ void Defcon::CSmartbomb::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 		*Painter.OutDrawElements,
 		Painter.LayerId,
 		Geometry.ToPaintGeometry(),
-		GameObjectResources.SmartbombBrushPtr,
+		GGameObjectResources.SmartbombBrushPtr,
 		ESlateDrawEffect::None,
 		C_WHITE /* * Painter.RenderOpacity * Painter.InWidgetStyle->GetColorAndOpacityTint().A */);
 }

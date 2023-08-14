@@ -58,7 +58,7 @@ Defcon::IGameObject::~IGameObject()
 
 void Defcon::IGameObject::CreateSprite(EObjType Kind)
 {
-	const auto& AtlasInfo = GameObjectResources.Get(Kind);
+	const auto& AtlasInfo = GGameObjectResources.Get(Kind);
 
 	Sprite = SNew(Daylon::SpritePlayObject2D);
 
@@ -214,7 +214,7 @@ Defcon::IGameObject* Defcon::IGameObject::CreateExplosionFireball(CGameObjectCol
 		ExplosionFireball->Position = Position;
 		ExplosionFireball->Orientation = Orientation;
 
-		const auto& Info = GameObjectResources.Get(EObjType::EXPLOSION);
+		const auto& Info = GGameObjectResources.Get(EObjType::EXPLOSION);
 		ExplosionFireball->Lifespan =  1.0f / Info.Atlas->Atlas.FrameRate * Info.Atlas->Atlas.NumCels;
 
 		ExplosionFireball->Sprite = Daylon::SpawnSpritePlayObject2D(Info.Atlas->Atlas, Info.Size, Info.Radius);

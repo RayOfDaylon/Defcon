@@ -17,26 +17,26 @@ char* CPrefVar::GetValueText(char* psz) const
 {
 	switch(m_metadata.VarType)
 	{
-		case type_bool:
+		case EVarType::Boolean:
 			MyStrcpy(psz, (Value != 0.0f) ? "true" : "false");
 			break;
 
-		case type_int:
+		case EVarType::Integer:
 			MySprintf(psz, "%d", (int32)Value);
 			break;
 
-		case type_float:
+		case EVarType::Float:
 			if(strcmp_ci(m_metadata.m_pszUnits, "percent") == 0 || m_metadata.m_pszUnits[0] == '%')
 				fnicesprintf(psz, Value * 100, 6);
 			else
 				fnicesprintf(psz, Value, 6);
 			break;
 
-		case type_choice:
+		case EVarType::Choice:
 		{
-			int32 i = (int32)Value;
-			check(i < m_metadata.m_pChoiceNames->Strings.Num());
-			MyStrcpy(psz, m_metadata.m_pChoiceNames->Strings[i]);
+			int32 I = (int32)Value;
+			check(I < m_metadata.m_pChoiceNames->Strings.Num());
+			MyStrcpy(psz, m_metadata.m_pChoiceNames->Strings[I]);
 		}
 			break;
 

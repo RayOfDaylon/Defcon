@@ -46,7 +46,6 @@ void Defcon::CWeaponsTrainingMission::Init()
 		"When you have destroyed all the targets,\n"
 		"you'll be cleared for your first real mission."
 		;
-
 }
 
 
@@ -75,7 +74,7 @@ bool Defcon::CWeaponsTrainingMission::Update(float fElapsed)
 
 void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 {
-	for(int32 i = 0; i < NumTargets; i++)
+	for(int32 Index = 0; Index < NumTargets; Index++)
 	{
 		CBeacon* p = new CBeacon;
 		p->InstallSprite();
@@ -83,7 +82,7 @@ void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 		p->Lifespan = 2.0f;
 		p->MakeHurtable();
 		p->Position.Set(
-			MAP(i, 0, 6, GArena->GetDisplayWidth()*.66f, GArena->GetWidth() * 0.9f),
+			MAP(Index, 0, 6, GArena->GetDisplayWidth()*.66f, GArena->GetWidth() * 0.9f),
 			SFRAND * 0.33f * GArena->GetHeight() + GArena->GetHeight()/2);
 
 		GArena->GetObjects().Add(p);

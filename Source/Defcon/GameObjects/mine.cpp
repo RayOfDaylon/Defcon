@@ -27,7 +27,7 @@ Defcon::CMine::CMine()
 	Lifespan = FRANDRANGE(MINE_LIFESPAN - 0.25f, MINE_LIFESPAN + 0.25f);//  SFRAND * 0.25f + MINE_LIFESPAN;
 
 	CreateSprite(Type);
-	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	const auto& SpriteInfo = GGameObjectResources.Get(Type);
 	BboxRadius.Set(SpriteInfo.Size.X, SpriteInfo.Size.Y);
 }
 

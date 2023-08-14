@@ -150,7 +150,7 @@ Defcon::CPhred::CPhred()
 	Mass       = PLAYER_MASS * 20;
 
 	CreateSprite(Type);
-	const auto& SpriteInfo = GameObjectResources.Get(Type);
+	const auto& SpriteInfo = GGameObjectResources.Get(Type);
 	BboxRadius = SpriteInfo.Size / 2;
 }
 
@@ -167,7 +167,7 @@ Defcon::CMunchie::CMunchie()
 	Mass = PLAYER_MASS * 18;
 
 	CreateSprite(Type);
-	BboxRadius = GameObjectResources.Get(Type).Size / 2;
+	BboxRadius = GGameObjectResources.Get(Type).Size / 2;
 }
 
 // ----------------------------------------------------------------------------------
@@ -183,5 +183,5 @@ Defcon::CBigRed::CBigRed()
 	Mass       = PLAYER_MASS * 22;
 
 	CreateSprite(Type);
-	BboxRadius = GameObjectResources.Get(Type).Size / 2;
+	BboxRadius = GGameObjectResources.Get(Type).Size / 2;
 }
