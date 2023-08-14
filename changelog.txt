@@ -4,6 +4,8 @@ Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
 August 13, 2023
 
+Moved gamename.dat resource file to inline C++ code to avoid 
+problem with packaged builds not including that "asset".
 
 Several old preference items removed.
 

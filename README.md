@@ -50,4 +50,11 @@ Game sounds may be loud. Until a volume setting is added, it's recommended to ma
 
 All graphics are done in UMG/Slate, to push those subsystems even harder than in Stellar Mayhem.
 
-No binaries available yet, sorry.
+If you prefer to just download a Windows binary to play the game, one is available at https://www.daylongraphics.com/download/defcon/Defcon.zip
+
+Version: 1.0  
+Size: 187,864,272 bytes (179 MiB)  
+CRC32: 216746BF  
+CRC64: E84AD87D311F78B7  
+SHA256: B16EF70A8902DF094CD28F4EFE2594A8C9023509008320CCBCAC0AD04C817AAB  
+SHA1: 31AD0ED069D9863BCA8C43A0CD909664E2A791FB
