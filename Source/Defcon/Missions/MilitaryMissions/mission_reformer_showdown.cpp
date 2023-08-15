@@ -27,9 +27,3 @@ void Defcon::CReformerShowdown::Init()
 	AddEnemySpawnInfo({ EObjType::SWARMER,  { 3, 3 } });
 }
 
-
-void Defcon::CReformerShowdown::MakeTargets(float fElapsed, const CFPoint& where)
-{
-	UpdateWaves(where);
-}
-

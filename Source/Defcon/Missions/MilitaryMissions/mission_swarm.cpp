@@ -98,7 +98,7 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 				x = (float)fmod(x, wp);
 				float y = (float)gpArena->GetHeight() * FRAND;
 				p->Where.Set(x, y);
-				AddEvent(p);
+				AddTask(p);
 			}
 		}
 

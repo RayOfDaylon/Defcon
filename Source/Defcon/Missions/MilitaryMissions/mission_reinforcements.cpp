@@ -29,7 +29,7 @@ void Defcon::CReinforcedMission::Init()
 }
 
 
-void Defcon::CReinforcedMission::MakeTargets(float fElapsed, const CFPoint& where)
+void Defcon::CReinforcedMission::MakeTargets(float DeltaTime, const CFPoint& Where)
 {
 	if(TargetsRemaining() > 0 
 		&& Age >= 
@@ -40,10 +40,10 @@ void Defcon::CReinforcedMission::MakeTargets(float fElapsed, const CFPoint& wher
 		// Add baiters until player clears minimal hostiles.
 		if(Age - TimeLastCleanerSpawned >= BAITER_SPAWN_FREQUENCY)
 		{
-			AddBaiter(where);
+			AddBaiter(Where);
 		}
 	}
 
-	UpdateWaves(where);
+	Super::MakeTargets(DeltaTime, Where);
 }
 

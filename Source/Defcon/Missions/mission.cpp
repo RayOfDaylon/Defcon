@@ -70,7 +70,8 @@ bool Defcon::IMission::Update(float DeltaTime)
 {
 	Age += DeltaTime; 
 
-	ScheduledTasks.Process(DeltaTime);
+	ScheduledTasks     .Process(DeltaTime);
+	EnemyCreationTasks .Process(DeltaTime);
 
 	DoIntroText(DeltaTime);
 
@@ -80,17 +81,19 @@ bool Defcon::IMission::Update(float DeltaTime)
 
 void Defcon::IMission::DoIntroText(float DeltaTime)
 {
-	if(!IntroIsDone)
+	if(IntroIsDone)
 	{
-		IntroIsDone = true;
+		return;
+	}
+	
+	IntroIsDone = true;
 
-		TArray<FString> IntroTextLines;
-		IntroText.ParseIntoArray(IntroTextLines, TEXT("\n"), false);
+	TArray<FString> IntroTextLines;
+	IntroText.ParseIntoArray(IntroTextLines, TEXT("\n"), false);
 
-		for(const auto& IntroTextLine : IntroTextLines)
-		{
-			GArena->AddMessage(IntroTextLine);
-		}
+	for(const auto& IntroTextLine : IntroTextLines)
+	{
+		GArena->AddMessage(IntroTextLine);
 	}
 }
 
@@ -114,11 +117,10 @@ void Defcon::IMission::AddHumanoids()
 		Human->Objects  = &GArena->GetObjects();
 		Human->Objects2 = &GArena->GetEnemies();
 
-		// If we're on wave 2 or higher, don't move the humans
-		// except to reset them vertically.
+		// If we're on mission 2 or higher, don't move the humans except to reset them vertically.
 		Human->InitHuman(CFPoint(
 			(GDefconGameInstance->GetScore() == 0) ? FRAND * GArena->GetWidth() * HUMAN_DISTRIBUTION : Human->Position.x, 
-			FRAND * 5 + 25));
+			FRANDRANGE(25, 30)));
 	}
 	);
 }

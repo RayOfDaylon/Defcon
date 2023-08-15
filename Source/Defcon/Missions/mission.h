@@ -11,7 +11,7 @@
 */
 
 #include "CoreMinimal.h"
-#include "Main/event.h"
+#include "Main/task.h"
 #include "Arenas/DefconPlayViewBase.h"
 
 
@@ -88,10 +88,11 @@ namespace Defcon
 			virtual void	CreateTerrain	();
 			virtual void	AddHumanoids	();
 			virtual bool	HumansInvolved	() const { return true; }
-			virtual bool	IsCompleted		() const { return true; }
+			virtual bool	IsComplete		() const { return true; }
+			virtual void    AddEnemy        (CCreateEnemyTask* Task) { EnemyCreationTasks.Add(Task); }
 
 			EMissionID		GetID			() const { return ID; }
-			void			AddEvent		(CScheduledTask* p) { ScheduledTasks.Add(p); }
+			void			AddTask         (CScheduledTask* p) { ScheduledTasks.Add(p); }
 			bool			IsRunning		() const { return (GArena != nullptr); }
 
 			const FString&  GetIntroText    () const { return IntroText; }
@@ -102,6 +103,7 @@ namespace Defcon
 			void DoIntroText(float DeltaTime);
 
 			CScheduledTaskList     ScheduledTasks;
+			CScheduledTaskList     EnemyCreationTasks;
 			FString                IntroText;
 			EMissionID             ID          = EMissionID::Undefined;
 			float                  Age         = 0.0f;
@@ -109,48 +111,52 @@ namespace Defcon
 	};
 
 
-	class CFlightTrainingMission : public IMission
+	class ITrainingMission : public IMission
 	{
 		public:
-			CFlightTrainingMission() { ID = EMissionID::FlightTraining; }
-			virtual void Init() override;
-			virtual bool Update(float) override;
-
-			virtual FString GetName() const override { return "Flight Training"; }
-			virtual FString GetDesc() const override { return "Practice flying your new ship"; }
-
 			virtual void AddHumanoids	() override {}
 			virtual void Conclude		() override {}
 			virtual bool HumansInvolved	() const override { return false; }
+
+		protected:
+			bool  TargetsMade         = false;
+
+	};
+
+
+	class CFlightTrainingMission : public ITrainingMission
+	{
+		public:
+			CFlightTrainingMission() { ID = EMissionID::FlightTraining; }
+
+			virtual void    Init     () override;
+			virtual bool    Update   (float DeltaTime) override;
+			virtual FString GetName  () const override { return "Flight Training"; }
+			virtual FString GetDesc  () const override { return "Practice flying your new ship"; }
 
 		private:
 			void DoMakeTargets		    (float);
 			void CheckTargetCollided	(float);
 			bool AreAllTargetsCollided	() const;
 
-			bool  TargetsMade         = false;
 			int32 NumTargetsRemaining = 0;
 	};
 
 
-	class CWeaponsTrainingMission : public IMission
+	class CWeaponsTrainingMission : public ITrainingMission
 	{
 		public:
 			CWeaponsTrainingMission() { ID = EMissionID::WeaponsTraining; }
-			virtual void Init() override;
-			virtual bool Update(float) override;
 
-			virtual FString GetName        () const override { return "Weapons Training"; }
-			virtual FString GetDesc        () const override { return "Practice shooting at various targets"; }
-			virtual void    AddHumanoids   () override {}
-			virtual void    Conclude       () override {}
-			virtual bool    HumansInvolved () const override { return false; }
+			virtual void    Init     () override;
+			virtual bool    Update   (float DeltaTime) override;
+			virtual FString GetName  () const override { return "Weapons Training"; }
+			virtual FString GetDesc  () const override { return "Practice shooting at various targets"; }
 
 		private:
 			void DoMakeTargets		(float);
 			bool AreAllTargetsHit	(float);
 
-			bool  TargetsMade   = false;
 			int32 NumTargetsHit = 0;
 	};
 }

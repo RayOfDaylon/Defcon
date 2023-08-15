@@ -27,10 +27,3 @@ void Defcon::CFirebomberShowdown::Init()
 	AddEnemySpawnInfo({ EObjType::FIREBOMBER_WEAK, { 3, 3, 0, 0 } });
 	AddEnemySpawnInfo({ EObjType::DYNAMO,          { 3, 3, 0, 0 } });
 }
-
-
-void Defcon::CFirebomberShowdown::MakeTargets(float fElapsed, const CFPoint& where)
-{
-	UpdateWaves(where);
-}
-

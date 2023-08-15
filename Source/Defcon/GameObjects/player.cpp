@@ -126,6 +126,7 @@ bool Defcon::CPlayer::EmbarkPassenger(IGameObject* pObj, CGameObjectCollection& 
 
 	pObj->Notify(EMessage::TakenAboard, this);
 
+
 	//UE_LOG(LogGame, Log, TEXT("Human picked up by player"));
 
 	return true;
@@ -153,28 +154,6 @@ bool Defcon::CPlayer::DebarkOnePassenger(CGameObjectCollection& Humans)
 	});
 
 	return Result;
-
-#if 0
-	IGameObject* pObj = humans.GetFirst();
-
-	while(pObj != nullptr)
-	{
-		CHuman& human = (CHuman&)*pObj;
-		if(human.GetCarrier() == this)
-		{
-#ifdef _DEBUG
-			char sz[100];
-			MySprintf(sz, "Human released by player\n");
-			OutputDebugString(sz);
-#endif
-			pObj->Notify(EMessage::Released, this);
-			return true;
-		}
-		pObj = pObj->GetNext();
-	}
-
-	return false;
-#endif
 }
 
 

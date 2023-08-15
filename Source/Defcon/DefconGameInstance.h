@@ -237,15 +237,14 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 
 
 
-	Defcon::IMission* m_pMission = nullptr;
+	Defcon::IMission* MissionPtr = nullptr;
 
 	Defcon::EMissionID MissionID = Defcon::EMissionID::First;
 
-	UDefconPlayViewBase* GetPlayView() { return Cast<UDefconPlayViewBase>(Views[(int32)EDefconArena::Play]); }
-
-	UDefconViewBase* GetCurrentView      () const { return CurrentView; }
-	void             SetCurrentView      (UDefconViewBase* View);
-	void             SetCurrentMission   (Defcon::EMissionID InMissionID);
+	UDefconPlayViewBase* GetPlayView         () { return Cast<UDefconPlayViewBase>(Views[(int32)EDefconArena::Play]); }
+	UDefconViewBase*     GetCurrentView      () const { return CurrentView; }
+	void                 SetCurrentView      (UDefconViewBase* View);
+	void                 SetCurrentMission   (Defcon::EMissionID InMissionID);
 
 	protected:
 
@@ -261,9 +260,9 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 
 	// The score isn't visually shown, it's used more to track XP.
 	int32 Score = 0;
-	Daylon::TBindableValue<int32> SmartbombsLeft;
-	bool                          GodMode = false;
-	Defcon::FTotals               Stats;
+	Daylon::TBindableValue<int32>  SmartbombsLeft;
+	bool                           GodMode = false;
+	Defcon::FTotals                Stats;
 
 	public:
 
@@ -279,13 +278,12 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	bool                                 AcquireSmartBomb       ();
 	int32                                GetSmartbombCount      () const { return SmartbombsLeft; }
 	void                                 BindToSmartbombCount   (TFunction<void(const int32& Val)> Delegate) { SmartbombsLeft.Bind(Delegate); }
-	void                                 TargetDestroyed       (Defcon::EObjType Kind) { if(m_pMission != nullptr) ((Defcon::CMilitaryMission*)m_pMission)->TargetDestroyed(Kind); }
-	Defcon::IMission*                    GetMission             () { return m_pMission; }
-	const Defcon::IMission*              GetMission             () const { return m_pMission; }
+	void                                 TargetDestroyed        (Defcon::EObjType Kind) { if(MissionPtr != nullptr) ((Defcon::CMilitaryMission*)MissionPtr)->TargetDestroyed(Kind); }
+	Defcon::IMission*                    GetMission             () { return MissionPtr; }
+	const Defcon::IMission*              GetMission             () const { return MissionPtr; }
 	void                                 InitMission            ();
 	void                                 MissionEnded           ();
 	FString                              GetCurrentMissionName  () const;
-	void                                 AddEvent               (Defcon::CScheduledTask* Event);
 	Defcon::FTotals&                     GetStats               () { return Stats; }
 };
 

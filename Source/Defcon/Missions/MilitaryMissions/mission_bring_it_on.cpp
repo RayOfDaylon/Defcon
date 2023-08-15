@@ -31,13 +31,13 @@ void Defcon::CBringItOn::Init()
 }
 
 
-void Defcon::CBringItOn::MakeTargets(float fElapsed, const CFPoint& where)
+void Defcon::CBringItOn::MakeTargets(float DeltaTime, const CFPoint& Where)
 {
 	if(TargetsRemaining() > 0 && Age >= PLAYER_BIRTHDURATION + 6)
 	{
-		AddMissionCleaner(where);
+		AddMissionCleaner(Where);
 	}
 
-	UpdateWaves(where);
+	Super::MakeTargets(DeltaTime, Where);
 }
 

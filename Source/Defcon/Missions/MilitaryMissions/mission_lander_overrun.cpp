@@ -26,9 +26,3 @@ void Defcon::CLanderOverrun::Init()
 	AddEnemySpawnInfo({ EObjType::DYNAMO, {  6,  6 } });
 }
 
-
-void Defcon::CLanderOverrun::MakeTargets(float DeltaTime, const CFPoint& Where)
-{
-	UpdateWaves(Where);
-}
-

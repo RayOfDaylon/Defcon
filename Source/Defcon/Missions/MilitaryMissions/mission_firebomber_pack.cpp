@@ -32,10 +32,14 @@ void Defcon::CFirebomberPack::Init()
 
 void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 {
+	if(WaveIndex >= MaxWaves)
+	{
+		return;
+	}
+
 	if((    TotalHostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
 		|| (TotalHostilesInPlay() > 0  && RepopCounter > DELAY_BETWEEN_REATTACK))
 	{
-
 		RepopCounter = 0.0f;
 
 		const int32 numBombers[] = { 20, 5 }; 

@@ -18,9 +18,8 @@ namespace Defcon
 		public:
 			CScheduledTask() {}
 			virtual ~CScheduledTask() {}
-			virtual void Init() {}
 
-			float   Countdown = 0.0f;
+			float   Countdown = 0.0f; // If this is not set, task will run immediately.
 
 			virtual void Do() = 0;
 	};
@@ -28,17 +27,20 @@ namespace Defcon
 
 	class CScheduledTaskList
 	{
-		// This class holds event tasks to be run at some time in the future.
+		// Tasks to be run at some time in the future.
 
 		public:
 			virtual ~CScheduledTaskList();
 
-			void  Add       (CScheduledTask*);
-			void  Process   (float DeltaTime);
-			void  DeleteAll ();
+			void  Add           (CScheduledTask*);
+			void  Process       (float DeltaTime);
+			void  DeleteAll     ();
+			bool  IsEmpty       () const { return Tasks.IsEmpty(); }
+			void  ForEach       (TFunction<void(CScheduledTask*)> Function) const;
+			void  ForEachUntil  (TFunction<bool(CScheduledTask*)> Function) const;
 
 		private:
-			TArray<CScheduledTask*>  Events;
+			TArray<CScheduledTask*>  Tasks;
 	};
 
 

@@ -32,7 +32,7 @@ void Defcon::CYllabianEscort::Init()
 }
 
 
-void Defcon::CYllabianEscort::MakeTargets(float fElapsed, const CFPoint& where)
+void Defcon::CYllabianEscort::MakeTargets(float DeltaTime, const CFPoint& Where)
 {
 	if(TargetsRemaining() > 0 
 		&& Age >= 
@@ -40,8 +40,8 @@ void Defcon::CYllabianEscort::MakeTargets(float fElapsed, const CFPoint& where)
 			(DELAY_BETWEEN_REATTACK + 5) * 3.5
 			)
 	{
-		AddMissionCleaner(where);
+		AddMissionCleaner(Where);
 	}
 
-	UpdateWaves(where);
+	Super::MakeTargets(DeltaTime, Where);
 }

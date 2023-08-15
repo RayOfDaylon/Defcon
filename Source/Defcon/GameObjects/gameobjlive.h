@@ -62,6 +62,8 @@ namespace Defcon
 			virtual bool       RegisterImpact        (float f);
 			void               BindToShieldValue     (TFunction<void(const float& Val)> Delegate) { ShieldStrength.Bind(Delegate); }
 
+			//bool               HasPassenger          () const { return bHasPassenger; }
+
 			enum ENavControl { Up, Down, Fwd, Back, Count };
 
 
@@ -74,6 +76,7 @@ namespace Defcon
 			float       ThrustDurationForwards;
 			float       ThrustDurationBackwards;
 			bool        bCanMove;
+			//bool        bHasPassenger = false;
 
 
 		private:

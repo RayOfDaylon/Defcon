@@ -21,6 +21,32 @@ enum class EDefconArena : uint8
 	Credits
 };
 
+/*
+	Arena (view) transition graph:
+
+	<< Intro
+
+	Intro          -> (Enter) -> MainMenu
+
+	MainMenu       -> (Start)   -> MissionPicker
+	               -> (Help)    -> Help    -> MainMenu
+			       -> (Info)    -> Credits -> MainMenu
+				   >> (Exit)
+
+	MissionPicker  -> (Select)  -> Prewave
+	MissionPicker  -> (Esc)     -> MainMenu
+
+	Prewave        -> Play
+	Prewave        -> (Esc)    -> MissionPicker
+
+	Play           -> PostWave
+	Play           -> (Esc)    -> MissionPicker
+
+	Postwave       -> Prewave
+	Postwave       -> GameOver -> MainMenu
+	Postwave       -> (Esc)    -> MissionPicker
+*/
+
 
 UENUM()
 enum class EDefconPawnNavigationEvent : uint8

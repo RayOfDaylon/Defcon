@@ -11,7 +11,7 @@
 #include "GameObjects/terrain.h"
 #include "GameObjects/Auxiliary/materialization.h"
 #include "GameObjects/GameObjectCollection.h"
-#include "Main/event.h"
+#include "Main/task.h"
 #include "DefconPlayViewBase.generated.h"
 
 
@@ -150,7 +150,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 	bool 	   bFinishActivating    = false;
 	bool       bMissionDoneMsgShown = false;
-	bool       m_bHumansInMission   = false;
+	bool       AreHumansInMission   = false;
 	bool       bArenaClosing        = false;
 	bool       m_bRunSlow           = false;
 	float      m_fRadarFritzed      = 0.0f;

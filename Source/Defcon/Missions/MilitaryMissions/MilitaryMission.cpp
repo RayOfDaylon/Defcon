@@ -55,7 +55,7 @@ void Defcon::CMilitaryMission::Init()
 			pEvt->Where.Set(x, y);
 			pEvt->bMissionTarget = false; // can leave turrets alive w/o aborting mission
 			pEvt->m_bMaterializes = false;
-			AddEvent(pEvt);
+			AddTask(pEvt);
 		}
 	}
 #endif
@@ -112,7 +112,8 @@ bool Defcon::CMilitaryMission::PlayerInStargate() const
 void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 {
 	// For now, defer to legacy wave processing if this class has empty EnemySpawnCountsArray member.
-	if(EnemySpawnCountsArray.IsEmpty())
+
+	if(WaveIndex >= MaxWaves || EnemySpawnCountsArray.IsEmpty())
 	{
 		return;
 	}
@@ -124,11 +125,6 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 	}
 
 	RepopCounter = 0.0f;
-
-	if(WaveIndex >= MaxWaves)
-	{
-		return;
-	}
 	
 	const float ArenaWidth = GArena->GetWidth();
 
@@ -163,25 +159,51 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 }
 
 
-bool Defcon::CMilitaryMission::IsCompleted() const
+bool Defcon::CMilitaryMission::IsComplete() const
 {
+	// Report if the mission has ended and the player is allowed to leave.
+	// All the waves must have occured, no more mission target creation tasks are pending,
+	// and none of the existing enemies must be a mission target.
+
 	if(WaveIndex < MaxWaves)
 	{
 		return false;
 	}
 
+
 	bool Result = true;
+
+	EnemyCreationTasks.ForEachUntil([&Result](CScheduledTask* Task)
+	{
+		auto EnemyCreationTask = static_cast<CCreateEnemyTask*>(Task);
+		
+		if(!EnemyCreationTask->bMissionTarget)
+		{
+			return true;
+		}
+		Result = false;
+		return false;
+	});
+
+	if(Result == false)
+	{
+		return false;
+	}
+
+
+	Result = true;
 
 	GArena->GetEnemies().ForEachUntil([&Result](IGameObject* Obj)
 	{
 		const auto Enemy = static_cast<CEnemy*>(Obj);
 
-		if(Enemy->IsMissionTarget())
+		if(!Enemy->IsMissionTarget())
 		{
-			Result = false;
-			return false;
+			return true;
 		}
-		return true;
+
+		Result = false;
+		return false;
 	});
 
 	return Result;
@@ -201,7 +223,7 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 	{
 		GArena->AllStopPlayerShip();
 
-		if(!IsCompleted())
+		if(!IsComplete())
 		{
 			GArena->TransportPlayerShip();
 		}
@@ -227,10 +249,7 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 		}
 	}
 
-	if(WaveIndex < MaxWaves)
-	{
-		MakeTargets(DeltaTime, GArena->GetPlayerShip().Position);
-	}
+	MakeTargets(DeltaTime, GArena->GetPlayerShip().Position);
 
 	return true;
 }

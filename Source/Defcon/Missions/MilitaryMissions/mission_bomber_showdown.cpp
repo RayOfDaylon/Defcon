@@ -26,10 +26,3 @@ void Defcon::CBomberShowdown::Init()
 	AddEnemySpawnInfo({ EObjType::BOMBER, { 9, 9, 0, 0 } });
 	AddEnemySpawnInfo({ EObjType::POD,    { 3, 3, 0, 0 } });
 }
-
-
-void Defcon::CBomberShowdown::MakeTargets(float fElapsed, const CFPoint& where)
-{
-	UpdateWaves(where);
-}
-

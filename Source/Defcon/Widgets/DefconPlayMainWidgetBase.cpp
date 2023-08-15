@@ -115,7 +115,7 @@ void UDefconPlayMainWidgetBase::OnFinishActivating()
 	check(PlayerShipPtr != nullptr);
 	check(Humans != nullptr);
 	
-	m_bHumansInMission = GDefconGameInstance->GetMission()->HumansInvolved();
+	AreHumansInMission = GDefconGameInstance->GetMission()->HumansInvolved();
 
 	Stars.Empty();
 	Stars.Reserve(STARS_COUNT);
@@ -138,7 +138,7 @@ void UDefconPlayMainWidgetBase::OnFinishActivating()
 
 	PlayerShipPtr->InstallSprite();
 
-	if(m_bHumansInMission)
+	if(AreHumansInMission)
 	{
 		Humans->ForEach([](Defcon::IGameObject* Human) { Human->InstallSprite(); });
 	}
@@ -155,7 +155,7 @@ void UDefconPlayMainWidgetBase::OnDeactivate()
 	Daylon::Uninstall(PlayerShipExhaust.Pin());
     PlayerShipPtr->UninstallSprite();
 
-	if(m_bHumansInMission)
+	if(AreHumansInMission)
 	{
 		Humans->ForEach([](Defcon::IGameObject* Human) { Human->UninstallSprite(); });
 	}

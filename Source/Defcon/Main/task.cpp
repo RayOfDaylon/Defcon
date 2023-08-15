@@ -2,11 +2,13 @@
 // Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
 
 /*
-	event.cpp
-	Defcon event system
+	task.cpp
+	Defcon scheduled task system.
+	Scheduled tasks are used to easily run code that needs to occur later, 
+	e.g. enemy spawns, arena closures, etc.
 */
 
-#include "event.h"
+#include "task.h"
 
 #include "DefconUtils.h"
 
@@ -40,46 +42,46 @@
 
 Defcon::CScheduledTaskList::~CScheduledTaskList()
 {
-	while(!Events.IsEmpty())
+	while(!Tasks.IsEmpty())
 	{
-		check(Events.Last(0) != nullptr);
+		check(Tasks.Last(0) != nullptr);
 		
-		delete Events.Last(0);
+		delete Tasks.Last(0);
 		
-		Events.Pop();
+		Tasks.Pop();
 	}
 }
 
 
-void Defcon::CScheduledTaskList::Add(CScheduledTask* Event)
+void Defcon::CScheduledTaskList::Add(CScheduledTask* Task)
 {
-	check(Event != nullptr);
+	check(Task != nullptr);
 
-	Events.Add(Event);
+	Tasks.Add(Task);
 }
 
 
 void Defcon::CScheduledTaskList::Process(float DeltaTime)
 {
-	for(int32 Index = Events.Num() - 1; Index >= 0; Index--)
+	for(int32 Index = Tasks.Num() - 1; Index >= 0; Index--)
 	{
-		auto Event = Events[Index];
+		auto Task = Tasks[Index];
 
-		Event->Countdown -= DeltaTime;
+		Task->Countdown -= DeltaTime;
 
-		if(Event->Countdown <= 0.0f)
+		if(Task->Countdown <= 0.0f)
 		{
-			Event->Do();
+			Task->Do();
 
-			// If the event caused an arena transition, the event queue may have emptied, so check for that.
-			if(Events.IsEmpty())
+			// If the task was major then the task list may have emptied, so check for that.
+			if(Tasks.IsEmpty())
 			{
 				return;
 			}
 
-			delete Event;
+			delete Task;
 
-			Events.RemoveAtSwap(Index);
+			Tasks.RemoveAtSwap(Index);
 		}
 	}
 }
@@ -87,15 +89,39 @@ void Defcon::CScheduledTaskList::Process(float DeltaTime)
 
 void Defcon::CScheduledTaskList::DeleteAll()
 {
-	for(auto EvtPtr : Events)
+	for(auto Task : Tasks)
 	{
-		check(EvtPtr != nullptr);
+		check(Task != nullptr);
 		
-		delete EvtPtr;
+		delete Task;
 	}
-	Events.Empty();
+	Tasks.Empty();
 }
 
+
+void Defcon::CScheduledTaskList::ForEach(TFunction<void(CScheduledTask*)> Function) const
+{
+	check(Function);
+
+	for(auto Task : Tasks)
+	{
+		Function(Task);
+	}
+}
+
+
+void Defcon::CScheduledTaskList::ForEachUntil(TFunction<bool(CScheduledTask*)> Function) const
+{
+	check(Function);
+
+	for(auto Task : Tasks)
+	{
+		if(!Function(Task))
+		{
+			break;
+		}
+	}
+}
 
 // --------------------------------------------------------
 
@@ -213,9 +239,8 @@ Defcon::CEnemy* Defcon::CCreateEnemyTask::CreateEnemy()
 	Enemy->MapperPtr = &GArena->GetMainAreaMapper();
 	Enemy->Position = Where;
 
-	float w = GArena->GetDisplayWidth();
-
-	Enemy->Init(CFPoint((float)GArena->GetWidth(), (float)GArena->GetHeight()), CFPoint(w, (float)GArena->GetHeight()));
+	Enemy->Init(CFPoint(GArena->GetWidth(),        GArena->GetHeight()), 
+	            CFPoint(GArena->GetDisplayWidth(), GArena->GetHeight()));
 
 	return Enemy;
 }
@@ -279,7 +304,7 @@ void Defcon::CCreateEnemyTask::SpecializeForLander(Defcon::CEnemy* Enemy, const 
 	SET_PLAYER_AS_TARGET
 
 	CLander* p = static_cast<CLander*>(Enemy);
-	//p->m_pvUserTerrainEval = gpArena;
+	
 	p->Objects = &GArena->GetObjects();
 	p->SetDoChaseHumans(GDefconGameInstance->GetMission()->HumansInvolved());
 }

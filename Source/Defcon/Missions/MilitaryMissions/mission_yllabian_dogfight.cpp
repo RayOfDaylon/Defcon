@@ -30,6 +30,11 @@ void Defcon::CYllabianDogfight::Init()
 
 void Defcon::CYllabianDogfight::MakeTargets(float fElapsed, const CFPoint& where)
 {
+	if(WaveIndex >= MaxWaves)
+	{
+		return;
+	}
+
 	if((TotalHostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
 		|| (TotalHostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
 	{

@@ -241,7 +241,7 @@ void Defcon::IGameObject::InstallSprite()
 
 void Defcon::IGameObject::UninstallSprite() 
 {
-	if(Sprite) 
+	if(Sprite && Sprite->IsValid()) 
 	{
 		//UE_LOG(LogGame, Log, TEXT("Uninstalling sprite for object class %s"), *GObjectTypeManager.GetName(Type));
 		Daylon::Uninstall(Sprite); 

@@ -259,7 +259,7 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 
 	bool bDoneActivating = false;
 	bool bSafeToStart = false;
-	bool m_bHumansInMission  = false;
+	bool AreHumansInMission  = false;
 
 
 	public:

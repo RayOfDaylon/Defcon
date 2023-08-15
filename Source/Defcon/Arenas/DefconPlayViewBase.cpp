@@ -164,7 +164,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	GI->InitMission();
 
-	m_bHumansInMission = GI->GetMission()->HumansInvolved();
+	AreHumansInMission = GI->GetMission()->HumansInvolved();
 
 
 
@@ -221,7 +221,7 @@ void UDefconPlayViewBase::OnDeactivate()
 	DeleteAllObjects();
 
 	// Uninstall sprites for any surviving humans.
-	//if(m_bHumansInMission)
+	//if(AreHumansInMission)
 	//{
 		//GetHumans().ForEach([](Defcon::IGameObject* Ptr) { Ptr->UninstallSprite(); });
 	//}
@@ -302,9 +302,9 @@ void UDefconPlayViewBase::TransportPlayerShip()
 	// and maintain the ship's direction.
 	//   If no abductions, take the player to where the action is.
 
-	CFPoint pt(0.0f, 0.0f);
+	CFPoint P(0.0f, 0.0f);
 
-	if(m_bHumansInMission)
+	if(AreHumansInMission)
 	{
 		GetConstHumans().ForEach([&](Defcon::IGameObject* Object)
 		{
@@ -313,9 +313,9 @@ void UDefconPlayViewBase::TransportPlayerShip()
 			if(Human->IsBeingCarried() && Human->GetCarrier()->GetType() != Defcon::EObjType::PLAYER)
 			{
 				// Track highest human but not one that is too close to the top of the arena.
-				if(Human->Position.y > pt.y && Human->Position.y < ArenaSize.Y - 150)
+				if(Human->Position.y > P.y && Human->Position.y < ArenaSize.Y - 150)
 				{
-					pt = Human->Position;
+					P = Human->Position;
 				}
 			}
 		});
@@ -325,13 +325,13 @@ void UDefconPlayViewBase::TransportPlayerShip()
 
 	const auto Mission = static_cast<Defcon::CMilitaryMission*>(GDefconGameInstance->GetMission());
 
-	if(pt.y != 0.0f)
+	if(P.y != 0.0f)
 	{
 		// A human is being abducted.
 
 		// Move player to where human is, plus some height so the lander can be targeted.
 
-		PlayerShip.Position = pt;
+		PlayerShip.Position = P;
 		PlayerShip.Position.y += 100;
 
 		// Move player horizontally by half the screen width, but facing the human.
@@ -342,7 +342,7 @@ void UDefconPlayViewBase::TransportPlayerShip()
 		{
 			DistanceFactor += 0.1f;
 
-			PlayerShip.Position.x = WrapX(pt.x - (PlayerShip.Orientation.Fwd.x * GetDisplayWidth() * DistanceFactor));
+			PlayerShip.Position.x = WrapX(P.x - (PlayerShip.Orientation.Fwd.x * GetDisplayWidth() * DistanceFactor));
 
 		} while(Mission->PlayerInStargate());
 	}
@@ -464,11 +464,9 @@ void UDefconPlayViewBase::ConcludeMission()
 	if(!bArenaClosing)
 	{
 		bArenaClosing = true;
-		auto pEvt = new Defcon::CEndMissionTask;
-		pEvt->Init();
-		//pEvt->m_what = CScheduledTask::Type::endmission;
-		pEvt->Countdown = FADE_DURATION_NORMAL;
-		ScheduledTasks.Add(pEvt);
+		auto Task = new Defcon::CEndMissionTask;
+		Task->Countdown = FADE_DURATION_NORMAL;
+		ScheduledTasks.Add(Task);
 
 		FadeAge = FADE_DURATION_NORMAL;
 
@@ -948,9 +946,9 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 	const auto Mission = GDefconGameInstance->GetMission();
 
-	check(Mission != nullptr);
+	// Mission becomes nullptr at end of game, so check for that.
 	
-	const bool HumansInvolved = /*Mission != nullptr ?*/ Mission->HumansInvolved();// : false;
+	const bool HumansInvolved = Mission != nullptr ? Mission->HumansInvolved() : false;
 
 	// ------------------------------------------------------
 	// Process objects (move, draw, delete).
@@ -996,7 +994,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 	// Extra stuff when processing enemies.
 
-	if(Mission->IsMilitary())
+	if(Mission != nullptr && Mission->IsMilitary())
 	{
 		const auto MilitaryMission = static_cast<Defcon::CMilitaryMission*>(Mission);
 
@@ -1015,7 +1013,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		{
 			GOP.OnPostDeath = [this, MilitaryMission]()
 			{
-				if(MilitaryMission->IsCompleted())
+				if(MilitaryMission->IsComplete())
 				{
 					AddMessage(TEXT("ALL MISSION TARGETS DESTROYED -- PROCEED TO STARGATE"), DURATION_IMPORTANT_MESSAGE);
 					bMissionDoneMsgShown = true;
@@ -1028,15 +1026,13 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 	// ------------------------------------------------------
 
-	const int32 w  = MainAreaSize.X;
-	const int32 h  = MainAreaSize.Y;
-	const int32 wp = (int32)ArenaWidth;
-
 	auto& PlayerShip = GetPlayerShip();
 
 	if(PlayerShip.IsAlive())
 	{
 		PlayerShip.Move(DeltaTime);
+
+		PlayerShip.Position.x = WrapX(PlayerShip.Position.x);
 
 		// Constrain player vertically.
 		PlayerShip.Position.y = CLAMP(PlayerShip.Position.y, PLAYERSHIP_VMARGIN, ArenaSize.Y - PLAYERSHIP_VMARGIN);
@@ -1044,68 +1040,50 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		SettlePlayer(DeltaTime);
 		DoThrustSound(DeltaTime);
 
-		// Handle wraparound onto planet.
-		if(PlayerShip.Position.x < 0)
-		{
-			 PlayerShip.Position.x += ArenaWidth;
-		}
-		else if(PlayerShip.Position.x >= ArenaWidth)
-		{
-			PlayerShip.Position.x -= ArenaWidth;
-		}
 
 
-		//if(PlayerShip.IsSolid())
+		if(HumansInvolved)
 		{
-			// Things to do if player is solid.
-			//static int32 mod = 0;
-
-			// See if any carried humans can be debarked.
-			if(/*mod++ % 5 == 0 && */PlayerShip.Position.y < 5.0f + GetTerrainElev(PlayerShip.Position.x))
+			// See if any humans can be debarked.
+			if(PlayerShip.Position.y < 5.0f + GetTerrainElev(PlayerShip.Position.x))
 			{
+				// todo: DebarkOnePassenger() queries all humans most of the time, when we should have a "has passenger(s)" flag instead.
 				if(PlayerShip.DebarkOnePassenger(GetHumans()))
 				{
-					IncreaseScore((int32)HUMAN_VALUE_DEBARKED, true, &PlayerShip.Position);
+					IncreaseScore(HUMAN_VALUE_DEBARKED, true, &PlayerShip.Position);
 				}
 			}
 			else
 			{
 				// See if any falling humans can be carried.
-				if(HumansInvolved)
+
+				// todo: not sure why we're hit testing projected bboxes of player and humans, world space ought to be fine.
+				const CFPoint playerPos = PlayerShip.Position;
+				//MainAreaMapper.To(PlayerShip.Position, playerPos);
+
+				CFRect rPlayer(playerPos);
+				rPlayer.Inflate(PlayerShip.GetPickupRadiusBox());
+
+				GetHumans().ForEachUntil([&](Defcon::IGameObject* Obj)
 				{
-					// todo: not sure why we're hit testing projected bboxes of player and humans, world space ought to be fine.
-					CFPoint playerScreenPos;
-					MainAreaMapper.To(PlayerShip.Position, playerScreenPos);
+					auto Human = static_cast<Defcon::CHuman*>(Obj);
 
-					CFRect rPlayer(playerScreenPos);
-					rPlayer.Inflate(PlayerShip.GetPickupRadiusBox());
+					const CFPoint humanPos = Obj->Position;
+					//MainAreaMapper.To(Obj->Position, humanPos);
 
-					//Defcon::IGameObject* pObj = GetHumans().GetFirst();
-					GetHumans().ForEachUntil([&](Defcon::IGameObject* pObj)
-					//while(pObj != nullptr)
+					if(!(Human->IsFalling() && rPlayer.Intersect(CFRect(humanPos))))
 					{
-						CFPoint humanScreenPos;
-						MainAreaMapper.To(pObj->Position, humanScreenPos);
-
-						if(rPlayer.Intersect(CFRect(humanScreenPos)))
-						{
-							Defcon::CHuman& Human = *((Defcon::CHuman*)pObj);
-
-							if(Human.IsFalling())
-							{
-								if(PlayerShip.EmbarkPassenger(pObj, GetHumans()))
-								{
-									IncreaseScore((int32)HUMAN_VALUE_EMBARKED, true, &PlayerShip.Position);
-								}
-								return false;
-							}
-						}
 						return true;
-						//pObj = pObj->GetNext();
-					});
-				}
+					}
+					
+					if(PlayerShip.EmbarkPassenger(Obj, GetHumans()))
+					{
+						IncreaseScore(HUMAN_VALUE_EMBARKED, true, &PlayerShip.Position);
+					}
+					return false;
+				});
 			}
-		} // if player is solid.
+		}
 	}
 	else
 	{
@@ -1114,44 +1092,18 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		// When the player rebirth clock runs down,
 		// rebirth the player. Otherwise, end the game.
 
-		// todo: when the player ship finishes materializing, make it visible.
-#if 0
-		if(gpGame->PlayerLivesLeft())
+		// Player died; restart mission.
+		if(!bArenaClosing)
 		{
-			m_fPlayerRebirthClock -= DeltaTime;
-			m_fPlayerRebirthClock = FMath::Max(0, m_fPlayerRebirthClock);
-			if(m_fPlayerRebirthClock == 0)
-			{
-				m_pPlayer = new CPlayer;
-				m_coordMapper.From(
-					CFPoint(m_virtualScreen.GetWidth()/2, 
-					m_virtualScreen.GetHeight()/2), 
-					m_pPlayer->Position);
-				m_pPlayer->Init((float)wp);
-				m_pPlayer->MapperPtr = &m_coordMapper;
-				Objects.Add(m_pPlayer);
-				
-				m_fPlayerRebirthClock = PLAYER_REBIRTH_DELAY;
-			}
-		}
-		else
-#endif
-		{
-			// Player died; restart mission.
-			if(!bArenaClosing)
-			{
-				bArenaClosing = true;
-				auto pEvt = new Defcon::CRestartMissionTask;
-				pEvt->Init();
+			bArenaClosing = true;
+			auto Task = new Defcon::CRestartMissionTask;
 
-				pEvt->Countdown = FADE_DURATION_NORMAL;
-				ScheduledTasks.Add(pEvt);
+			Task->Countdown = FADE_DURATION_NORMAL;
+			ScheduledTasks.Add(Task);
 
-				FadeAge = FADE_DURATION_NORMAL;
-			}
+			FadeAge = FADE_DURATION_NORMAL;
 		}
 	}
-
 
 	// todo: If our shields are taking a beating, fritz the radar.
 	if(m_fRadarFritzed > 0.0f)
@@ -1164,7 +1116,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 void UDefconPlayViewBase::OnEscPressed()
 {
-	TransitionToArena(EDefconArena::MainMenu);
+	TransitionToArena(EDefconArena::MissionPicker);
 }
 
 
@@ -1543,7 +1495,12 @@ void UDefconPlayViewBase::DestroyObject(Defcon::IGameObject* pObj, bool bExplode
 
 	if(pObj->GetType() != Defcon::EObjType::PLAYER)
 	{
-		IncreaseScore(pObj->GetPointValue(), SCORETIPS_SHOWENEMYPOINTS, &pObj->Position);
+		const auto Mission = GDefconGameInstance->GetMission();
+
+		if(Mission != nullptr && Mission->IsMilitary())
+		{
+			IncreaseScore(pObj->GetPointValue(), SCORETIPS_SHOWENEMYPOINTS, &pObj->Position);
+		}
 	}
 
 	if(bExplode)
@@ -1700,11 +1657,10 @@ void UDefconPlayViewBase::OnPlayerShipDestroyed()
 		bArenaClosing = true;
 		FadeAge = DESTROYED_PLAYER_LIFETIME * 2;
 
-		auto pEvt = new Defcon::CRestartMissionTask;
-		pEvt->Init();
-		pEvt->Countdown = FadeAge;
+		auto Task = new Defcon::CRestartMissionTask;
+		Task->Countdown = FadeAge;
 
-		ScheduledTasks.Add(pEvt);
+		ScheduledTasks.Add(Task);
 	}
 }
 
@@ -1811,13 +1767,13 @@ void UDefconPlayViewBase::DetonateSmartbomb()
 
 namespace Defcon
 {
-	class CCreateMaterializationEvent : public CScheduledTask
+	class CCreateMaterializationTask : public CScheduledTask
 	{
 		Defcon::FMaterializationParams Params;
 
 		public:
 
-			void InitMaterializationEvent(const Defcon::FMaterializationParams& InParams) { Params = InParams; }
+			void InitMaterializationTask(const Defcon::FMaterializationParams& InParams) { Params = InParams; }
 
 			virtual void Do() override
 			{
@@ -1838,6 +1794,12 @@ namespace Defcon
 
 void UDefconPlayViewBase::SpecializeMaterialization(Defcon::FMaterializationParams& Params, Defcon::EObjType ObjectType)
 {
+	// We use a switch block because the enemy object doesn't exist (yet), so we can't 
+	// call a virtual method on it. An example of where static virtual methods would be handy,
+	// but since C++ can't do that, we should (todo) move this to a data table, either a 
+	// UE asset or a TMap<EObjType, FMaterializationParams>. Either one would be slower, 
+	// but otoh we don't materialize enemies often enough to matter.
+
 	switch(ObjectType)
 	{
 		case Defcon::EObjType::SWARMER:
@@ -1941,26 +1903,24 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, Defcon::EObjTy
 
 		SpecializeMaterialization(Params, EnemyType);
 
-		auto MaterializationEvent = new Defcon::CCreateMaterializationEvent;
-		MaterializationEvent->InitMaterializationEvent(Params);
-		MaterializationEvent->Countdown = Countdown;
+		auto MaterializationTask = new Defcon::CCreateMaterializationTask;
+		MaterializationTask->InitMaterializationTask(Params);
+		MaterializationTask->Countdown = Countdown;
 
 		Countdown += MaterializationLifetime;
 
-		GDefconGameInstance->m_pMission->AddEvent(MaterializationEvent);
+		GDefconGameInstance->MissionPtr->AddTask(MaterializationTask);
 	}
 
-	auto EventPtr = new Defcon::CCreateEnemyTask;
+	auto Task = new Defcon::CCreateEnemyTask;
 
-	EventPtr->Init();
+	Task->EnemyType			= EnemyType;
+	Task->CreatorType       = CreatorType;
+	Task->Where				= Where;
+	Task->bMissionTarget	= (0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::IsMissionTarget));
+	Task->Countdown         = Countdown; 
 
-	EventPtr->EnemyType			= EnemyType;
-	EventPtr->CreatorType       = CreatorType;
-	EventPtr->Where				= Where;
-	EventPtr->bMissionTarget	= (0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::IsMissionTarget));
-	EventPtr->Countdown         = Countdown; 
-
-	GDefconGameInstance->m_pMission->AddEvent(EventPtr);
+	GDefconGameInstance->MissionPtr->AddEnemy(Task);
 }
 
 
@@ -1968,16 +1928,14 @@ Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::EObjType EnemyType, 
 {
 	// Create an enemy immediately by executing its Do method and not putting the event into the event queue.
 
-	auto EventPtr = new Defcon::CCreateEnemyTask;
+	auto Task = new Defcon::CCreateEnemyTask;
 
-	EventPtr->Init();
-
-	EventPtr->EnemyType      = EnemyType;
-	EventPtr->CreatorType    = CreatorType;
-	EventPtr->Where          = Where;
-	EventPtr->bMissionTarget = (0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::IsMissionTarget));
+	Task->EnemyType      = EnemyType;
+	Task->CreatorType    = CreatorType;
+	Task->Where          = Where;
+	Task->bMissionTarget = (0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::IsMissionTarget));
 	
-	EventPtr->Do();
+	Task->Do();
 
 	return (Defcon::CEnemy*)GetEnemies().GetFirst();
 }

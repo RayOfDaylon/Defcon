@@ -7,7 +7,7 @@
 #include "Arenas/DefconPostwaveViewBase.h"
 #include "Missions/MilitaryMissions/MilitaryMission.h"
 #include "GameObjects/human.h"
-#include "Main/event.h"
+#include "Main/task.h"
 #include "DefconLogging.h"
 #include "Runtime/UMG/Public/Blueprint/UserWidget.h"
 #include "UMG/Public/Blueprint/WidgetBlueprintLibrary.h"
@@ -98,7 +98,7 @@ void UDefconGameInstance::Shutdown()
 	UE_LOG(LogGame, Log, TEXT("%S"), __FUNCTION__);
 
 	SAFE_DELETE(PlayerShipPtr);
-	SAFE_DELETE(m_pMission);
+	SAFE_DELETE(MissionPtr);
 	SAFE_DELETE(GAudio);
 
 	Super::Shutdown();
@@ -118,20 +118,12 @@ bool UDefconGameInstance::Update(float DeltaTime)
 	// then make the next mission and if it does 
 	// not exist (no more missions), then we end.
 
-	if(m_pMission != nullptr)
+	if(MissionPtr != nullptr)
 	{
-		return m_pMission->Update(DeltaTime);
+		return MissionPtr->Update(DeltaTime);
 	}
 
 	return false;
-}
-
-
-void UDefconGameInstance::AddEvent(Defcon::CScheduledTask* Event)
-{
-	check(m_pMission != nullptr);
-
-	m_pMission->AddEvent(Event);
 }
 
 
@@ -408,9 +400,9 @@ void UDefconGameInstance::TransitionToArena(EDefconArena Arena)
 
 void UDefconGameInstance::InitMission()
 {
-	check(m_pMission);
+	check(MissionPtr);
 
-	m_pMission->Init();
+	MissionPtr->Init();
 }
 
 
@@ -419,24 +411,24 @@ void UDefconGameInstance::MissionEnded()
 	UE_LOG(LogGame, Log, TEXT("%S"), __FUNCTION__);
 
 	const FString NameOfEndedMission  = GetCurrentMissionName();
-	const bool    StateOfEndedMission = GetMission()->IsCompleted();
+	const bool    StateOfEndedMission = GetMission()->IsComplete();
 	const bool    HumansWereInvolved  = GetMission()->HumansInvolved();
 
-	m_pMission->Conclude();
+	MissionPtr->Conclude();
 
 	Defcon::IMission* p = nullptr;
 	
 	// Only progress to the next mission if one or more humans survived.
 	if(GetHumans().Count() > 0)
 	{
-		p = Defcon::CMissionFactory::MakeNext(m_pMission);
+		p = Defcon::CMissionFactory::MakeNext(MissionPtr);
 	}
 	
-	SAFE_DELETE(m_pMission);
+	SAFE_DELETE(MissionPtr);
 
-	m_pMission = p;
+	MissionPtr = p;
 
-	MissionID = (m_pMission != nullptr ? m_pMission->GetID() : Defcon::EMissionID::Undefined);
+	MissionID = (MissionPtr != nullptr ? MissionPtr->GetID() : Defcon::EMissionID::Undefined);
 
 	auto PostWaveView = Cast<UDefconPostwaveViewBase>(Views[(int32)EDefconArena::Postwave]);
 
@@ -503,22 +495,22 @@ bool UDefconGameInstance::AcquireSmartBomb()
 
 FString UDefconGameInstance::GetCurrentMissionName() const
 {
-	if(m_pMission == nullptr)
+	if(MissionPtr == nullptr)
 	{
 		return TEXT("");
 	}
 
-	return m_pMission->GetName();
+	return MissionPtr->GetName();
 }
 
 
 void UDefconGameInstance::SetCurrentMission(Defcon::EMissionID InMissionID)
 {
-	SAFE_DELETE(m_pMission);
+	SAFE_DELETE(MissionPtr);
 
 	MissionID = InMissionID;
 
-	m_pMission = Defcon::CMissionFactory::Make(InMissionID);
+	MissionPtr = Defcon::CMissionFactory::Make(InMissionID);
 }
 
 

@@ -20,24 +20,23 @@ namespace Defcon
 	// todo: might be a better way to define missions than as classes. We're repeating a lot of class defs here.
 
 
-
 	class CMilitaryMission : public IMission
 	{
 		public:
 			CMilitaryMission() {}
 
-			virtual bool    IsMilitary          () const { return true; }
+			virtual bool    IsMilitary          () const override { return true; }
 
-			virtual void	Init				() override;
-			virtual bool	Update				(float);
-			virtual void	MakeTargets			(float, const CFPoint&) = 0;
-			virtual void	TargetDestroyed	(EObjType Kind);
-			virtual void	AddNonTarget	(EObjType, const CFPoint&);
-			virtual bool	IsCompleted			() const override;
-			virtual int32	TargetsRemaining	() const;
-			virtual int32	TotalHostilesInPlay		() const;
+			virtual void    Init                () override;
+			virtual bool    Update              (float DeltaTime) override;
+			virtual void    MakeTargets         (float DeltaTime, const CFPoint& Where) { UpdateWaves(Where); }
+			virtual void    TargetDestroyed     (EObjType Kind);
+			virtual void    AddNonTarget        (EObjType, const CFPoint&);
+			virtual bool    IsComplete          () const override;
+			virtual int32   TargetsRemaining    () const;
+			virtual int32   TotalHostilesInPlay () const;
 			virtual int32   LandersRemaining    () const { return NumLandersRemaining; }
-			bool            PlayerInStargate	() const;
+			bool            PlayerInStargate    () const;
 
 
 		protected:
@@ -57,23 +56,24 @@ namespace Defcon
 
 			CFRect                    StargateRect;
 			IGameObject*              StargatePtr            = nullptr;
-						              
-			int32                     NumTargetsRemaining   = 0;   // Number of mission-critical enemies remaining
-			int32                     NumLandersRemaining    = 0;
+									  
 			float                     RepopCounter           = 0.0f;
-			int32                     WaveIndex	             = 0;
 			float                     TimeLastCleanerSpawned = 0.0f;
 			float                     CleanerFreq            = 4.0f;
+			int32                     NumTargetsRemaining    = 0;   // Number of mission-critical enemies remaining
+			int32                     NumLandersRemaining    = 0;
+			int32                     WaveIndex              = 0;
 	};
 
 
 	class CFirstContactMission : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CFirstContactMission() { ID = EMissionID::FirstContact; }
 
 			virtual void Init    () override;
-			//virtual bool Update  (float) override;
 
 			virtual FString GetName() const override { return "First Contact"; }
 			virtual FString GetDesc() const override { return "A few landers of the Asanthi Apex arrive"; }
@@ -85,10 +85,11 @@ namespace Defcon
 
 	class CReinforcedMission : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CReinforcedMission() { ID = EMissionID::Reinforcements; }
 			virtual void Init    () override;
-			//virtual bool Update  (float) override;
 
 			virtual FString GetName() const override { return "Reinforcements"; }
 			virtual FString GetDesc() const override { return "The landers bring some friends to escort them"; }
@@ -100,40 +101,37 @@ namespace Defcon
 
 	class CBomberShowdown : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CBomberShowdown() { ID = EMissionID::BomberShowdown; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Bomber Showdown"; }
 			virtual FString GetDesc() const { return "Even a few mines will blow your shields away"; }
-
-		private:
-			virtual void MakeTargets(float, const CFPoint&) override;
 	};
 
 
 	class CFirebomberShowdown : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CFirebomberShowdown() { ID = EMissionID::FirebomberShowdown; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Firebomber Showdown"; }
 			virtual FString GetDesc() const { return "These guys are hard to hit, and love to shoot"; }
-
-		private:
-			virtual void MakeTargets(float, const CFPoint&) override;
 	};
 
 
 	class CYllabianDogfight : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CYllabianDogfight() { ID = EMissionID::YllabianDogfight; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Yllabian Dogfight"; }
 			virtual FString GetDesc() const { return "In space, no one can hear you scream"; }
@@ -150,10 +148,11 @@ namespace Defcon
 
 	class CYllabianDogfight2 : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CYllabianDogfight2() { ID = EMissionID::YllabianDogfight2; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Yllabian Dogfight #2"; }
 			virtual FString GetDesc() const { return "Space gets more crowded"; }
@@ -170,10 +169,11 @@ namespace Defcon
 
 	class CYllabianEscort : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CYllabianEscort() { ID = EMissionID::YllabianEscort; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Yllabian Escort"; }
 			virtual FString GetDesc() const { return "This ought to be interesting"; }
@@ -186,10 +186,11 @@ namespace Defcon
 
 	class CFirebomberPack : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CFirebomberPack() { ID = EMissionID::FirebomberPack; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Firebomber Pack"; }
 			virtual FString GetDesc() const { return "A rogue cluster of firebombers in a tight formation"; }
@@ -198,12 +199,14 @@ namespace Defcon
 			virtual void MakeTargets(float, const CFPoint&) override;
 	};
 
+
 	class CApexOffensive : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CApexOffensive() { ID = EMissionID::ApexOffensive; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Apex Offensive"; }
 			virtual FString GetDesc() const { return "The Apex beef up the lander escort to full strength"; }
@@ -215,10 +218,11 @@ namespace Defcon
 
 	class CPartyMixMission : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CPartyMixMission() { ID = EMissionID::Random; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Party Mix"; }
 			virtual FString GetDesc() const { return "Mix it up with a random assortment of Apex enemies"; }
@@ -254,16 +258,16 @@ namespace Defcon
 
 	class CApexOffensiveLite : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CApexOffensiveLite() { ID = EMissionID::ApexOffensiveLite; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Apex Offensive Lite"; }
 			virtual FString GetDesc() const { return "The Apex beef up their lander escort a little more"; }
 
 		private:
-			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&) override;
 	};
 
@@ -271,6 +275,8 @@ namespace Defcon
 #if 0
 	class CSwarm : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CSwarm() { ID = EMissionID::swarm; }
 			virtual void Init();
@@ -280,47 +286,43 @@ namespace Defcon
 			virtual FString GetDesc() const { return "A huge swarmer fleet takes you on by itself"; }
 
 		private:
-			//void DoIntroText(float);
 			virtual void MakeTargets(float, const CFPoint&);
 	};
 #endif
 
 	class CLanderOverrun : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CLanderOverrun() { ID = EMissionID::LanderOverrun; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Lander Overrun"; }
 			virtual FString GetDesc() const { return "A large group of landers takes matters into their own hands"; }
-
-		private:
-			virtual void MakeTargets(float, const CFPoint&) override;
 	};
 
 
 	class CReformerShowdown : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CReformerShowdown() { ID = EMissionID::ReformerShowdown; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Reformer Showdown"; }
 			virtual FString GetDesc() const { return "Death is only the beginning"; }
-
-		private:
-			virtual void MakeTargets(float, const CFPoint&) override;
 	};
 
 
 	class CHaunted : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CHaunted() { ID = EMissionID::Haunted; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Haunted"; }
 			virtual FString GetDesc() const { return "Landers try a little supernatural help"; }
@@ -332,10 +334,11 @@ namespace Defcon
 
 	class CBouncersMission : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CBouncersMission() { ID = EMissionID::Bouncers; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Attack of the Bouncers"; }
 			virtual FString GetDesc() const { return "Follow the bouncing ball and fire"; }
@@ -347,10 +350,11 @@ namespace Defcon
 
 	class CGhostMission : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CGhostMission() { ID = EMissionID::Ghost; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Ghost in the Machine"; }
 			virtual FString GetDesc() const { return "These reformer mutations are also hard to kill"; }
@@ -362,10 +366,11 @@ namespace Defcon
 
 	class CBringItOn : public CMilitaryMission
 	{
+		typedef CMilitaryMission Super;
+
 		public:
 			CBringItOn() { ID = EMissionID::BringItOn; }
 			virtual void Init();
-			//virtual bool Update(float);
 
 			virtual FString GetName() const { return "Bring it On!"; }
 			virtual FString GetDesc() const { return "You guys want a piece of me? Do you? Yeah?"; }
