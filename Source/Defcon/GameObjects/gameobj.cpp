@@ -46,7 +46,7 @@ Defcon::IGameObject::~IGameObject()
 	if(IsMissionTarget()) 
 	{
 		//UE_LOG(LogGame, Log, TEXT("    Game object was a mission target"));
-		GDefconGameInstance->HostileDestroyed(GetType());
+		GDefconGameInstance->TargetDestroyed(GetType());
 	}
 
 	if(Sprite)

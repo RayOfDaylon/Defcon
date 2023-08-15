@@ -17,7 +17,7 @@ void Defcon::CSwarm::Init()
 {
 	CMilitaryMission::Init();
 
-	NumHostilesRemaining = 30 + 45 + 80 + 10;
+	NumTargetsRemaining = 30 + 45 + 80 + 10;
 }
 
 
@@ -59,7 +59,7 @@ void Defcon::CSwarm::DoIntroText(float fElapsed)
 
 void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(HostilesRemaining() > 0 
+	if(TargetsRemaining() > 0 
 		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 3.5
@@ -69,8 +69,8 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 	}
 
 
-	if((HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (HostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
+	if((TotalHostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
+		|| (TotalHostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
 	{
 		RepopCounter = 0.0f;
 
@@ -87,9 +87,9 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 		int32 i, j;
 		for(i = 0; i < array_size(waves); i++)
 		{
-			for(j = 0; j < waves[i].count[WaveIndex] && HostilesRemaining() > 0; j++)
+			for(j = 0; j < waves[i].count[WaveIndex]; j++)
 			{
-				CCreateEnemyEvent* p = new CCreateEnemyEvent;
+				CCreateEnemyTask* p = new CCreateEnemyTask;
 				p->Init(gpArena);
 				p->EnemyType = waves[i].type;
 				p->Countdown = FRAND * 0.1f * j;

@@ -70,7 +70,7 @@ bool Defcon::IMission::Update(float DeltaTime)
 {
 	Age += DeltaTime; 
 
-	Events.Process(DeltaTime);
+	ScheduledTasks.Process(DeltaTime);
 
 	DoIntroText(DeltaTime);
 

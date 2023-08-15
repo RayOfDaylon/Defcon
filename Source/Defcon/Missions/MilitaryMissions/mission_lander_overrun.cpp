@@ -27,8 +27,8 @@ void Defcon::CLanderOverrun::Init()
 }
 
 
-void Defcon::CLanderOverrun::MakeTargets(float fElapsed, const CFPoint& where)
+void Defcon::CLanderOverrun::MakeTargets(float DeltaTime, const CFPoint& Where)
 {
-	UpdateWaves(where);
+	UpdateWaves(Where);
 }
 

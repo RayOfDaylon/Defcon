@@ -140,17 +140,17 @@ void Defcon::CSwarmer::Move(float DeltaTime)
 
 
 	Amplitude       = LERP(0.33f, 1.0f, PSIN(VerticalOffset + Age)) * 0.5f * ScreenSize.y;
-	HalfwayAltitude = (float)(sin((VerticalOffset+Age) * 0.6f) * 50 + (0.5f * ScreenSize.y));
+	HalfwayAltitude = (sinf((VerticalOffset + Age) * 0.6f) * 50 + (0.5f * ScreenSize.y));
 
 	CFPoint P;
 
 	if(Age < 0.7f)
 	{
-		P.x = Position.x + .2f * Orientation.Fwd.x * HorzFrequency * DeltaTime * ScreenSize.x * (FRAND * .05f + 0.25f);
+		P.x = Position.x + .2f * Orientation.Fwd.x * HorzFrequency * DeltaTime * ScreenSize.x * FRANDRANGE(0.25f, 0.3f);
 	}
 	else
 	{
-		P.x = Position.x + Orientation.Fwd.x * HorzFrequency * DeltaTime * ScreenSize.x * (FRAND * .05f + 0.25f);
+		P.x = Position.x + Orientation.Fwd.x * HorzFrequency * DeltaTime * ScreenSize.x * FRANDRANGE(0.25f, 0.3f);
 	}
 
 	P.y = sinf(Frequency * (VerticalOffset + Age)) * Amplitude + HalfwayAltitude;

@@ -36,7 +36,7 @@ void Defcon::CFirstContactMission::Init()
 
 void Defcon::CFirstContactMission::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(HostilesRemaining() > 0 && Age >= 25.0f)
+	if(TargetsRemaining() > 0 && Age >= 25.0f)
 	{
 		// Add baiters until player clears minimal hostiles.
 		if(Age - TimeLastCleanerSpawned >= BAITER_SPAWN_FREQUENCY)

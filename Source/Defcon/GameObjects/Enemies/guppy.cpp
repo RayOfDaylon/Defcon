@@ -24,36 +24,30 @@
 Defcon::CGuppy::CGuppy()
 {
 	ParentType = Type;
-	Type = EObjType::GUPPY;
+	Type       = EObjType::GUPPY;
+
 	PointValue = GUPPY_VALUE;
-	State = Lounging;
+	State      = Lounging;
 	
-	float speed = FRANDRANGE(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
-	if(FRAND > 0.5f) 
-		speed *= -1;
-	Orientation.Fwd.Set(speed, 0);
-	//m_personalSpace = FRAND * 60 + 20;
+	float Speed = FRANDRANGE(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
+
+	if(BRAND) 
+	{
+		Speed *= -1;
+	}
+
+	Orientation.Fwd.Set(Speed, 0);
 	RadarColor = C_ORANGE;
 
-	AnimSpeed = FRAND * 0.6f + 0.6f;
-	Brightness = 1.0f;
+	AnimSpeed             = FRANDRANGE(0.6f, 1.2f);
+	Brightness            = 1.0f;
 	TimeTargetWithinRange = 0.0f;
-	Amplitude = FRANDRANGE(0.25f, 0.4f);
-	FiringCountdown = 1.0f;
+	Amplitude             = FRANDRANGE(0.25f, 0.4f);
+	FiringCountdown       = 1.0f;
 
 	CreateSprite(Type);
-	const auto& SpriteInfo = GGameObjectResources.Get(Type);
-	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2 - 1);
+	BboxRadius = GGameObjectResources.Get(Type).Size / 2;
 }
-
-
-#ifdef _DEBUG
-const char* Defcon::CGuppy::GetClassname() const
-{
-	static char* psz = "Guppy";
-	return psz;
-};
-#endif
 
 
 void Defcon::CGuppy::Move(float DeltaTime)
@@ -79,9 +73,13 @@ void Defcon::CGuppy::Move(float DeltaTime)
 		{
 			// Target was in range; See if it left range.
 			if(!bVis)
+			{
 				TimeTargetWithinRange = 0.0f;
+			}
 			else
+			{
 				TimeTargetWithinRange += DeltaTime;
+			}
 		}
 		else
 		{
@@ -110,7 +108,6 @@ void Defcon::CGuppy::Move(float DeltaTime)
 			{
 				State = Fighting;
 			}
-
 			else if(TargetPtr != nullptr)
 			{
 				CFPoint pt;
@@ -118,7 +115,7 @@ void Defcon::CGuppy::Move(float DeltaTime)
 
 				//Orientation.Fwd.Set(SGN(m_targetOffset.y), 0);
 				Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
-				Position.MulAdd(Orientation.Fwd, DeltaTime * GUPPY_SPEEDMIN/2);
+				Position.MulAdd(Orientation.Fwd, DeltaTime * GUPPY_SPEEDMIN / 2);
 			}
 			break;
 
@@ -127,19 +124,20 @@ void Defcon::CGuppy::Move(float DeltaTime)
 		{
 			if(TargetPtr != nullptr)
 			{
-				float vd = Position.y - TargetPtr->Position.y;
-				if(ABS(vd) > BboxRadius.y || 
-					SGN(TargetPtr->Orientation.Fwd.x) == 
-					SGN(Orientation.Fwd.x))
+				const float VerticalDelta = Position.y - TargetPtr->Position.y;
+
+				if(ABS(VerticalDelta) > BboxRadius.y || SGN(TargetPtr->Orientation.Fwd.x) == SGN(Orientation.Fwd.x))
+				{
 					State = Fighting;
+				}
 				else
 				{
-					Orientation.Fwd.y = SGN(vd)*0.5f;
+					Orientation.Fwd.y = SGN(VerticalDelta) * 0.5f;
 					//if(Orientation.Fwd.y == 0)
 					//	Orientation.Fwd.y = SFRAND;
 					CFPoint pt;
 					GArena->ShortestDirection(Position, TargetPtr->Position, pt);
-					Orientation.Fwd.x = (FRAND * 0.25f + 0.33f) * SGN(pt.x);
+					Orientation.Fwd.x = FRANDRANGE(0.33f, 0.58f) * SGN(pt.x);
 					Position.MulAdd(Orientation.Fwd, DeltaTime * AVG(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX));
 				}
 			}
@@ -156,9 +154,10 @@ void Defcon::CGuppy::Move(float DeltaTime)
 			}
 			else
 			{
-				float dist = GArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
-				float vd = Position.y - TargetPtr->Position.y;
-				if(ABS(vd) < BboxRadius.y && SGN(TargetPtr->Orientation.Fwd.x) != SGN(Orientation.Fwd.x))
+				float Distance = GArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
+				float VerticalDelta = Position.y - TargetPtr->Position.y;
+
+				if(ABS(VerticalDelta) < BboxRadius.y && SGN(TargetPtr->Orientation.Fwd.x) != SGN(Orientation.Fwd.x))
 				{
 					// We can be hit by player. 
 					// Take evasive action.
@@ -166,14 +165,14 @@ void Defcon::CGuppy::Move(float DeltaTime)
 				}
 				else
 				{
-					CFPoint pt = TargetPtr->Position + TargetOffset;
-					GArena->ShortestDirection(Position, pt, Orientation.Fwd);
+					CFPoint P = TargetPtr->Position + TargetOffset;
+					GArena->ShortestDirection(Position, P, Orientation.Fwd);
 
-					dist /= GArena->GetDisplayWidth();
+					Distance /= GArena->GetDisplayWidth();
 
-					const float speed = dist >= 0.8f 
-						? MAP(dist, 0.8f, 1.0f, GUPPY_SPEEDMAX, 0.0f)
-						: MAP(dist, 0.0f, 0.8f, GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
+					const float speed = Distance >= 0.8f 
+						? MAP(Distance, 0.8f, 1.0f, GUPPY_SPEEDMAX, 0.0f)
+						: MAP(Distance, 0.0f, 0.8f, GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
 					
 					Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
 					Position.MulAdd(Orientation.Fwd, DeltaTime * speed);

@@ -13,11 +13,11 @@ namespace Defcon
 {
 	class CEnemy;
 
-	class CEvent
+	class CScheduledTask
 	{
 		public:
-			CEvent() {}
-			virtual ~CEvent() {}
+			CScheduledTask() {}
+			virtual ~CScheduledTask() {}
 			virtual void Init() {}
 
 			float   Countdown = 0.0f;
@@ -26,30 +26,30 @@ namespace Defcon
 	};
 
 
-	class CEventQueue
+	class CScheduledTaskList
 	{
 		// This class holds event tasks to be run at some time in the future.
 
 		public:
-			virtual ~CEventQueue();
+			virtual ~CScheduledTaskList();
 
-			void  Add       (CEvent*);
+			void  Add       (CScheduledTask*);
 			void  Process   (float DeltaTime);
 			void  DeleteAll ();
 
 		private:
-			TArray<CEvent*>  Events;
+			TArray<CScheduledTask*>  Events;
 	};
 
 
-	class CRestartMissionEvent : public CEvent
+	class CRestartMissionTask : public CScheduledTask
 	{
 		public:
 			virtual void Do() override;
 	};
 
 
-	class CEndMissionEvent : public CEvent
+	class CEndMissionTask : public CScheduledTask
 	{
 		public:
 			virtual void Do() override;
@@ -57,11 +57,11 @@ namespace Defcon
 
 
 
-	class CCreateEnemyEvent : public CEvent
+	class CCreateEnemyTask : public CScheduledTask
 	{
 		public:
 
-			CCreateEnemyEvent() {}
+			CCreateEnemyTask() {}
 
 			CFPoint   Where;
 			EObjType  EnemyType      = EObjType::UNKNOWN;

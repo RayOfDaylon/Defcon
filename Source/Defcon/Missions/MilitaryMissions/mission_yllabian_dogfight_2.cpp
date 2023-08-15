@@ -16,7 +16,9 @@ void Defcon::CYllabianDogfight2::Init()
 {
 	CMilitaryMission::Init();
 
-	NumHostilesRemaining   = 24 + 30 + 30 + 30 +
+	MaxWaves = 4;
+
+	NumTargetsRemaining   = 24 + 30 + 30 + 30 +
 							  3 +  3 +  3 +  3  +
 							  3 +  3 +  3      +
 							 10 +  7 +  4 +  3  +
@@ -32,7 +34,7 @@ void Defcon::CYllabianDogfight2::Init()
 
 void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(HostilesRemaining() > 0 
+	if(TargetsRemaining() > 0 
 		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 3.5
@@ -42,15 +44,12 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 	}
 
 
-	if((HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (HostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
+	if((TotalHostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
+		|| (TotalHostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
 	{
 		RepopCounter = 0.0f;
 
-		if(WaveIndex >= 4)
-			return;
-
-		const FEnemySpawnCounts waves[] = 
+		const FEnemySpawnCounts SpawnCounts[] = 
 		{
 			{ EObjType::GUPPY,   { 24, 30, 30, 30 } },
 			{ EObjType::SWARMER, {  3,  3,  3,  3 } },
@@ -59,16 +58,16 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 			{ EObjType::HUNTER,  {  3,  4,  4,  3 } }
 		};
 
+		const float ArenaWidth = GArena->GetWidth();
 
 		int32 i, j;
-		for(i = 0; i < array_size(waves); i++)
+		for(i = 0; i < array_size(SpawnCounts); i++)
 		{
-			for(j = 0; j < waves[i].NumPerWave[WaveIndex] && HostilesRemaining() > 0; j++)
+			for(j = 0; j < SpawnCounts[i].NumPerWave[WaveIndex]; j++)
 			{
-				float wp = GArena->GetWidth();
 				CFPoint P;
 
-				switch(waves[i].Kind)
+				switch(SpawnCounts[i].Kind)
 				{
 					case EObjType::POD:
 					case EObjType::HUNTER:
@@ -78,15 +77,15 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 						break;
 
 					default:
-						P.x = (FRAND - 0.5f) * GArena->GetDisplayWidth() + wp / 2;
+						P.x = (FRAND - 0.5f) * GArena->GetDisplayWidth() + ArenaWidth / 2;
 						P.y = FRANDRANGE(0.25f, 0.75f);
 						break;
 				}
 
-				P.x = (float)fmod(P.x, wp);
+				P.x = (float)fmod(P.x, ArenaWidth);
 				P.y *= GArena->GetHeight();
 
-				GArena->CreateEnemy(waves[i].Kind, EObjType::UNKNOWN, P, FRANDRANGE(0.0f, 0.1f * j), EObjectCreationFlags::StandardEnemy);
+				GArena->CreateEnemy(SpawnCounts[i].Kind, EObjType::UNKNOWN, P, FRANDRANGE(0.0f, 0.1f * j), EObjectCreationFlags::StandardEnemy);
 			}
 		}
 

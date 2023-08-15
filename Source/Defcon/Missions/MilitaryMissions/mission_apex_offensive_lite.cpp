@@ -36,7 +36,7 @@ void Defcon::CApexOffensiveLite::Init()
 
 void Defcon::CApexOffensiveLite::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if(HostilesRemaining() > 0 
+	if(TargetsRemaining() > 0 
 		&& Age >= 
 			DELAY_BEFORE_ATTACK + 
 			(DELAY_BETWEEN_REATTACK + 5) * 4

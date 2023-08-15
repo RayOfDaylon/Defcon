@@ -15,6 +15,7 @@
 #include "Common/util_geom.h"
 #include "GameObjects/player.h"
 #include "GameObjects/human.h"
+#include "GameObjects/Enemies/enemies.h"
 #include "GameObjects/Auxiliary/stargate.h"
 
 
@@ -43,7 +44,7 @@ void Defcon::CMilitaryMission::Init()
 	{
 		for(int32 i = 0; i < 10; i++)
 		{
-			//auto pEvt = new CCreateEnemyEvent;
+			//auto pEvt = new CCreateEnemyTask;
 			pEvt->Init(p);
 			pEvt->EnemyType = EObjType::TURRET;
 			pEvt->Countdown = 0.0f;
@@ -69,7 +70,7 @@ void Defcon::CMilitaryMission::AddEnemySpawnInfo(const FEnemySpawnCounts& EnemyS
 
 	for(auto EnemyTypeCount : EnemySpawnCounts.NumPerWave)
 	{
-		NumHostilesRemaining += EnemyTypeCount;
+		NumTargetsRemaining += EnemyTypeCount;
 
 		if(EnemySpawnCounts.Kind == EObjType::LANDER)
 		{
@@ -116,8 +117,8 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 		return;
 	}
 
-	if(    !( (HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
-		   || (HostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK) ))
+	if(    !( (TotalHostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
+		   || (TotalHostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK) ))
 	{
 		return;
 	}
@@ -126,16 +127,15 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 
 	if(WaveIndex >= MaxWaves)
 	{
-			return;
+		return;
 	}
 	
 	const float ArenaWidth = GArena->GetWidth();
 
 	for(int32 I = 0; I < EnemySpawnCountsArray.Num(); I++)	
 	{	
-		for(int32 J = 0; J < EnemySpawnCountsArray[I].NumPerWave[WaveIndex] && HostilesRemaining() > 0; J++)	
+		for(int32 J = 0; J < EnemySpawnCountsArray[I].NumPerWave[WaveIndex]; J++)	
 		{	
-
 			float X = FRANDRANGE(-0.5f, 0.5f) * ATTACK_INITIALDISTANCE * ArenaWidth + Where.x;	
 			X = (float)fmod(X, ArenaWidth);	
 
@@ -163,6 +163,31 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 }
 
 
+bool Defcon::CMilitaryMission::IsCompleted() const
+{
+	if(WaveIndex < MaxWaves)
+	{
+		return false;
+	}
+
+	bool Result = true;
+
+	GArena->GetEnemies().ForEachUntil([&Result](IGameObject* Obj)
+	{
+		const auto Enemy = static_cast<CEnemy*>(Obj);
+
+		if(Enemy->IsMissionTarget())
+		{
+			Result = false;
+			return false;
+		}
+		return true;
+	});
+
+	return Result;
+}
+
+
 bool Defcon::CMilitaryMission::Update(float DeltaTime)
 {
 	if(!IMission::Update(DeltaTime))
@@ -176,7 +201,11 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 	{
 		GArena->AllStopPlayerShip();
 
-		if(IsCompleted())
+		if(!IsCompleted())
+		{
+			GArena->TransportPlayerShip();
+		}
+		else
 		{
 			// Warp to next mission.
 			auto& Player = GArena->GetPlayerShip();
@@ -193,13 +222,12 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 					Human->Position.Set(FRANDRANGE(0.0f, GArena->GetWidth() - 1), 0.04f * GArena->GetHeight()); 
 				}
 			});
+
  			return false;
 		}
-
-		GArena->TransportPlayerShip();
 	}
 
-	if(HostilesRemaining() > 0)
+	if(WaveIndex < MaxWaves)
 	{
 		MakeTargets(DeltaTime, GArena->GetPlayerShip().Position);
 	}
@@ -208,11 +236,11 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 }
 
 
-void Defcon::CMilitaryMission::HostileDestroyed(EObjType Kind)
+void Defcon::CMilitaryMission::TargetDestroyed(EObjType Kind)
 {
-	check(NumHostilesRemaining > 0);
+	check(NumTargetsRemaining > 0);
 
-	NumHostilesRemaining--;
+	NumTargetsRemaining--;
 
 	if(Kind == EObjType::LANDER) 
 	{
@@ -223,13 +251,13 @@ void Defcon::CMilitaryMission::HostileDestroyed(EObjType Kind)
 }
 
 
-int32 Defcon::CMilitaryMission::HostilesRemaining() const
+int32 Defcon::CMilitaryMission::TargetsRemaining() const
 {
-	return NumHostilesRemaining;
+	return NumTargetsRemaining;
 }
 
 
-int32 Defcon::CMilitaryMission::HostilesInPlay() const
+int32 Defcon::CMilitaryMission::TotalHostilesInPlay() const
 {
 	return (int32)GArena->GetEnemies().Count();
 }
@@ -250,12 +278,12 @@ void Defcon::CMilitaryMission::AddMissionCleaner(const CFPoint& where)
 			CleanerFreq -= 0.5f;
 		}
 
-		AddNonMissionTarget(FRAND < BAITER_PROB ? EObjType::BAITER : MunchieTypes[IRAND(3)], where);
+		AddNonTarget(FRAND < BAITER_PROB ? EObjType::BAITER : MunchieTypes[IRAND(3)], where);
 	}
 }
 
 
-void Defcon::CMilitaryMission::AddNonMissionTarget(EObjType objType, const CFPoint& where)
+void Defcon::CMilitaryMission::AddNonTarget(EObjType objType, const CFPoint& where)
 {
 	TimeLastCleanerSpawned = Age;
 

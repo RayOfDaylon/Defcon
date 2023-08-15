@@ -127,7 +127,7 @@ bool UDefconGameInstance::Update(float DeltaTime)
 }
 
 
-void UDefconGameInstance::AddEvent(Defcon::CEvent* Event)
+void UDefconGameInstance::AddEvent(Defcon::CScheduledTask* Event)
 {
 	check(m_pMission != nullptr);
 

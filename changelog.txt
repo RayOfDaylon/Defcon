@@ -2,7 +2,21 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 13, 2023
+August 14, 2023
+
+
+Started moving away from the "hostiles remaining" concept 
+in CMilitaryMission, in favor of the more reliable 
+checking of the current wave index and actually counting 
+the current enemies list to see if any mission-critical 
+targets remain.
+
+Renamed HostilesRemaining to TargetsRemaining.
+
+All mission classes have to define the MaxWaves member.
+
+Renamed CEvent to CScheduledTask and CEventQueue to 
+CScheduledTaskList.
 
 Moved gamename.dat resource file to inline C++ code to avoid 
 problem with packaged builds not including that "asset".

@@ -38,7 +38,7 @@
 
 
 
-Defcon::CEventQueue::~CEventQueue()
+Defcon::CScheduledTaskList::~CScheduledTaskList()
 {
 	while(!Events.IsEmpty())
 	{
@@ -51,7 +51,7 @@ Defcon::CEventQueue::~CEventQueue()
 }
 
 
-void Defcon::CEventQueue::Add(CEvent* Event)
+void Defcon::CScheduledTaskList::Add(CScheduledTask* Event)
 {
 	check(Event != nullptr);
 
@@ -59,7 +59,7 @@ void Defcon::CEventQueue::Add(CEvent* Event)
 }
 
 
-void Defcon::CEventQueue::Process(float DeltaTime)
+void Defcon::CScheduledTaskList::Process(float DeltaTime)
 {
 	for(int32 Index = Events.Num() - 1; Index >= 0; Index--)
 	{
@@ -85,7 +85,7 @@ void Defcon::CEventQueue::Process(float DeltaTime)
 }
 
 
-void Defcon::CEventQueue::DeleteAll()
+void Defcon::CScheduledTaskList::DeleteAll()
 {
 	for(auto EvtPtr : Events)
 	{
@@ -99,7 +99,7 @@ void Defcon::CEventQueue::DeleteAll()
 
 // --------------------------------------------------------
 
-void Defcon::CRestartMissionEvent::Do()
+void Defcon::CRestartMissionTask::Do()
 {
 	auto GI = GDefconGameInstance;
 
@@ -109,7 +109,7 @@ void Defcon::CRestartMissionEvent::Do()
 
 // -----------------------------------------------------
 
-void Defcon::CEndMissionEvent::Do()
+void Defcon::CEndMissionTask::Do()
 {
 	SAFE_DELETE(GArena->Terrain);
 
@@ -122,7 +122,7 @@ void Defcon::CEndMissionEvent::Do()
 // --------------------------------------------------------
 
 
-void Defcon::CCreateEnemyEvent::Do()
+void Defcon::CCreateEnemyTask::Do()
 {
 	// Create generic enemy.
 
@@ -173,7 +173,7 @@ void Defcon::CCreateEnemyEvent::Do()
 }
 
 
-Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy()
+Defcon::CEnemy* Defcon::CCreateEnemyTask::CreateEnemy()
 {
 	// Generic enemy game object creation routine.
 
@@ -226,55 +226,55 @@ Defcon::CEnemy* Defcon::CCreateEnemyEvent::CreateEnemy()
 #define SET_PLAYER_AS_TARGET    Enemy->SetTarget(&GArena->GetPlayerShip());
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForBouncer(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForBouncer(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	Enemy->Orientation.Fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForWeakBouncer(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForWeakBouncer(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	Enemy->Orientation.Fwd.x = (FRAND * 15 + 5) * (BRAND ? -1 : 1);
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForPhred(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForPhred(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForBigRed(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForBigRed(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForMunchie(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForMunchie(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForGhost(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForGhost(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForGhostPart(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForGhostPart(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	Enemy->SetCollisionInjurious(false);
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForLander(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForLander(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 
@@ -285,64 +285,64 @@ void Defcon::CCreateEnemyEvent::SpecializeForLander(Defcon::CEnemy* Enemy, const
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForGuppy(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForGuppy(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForHunter(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForHunter(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForBomber(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForBomber(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForFirebomber(Defcon::CEnemy* Enemy, const CFPoint& where)
-{
-	SET_PLAYER_AS_TARGET
-	SET_RANDOM_FWD_ORIENT
-}
-
-
-void Defcon::CCreateEnemyEvent::SpecializeForWeakFirebomber(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForFirebomber(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForFireball(Defcon::CEnemy* Enemy, const CFPoint& where)
-{
-	SET_PLAYER_AS_TARGET
-}
-
-
-void Defcon::CCreateEnemyEvent::SpecializeForDynamo(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForWeakFirebomber(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForSpacehum(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForFireball(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForPod(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForDynamo(Defcon::CEnemy* Enemy, const CFPoint& where)
+{
+	SET_PLAYER_AS_TARGET
+	SET_RANDOM_FWD_ORIENT
+}
+
+
+void Defcon::CCreateEnemyTask::SpecializeForSpacehum(Defcon::CEnemy* Enemy, const CFPoint& where)
+{
+	SET_PLAYER_AS_TARGET
+}
+
+
+void Defcon::CCreateEnemyTask::SpecializeForPod(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForSwarmer(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForSwarmer(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	Enemy->Orientation.Fwd.x = SBRAND;
@@ -352,7 +352,7 @@ void Defcon::CCreateEnemyEvent::SpecializeForSwarmer(Defcon::CEnemy* Enemy, cons
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForTurret(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForTurret(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
@@ -362,7 +362,7 @@ void Defcon::CCreateEnemyEvent::SpecializeForTurret(Defcon::CEnemy* Enemy, const
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForReformerPart(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForReformerPart(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
@@ -371,14 +371,14 @@ void Defcon::CCreateEnemyEvent::SpecializeForReformerPart(Defcon::CEnemy* Enemy,
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForBaiter(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForBaiter(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT
 }
 
 
-void Defcon::CCreateEnemyEvent::SpecializeForReformer(Defcon::CEnemy* Enemy, const CFPoint& where)
+void Defcon::CCreateEnemyTask::SpecializeForReformer(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
 	SET_PLAYER_AS_TARGET
 	SET_RANDOM_FWD_ORIENT

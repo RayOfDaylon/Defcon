@@ -51,11 +51,13 @@ namespace Defcon
 
 
 	typedef std::function<void(IGameObject*)> GameObjectProcessDelegate;
+	typedef std::function<void()>             PostDeathDelegate;
 
 	class GameObjectProcessingParams
 	{
 		public:
 			GameObjectProcessDelegate   OnDeath                        = nullptr;
+			PostDeathDelegate           OnPostDeath                    = nullptr;
 			GameObjectProcessDelegate   OnEvery                        = nullptr;
 			I2DCoordMapper*             MapperPtr                      = nullptr;  
 			float                       DeltaTime                      = 0.0f;

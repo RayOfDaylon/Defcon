@@ -52,16 +52,16 @@ namespace Defcon
 			options_arena_inputs() : gpArena(nullptr) 
 			{
 				m_size = 10;
-				Events[0].what = EventType::navigate_up;			Events[0].bRepeats = true;
-				Events[1].what = EventType::navigate_down;		Events[1].bRepeats = true;
-				Events[2].what = EventType::navigate_right;		Events[2].bRepeats = true;
-				Events[3].what = EventType::navigate_left;		Events[3].bRepeats = true;
-				Events[4].what = EventType::select;				Events[4].bRepeats = false;
-				Events[5].what = EventType::cancel;				Events[5].bRepeats = false;
-				Events[6].what = EventType::navigate_home;		Events[6].bRepeats = false;
-				Events[7].what = EventType::navigate_end;			Events[7].bRepeats = false;
-				Events[8].what = EventType::navigate_page_up;		Events[8].bRepeats = false;
-				Events[9].what = EventType::navigate_page_down;	Events[9].bRepeats = false;
+				ScheduledTasks[0].what = EventType::navigate_up;			ScheduledTasks[0].bRepeats = true;
+				ScheduledTasks[1].what = EventType::navigate_down;		ScheduledTasks[1].bRepeats = true;
+				ScheduledTasks[2].what = EventType::navigate_right;		ScheduledTasks[2].bRepeats = true;
+				ScheduledTasks[3].what = EventType::navigate_left;		ScheduledTasks[3].bRepeats = true;
+				ScheduledTasks[4].what = EventType::select;				ScheduledTasks[4].bRepeats = false;
+				ScheduledTasks[5].what = EventType::cancel;				ScheduledTasks[5].bRepeats = false;
+				ScheduledTasks[6].what = EventType::navigate_home;		ScheduledTasks[6].bRepeats = false;
+				ScheduledTasks[7].what = EventType::navigate_end;			ScheduledTasks[7].bRepeats = false;
+				ScheduledTasks[8].what = EventType::navigate_page_up;		ScheduledTasks[8].bRepeats = false;
+				ScheduledTasks[9].what = EventType::navigate_page_down;	ScheduledTasks[9].bRepeats = false;
 			}
 			virtual void process(const ControllerEvent&);
 			Defcon::COptionsArena* gpArena;

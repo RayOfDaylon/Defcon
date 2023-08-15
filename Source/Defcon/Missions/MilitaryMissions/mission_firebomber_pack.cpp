@@ -16,7 +16,9 @@ void Defcon::CFirebomberPack::Init()
 {
 	CMilitaryMission::Init();
 
-	NumHostilesRemaining = 40;
+	MaxWaves = 2;
+
+	NumTargetsRemaining = 40;
 
 	IntroText = 
 		"A rogue group of firebombers has tightly\n"
@@ -30,19 +32,14 @@ void Defcon::CFirebomberPack::Init()
 
 void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 {
-	if((    HostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (HostilesInPlay() > 0  && RepopCounter > DELAY_BETWEEN_REATTACK))
+	if((    TotalHostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
+		|| (TotalHostilesInPlay() > 0  && RepopCounter > DELAY_BETWEEN_REATTACK))
 	{
 
 		RepopCounter = 0.0f;
 
 		const int32 numBombers[] = { 20, 5 }; 
 		const int32 numEscorts[] = { 10, 5 }; 
-
-		if(WaveIndex >= array_size(numBombers))
-		{
-			return;
-		}
 
 		/*const Wave waves[] =
 		{
@@ -52,20 +49,21 @@ void Defcon::CFirebomberPack::MakeTargets(float fElapsed, const CFPoint& where)
 		};*/
 
 
+		const float ArenaWidth = GArena->GetWidth();
+
 		int32 i;
 
-		for(i = 0; i < numBombers[WaveIndex] && HostilesRemaining() > 0; i++)
+		for(i = 0; i < numBombers[WaveIndex]; i++)
 		{
-			float wp = GArena->GetWidth();
-			float x = (FRAND - 0.5f) * GArena->GetDisplayWidth() + wp/2;
-			x = (float)fmod(x, wp);
+			float x = (FRAND - 0.5f) * GArena->GetDisplayWidth() + ArenaWidth/2;
+			x = (float)fmod(x, ArenaWidth);
 			float y = FRANDRANGE(0.25f, 0.85f) * GArena->GetHeight();
 
 			GArena->CreateEnemy((i & 1) == 1 ? EObjType::FIREBOMBER_TRUE : EObjType::FIREBOMBER_WEAK, EObjType::UNKNOWN,
 					CFPoint(x, y), FRANDRANGE(0.0f, 0.5f * i), EObjectCreationFlags::StandardEnemy);
 		}
 
-		for(i = 0; i < numEscorts[WaveIndex] && HostilesRemaining() > 0; i++)
+		for(i = 0; i < numEscorts[WaveIndex]; i++)
 		{
 			float wp = GArena->GetWidth();
 			float x = (FRAND - 0.5f) * GArena->GetDisplayWidth() + wp / 2;

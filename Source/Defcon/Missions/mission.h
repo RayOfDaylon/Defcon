@@ -91,7 +91,7 @@ namespace Defcon
 			virtual bool	IsCompleted		() const { return true; }
 
 			EMissionID		GetID			() const { return ID; }
-			void			AddEvent		(CEvent* p) { Events.Add(p); }
+			void			AddEvent		(CScheduledTask* p) { ScheduledTasks.Add(p); }
 			bool			IsRunning		() const { return (GArena != nullptr); }
 
 			const FString&  GetIntroText    () const { return IntroText; }
@@ -101,7 +101,7 @@ namespace Defcon
 
 			void DoIntroText(float DeltaTime);
 
-			CEventQueue            Events;
+			CScheduledTaskList     ScheduledTasks;
 			FString                IntroText;
 			EMissionID             ID          = EMissionID::Undefined;
 			float                  Age         = 0.0f;

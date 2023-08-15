@@ -226,6 +226,11 @@ bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
 			Delete(pObj);
 			pObj = pObj2;
 
+			if(params.OnPostDeath != nullptr)
+			{
+				params.OnPostDeath();
+			}
+
 			continue;
 		}
 		

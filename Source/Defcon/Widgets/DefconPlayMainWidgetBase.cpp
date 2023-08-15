@@ -506,7 +506,7 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 
 		Enemies->ForEach([&](Defcon::IGameObject* Object)
 			{
-				if(Object->Position.y < 0 || Object->Position.y > ArenaHeight)
+				if(Object->Position.y < 0 || Object->Position.y > ArenaHeight || Object->Position.x < 0 || Object->Position.x > GArena->GetWidth())
 				{
 					UE_LOG(LogGame, Error, TEXT("Enemy object %s is out of bounds"), *Defcon::GObjectTypeManager.GetName(Object->GetType()));
 					Count++;
@@ -521,29 +521,22 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 	}
 
 
-	auto GI = GDefconGameInstance;// UDefconUtils::GetGameInstance(this);
-
-	/*if(GI == nullptr)
-	{
-		return;
-	}*/
-
-	Str = FString::Printf(TEXT("%d"), GI->GetConstHumans().Count());
+	Str = FString::Printf(TEXT("%d"), GDefconGameInstance->GetConstHumans().Count());
 	HumansLeft->SetText(FText::FromString(Str));
 
 
-	auto Mission = GI->GetMission();
+	const auto Mission = GDefconGameInstance->GetMission();
 
 	if(Mission == nullptr || !Mission->IsMilitary() || !Mission->IsRunning())
 	{
 		return;
 	}
 
-	auto MilitaryMission = static_cast<Defcon::CMilitaryMission*>(Mission);
+	const auto MilitaryMission = static_cast<Defcon::CMilitaryMission*>(Mission);
 
 	if(Mission != nullptr && Mission->IsRunning())
 	{
-		Str = FString::Printf(TEXT("%d : %d : %d"), Enemies->Count(), MilitaryMission->HostilesInPlay(), MilitaryMission->HostilesRemaining());
+		Str = FString::Printf(TEXT("%d : %d"), MilitaryMission->TotalHostilesInPlay(), MilitaryMission->TargetsRemaining());
 		EnemyCounts->SetText(FText::FromString(Str)); 
 	}
 }

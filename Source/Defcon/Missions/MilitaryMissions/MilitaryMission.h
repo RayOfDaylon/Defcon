@@ -31,11 +31,11 @@ namespace Defcon
 			virtual void	Init				() override;
 			virtual bool	Update				(float);
 			virtual void	MakeTargets			(float, const CFPoint&) = 0;
-			virtual void	HostileDestroyed	(EObjType Kind);
-			virtual void	AddNonMissionTarget	(EObjType, const CFPoint&);
-			virtual bool	IsCompleted			() const override { return (HostilesRemaining() <= 0); }
-			virtual int32	HostilesRemaining	() const;
-			virtual int32	HostilesInPlay		() const;
+			virtual void	TargetDestroyed	(EObjType Kind);
+			virtual void	AddNonTarget	(EObjType, const CFPoint&);
+			virtual bool	IsCompleted			() const override;
+			virtual int32	TargetsRemaining	() const;
+			virtual int32	TotalHostilesInPlay		() const;
 			virtual int32   LandersRemaining    () const { return NumLandersRemaining; }
 			bool            PlayerInStargate	() const;
 
@@ -58,7 +58,7 @@ namespace Defcon
 			CFRect                    StargateRect;
 			IGameObject*              StargatePtr            = nullptr;
 						              
-			int32                     NumHostilesRemaining   = 0;   // Number of mission-critical enemies remaining
+			int32                     NumTargetsRemaining   = 0;   // Number of mission-critical enemies remaining
 			int32                     NumLandersRemaining    = 0;
 			float                     RepopCounter           = 0.0f;
 			int32                     WaveIndex	             = 0;

@@ -59,7 +59,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 {
 	GENERATED_BODY()
 
-	friend class Defcon::CEndMissionEvent;
+	friend class Defcon::CEndMissionTask;
 
 	protected:
 
@@ -137,26 +137,25 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	Defcon::CGameObjectCollection  Debris;
 	Defcon::CGameObjectCollection  Blasts;
 
-	Defcon::CEventQueue            Events;
-
+	Defcon::CScheduledTaskList     ScheduledTasks;
 
 	Defcon::CArenaCoordMapper      MainAreaMapper;
 
-	Daylon::FLoopedSound  ShipThrustSoundLoop;
-	bool                  WasShipUnderThrust = false;
+	Daylon::FLoopedSound           ShipThrustSoundLoop;
+	bool                           WasShipUnderThrust = false;
 
-	float     ArenaWidth = 0.0f; // todo: this is just ArenaSize.X
-	FVector2D ArenaSize;
-	FVector2D MainAreaSize;
+	float      ArenaWidth = 0.0f; // todo: this is just ArenaSize.X
+	FVector2D  ArenaSize;
+	FVector2D  MainAreaSize;
 
-	bool 	bFinishActivating = false;
-
-	bool    m_bHumansInMission = false;
-	bool    bArenaClosing    = false;
-	bool    m_bRunSlow       = false;
-	float   m_fRadarFritzed  = 0.0f;
-	float   FadeAge       = 0.0f;
-	int32   m_nFlashScreen   = 0;//todo: is this needed?
+	bool 	   bFinishActivating    = false;
+	bool       bMissionDoneMsgShown = false;
+	bool       m_bHumansInMission   = false;
+	bool       bArenaClosing        = false;
+	bool       m_bRunSlow           = false;
+	float      m_fRadarFritzed      = 0.0f;
+	float      FadeAge              = 0.0f;
+	int32      m_nFlashScreen       = 0;//todo: is this needed?
 
 
 	public:

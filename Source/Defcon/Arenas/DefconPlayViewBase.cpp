@@ -123,7 +123,7 @@ void UDefconPlayViewBase::DeleteAllObjects()
 	Debris.   DeleteAll(Defcon::kIncludingSprites);
 	Objects.DeleteAll(Defcon::kIncludingSprites);
 
-	Events.   DeleteAll();
+	ScheduledTasks.   DeleteAll();
 }
 
 
@@ -190,6 +190,8 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	PlayAreaMain  -> SetSafeToStart();
 	PlayAreaRadar -> OnFinishActivating();
+
+	bMissionDoneMsgShown = false;
 
 	GetPlayerShip().EnableInput();
 
@@ -462,11 +464,11 @@ void UDefconPlayViewBase::ConcludeMission()
 	if(!bArenaClosing)
 	{
 		bArenaClosing = true;
-		auto pEvt = new Defcon::CEndMissionEvent;
+		auto pEvt = new Defcon::CEndMissionTask;
 		pEvt->Init();
-		//pEvt->m_what = CEvent::Type::endmission;
+		//pEvt->m_what = CScheduledTask::Type::endmission;
 		pEvt->Countdown = FADE_DURATION_NORMAL;
-		Events.Add(pEvt);
+		ScheduledTasks.Add(pEvt);
 
 		FadeAge = FADE_DURATION_NORMAL;
 
@@ -899,7 +901,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		}
 	}
 
-	Events.Process(DeltaTime);
+	ScheduledTasks.Process(DeltaTime);
 
 
 	if(FadeAge > 0.0f)
@@ -945,8 +947,10 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	}
 
 	const auto Mission = GDefconGameInstance->GetMission();
+
+	check(Mission != nullptr);
 	
-	const bool HumansInvolved = Mission != nullptr ? Mission->HumansInvolved() : false;
+	const bool HumansInvolved = /*Mission != nullptr ?*/ Mission->HumansInvolved();// : false;
 
 	// ------------------------------------------------------
 	// Process objects (move, draw, delete).
@@ -955,19 +959,19 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	const bool bDrawRadar = (n++ % 5 == 0);
 
 	// Note: update only model data, not visual.
-	Defcon::GameObjectProcessingParams gop;
+	Defcon::GameObjectProcessingParams GOP;
 
-	gop.UninstallSpriteIfObjectDeleted = true;
-	gop.DeltaTime	= DeltaTime;
-	gop.MapperPtr   = &MainAreaMapper;
+	GOP.UninstallSpriteIfObjectDeleted = true;
+	GOP.DeltaTime	                   = DeltaTime;
+	GOP.MapperPtr                      = &MainAreaMapper;
 
-	Blasts.Process(gop);
-	Debris.Process(gop);
+	Blasts.Process(GOP);
+	Debris.Process(GOP);
 
 	if(HumansInvolved)
 	{
 		const auto NumHumansBefore = GetHumans().Count();
-		GetHumans().Process(gop);
+		GetHumans().Process(GOP);
 		const auto NumHumansNow = GetHumans().Count();
 
 		if(NumHumansNow < NumHumansBefore)
@@ -986,34 +990,41 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		}
 	}
 
-	gop.OnDeath = [this](Defcon::IGameObject* ObjPtr)
-	{
-		const auto Mission = GDefconGameInstance->GetMission();
-		
-		if(!Mission->IsMilitary())
-		{
-			return;
-		}
+	
+	Objects.Process(GOP);
 
+
+	// Extra stuff when processing enemies.
+
+	if(Mission->IsMilitary())
+	{
 		const auto MilitaryMission = static_cast<Defcon::CMilitaryMission*>(Mission);
 
-		if(ObjPtr->GetType() == Defcon::EObjType::LANDER)
+		GOP.OnDeath = [this, MilitaryMission](Defcon::IGameObject* ObjPtr)
 		{
-			if(MilitaryMission->LandersRemaining() == 1)
+			if(ObjPtr->GetType() == Defcon::EObjType::LANDER)
 			{
-				AddMessage(TEXT("ALL LANDERS DESTROYED"), DURATION_IMPORTANT_MESSAGE);
+				if(MilitaryMission->LandersRemaining() == 1)
+				{
+					AddMessage(TEXT("ALL LANDERS DESTROYED"), DURATION_IMPORTANT_MESSAGE);
+				}
 			}
-		}
+		};
 
-		if(ObjPtr->IsMissionTarget() && MilitaryMission->HostilesRemaining() == 1)
+		if(!bMissionDoneMsgShown)
 		{
-			AddMessage(TEXT("ALL MISSION TARGETS DESTROYED -- PROCEED TO STARGATE"), DURATION_IMPORTANT_MESSAGE);
+			GOP.OnPostDeath = [this, MilitaryMission]()
+			{
+				if(MilitaryMission->IsCompleted())
+				{
+					AddMessage(TEXT("ALL MISSION TARGETS DESTROYED -- PROCEED TO STARGATE"), DURATION_IMPORTANT_MESSAGE);
+					bMissionDoneMsgShown = true;
+				}
+			};
 		}
-	};
+	}
 
-
-	Objects.Process(gop);
-	Enemies.Process(gop);
+	Enemies.Process(GOP);
 
 	// ------------------------------------------------------
 
@@ -1130,11 +1141,11 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 			if(!bArenaClosing)
 			{
 				bArenaClosing = true;
-				auto pEvt = new Defcon::CRestartMissionEvent;
+				auto pEvt = new Defcon::CRestartMissionTask;
 				pEvt->Init();
 
 				pEvt->Countdown = FADE_DURATION_NORMAL;
-				Events.Add(pEvt);
+				ScheduledTasks.Add(pEvt);
 
 				FadeAge = FADE_DURATION_NORMAL;
 			}
@@ -1689,11 +1700,11 @@ void UDefconPlayViewBase::OnPlayerShipDestroyed()
 		bArenaClosing = true;
 		FadeAge = DESTROYED_PLAYER_LIFETIME * 2;
 
-		auto pEvt = new Defcon::CRestartMissionEvent;
+		auto pEvt = new Defcon::CRestartMissionTask;
 		pEvt->Init();
 		pEvt->Countdown = FadeAge;
 
-		Events.Add(pEvt);
+		ScheduledTasks.Add(pEvt);
 	}
 }
 
@@ -1800,7 +1811,7 @@ void UDefconPlayViewBase::DetonateSmartbomb()
 
 namespace Defcon
 {
-	class CCreateMaterializationEvent : public CEvent
+	class CCreateMaterializationEvent : public CScheduledTask
 	{
 		Defcon::FMaterializationParams Params;
 
@@ -1939,7 +1950,7 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, Defcon::EObjTy
 		GDefconGameInstance->m_pMission->AddEvent(MaterializationEvent);
 	}
 
-	auto EventPtr = new Defcon::CCreateEnemyEvent;
+	auto EventPtr = new Defcon::CCreateEnemyTask;
 
 	EventPtr->Init();
 
@@ -1957,7 +1968,7 @@ Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::EObjType EnemyType, 
 {
 	// Create an enemy immediately by executing its Do method and not putting the event into the event queue.
 
-	auto EventPtr = new Defcon::CCreateEnemyEvent;
+	auto EventPtr = new Defcon::CCreateEnemyTask;
 
 	EventPtr->Init();
 
