@@ -2,7 +2,13 @@ Bug list for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 15, 2023
+August 16, 2023
+
+
+At HD resolution (and/or in a window), the border width for the mission picker cells 
+and the shield readout are too thick. Also, when a mission is chosen, the expanding 
+rectangle grows to the wrong coordinates (maybe display space instead of window space?)
+
 
 FIXED: Spawning and then destroying enemies in training missions (using the debug controls) 
 would cause humans to all clump together at the x-origin in the first military mission.
