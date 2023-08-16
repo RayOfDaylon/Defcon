@@ -148,14 +148,15 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	FVector2D  ArenaSize;
 	FVector2D  MainAreaSize;
 
+	float      m_fRadarFritzed      = 0.0f;
+	float      FadeAge              = 0.0f;
+	int32      NumPlayerPassengers  = 0;
+	int32      m_nFlashScreen       = 0;//todo: is this needed?
 	bool 	   bFinishActivating    = false;
 	bool       bMissionDoneMsgShown = false;
 	bool       AreHumansInMission   = false;
 	bool       bArenaClosing        = false;
 	bool       m_bRunSlow           = false;
-	float      m_fRadarFritzed      = 0.0f;
-	float      FadeAge              = 0.0f;
-	int32      m_nFlashScreen       = 0;//todo: is this needed?
 
 
 	public:

@@ -286,6 +286,8 @@ void UDefconPlayViewBase::InitPlayerShip()
 	PlayerShip.Orientation.Fwd.x = 1.0f;
 
 	AllStopPlayerShip();
+
+	NumPlayerPassengers = 0;
 }
 
 
@@ -1047,9 +1049,9 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 			// See if any humans can be debarked.
 			if(PlayerShip.Position.y < 5.0f + GetTerrainElev(PlayerShip.Position.x))
 			{
-				// todo: DebarkOnePassenger() queries all humans most of the time, when we should have a "has passenger(s)" flag instead.
-				if(PlayerShip.DebarkOnePassenger(GetHumans()))
+				if(NumPlayerPassengers > 0 && PlayerShip.DebarkOnePassenger(GetHumans()))
 				{
+					NumPlayerPassengers--;
 					IncreaseScore(HUMAN_VALUE_DEBARKED, true, &PlayerShip.Position);
 				}
 			}
@@ -1057,9 +1059,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 			{
 				// See if any falling humans can be carried.
 
-				// todo: not sure why we're hit testing projected bboxes of player and humans, world space ought to be fine.
 				const CFPoint playerPos = PlayerShip.Position;
-				//MainAreaMapper.To(PlayerShip.Position, playerPos);
 
 				CFRect rPlayer(playerPos);
 				rPlayer.Inflate(PlayerShip.GetPickupRadiusBox());
@@ -1069,7 +1069,6 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 					auto Human = static_cast<Defcon::CHuman*>(Obj);
 
 					const CFPoint humanPos = Obj->Position;
-					//MainAreaMapper.To(Obj->Position, humanPos);
 
 					if(!(Human->IsFalling() && rPlayer.Intersect(CFRect(humanPos))))
 					{
@@ -1078,6 +1077,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 					
 					if(PlayerShip.EmbarkPassenger(Obj, GetHumans()))
 					{
+						NumPlayerPassengers++;
 						IncreaseScore(HUMAN_VALUE_EMBARKED, true, &PlayerShip.Position);
 					}
 					return false;
@@ -1087,12 +1087,8 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	}
 	else
 	{
-		// The player doesn't exist.
-		// If he has ships left, then
-		// When the player rebirth clock runs down,
-		// rebirth the player. Otherwise, end the game.
+		// The player ship is toast; restart mission.
 
-		// Player died; restart mission.
 		if(!bArenaClosing)
 		{
 			bArenaClosing = true;
