@@ -5,6 +5,11 @@ Repository: https://github.com/RayOfDaylon/Defcon
 August 16, 2023
 
 
+FIXED: Hovering landers would drop way down below terrain for the last line segment 
+behind the world x-origin.
+
+FIXED: Hovering landers would too often switch to fighting mode (chasing the player).
+
 At HD resolution (and/or in a window), the border width for the mission picker cells 
 and the shield readout are too thick. Also, when a mission is chosen, the expanding 
 rectangle grows to the wrong coordinates (maybe display space instead of window space?)

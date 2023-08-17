@@ -78,7 +78,7 @@ void Defcon::CTerrain::InitTerrain(float w, float h)
 	
 	// Walk until current point is still inside arena.
 
-	while(P.X < w) // Note: we need first and last vertex to join at a 0 or 45 degree angle.
+	while(P.X < ArenaWidth) // Note: we need first and last vertex to join at a 0 or 45 degree angle.
 	{
 		FVector2D P2;
 
@@ -141,7 +141,13 @@ void Defcon::CTerrain::InitTerrain(float w, float h)
 	for(int32 Index = 0; Index < Vertices.Num() - 1; Index++)
 	{
 		const FVector2D P1 = Vertices[Index];
-		const FVector2D P2 = Vertices[Index + 1];
+		FVector2D P2 = Vertices[Index + 1];
+
+		// The second vertex may be at the origin, in which case it will be "behind" the first vertex.
+		if(P2.X < P1.X)
+		{
+			P2.X = ArenaWidth;
+		}
 
 		// Iterate through line at pixel res.
 		for(int32 X = (int32)P1.X; X <= (int32)P2.X; X++)
@@ -149,13 +155,12 @@ void Defcon::CTerrain::InitTerrain(float w, float h)
 			Elevations[X] = FMath::Lerp(P1.Y, P2.Y, Daylon::Normalize(X, P1.X, P2.X));
 		}
 	}
-	// todo: we probably have gaps in Elevations, need to clean that up.
 }
 
 
 float Defcon::CTerrain::GetElev(float X) const
 {
-	// x is normalized.
+	// X is normalized.
 	check(X >= 0.0f && X <= 1.0f);
 
 	if(this == nullptr)
@@ -167,9 +172,6 @@ float Defcon::CTerrain::GetElev(float X) const
 	{
 		X -= 1.0f;
 	}
-
-	// 0 and 1 are the same arena point.
-	// This is occupied by the first and last terrain vertex.
 
 	X *= Elevations.Num() - 1;
 	

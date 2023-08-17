@@ -126,6 +126,20 @@ void Defcon::IMission::AddHumanoids()
 }
 
 
+void Defcon::IMission::AddEnemy(Defcon::EObjType EnemyType, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags)
+{
+	auto Task = new CCreateEnemyTask;
+
+	Task->EnemyType			= EnemyType;
+	Task->CreatorType       = CreatorType;
+	Task->Where				= Where;
+	Task->bMissionTarget	= HasFlag(Flags, EObjectCreationFlags::IsMissionTarget);
+	Task->Countdown         = Countdown; 
+
+	EnemyCreationTasks.Add(Task);
+}
+
+
 void Defcon::IMission::Conclude()
 {
 }

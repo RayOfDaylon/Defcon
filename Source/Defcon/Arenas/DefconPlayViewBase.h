@@ -20,17 +20,6 @@ namespace Defcon
 {
 	class IBullet;
 
-	enum class EObjectCreationFlags
-	{
-		NoMaterialization = 0x0,
-		NotMissionTarget  = 0x0,
-		Materializes      = 0x1,
-		IsMissionTarget   = 0x2,
-
-		EnemyPart     = NoMaterialization | NotMissionTarget,
-		StandardEnemy = Materializes | IsMissionTarget,
-		CleanerEnemy  = Materializes | NotMissionTarget
-	};
 }
 
 

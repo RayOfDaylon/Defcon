@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 7, 2023
+August 16, 2023
 
 Chapters:
 
@@ -114,6 +114,28 @@ Some objects are not derived from IGameObject (like FStar) and are drawn
 by the main visible area. Some UI elements (like the introductory collapsing 
 title and the animated starfield) are custom Slate or UMG widgets.
 
+The Win32 GDI version used a pixel framebuffer (a DIBSECTION), similar to 
+what arcade games did before 3D accelerators came along. Today's video 
+architectures assume that textures, meshes, shaders etc. are uploaded 
+to the GPU, and then short streams of render instructions are sent instead
+on each frame.
+  While framebuffers are expensive, they have two advantages I can think of:
+  - It's far easier to implement certain effects, like the shield domes 
+    taking damage in Space Invaders. To do this with a GPU, you need to 
+    maintain a render target and update it.
+  - You can implement whatever you want without fuss or mystery. 
+    In GPU-based engines, unexpected things can happen and you have to 
+    "fight" to get things working, looking up APIs, maybe reverse-engineering
+    source code, etc. You have to become an expert on the system to get 
+    more and more special stuff working.
+
+
+
+
+
+
+ 
+
 
 Code Architecture
 -------------------------------------------------------------------------------------
@@ -212,7 +234,14 @@ possible to compute it in a game object collection processing loop.
 
 Powerups. Different possibilities for how/when they would appear e.g. 
 emitted by the stargate, by a factory on the ground, or dropped 
-by enemies when they're destroyed, etc.
+by enemies when they're destroyed, etc. Smart bombs would be 
+powerups, along with shields, dual guns, invincibility.
+
+Some textures still need remastering e.g. humans, dynamos, mines.
+
+Would be kind of neat to have humans run away from landers when 
+they get within a certain range. Not that they'd escape; it would 
+just look cool and be more realistic.
 
 Difficulty balancing. The game is currently too easy/slow at the start, 
 and some parts are overly hard. Smart bombs also need to be awarded 
@@ -227,9 +256,15 @@ now we're at 1920. 4K (3840) doesn't have to be accounted for because
 we're now working in Slate units which UE autoscales for us -- we can 
 remain at 1920 w/o caring what the actual screen resolution is.
 
+We maybe should have a formal "CGameplaySession" object which manages 
+the lifetime of a gameplay session from when the user chooses a mission 
+to when he aborts or the game ends in a loss or victory. This singleton 
+can then contain the humans, player ship, and anything else that 
+persists across missions during game play, instead of holding them 
+inside UDefconGameState.
 
-
-
-
-
-
+Mission class should probably hold the enemies/debris/etc. collections 
+since those objects only have mission lifetime. It would help 
+clean up some lifetime issues we have between mission and play arena
+and reduce dependency on play arena from mission. Some work in this 
+direction has been started e.g. enemy creation forwards to an IMission method. 

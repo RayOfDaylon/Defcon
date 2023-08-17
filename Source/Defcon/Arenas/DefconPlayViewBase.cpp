@@ -1876,11 +1876,9 @@ void UDefconPlayViewBase::SpecializeMaterialization(Defcon::FMaterializationPara
 
 void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags)
 {
-	// todo: we should take a creator type argument.
-
 	const auto MaterializationLifetime = ENEMY_BIRTHDURATION;
 
-	if(0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::Materializes))
+	if(Defcon::HasFlag(Flags, Defcon::EObjectCreationFlags::Materializes))
 	{
 		Defcon::FMaterializationParams Params;
 
@@ -1908,28 +1906,20 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, Defcon::EObjTy
 		GDefconGameInstance->MissionPtr->AddTask(MaterializationTask);
 	}
 
-	auto Task = new Defcon::CCreateEnemyTask;
-
-	Task->EnemyType			= EnemyType;
-	Task->CreatorType       = CreatorType;
-	Task->Where				= Where;
-	Task->bMissionTarget	= (0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::IsMissionTarget));
-	Task->Countdown         = Countdown; 
-
-	GDefconGameInstance->MissionPtr->AddEnemy(Task);
+	GDefconGameInstance->MissionPtr->AddEnemy(EnemyType, CreatorType, Where, Countdown, Flags);
 }
 
 
 Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::EObjType EnemyType, Defcon::EObjType CreatorType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags)
 {
-	// Create an enemy immediately by executing its Do method and not putting the event into the event queue.
+	// Create an enemy immediately by executing its Do method and not putting the task into a task list.
 
 	auto Task = new Defcon::CCreateEnemyTask;
 
 	Task->EnemyType      = EnemyType;
 	Task->CreatorType    = CreatorType;
 	Task->Where          = Where;
-	Task->bMissionTarget = (0 != ((int32)Flags & (int32)Defcon::EObjectCreationFlags::IsMissionTarget));
+	Task->bMissionTarget = Defcon::HasFlag(Flags, Defcon::EObjectCreationFlags::IsMissionTarget);
 	
 	Task->Do();
 

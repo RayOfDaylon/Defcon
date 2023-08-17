@@ -59,13 +59,13 @@ Defcon::CLander::CLander()
 
 	float ProbChaseHuman = 0.05f;
 
-	const float score = (float)GDefconGameInstance->GetScore();
+	const float Score = (float)GDefconGameInstance->GetScore();
 
-	if(score > 10000 && score <= 60000)
+	if(Score > 10000 && Score <= 60000)
 	{
-		ProbChaseHuman = LERP(0.1f, 0.9f, (score-10000) / 50000);
+		ProbChaseHuman = LERP(0.1f, 0.9f, (Score - 10000) / 50000);
 	}
-	else if(score > 60000)
+	else if(Score > 60000)
 	{
 		ProbChaseHuman = 0.95f;
 	}
@@ -75,8 +75,7 @@ Defcon::CLander::CLander()
 
 	CreateSprite(EObjType::LANDER);
 
-	const auto& Info = GGameObjectResources.Get(Type);
-	BboxRadius.Set(Info.Size.X * 0.5f * 0.75f, Info.Size.Y * 0.5f * 0.75f);
+	BboxRadius = GGameObjectResources.Get(Type).Size * (0.5f * 0.75f);//.Set(Info.Size.X * 0.5f * 0.75f, Info.Size.Y * 0.5f * 0.75f);
 }
 
 
@@ -188,51 +187,56 @@ void Defcon::CLander::Move(float DeltaTime)
 			check(HumanPtr == nullptr);
 			check(TrackedHumanPtr == nullptr);
 
-			float speed = MaxSpeed * 0.33f;
+			const float Speed = MaxSpeed * 0.33f;
 
-			CFPoint target; // where we want to move to.
+			CFPoint TargetPos; // where we want to move to.
 				
 			if(bChaseNearestHuman)
 			{
-				auto pHuman = (CHuman*)GArena->FindHuman(Position.x);
+				auto Human = (CHuman*)GArena->FindHuman(Position.x);
 
-				if(pHuman != nullptr)
+				if(Human != nullptr)
 				{
-					target = pHuman->Position;
-					target.y += 27.0f; 
+					TargetPos = Human->Position;
+					TargetPos.y += 27.0f; 
 					// Don't center lander on top of human!
 				}
 				else
 				{
-					State = EState::Fighting;
-					break;
+					// If any humans are on the ground, lander switches to Fighting state too often
+					// todo: we need to think about this just a little more. Was the game too boring
+					// if landers were always hovering? Maybe they should switch to Fighting only 
+					// if they've been hovering too long.
+					//State = EState::Fighting;
+					//break;
+					TargetPos = Position;
+					TargetPos += Orientation.Fwd;
 				}
 			}
 			else
 			{
 				// Normal hovering; just move ahead.
-				target = Position;
-				target += Orientation.Fwd;
+				TargetPos = Position;
+				TargetPos += Orientation.Fwd;
 			}
 
 			// Move towards target.
 			check(Orientation.Fwd.Length() != 0.0f);
 
-			PositionDelta(Orientation.Fwd, Position, target, ArenaSize.x);
+			PositionDelta(Orientation.Fwd, Position, TargetPos, ArenaSize.x);
 			float dist = Orientation.Fwd.Length();
 			Orientation.Fwd.Normalize();
 
 			// Take terrain into account.
-			//float fAltDelta = Position.y - m_fnTerrainEval(Position.x, m_pvUserTerrainEval);
-			float fAltDelta = Position.y - GArena->GetTerrainElev(Position.x);
-			fAltDelta -= HoverAltitude;
+			const float fAltDelta = Position.y - GArena->GetTerrainElev(Position.x) - HoverAltitude;
+
 			// If fAltDelta is +, we want to go down.
 			// Go down slower than up.
 			Orientation.Fwd.y = fAltDelta * (fAltDelta > 0 ? -0.01f : -0.03f);
 			Orientation.Fwd.y = FMath::Min(Orientation.Fwd.y, 1.25f);
 			Orientation.Fwd.y = FMath::Max(Orientation.Fwd.y, -1.25f);
 
-			Position.MulAdd(Orientation.Fwd, DeltaTime * ScreenSize.x * speed);
+			Position.MulAdd(Orientation.Fwd, DeltaTime * ScreenSize.x * Speed);
 
 			// If we are near a human, and the odds 
 			// say so or we've been around for more than 
@@ -350,16 +354,15 @@ void Defcon::CLander::Move(float DeltaTime)
 
 			if(bChaseNearestHuman)
 			{
-				//Defcon::CHuman* pHuman = gpGame->FindHuman(Position);
-				Defcon::CHuman* pHuman = (CHuman*) GArena->FindHuman(Position.x);
-				if(pHuman != nullptr)
+				Defcon::CHuman* Human = (CHuman*) GArena->FindHuman(Position.x);
+				if(Human != nullptr)
 				{
 					State = EState::Hovering;
 					break;
 				}
 			}
 
-			float speed = MaxSpeed * 0.33f;
+			const float Speed = MaxSpeed * 0.33f;
 
 			if(TargetPtr == nullptr)
 			{
@@ -378,10 +381,10 @@ void Defcon::CLander::Move(float DeltaTime)
 				//Orientation.Fwd.Normalize();
 			}
 
-			CFPoint fpos(Position);
-			fpos.MulAdd(Orientation.Fwd, DeltaTime * ScreenSize.x * speed);
-
 #if 0
+			CFPoint fpos(Position);
+			fpos.MulAdd(Orientation.Fwd, DeltaTime * ScreenSize.x * Speed);
+
 			// Avoid moving too close to other hunters.
 			IGameObject* pObj = Objects->GetFirst();
 			while(pObj != nullptr)
@@ -396,14 +399,14 @@ void Defcon::CLander::Move(float DeltaTime)
 						if(dist2 < dist1)
 						{
 							// Reverse course at reduced speed.
-							speed *= 0.9f;
+							Speed *= 0.9f;
 							Orientation.Fwd *= -1;
 							Orientation.Fwd.y *= 2.0f;
 							break;
 						}
 						else
 						{
-							speed *= 0.7f;
+							Speed *= 0.7f;
 							Orientation.Fwd.y *= 1.0f;
 						}
 					}
@@ -412,7 +415,7 @@ void Defcon::CLander::Move(float DeltaTime)
 			}
 #endif
 
-			Position.MulAdd(Orientation.Fwd, DeltaTime * ScreenSize.x * speed);
+			Position.MulAdd(Orientation.Fwd, DeltaTime * ScreenSize.x * Speed);
 		}
 			break;
 	} // switch(state)

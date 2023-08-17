@@ -89,7 +89,9 @@ namespace Defcon
 			virtual void	AddHumanoids	();
 			virtual bool	HumansInvolved	() const { return true; }
 			virtual bool	IsComplete		() const { return true; }
-			virtual void    AddEnemy        (CCreateEnemyTask* Task) { EnemyCreationTasks.Add(Task); }
+			virtual void    AddEnemy        (EObjType EnemyType, EObjType CreatorType, const CFPoint& Where, float Countdown, EObjectCreationFlags Flags);
+			//virtual void  AddEnemy        (CCreateEnemyTask* Task) { EnemyCreationTasks.Add(Task); }
+
 
 			EMissionID		GetID			() const { return ID; }
 			void			AddTask         (CScheduledTask* p) { ScheduledTasks.Add(p); }

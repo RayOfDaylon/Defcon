@@ -187,7 +187,8 @@ void Defcon::CHuman::Move(float DeltaTime)
 				Motion.Set(V.X, V.Y * 0.25f);
 				Motion.Normalize();
 
-				WalkingSpeed = FRANDRANGE(8.0f, 12.0f);
+				// Every now and then, have the human just loiter.
+				WalkingSpeed = FRAND < 0.25f ? 0.1f : FRANDRANGE(8.0f, 12.0f);
 			}
 
 			Position.MulAdd(Motion, DeltaTime * WalkingSpeed);

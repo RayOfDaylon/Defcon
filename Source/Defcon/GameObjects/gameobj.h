@@ -22,6 +22,26 @@ namespace Defcon
 {
 	class I2DCoordMapper;
 
+	enum class EObjectCreationFlags : uint8
+	{
+		NoMaterialization = 0x0,
+		NotMissionTarget  = 0x0,
+		Materializes      = 0x1,
+		IsMissionTarget   = 0x2,
+
+		EnemyPart     = NoMaterialization | NotMissionTarget,
+		StandardEnemy = Materializes | IsMissionTarget,
+		CleanerEnemy  = Materializes | NotMissionTarget
+	};
+
+
+	// todo: could be a template function supporting all mask-oriented enum classes
+	inline bool HasFlag(EObjectCreationFlags Flags, EObjectCreationFlags Which)
+	{
+		return(0 != ((int32)Flags & (int32)Which));
+	}
+
+
 	enum class EMessage : uint8
 	{
 		TakenAboard,
