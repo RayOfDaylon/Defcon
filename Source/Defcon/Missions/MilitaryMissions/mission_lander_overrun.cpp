@@ -13,7 +13,7 @@
 
 void Defcon::CLanderOverrun::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText = 
 		"A large mob of landers with minimal escort\n"

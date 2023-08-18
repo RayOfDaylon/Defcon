@@ -12,7 +12,7 @@
 
 void Defcon::CHaunted::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText =
 		"Landers are arriving with a ghost escort.\n"

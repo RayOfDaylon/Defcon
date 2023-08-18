@@ -13,7 +13,7 @@
 
 void Defcon::CFirebomberShowdown::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText = 
 		"Firebombers have moved in to engage you.\n"

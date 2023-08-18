@@ -14,7 +14,7 @@
 
 void Defcon::CBringItOn::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText =
 		"Reformers and dynamos have laid a trap.\n"

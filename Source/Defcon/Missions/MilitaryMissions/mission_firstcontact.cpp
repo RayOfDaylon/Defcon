@@ -22,7 +22,7 @@
 
 void Defcon::CFirstContactMission::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText =
 		"A small group of Landers is approaching.\n"

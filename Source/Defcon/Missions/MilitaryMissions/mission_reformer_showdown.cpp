@@ -13,7 +13,7 @@
 
 void Defcon::CReformerShowdown::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText =
 		"Reformers have moved in to engage you.\n"

@@ -15,7 +15,7 @@
 #if 0
 void Defcon::CSwarm::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	NumTargetsRemaining = 30 + 45 + 80 + 10;
 }
@@ -23,7 +23,7 @@ void Defcon::CSwarm::Init()
 
 bool Defcon::CSwarm::Update(float fElapsed)
 {
-	if(!CMilitaryMission::Update(fElapsed))
+	if(!Super::Update(fElapsed))
 		return false;
 
 	DoIntroText(fElapsed);

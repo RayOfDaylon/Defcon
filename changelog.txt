@@ -2,7 +2,11 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 15, 2023
+August 17, 2023
+
+
+All military missions now use AddEnemySpawnInfo instead of 
+having big, mostly duplicate code in MakeTargets.
 
 Pressing Esc in the play arena transitions to mission picker 
 instead of to main menu.

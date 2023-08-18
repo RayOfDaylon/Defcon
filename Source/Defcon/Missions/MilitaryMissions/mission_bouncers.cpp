@@ -14,7 +14,7 @@
 
 void Defcon::CBouncersMission::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText = "A group of bouncers has decided to 'drop' in.";
 

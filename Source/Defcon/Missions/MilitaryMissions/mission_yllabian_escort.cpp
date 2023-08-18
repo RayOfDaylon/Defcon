@@ -14,7 +14,7 @@
 
 void Defcon::CYllabianEscort::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText = 
 		"Yllabian fighters are escorting a lander attack.\n"

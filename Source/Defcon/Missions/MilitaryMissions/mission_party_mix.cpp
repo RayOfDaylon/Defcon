@@ -17,7 +17,7 @@
 
 void Defcon::CPartyMixMission::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText =
 		"The Apex are temporarily thrown into chaos\n"

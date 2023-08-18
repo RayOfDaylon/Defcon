@@ -15,7 +15,7 @@
 
 void Defcon::CReinforcedMission::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText = 
 		"More landers are coming.\n"

@@ -15,7 +15,7 @@
 
 void Defcon::CApexOffensiveLite::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 	
 	IntroText =
 		"The landers have adopted a more varied\n"

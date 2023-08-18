@@ -13,7 +13,7 @@
 
 void Defcon::CBomberShowdown::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 	
 	IntroText =
 		"An armada of bombers has been detected.\n"

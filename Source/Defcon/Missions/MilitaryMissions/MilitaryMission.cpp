@@ -26,13 +26,19 @@
 #endif
 
 
+Defcon::CMilitaryMission::CMilitaryMission()
+{
+}
+
 
 void Defcon::CMilitaryMission::Init()
 {
-	IMission::Init();
+	Super::Init();
 
 	// Military missions have stargates.
 	AddStargate();
+
+	SpawnRangeHorizontal = GArena->GetWidth() * ATTACK_INITIALDISTANCE;
 
 #if 0
 	// Turrets are an experiment, maybe later we'll have them.
@@ -48,11 +54,11 @@ void Defcon::CMilitaryMission::Init()
 			pEvt->Init(p);
 			pEvt->EnemyType = EObjType::TURRET;
 			pEvt->Countdown = 0.0f;
-			float wp = gpArena->GetWidth();
-			float x = FRAND * wp;
-			x = (float)fmod(x, wp);
-			float y = p->GetTerrainElev(x) - 10;
-			pEvt->Where.Set(x, y);
+			float ArenaWidth = gpArena->GetWidth();
+			float X = FRAND * ArenaWidth;
+			X = (float)fmod(X, ArenaWidth);
+			float Y = p->GetTerrainElev(X) - 10;
+			pEvt->Where.Set(X, Y);
 			pEvt->bMissionTarget = false; // can leave turrets alive w/o aborting mission
 			pEvt->m_bMaterializes = false;
 			AddTask(pEvt);
@@ -132,26 +138,28 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 	{	
 		for(int32 J = 0; J < EnemySpawnCountsArray[I].NumPerWave[WaveIndex]; J++)	
 		{	
-			float X = FRANDRANGE(-0.5f, 0.5f) * ATTACK_INITIALDISTANCE * ArenaWidth + Where.x;	
-			X = (float)fmod(X, ArenaWidth);	
+			CFPoint SpawnPoint;
 
-			float Y;	
+			SpawnPoint.x = FRANDRANGE(-0.5f, 0.5f) * SpawnRangeHorizontal + Where.x;	
+			SpawnPoint.x = (float)fmod(SpawnPoint.x, ArenaWidth);	
 
 			switch(EnemySpawnCountsArray[I].Kind)	
 			{	
 				// Make these enemies spawn in upper half
 				case EObjType::LANDER:	
 				case EObjType::BOUNCER:	
-					Y = FRANDRANGE(0.5f, 0.95f);	
+					SpawnPoint.y = FRANDRANGE(0.5f, 0.95f);	
 					break;	
 					
 				default:	
-					Y = FRANDRANGE(MinSpawnAlt, MaxSpawnAlt);	
+					SpawnPoint.y = FRANDRANGE(MinSpawnAlt, MaxSpawnAlt);	
 			}	
 
-			Y *= GArena->GetHeight();	
+			SpawnPoint.y *= GArena->GetHeight();
 
-			GArena->CreateEnemy(EnemySpawnCountsArray[I].Kind, EObjType::UNKNOWN, CFPoint(X, Y), FRANDRANGE(0.0f, JFactor * J), EObjectCreationFlags::StandardEnemy);	
+			OverrideSpawnPoint(EnemySpawnCountsArray[I].Kind, SpawnPoint);
+
+			GArena->CreateEnemy(EnemySpawnCountsArray[I].Kind, EObjType::UNKNOWN, SpawnPoint, FRANDRANGE(0.0f, JFactor * J), EObjectCreationFlags::StandardEnemy);	
 		}	
 	}	
 	
@@ -212,7 +220,7 @@ bool Defcon::CMilitaryMission::IsComplete() const
 
 bool Defcon::CMilitaryMission::Update(float DeltaTime)
 {
-	if(!IMission::Update(DeltaTime))
+	if(!Super::Update(DeltaTime))
 	{
 		return false;
 	}
@@ -278,6 +286,8 @@ int32 Defcon::CMilitaryMission::TargetsRemaining() const
 
 int32 Defcon::CMilitaryMission::TotalHostilesInPlay() const
 {
+	check(GArena != nullptr);
+
 	return (int32)GArena->GetEnemies().Count();
 }
 
@@ -302,29 +312,31 @@ void Defcon::CMilitaryMission::AddMissionCleaner(const CFPoint& where)
 }
 
 
-void Defcon::CMilitaryMission::AddNonTarget(EObjType objType, const CFPoint& where)
+void Defcon::CMilitaryMission::AddNonTarget(EObjType ObjType, const CFPoint& Where)
 {
+	check(GArena != nullptr);
+
 	TimeLastCleanerSpawned = Age;
 
-	float wp = GArena->GetWidth();
-	float x = (FRAND - 0.5f) * 1.0f * GArena->GetDisplayWidth() + where.x;
-	x = (float)fmod(x, wp);
-	float y = FRANDRANGE(0.3f, 0.8f) * GArena->GetHeight();
+	const float ArenaWidth = GArena->GetWidth();
+	float X = (FRAND - 0.5f) * 1.0f * GArena->GetDisplayWidth() + Where.x;
+	X = (float)fmod(X, ArenaWidth);
+	float Y = FRANDRANGE(0.3f, 0.8f) * GArena->GetHeight();
 
-	GArena->CreateEnemy(objType, EObjType::UNKNOWN, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
+	GArena->CreateEnemy(ObjType, EObjType::UNKNOWN, CFPoint(X, Y), 0.0f, EObjectCreationFlags::CleanerEnemy);
 }
 
 
-void Defcon::CMilitaryMission::AddBaiter(const CFPoint& where)
+void Defcon::CMilitaryMission::AddBaiter(const CFPoint& Where)
 {
 	TimeLastCleanerSpawned = Age;
 
-	float wp = GArena->GetWidth();
-	float x = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * wp + where.x;
-	x = (float)fmod(x, wp);
-	float y = FRANDRANGE(0.2f, 0.8f) * GArena->GetHeight();
+	const float ArenaWidth = GArena->GetWidth();
+	float X = (FRAND - 0.5f) * ATTACK_INITIALDISTANCE * ArenaWidth + Where.x;
+	X = (float)fmod(X, ArenaWidth);
+	float Y = FRANDRANGE(0.2f, 0.8f) * GArena->GetHeight();
 
-	GArena->CreateEnemy(EObjType::BAITER, EObjType::UNKNOWN, CFPoint(x, y), 0.0f, EObjectCreationFlags::CleanerEnemy);
+	GArena->CreateEnemy(EObjType::BAITER, EObjType::UNKNOWN, CFPoint(X, Y), 0.0f, EObjectCreationFlags::CleanerEnemy);
 }
 
 

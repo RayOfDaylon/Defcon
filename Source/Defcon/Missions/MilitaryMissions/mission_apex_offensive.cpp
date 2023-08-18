@@ -15,7 +15,7 @@
 
 void Defcon::CApexOffensive::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText =
 		"The landers have adopted an all-out\n"

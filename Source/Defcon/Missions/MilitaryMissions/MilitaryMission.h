@@ -22,8 +22,10 @@ namespace Defcon
 
 	class CMilitaryMission : public IMission
 	{
+		typedef IMission Super;
+
 		public:
-			CMilitaryMission() {}
+			CMilitaryMission();
 
 			virtual bool    IsMilitary          () const override { return true; }
 
@@ -31,7 +33,7 @@ namespace Defcon
 			virtual bool    Update              (float DeltaTime) override;
 			virtual void    MakeTargets         (float DeltaTime, const CFPoint& Where) { UpdateWaves(Where); }
 			virtual void    TargetDestroyed     (EObjType Kind);
-			virtual void    AddNonTarget        (EObjType, const CFPoint&);
+			virtual void    AddNonTarget        (EObjType Kind, const CFPoint& P);
 			virtual bool    IsComplete          () const override;
 			virtual int32   TargetsRemaining    () const;
 			virtual int32   TotalHostilesInPlay () const;
@@ -43,6 +45,7 @@ namespace Defcon
 
 			virtual void    AddBaiter           (const CFPoint&);
 			virtual void    AddMissionCleaner   (const CFPoint&);
+			virtual void    OverrideSpawnPoint  (EObjType ObjType, CFPoint& P) {}
 
 			void            AddStargate         ();
 			void            AddEnemySpawnInfo   (const FEnemySpawnCounts& EnemySpawnCounts);
@@ -53,6 +56,7 @@ namespace Defcon
 			float                     JFactor                = 0.5f;
 			float                     MinSpawnAlt            = 0.2f;
 			float                     MaxSpawnAlt            = 0.8f;
+			float                     SpawnRangeHorizontal;
 
 			CFRect                    StargateRect;
 			IGameObject*              StargatePtr            = nullptr;
@@ -161,6 +165,9 @@ namespace Defcon
 			virtual void AddHumanoids() {}
 			virtual void Conclude() {}
 			virtual bool HumansInvolved() const override { return false; }
+
+		protected:
+			virtual void OverrideSpawnPoint(EObjType ObjType, CFPoint& SpawnPoint);
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;

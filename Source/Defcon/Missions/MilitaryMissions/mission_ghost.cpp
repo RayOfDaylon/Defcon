@@ -13,7 +13,7 @@
 
 void Defcon::CGhostMission::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
 	IntroText =
 		"The 'ghost' reformer variant has appeared en masse.\n"

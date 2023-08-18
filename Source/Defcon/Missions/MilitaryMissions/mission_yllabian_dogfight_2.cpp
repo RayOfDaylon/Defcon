@@ -14,15 +14,15 @@
 
 void Defcon::CYllabianDogfight2::Init()
 {
-	CMilitaryMission::Init();
+	Super::Init();
 
-	MaxWaves = 4;
+	JFactor = 0.1f;
 
-	NumTargetsRemaining   = 24 + 30 + 30 + 30 +
-							  3 +  3 +  3 +  3  +
-							  3 +  3 +  3      +
-							 10 +  7 +  4 +  3  +
-							  3 +  4 +  4 +  3  ;
+	AddEnemySpawnInfo({EObjType::GUPPY,   { 24, 30, 30, 30 } });
+	AddEnemySpawnInfo({EObjType::SWARMER, {  3,  3,  3,  3 } });
+	AddEnemySpawnInfo({EObjType::POD,     {  3,  3,  3,  0 } });
+	AddEnemySpawnInfo({EObjType::DYNAMO,  { 10,  7,  4,  3 } });
+	AddEnemySpawnInfo({EObjType::HUNTER,  {  3,  4,  4,  3 } });
 
 	IntroText =
 		"More Yllabian space guppies and swarmers have set an ambush.\n"
@@ -32,7 +32,7 @@ void Defcon::CYllabianDogfight2::Init()
 }
 
 
-void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& where)
+void Defcon::CYllabianDogfight2::MakeTargets(float DeltaTime, const CFPoint& where)
 {
 	if(TargetsRemaining() > 0 
 		&& Age >= 
@@ -43,59 +43,20 @@ void Defcon::CYllabianDogfight2::MakeTargets(float fElapsed, const CFPoint& wher
 		AddMissionCleaner(where);
 	}
 
-
-	if(WaveIndex >= MaxWaves)
-	{
-		return;
-	}
-
-
-	if((TotalHostilesInPlay() == 0 && RepopCounter > DELAY_BEFORE_ATTACK) 
-		|| (TotalHostilesInPlay() > 0 && RepopCounter > DELAY_BETWEEN_REATTACK))
-	{
-		RepopCounter = 0.0f;
-
-		const FEnemySpawnCounts SpawnCounts[] = 
-		{
-			{ EObjType::GUPPY,   { 24, 30, 30, 30 } },
-			{ EObjType::SWARMER, {  3,  3,  3,  3 } },
-			{ EObjType::POD,     {  3,  3,  3,  0 } },
-			{ EObjType::DYNAMO,  { 10,  7,  4,  3 } },
-			{ EObjType::HUNTER,  {  3,  4,  4,  3 } }
-		};
-
-		const float ArenaWidth = GArena->GetWidth();
-
-		int32 i, j;
-		for(i = 0; i < array_size(SpawnCounts); i++)
-		{
-			for(j = 0; j < SpawnCounts[i].NumPerWave[WaveIndex]; j++)
-			{
-				CFPoint P;
-
-				switch(SpawnCounts[i].Kind)
-				{
-					case EObjType::POD:
-					case EObjType::HUNTER:
-					case EObjType::DYNAMO:
-						P.x = FRAND * (GArena->GetWidth() - 1);
-						P.y = FRANDRANGE(0.15f, 0.85f);
-						break;
-
-					default:
-						P.x = (FRAND - 0.5f) * GArena->GetDisplayWidth() + ArenaWidth / 2;
-						P.y = FRANDRANGE(0.25f, 0.75f);
-						break;
-				}
-
-				P.x = (float)fmod(P.x, ArenaWidth);
-				P.y *= GArena->GetHeight();
-
-				GArena->CreateEnemy(SpawnCounts[i].Kind, EObjType::UNKNOWN, P, FRANDRANGE(0.0f, 0.1f * j), EObjectCreationFlags::StandardEnemy);
-			}
-		}
-
-		WaveIndex++;
-	}
+	Super::MakeTargets(DeltaTime, CFPoint(GArena->GetWidth() / 2, GArena->GetHeight() / 2));
 }
 
+
+void Defcon::CYllabianDogfight2::OverrideSpawnPoint(EObjType ObjType, CFPoint& SpawnPoint)
+{
+	// Have all enemies spawn everywhere, except for guppies and swarmers.
+
+	switch(ObjType)
+	{
+		case EObjType::GUPPY:
+		case EObjType::SWARMER:
+
+			SpawnPoint.x = FRANDRANGE(-0.5f, 0.5f) * GArena->GetDisplayWidth() + GArena->GetWidth() / 2;
+			break;
+	}
+}
