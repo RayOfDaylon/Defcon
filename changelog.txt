@@ -2,8 +2,10 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 17, 2023
+August 18, 2023
 
+Added secondary explosion texture atlas, 
+makes enemy destruction more entertaining.
 
 All military missions now use AddEnemySpawnInfo instead of 
 having big, mostly duplicate code in MakeTargets.

@@ -79,6 +79,7 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 	ADD_ATLAS(BULLET_THIN,      ThinBulletAtlas         );
 	ADD_ATLAS(FIREBALL,         FireballAtlas           );
 	ADD_ATLAS(EXPLOSION,        ExplosionAtlas          );
+	ADD_ATLAS(EXPLOSION2,       Explosion2Atlas         );
 	ADD_ATLAS(BEACON,           BeaconAtlas             );
 	ADD_ATLAS(LANDER,           LanderAtlas             );
 	ADD_ATLAS(BAITER,           BaiterAtlas             );

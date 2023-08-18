@@ -50,6 +50,7 @@ namespace Defcon
 		TURRET,
 
 		EXPLOSION,
+		EXPLOSION2,
 		MATERIALIZATION,
 		FLAK,
 		STAR,

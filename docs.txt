@@ -229,6 +229,10 @@ Future Work
 -------------------------------------------------------------------------------------
 Some declarations are outside the Defcon namespace when they shouldn't be.
 
+Secondary explosion texture atlas is used randomly, but should be 
+used based on object type or mass since it's more "oomph" than 
+the original explosion texture. E.g. all firebombers should use it.
+
 GameObject::m_inertia is computed by each game object class, when it should be 
 possible to compute it in a game object collection processing loop.
 

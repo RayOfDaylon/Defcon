@@ -210,11 +210,12 @@ Defcon::IGameObject* Defcon::IGameObject::CreateExplosionFireball(CGameObjectCol
 	if(ExplosionHasFireball())
 	{
 		auto ExplosionFireball = new CBitmapDisplayer;
+
 		ExplosionFireball->SetType(EObjType::EXPLOSION);
 		ExplosionFireball->Position = Position;
 		ExplosionFireball->Orientation = Orientation;
 
-		const auto& Info = GGameObjectResources.Get(EObjType::EXPLOSION);
+		const auto& Info = GGameObjectResources.Get(BRAND ? EObjType::EXPLOSION : EObjType::EXPLOSION2);
 		ExplosionFireball->Lifespan =  1.0f / Info.Atlas->Atlas.FrameRate * Info.Atlas->Atlas.NumCels;
 
 		ExplosionFireball->Sprite = Daylon::SpawnSpritePlayObject2D(Info.Atlas->Atlas, Info.Size, Info.Radius);
