@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 16, 2023
+August 18, 2023
 
 Chapters:
 
@@ -228,6 +228,13 @@ from event creation and in ILiveGameObject's motion physics.
 Future Work
 -------------------------------------------------------------------------------------
 Some declarations are outside the Defcon namespace when they shouldn't be.
+
+Should use a templated range type to handle min/max variables. The CVariant type 
+used in the prefs system should stick to scalars, but min/max prefs 
+should be then collected into ranges. We can also have FRANDRANGE e.g. 
+take the ranged type, or the ranged type can have a Random() function.
+If we don't stick to scalars in prefs, then we need another INITPREF macro 
+to take min and max values together.
 
 Secondary explosion texture atlas is used randomly, but should be 
 used based on object type or mass since it's more "oomph" than 
