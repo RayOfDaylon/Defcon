@@ -171,8 +171,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& Debris)
 
 	auto cby = GetExplosionColorBase();
 	
-	float fBrightBase;
-	IGameObject* pFireball = CreateExplosionFireball(Debris, fBrightBase);
+	IGameObject* pFireball = CreateExplosionFireball(BRAND ? EExplosionFireball::Plain : EExplosionFireball::BrightBall, Debris);
 
 
 	FExplosionParams Params;
@@ -203,7 +202,7 @@ void Defcon::IGameObject::Explode(CGameObjectCollection& Debris)
 }
 
 
-Defcon::IGameObject* Defcon::IGameObject::CreateExplosionFireball(CGameObjectCollection& Debris, float& /*fBrightBase*/)
+Defcon::IGameObject* Defcon::IGameObject::CreateExplosionFireball(EExplosionFireball Kind, CGameObjectCollection& Debris)
 {
 	// Create fireball.
 
@@ -215,7 +214,7 @@ Defcon::IGameObject* Defcon::IGameObject::CreateExplosionFireball(CGameObjectCol
 		ExplosionFireball->Position = Position;
 		ExplosionFireball->Orientation = Orientation;
 
-		const auto& Info = GGameObjectResources.Get(BRAND ? EObjType::EXPLOSION : EObjType::EXPLOSION2);
+		const auto& Info = GGameObjectResources.Get(Kind == EExplosionFireball::Plain ? EObjType::EXPLOSION : EObjType::EXPLOSION2);
 		ExplosionFireball->Lifespan =  1.0f / Info.Atlas->Atlas.FrameRate * Info.Atlas->Atlas.NumCels;
 
 		ExplosionFireball->Sprite = Daylon::SpawnSpritePlayObject2D(Info.Atlas->Atlas, Info.Size, Info.Radius);

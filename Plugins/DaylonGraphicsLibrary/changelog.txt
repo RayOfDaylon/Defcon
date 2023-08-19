@@ -1,6 +1,8 @@
 Changelog for DaylonGraphicsLibrary UE plugin
 
-Last updated: July 8, 2023
+Last updated: July 23, 2023
+
+Added operator-- and operator++ overloads for TBindableValue.
 
 Added bReversible property to FDaylonSpriteAtlas, to 
 support texture animations that can be looped in a 

@@ -69,6 +69,13 @@ namespace Defcon
 	};
 
 
+	enum class EExplosionFireball : uint8
+	{
+		Plain,
+		BrightBall
+	};
+
+
 	class IGameObject
 	{
 		// Base class for all game entities.
@@ -105,7 +112,7 @@ namespace Defcon
 			virtual void          Notify                (EMessage, void*);
 
 			bool                  IsOurPositionVisible    () const;
-			virtual IGameObject*  CreateExplosionFireball (CGameObjectCollection&, float&);
+			virtual IGameObject*  CreateExplosionFireball (EExplosionFireball, CGameObjectCollection&);
 			virtual bool          ExplosionHasFireball    () const;
 			virtual void          Explode                 (CGameObjectCollection&);
 			virtual EColor        GetExplosionColorBase   () const;

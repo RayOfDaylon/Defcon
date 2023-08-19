@@ -100,12 +100,11 @@ void Defcon::IFirebomber::Move(float fTime)
 }
 
 
-void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
+void Defcon::IFirebomber::Explode(CGameObjectCollection& Debris)
 {
 	// Explode in a thick symmetrical pattern.
 
-	float fBrightBase;
-	CreateExplosionFireball(debris, fBrightBase);
+	CreateExplosionFireball(EExplosionFireball::BrightBall, Debris);
 
 	int32 A, I;
 	const float Off = SFRAND * 0.2f;
@@ -115,23 +114,23 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 	{
 		for(I = 0; I < 10; I++)
 		{
-			CFlak* pFlak = new CFlak;
-			pFlak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
+			CFlak* Flak = new CFlak;
+			Flak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
 			float Largest = FRANDRANGE(5, 11);
-			pFlak->LargestSize = MAP(I, 0, 9, Largest, 4);
-			pFlak->bFade = true;
+			Flak->LargestSize = MAP(I, 0, 9, Largest, 4);
+			Flak->bFade = true;
 
-			pFlak->Position = Position;
+			Flak->Position = Position;
 
 			float Angle = MAP(A, 0, 7, 0, 5.5f);
 			Angle += Off + SFRAND * 0.05f;
-			pFlak->Orientation.Fwd.Set(sinf(Angle), cosf(Angle));
+			Flak->Orientation.Fwd.Set(sinf(Angle), cosf(Angle));
 			
-			pFlak->Orientation.Fwd *= (SFRAND * 15 + 30) * (I + 2);
-			pFlak->Orientation.Fwd += Inertia;
+			Flak->Orientation.Fwd *= (SFRAND * 15 + 30) * (I + 2);
+			Flak->Orientation.Fwd += Inertia;
 
-			debris.Add(pFlak);
+			Debris.Add(Flak);
 		}
 	}
 
@@ -141,23 +140,23 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& debris)
 		{
 			for(I = 0; I < 10; I++)
 			{
-				CFlak* pFlak = new CFlak;
-				pFlak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
+				CFlak* Flak = new CFlak;
+				Flak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
 				float Largest = FRAND * 6 + 5;
-				pFlak->LargestSize = MAP(I, 0, 9, Largest, 4);
-				pFlak->bFade = true;
+				Flak->LargestSize = MAP(I, 0, 9, Largest, 4);
+				Flak->bFade = true;
 
-				pFlak->Position = Position;
+				Flak->Position = Position;
 
 				float Angle = MAP(A, 0, 7, 0, 5.5f);
 				Angle += Off2 + SFRAND * 0.05f;
-				pFlak->Orientation.Fwd.Set(sinf(Angle), cosf(Angle));
+				Flak->Orientation.Fwd.Set(sinf(Angle), cosf(Angle));
 				
-				pFlak->Orientation.Fwd *= (SFRAND * 5 + 6) * (I + 2);
-				pFlak->Orientation.Fwd += Inertia;
+				Flak->Orientation.Fwd *= (SFRAND * 5 + 6) * (I + 2);
+				Flak->Orientation.Fwd += Inertia;
 
-				debris.Add(pFlak);
+				Debris.Add(Flak);
 			}
 		}
 	}

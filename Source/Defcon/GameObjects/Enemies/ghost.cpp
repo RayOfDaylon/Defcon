@@ -47,8 +47,9 @@ Defcon::CGhost::CGhost()
 
 	for(int32 I = 1; I < NumParts; I++)
 	{
-		PartRadiiMin[I] = FRANDRANGE(0.5f, 1.0f);
-		PartRadiiMax[I] = FRANDRANGE(PartRadiiMin[I], 1.5f);
+		const float Low = FRANDRANGE(0.5f, 1.0f);
+		PartRadii[I].Set(Low, FRANDRANGE(Low, 1.5f)); 
+
 		PartRadiiSpeed[I] = FRANDRANGE(1.0f, 2.0f);
 	}
 
@@ -198,7 +199,7 @@ void Defcon::CGhost::Draw(FPainter& Painter, const I2DCoordMapper& mapper)
 	{
 		const float T = SpinDir * (float)(TWO_PI * (float)I / N + ((SpinAngle + PSIN(Age)/*FRAND * 0.1f*/) * TWO_PI));
 		CFPoint Pt2(cosf(T), sinf(T));
-		const float Radius = (float)(sin((F /*+ FRAND * 3*/) * PI) * R * LERP(PartRadiiMin[I + 1], PartRadiiMax[I + 1], PSIN(Age * PartRadiiSpeed[I + 1])) /*+ 5.0f*/);
+		const float Radius = (float)(sin((F /*+ FRAND * 3*/) * PI) * R * Daylon::Lerp(PartRadii[I + 1], PSIN(Age * PartRadiiSpeed[I + 1])) /*+ 5.0f*/);
 
 		Pt2 *= Radius;
 		Pt2 += Position;

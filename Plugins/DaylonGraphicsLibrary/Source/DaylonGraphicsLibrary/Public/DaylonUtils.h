@@ -78,7 +78,7 @@ namespace Daylon
 	UENUM()
 	enum class EListNavigationDirection : int32
 	{
-		// These values are casted to int32
+		// These values are casted to int
 		Backwards = -1,
 		Forwards  =  1,
 	};
@@ -88,10 +88,78 @@ namespace Daylon
 	UENUM()
 	enum class ERotationDirection : int32
 	{
-		// These values are casted to int32
+		// These values are casted to int
 		CounterClockwise = -1,
 		Clockwise        =  1,
 	};
+
+
+	template <typename T> void Order(T& A, T& B)
+	{
+		if(A > B)
+		{
+			Swap(A, B);
+		}
+	}
+
+
+	template <typename T> struct FRange
+	{
+		FRange() : _Low(0), _High(0) {}
+		FRange(T Lo, T Hi) : _Low(Lo), _High(Hi) {}
+
+		void Set       (T Lo, T Hi) { _Low = Lo; _High = Hi; Fix(); }
+		void SetLow    (T Lo)       { _Low = Lo; Fix(); }
+		void setHigh   (T Hi)       { _High = Hi; Fix(); }
+
+		void SetUnsafe (T Lo, T Hi)  { _Low = Lo; _High = Hi; }
+
+		operator T () const { return (_High - _Low); }
+		void operator = (T N) { Set(N, N); }
+
+		void Include(T N) 
+		{
+			if(N < _Low)
+			{
+				_Low = N;
+			}
+
+			if(N > _High)
+			{
+				_High = N;
+			}
+		}
+
+		void Include(const FRange<T>& Range) 
+		{
+			Include(Range.Low());
+			Include(Range.High());
+		}
+
+		T Low  () const { return _Low; }
+		T High () const { return _High; }
+		/*T Map(T N, const FRange<T>& Target)
+		{
+			return ((n - _Low) / *this) * Target + Target._Low();
+		}*/
+
+		bool Contains(T N) const { return (N >= _Low && N <= _High); }
+
+		//T Lerp(T F) const { return FMath::Lerp(_Low, _High, F); }
+
+
+		protected:
+
+			T	_Low, _High;
+
+			void Fix() { Order(_Low, _High); }
+	};
+
+
+	template <typename T> T Lerp(const FRange<T>& Range, float F)
+	{
+		return FMath::Lerp(Range.Low(), Range.High(), F);
+	}
 
 
 	struct DAYLONGRAPHICSLIBRARY_API FLoopedSound
@@ -261,10 +329,10 @@ namespace Daylon
 			TBindableValue& operator *= (const T& Val) { *this = *this * Val; return *this;	}
 			TBindableValue& operator /= (const T& Val) { *this = *this / Val; return *this; }
 
-			T operator -- (int32)  { T temp = *this; *this -= (T)1; return temp; }
+			T operator -- (int)  { T temp = *this; *this -= (T)1; return temp; }
 			TBindableValue& operator -- ()  { *this -= (T)1; return *this; }
 
-			T operator ++ (int32)  { T temp = *this; *this += (T)1; return temp; }
+			T operator ++ (int)  { T temp = *this; *this += (T)1; return temp; }
 			TBindableValue& operator ++ ()  { *this += (T)1; return *this; }
 
 			bool operator <  (const T& Val) const { return (Value < Val); }

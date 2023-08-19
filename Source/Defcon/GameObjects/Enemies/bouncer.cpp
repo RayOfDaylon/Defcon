@@ -29,13 +29,13 @@ Defcon::IBouncer::IBouncer()
 	ParentType = Type;
 	Type       = EObjType::BOUNCER;
 
-	PointValue = BOUNCER_VALUE;
+	PointValue        = BOUNCER_VALUE;
+	RadarColor        = C_WHITE;
+	AnimSpeed         = FRANDRANGE(0.12f, 0.17f);
+	Gravity           = FRANDRANGE(5, 15);
+	FiringCountdown   = FRANDRANGE(1.0f, 5.0f);
+
 	Orientation.Fwd.Set(1.0f, 0.0f);
-	RadarColor = C_WHITE;
-	AnimSpeed = FRANDRANGE(0.12f, 0.17f);
-	Orientation.Fwd.y = 0.0; 
-	Gravity = FRANDRANGE(5, 15);
-	FiringCountdown = FRANDRANGE(1.0f, 5.0f);
 
 	const auto& Info = GGameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
 	BboxRadius = Info.Size / 2;
@@ -104,38 +104,39 @@ void Defcon::IBouncer::Move(float DeltaTime)
 }
 
 
-void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
+void Defcon::IBouncer::Explode(CGameObjectCollection& Debris)
 {
 	// Explode in a thick symmetrical pattern.
 
-	//float fBrightBase;
-	//CreateFireblast(debris, fBrightBase);
+	// todo: either use different sprites for bouncers, or consolidate explosion code with firebombers.
 
+	CreateExplosionFireball(EExplosionFireball::BrightBall, Debris);
+		
 	int32 a, i;
-	const float off = SFRAND * 0.2f;
+	const float off  = SFRAND * 0.2f;
 	const float off2 = SFRAND * 0.2f;
 
 	for(a = 0; a < 8; a++)
 	{
 		for(i = 0; i < 10; i++)
 		{
-			CFlak* pFlak = new CFlak;
-			pFlak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
+			CFlak* Flak = new CFlak;
+			Flak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
 			float largest = FRAND * 6 + 5;
-			pFlak->LargestSize = MAP(i, 0, 9, largest, 4);
-			pFlak->bFade = true;
+			Flak->LargestSize = MAP(i, 0, 9, largest, 4);
+			Flak->bFade = true;
 
-			pFlak->Position = Position;
+			Flak->Position = Position;
 
 			float angle = MAP(a, 0, 7, 0, 5.5f);
 			angle += off + SFRAND * 0.05f;
-			pFlak->Orientation.Fwd.Set(sinf(angle), cosf(angle));
+			Flak->Orientation.Fwd.Set(sinf(angle), cosf(angle));
 			
-			pFlak->Orientation.Fwd *= (SFRAND*15+30) * (i+2);
-			pFlak->Orientation.Fwd += Inertia;
+			Flak->Orientation.Fwd *= (SFRAND*15+30) * (i+2);
+			Flak->Orientation.Fwd += Inertia;
 
-			debris.Add(pFlak);
+			Debris.Add(Flak);
 		}
 	}
 
@@ -145,23 +146,23 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 		{
 			for(i = 0; i < 10; i++)
 			{
-				CFlak* pFlak = new CFlak;
-				pFlak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
+				CFlak* Flak = new CFlak;
+				Flak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
 				float largest = FRAND * 6 + 5;
-				pFlak->LargestSize = MAP(i, 0, 9, largest, 4);
-				pFlak->bFade = true;
+				Flak->LargestSize = MAP(i, 0, 9, largest, 4);
+				Flak->bFade = true;
 
-				pFlak->Position = Position;
+				Flak->Position = Position;
 
 				float angle = MAP(a, 0, 7, 0, 5.5f);
 				angle += off2 + SFRAND * 0.05f;
-				pFlak->Orientation.Fwd.Set(sinf(angle), cosf(angle));
+				Flak->Orientation.Fwd.Set(sinf(angle), cosf(angle));
 				
-				pFlak->Orientation.Fwd *= (SFRAND * 5 + 6) * (i + 2);
-				pFlak->Orientation.Fwd += Inertia;
+				Flak->Orientation.Fwd *= (SFRAND * 5 + 6) * (i + 2);
+				Flak->Orientation.Fwd += Inertia;
 
-				debris.Add(pFlak);
+				Debris.Add(Flak);
 			}
 		}
 	}
@@ -172,7 +173,7 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& debris)
 Defcon::CBouncer::CBouncer()
 {
 	ParentType = Type;
-	Type = EObjType::BOUNCER_TRUE;
+	Type       = EObjType::BOUNCER_TRUE;
 
 	CreateSprite(EObjType::FIREBOMBER_TRUE);
 }
@@ -203,7 +204,7 @@ void Defcon::CBouncer::FireWeapon()
 Defcon::CWeakBouncer::CWeakBouncer()
 {
 	ParentType = Type;
-	Type = EObjType::BOUNCER_WEAK;
+	Type       = EObjType::BOUNCER_WEAK;
 
 	CreateSprite(EObjType::FIREBOMBER_WEAK);
 }

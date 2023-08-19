@@ -32,19 +32,17 @@ namespace Defcon
 			void         ConsiderFiringBullet  (float DeltaTime);
 
 
-			CFPoint	 PartLocs[10];
-			float    PartRadiiMin[10];
-			float    PartRadiiMax[10];
-			float    PartRadiiSpeed[10];
-			float    OffsetY	= 0.0f;
-			float    Frequency	= 2.0f;
-			float	 SpinVelocity;
-			float	 SpinAngle;
-			float    SpinDir;
-			int32	 NumParts;
-			
-			float    FiringCountdown;
-			float    DispersalCountdown = 0.0f;
+			CFPoint	              PartLocs[10];
+			Daylon::FRange<float> PartRadii[10];
+			float                 PartRadiiSpeed[10];
+			float                 OffsetY             = 0.0f;
+			float                 Frequency           = 2.0f;
+			float	              SpinVelocity;
+			float	              SpinAngle;
+			float                 SpinDir;
+			float                 FiringCountdown;
+			float                 DispersalCountdown  = 0.0f;
+			int32	              NumParts;
 	};
 
 
