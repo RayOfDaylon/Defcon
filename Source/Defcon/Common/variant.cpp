@@ -13,9 +13,9 @@
 #include "compat.h"
 
 
-char* CPrefVar::GetValueText(char* psz) const
+char* FPrefVar::GetValueText(char* psz) const
 {
-	switch(m_metadata.VarType)
+	switch(Metadata.VarType)
 	{
 		case EVarType::Boolean:
 			MyStrcpy(psz, (Value != 0.0f) ? "true" : "false");
@@ -26,7 +26,7 @@ char* CPrefVar::GetValueText(char* psz) const
 			break;
 
 		case EVarType::Float:
-			if(strcmp_ci(m_metadata.m_pszUnits, "percent") == 0 || m_metadata.m_pszUnits[0] == '%')
+			if(strcmp_ci(Metadata.Units, "percent") == 0 || Metadata.Units[0] == '%')
 				fnicesprintf(psz, Value * 100, 6);
 			else
 				fnicesprintf(psz, Value, 6);
@@ -35,8 +35,8 @@ char* CPrefVar::GetValueText(char* psz) const
 		case EVarType::Choice:
 		{
 			int32 I = (int32)Value;
-			check(I < m_metadata.m_pChoiceNames->Strings.Num());
-			MyStrcpy(psz, m_metadata.m_pChoiceNames->Strings[I]);
+			check(I < Metadata.ChoiceNames->Strings.Num());
+			MyStrcpy(psz, Metadata.ChoiceNames->Strings[I]);
 		}
 			break;
 

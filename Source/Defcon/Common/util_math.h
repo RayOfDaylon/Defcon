@@ -42,7 +42,8 @@
 
 // MAP maps n which is between a1..b1 to a proportional
 // value between a2..b2.
-#define MAP(n, a1, b1, a2, b2)		LERP((a2), (b2), NORM_((n), (a1), (b1)))
+#define MAP(n, a1, b1, a2, b2)   LERP((a2), (b2), NORM_((n), (a1), (b1)))
+#define RMAP(n, a1, b1, r)       MAP(n, a1, b1, r.Low(), r.High())
 
 // Oscillate smoothly between 0...1 instead of -1 ... +1.
 #define PSIN(r)	(float)(sin(r) / 2 + 0.5)

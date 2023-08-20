@@ -68,20 +68,18 @@ Defcon::EColor Defcon::CTurret::GetExplosionColorBase() const
 }
 
 
-void Defcon::CTurret::Move(float fTime)
+void Defcon::CTurret::Move(float DeltaTime)
 {
 	// Move in slightly perturbed sine wave pattern.
 
-	CEnemy::Move(fTime);
-
+	CEnemy::Move(DeltaTime);
 
 	//Inertia = Position;
 
-
-	IGameObject* pTarget = TargetPtr;
-
-	if(pTarget == nullptr)
+	if(TargetPtr == nullptr)
+	{
 		m_fTimeTargetWithinRange = 0.0f;
+	}
 	else
 	{
 		const bool bVis = IsOurPositionVisible();
@@ -93,14 +91,14 @@ void Defcon::CTurret::Move(float fTime)
 			if(!bVis)
 				m_fTimeTargetWithinRange = 0.0f;
 			else
-				m_fTimeTargetWithinRange += fTime;
+				m_fTimeTargetWithinRange += DeltaTime;
 		}
 		else
 		{
 			// Target was out of range; See if it entered range.
 			if(bVis)
 			{
-				m_fTimeTargetWithinRange = fTime;
+				m_fTimeTargetWithinRange = DeltaTime;
 
 				//m_targetOffset.Set(
 				//	LERP(-100, 100, FRAND), 
@@ -111,7 +109,7 @@ void Defcon::CTurret::Move(float fTime)
 		}
 
 		CFPoint dir;
-		float dist = GArena->ShortestDirection(Position, pTarget->Position, dir);
+		float dist = GArena->ShortestDirection(Position, TargetPtr->Position, dir);
 
 		/*if(m_fTimeTargetWithinRange > 0.25f)
 		{
@@ -154,9 +152,9 @@ void Defcon::CTurret::Move(float fTime)
 }
 
 
-void Defcon::CTurret::Explode(CGameObjectCollection& debris)
+void Defcon::CTurret::Explode(CGameObjectCollection& Debris)
 {
-	Super::Explode(debris);
+	Super::Explode(Debris);
 #if 0
 	const int32 cby = EColor::Red;
 

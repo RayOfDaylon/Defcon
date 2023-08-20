@@ -64,7 +64,7 @@ const char* Defcon::CFireball::GetClassname() const
 
 
 
-void Defcon::CFireball::Move(float fTime)
+void Defcon::CFireball::Move(float DeltaTime)
 {
 	if(Age == 0.0f)
 	{
@@ -84,13 +84,13 @@ void Defcon::CFireball::Move(float fTime)
 		}
 	}
 
-	CEnemy::Move(fTime);
+	CEnemy::Move(DeltaTime);
 
 	Inertia = Position;
 
 	CFPoint Motion(Orientation.Fwd);
 
-	Motion.x *= Speed * fTime;
+	Motion.x *= Speed * DeltaTime;
 	Motion.y -= Age * Age;
 
 	Position += Motion;

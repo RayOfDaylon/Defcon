@@ -33,7 +33,7 @@ Defcon::CHunter::CHunter()
 	TimeTargetWithinRange = 0.0f;
 	Amplitude             = FRANDRANGE(0.33f, 0.9f);
 	
-	const float Speed = FRANDRANGE(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX) * (BRAND ? 1 : -1);
+	const float Speed = Daylon::FRandRange(HUNTER_SPEED) * (BRAND ? 1 : -1);
 
 	Orientation.Fwd.Set(Speed, 0);
 	
@@ -116,7 +116,7 @@ void Defcon::CHunter::Move(float DeltaTime)
 
 				//Orientation.Fwd.Set(SGN(m_targetOffset.y), 0);
 				Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
-				Position.MulAdd(Orientation.Fwd, DeltaTime * HUNTER_SPEEDMIN/2);
+				Position.MulAdd(Orientation.Fwd, DeltaTime * HUNTER_SPEED.Low() / 2);
 			}
 			break;
 
@@ -139,7 +139,7 @@ void Defcon::CHunter::Move(float DeltaTime)
 					CFPoint Pt;
 					GArena->ShortestDirection(Position, TargetPtr->Position, Pt);
 					Orientation.Fwd.x = (FRAND * 0.25f + 0.33f) * SGN(Pt.x);
-					Position.MulAdd(Orientation.Fwd, DeltaTime * AVG(HUNTER_SPEEDMIN, HUNTER_SPEEDMAX));
+					Position.MulAdd(Orientation.Fwd, DeltaTime * Daylon::Average(HUNTER_SPEED));
 				}
 			}
 			
@@ -171,8 +171,8 @@ void Defcon::CHunter::Move(float DeltaTime)
 					Distance /= GArena->GetDisplayWidth();
 
 					const float Speed = Distance >= 0.8f 
-						? MAP(Distance, 0.8f, 1.0f, HUNTER_SPEEDMAX, 0.0f)
-						: MAP(Distance, 0.0f, 0.8f, HUNTER_SPEEDMIN, HUNTER_SPEEDMAX);
+						? MAP(Distance, 0.8f, 1.0f, HUNTER_SPEED.High(), 0.0f)
+						: RMAP(Distance, 0.0f, 0.8f, HUNTER_SPEED);
 
 					Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
 					Position.MulAdd(Orientation.Fwd, DeltaTime * Speed);

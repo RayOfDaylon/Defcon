@@ -282,12 +282,12 @@ void Defcon::COptionsArena::FocusItem(int32 id)
 	// Assign pref vars names to items.
 	for(int32 i = 0; i < array_size(m_items); i++)
 	{
-		m_items[i].SetText(gPrefs.Pref[m_topItem + i].m_metadata.m_pszName);
+		m_items[i].SetText(gPrefs.Pref[m_topItem + i].Metadata.m_pszName);
 
 		UpdateValueText(i);
 	}
 
-	m_desc.SetText(gPrefs.Pref[sCurrentItem_arena_optons].m_metadata.m_pszDesc);
+	m_desc.SetText(gPrefs.Pref[sCurrentItem_arena_optons].Metadata.Desc);
 }
 
 
@@ -297,7 +297,7 @@ void Defcon::COptionsArena::UpdateValueText(int32 i)
 	char sz[50], sz2[100];
 	MySprintf(sz2, "%s %s",
 		gPrefs.Pref[v].GetValueText(sz),
-		gPrefs.Pref[v].m_metadata.m_pszUnits);
+		gPrefs.Pref[v].Metadata.Units);
 	m_values[i].SetText(sz2);
 }
 
@@ -316,7 +316,7 @@ void Defcon::COptionsArena::OnDisplaySizeChanged(int32 w , int32 h)
 	for(i = 0; i < array_size(gPrefs.Pref); i++)
 	{
 		int32 iw, ih;
-		varfont.GetStringExtent(gPrefs.Pref[i].m_metadata.m_pszName, iw, ih);
+		varfont.GetStringExtent(gPrefs.Pref[i].Metadata.m_pszName, iw, ih);
 		widestItem = FMath::Max(widestItem, iw);
 	}
 
@@ -349,9 +349,9 @@ void Defcon::COptionsArena::OnDisplaySizeChanged(int32 w , int32 h)
 	if(State == State::editing)
 	{
 		i = sCurrentItem_arena_optons - m_topItem;
-		CPrefVar& var = gPrefs.Pref[sCurrentItem_arena_optons];
+		FPrefVar& var = gPrefs.Pref[sCurrentItem_arena_optons];
 
-		switch(var.m_metadata.m_eVarType)
+		switch(var.Metadata.m_eVarType)
 		{
 			case type_int:
 			case type_float:
@@ -650,9 +650,9 @@ void Defcon::COptionsArena::OnKeyboardEvent(int32 key)
 void Defcon::COptionsArena::StartEditing()
 {
 	int32 i = sCurrentItem_arena_optons - m_topItem;
-	CPrefVar& var = gPrefs.Pref[sCurrentItem_arena_optons];
+	FPrefVar& var = gPrefs.Pref[sCurrentItem_arena_optons];
 
-	switch(var.m_metadata.m_eVarType)
+	switch(var.Metadata.m_eVarType)
 	{
 		case type_bool:
 			// Just toggle the value immediately.
@@ -675,17 +675,17 @@ void Defcon::COptionsArena::StartEditing()
 			m_slider.SetValue(var.GetValue());
 
 			float fInc = 1.0f;
-			if(var.m_metadata.m_eVarType == type_float)
-				 fInc = (var.m_metadata.m_fMax - 
-					var.m_metadata.m_fMin) / SLIDER_LEN;
+			if(var.Metadata.m_eVarType == type_float)
+				 fInc = (var.Metadata.Max - 
+					var.Metadata.Min) / SLIDER_LEN;
 
-			float fPage = (var.m_metadata.m_fMax - 
-					var.m_metadata.m_fMin) / 8;
+			float fPage = (var.Metadata.Max - 
+					var.Metadata.Min) / 8;
 			
 			m_slider.Init(SLIDER_LEN,
 				var.m_fValue, 
-				var.m_metadata.m_fMin,
-				var.m_metadata.m_fMax, fInc, fPage);
+				var.Metadata.Min,
+				var.Metadata.Max, fInc, fPage);
 			m_slider.Position.Set(m_valueLeft + SLIDER_LEN/2, 
 						m_items[i].Position.y - (1.25f * m_items[i].GetLeading()));
 

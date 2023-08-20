@@ -23,13 +23,14 @@ void Defcon::CPrefs::Construct()
 
 	// Note: read "px" and "pixels" as being Slate units, not device pixels.
 
-#define INITPREF(_key, _val, _units, _type, _min, _max, _desc)	Pref[_key].Init(_val, _units, EVarType::_type, _min, _max, #_key, _desc)
-#define INITPREF2(_key, _val, _units, _type, _min, _max, _desc, _ex1, _ex2, _ex3)	Pref[_key].Init(_val, _units, EVarType::_type, _min, _max, #_key, _desc, _ex1, _ex2, _ex3)
+#define INITPREF(_key, _val, _units, _type, _min, _max, _desc)                     Pref[_key].Init(_val, _units, EVarType::_type, _min, _max, #_key, _desc)
+#define INITPREF2(_key, _val, _units, _type, _min, _max, _desc, _ex1, _ex2, _ex3)  Pref[_key].Init(_val, _units, EVarType::_type, _min, _max, #_key, _desc, _ex1, _ex2, _ex3)
+#define INITPREFR(_key, _lo, _hi, _units, _desc)                                   Pref[_key].Init(Daylon::FRange<float>(_lo, _hi), _units, 0.0f, 0.0f, #_key, _desc)
+
 
     //        Key                          Value     Units           Type          Min          Max       Description
 	//        ---------------------------  -----     -------------   ----------- ---------  ------------  --------------------------------------------------------------------------------------------
 
-	INITPREF( planet_to_screen_ratio,       5.0f,    "%",            Float,     2.0f,        6.0f,   "How wide the planet surface is relative to visible portion"                                );
 
 	INITPREF( arena_bogdown,                0,       "",             Boolean,      0,           0,      "Slow game down when lots of objects and debris are visible"                                );
 	INITPREF( attack_initialdistance,       1.0f,    "%",            Float,        0.1f,        1.0f,   "Probability of enemy materializing far away from player"                                   );
@@ -55,15 +56,16 @@ void Defcon::CPrefs::Construct()
 	INITPREF( enemy_birthduration,          0.7f,    "seconds",      Float,        0.1f,        3.0f,   "Time an enemy takes to materialize"                                                        );
 	INITPREF( fireball_value,             100,       "",             Integer,      0,        1000,      "Number of points earned for destroying a fireball"                                         );
 	INITPREF( fireballs_explode_on_ground,  1,       "",             Boolean,      0,           0,      "If fireballs should explode when hitting the ground"                                       );
-	INITPREF( firebomber_speed_min,       250,       "px/sec",       Float,        0,        1000,      "Slowest speed a firebomber can travel"                                                     );
-	INITPREF( firebomber_speed_max,       500,       "px/sec",       Float,        0,        1000,      "Fastest speed a firebomber can travel"                                                     );
-	INITPREF( firebomber_travel_time_min,   0.1f,    "seconds",      Float,        0,        1000,      "Shortest time a firebomber can travel along current path"                                  );
-	INITPREF( firebomber_travel_time_max,   0.4f,    "seconds",      Float,        0,        1000,      "Longest time a firebomber can travel along current path"                                   );
+
+	INITPREFR( FirebomberSpeed,  250, 500, "px/sec",   "Firebomber travel speed"                                                                );
+	INITPREFR( FirebomberTravelTime,  0.1f, 0.4f, "seconds",   "Firebomber travel time along current path"                                                                );
+
 	INITPREF( firebomber_value,           250,       "",             Integer,      0,        1000,      "Number of points earned for destroying a firebomber"                                       );
 	INITPREF( ghost_value,                250,       "",             Integer,      0,        1000,      "Number of points earned for destroying a ghost"                                            );
 	INITPREF( ghost_player_dist_min,      400,       "px",           Integer,      0,        1000,      "Distance from player at which ghost will split"                                            ); 
-	INITPREF( guppy_speedmin,             150.0f,    "px/sec",       Float,       50,         500,      "Slowest speed at which a guppy will fly"                                                   );
-	INITPREF( guppy_speedmax,             300.0f,    "px/sec",       Float,       50,         800,      "Fastest speed at which a guppy will fly"                                                   );
+
+	INITPREFR( GuppySpeed,  150, 300, "px/sec",   "Guppy flight speed"                                                                );
+
 	INITPREF( guppy_value,                200,       "",             Integer,      0,        1000,      "Number of points earned for destroying a space guppy"                                      );
 	INITPREF( humans_count,                15,       "",             Integer,      1,         100,      "Number of humanoids at start of game"                                                      );
 	INITPREF( human_distribution,           0.5f,    "",             Float,        0.5f,        1.0f,   "How far to distribute humans over planet surface"                                          );
@@ -73,14 +75,13 @@ void Defcon::CPrefs::Construct()
 	INITPREF( human_value_debarked,       250,       "",             Integer,      0,        1000,      "Points earned when a humanoid is flown back to the ground"                                 );
 	INITPREF( human_value_embarked,       500,       "",             Integer,      0,        1000,      "Points earned when a humanoid is picked up in the air"                                     );
 	INITPREF( human_value_liberated,      250,       "",             Integer,      0,        1000,      "Points earned when a humanoid falls safely to the ground"                                  );
-	INITPREF( hunter_speedmin,            200.0f,    "px/sec",       Float,       50,         500,      "Slowest speed at which a hunter will fly"                                                  );
-	INITPREF( hunter_speedmax,            400.0f,    "px/sec",       Float,       50,         800,      "Fastest speed at which a hunter will fly"                                                  );
+	INITPREFR( HunterSpeed,  200, 400, "px/sec",   "Hunter flight speed"                                                                );
 	INITPREF( hunter_value,               250,       "",             Integer,      0,        1000,      "Number of points earned for destroying a hunter"                                           );
 	INITPREF( lander_abductodds,            0.0001f, "%",            Float,        0.00001f,    0.001f, "Probability per frame that a humanoid within range will be abducted"                       );
-	INITPREF( lander_ascent_speed_min,     60.0f,    "px/sec",       Float,       10.0f,      300.0f,   "Slowest lander ascent rate"                                                                );
-	INITPREF( lander_ascent_speed_max,    180.0f,    "px/sec",       Float,       10.0f,      300.0f,   "Fastest lander ascent rate (at 75,000 xp)"                                                 );
-	INITPREF( lander_descent_speed_min,    45.0f,    "px/sec",       Float,        5.0,       200.0f,   "Slowest lander descent rate"                                                               );
-	INITPREF( lander_descent_speed_max,   135.0f,    "px/sec",       Float,        5.0,       200.0f,   "Fastest lander descent rate (at 75,000 xp)"                                                );
+
+	INITPREFR( LanderAscentSpeed,  60, 180, "px/sec",   "Lander ascent rate"                                                                );
+	INITPREFR( LanderDescentSpeed, 45, 135, "px/sec",   "Lander descent rate"                                                                );
+
 	INITPREF( lander_mature,               20.0f,    "seconds",      Float,        1.0f,       60.0f,   "How old a lander has to be before it will definitely abduct a humanoid"                    );
 	INITPREF( lander_value,               150,       "",             Integer,      0,        1000,      "Number of points earned for destroying a lander"                                           );
 	INITPREF( laser_age_max,                0.5f,    "seconds",      Float,        0.1f,        1.0f,   "Longest length of time a laser beam can exist"                                             );
@@ -93,6 +94,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF( munchie_value,               50,       "",             Integer,      0,        1000,      "Number of points earned for destroying a munchie"                                          );
 	INITPREF( object_drawbbox,              0,       "",             Boolean,      0,           0,      "Show sprite bounding boxes (debugging aid)"                                                );
 	INITPREF( phred_value,                200,       "",             Integer,      0,        1000,      "Number of points earned for destroying a Phred"                                            );
+	INITPREF( planet_to_screen_ratio,       5.0f,    "%",            Float,     2.0f,        6.0f,      "How wide the planet surface is relative to visible portion"                                );
 	INITPREF( player_birthdebrisdist,    1250.0f,    "px",           Float,        0.1f,        5.0f,   "Initial size of player ship's materialization field"                                       );
 	INITPREF( player_birthduration,         3.0f,    "seconds",      Float,        0.1f,        5.0f,   "How long for player ship to materialize"                                                   );
 	INITPREF( player_drag,                  0.06f,   "",             Float,        0.001f,      1.0f,   "Drag acting upon player ship"                                                              );
@@ -147,7 +149,7 @@ void Defcon::CPrefs::Init(const FString& Filename)
 		char* token = MyStrtok(buf, " \t=\r\n");
 		try
 		{
-			CPrefVar& var = Translate(token);
+			FPrefVar& var = Translate(token);
 			token = MyStrtok(nullptr, " \t=\r\n");
 			if(!isnum(token))
 				throw 0;
@@ -159,13 +161,13 @@ void Defcon::CPrefs::Init(const FString& Filename)
 }
 
 
-CPrefVar& Defcon::CPrefs::Translate(const FString& Key) const
+FPrefVar& Defcon::CPrefs::Translate(const FString& Key) const
 {
 	for(int32 Index = 0; Index < EPref::count; Index++)
 	{
 		if(Pref[Index].Is(Key))
 		{
-			return (CPrefVar&)(Pref[Index]);
+			return (FPrefVar&)(Pref[Index]);
 		}
 	}
 	check(false);

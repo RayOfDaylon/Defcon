@@ -43,7 +43,7 @@ Defcon::IFirebomber::IFirebomber()
 	TravelCountdown = 1.0f;
 
 	Orientation.Fwd.Set(SBRAND, SBRAND);
-	OurInertia = Orientation.Fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
+	OurInertia = Orientation.Fwd * Daylon::FRandRange(FIREBOMBER_SPEED);
 
 	const auto& Info = GGameObjectResources.Get(EObjType::FIREBOMBER_TRUE);
 	BboxRadius.Set(Info.Size.X / 2, Info.Size.Y / 2);
@@ -63,37 +63,37 @@ const char* Defcon::IFirebomber::GetClassname() const
 #endif
 
 
-void Defcon::IFirebomber::Move(float fTime)
+void Defcon::IFirebomber::Move(float DeltaTime)
 {
 	// Just float around drifting horizontally.
 
-	Super::Move(fTime);
+	Super::Move(DeltaTime);
 	Inertia = Position;
 
-	TravelCountdown -= fTime;
+	TravelCountdown -= DeltaTime;
 
 	if(TravelCountdown <= 0.0f)
 	{
 		// We've finished traveling, so define a new direction and travel length.
 		Orientation.Fwd.Set(SBRAND, SBRAND);
-		OurInertia      = Orientation.Fwd * Daylon::FRandRange(FIREBOMBER_SPEED_MIN, FIREBOMBER_SPEED_MAX);
+		OurInertia = Orientation.Fwd * Daylon::FRandRange(FIREBOMBER_SPEED);
 
 		if(IRAND(3) == 1)
 		{
 			OurInertia *= 0.5f;
 		}
 
-		TravelCountdown = Daylon::FRandRange(FIREBOMBER_TRAVEL_TIME_MIN, FIREBOMBER_TRAVEL_TIME_MAX);
+		TravelCountdown = Daylon::FRandRange(FIREBOMBER_TRAVEL_TIME);
 	}
 
-	Position += OurInertia * fTime;
+	Position += OurInertia * DeltaTime;
 
 
 	WRAP(Position.y, 0, ScreenSize.y);
 
 	if(IsOurPositionVisible() && TargetPtr != nullptr)
 	{
-		FiringCountdown -= fTime;
+		FiringCountdown -= DeltaTime;
 	}
 
 	Inertia = Position - Inertia;
@@ -178,9 +178,9 @@ Defcon::CFirebomber::~CFirebomber()
 }
 
 
-void Defcon::CFirebomber::Move(float fTime)
+void Defcon::CFirebomber::Move(float DeltaTime)
 {
-	Super::Move(fTime);
+	Super::Move(DeltaTime);
 
 	if(!(CanBeInjured() && GArena->GetPlayerShip().IsAlive() && IsOurPositionVisible()))
 	{
@@ -219,9 +219,9 @@ Defcon::CWeakFirebomber::CWeakFirebomber()
 }
 
 
-void Defcon::CWeakFirebomber::Move(float fTime)
+void Defcon::CWeakFirebomber::Move(float DeltaTime)
 {
-	Super::Move(fTime);
+	Super::Move(DeltaTime);
 
 	if(FiringCountdown <= 0.0f)
 	{

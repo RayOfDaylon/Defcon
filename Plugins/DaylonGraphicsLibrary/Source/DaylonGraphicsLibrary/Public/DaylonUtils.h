@@ -162,6 +162,12 @@ namespace Daylon
 	}
 
 
+	template <typename T> T Average(const FRange<T>& Range)
+	{
+		return (Range.Low() + Range.High()) / 2;
+	}
+
+
 	struct DAYLONGRAPHICSLIBRARY_API FLoopedSound
 	{
 		// A hacked sound loop created by simply playing the same sound
@@ -911,6 +917,12 @@ namespace Daylon
 	DAYLONGRAPHICSLIBRARY_API double FRandRange (double Min, double Max);
 	DAYLONGRAPHICSLIBRARY_API int32  RandRange  (int32 Min, int32 Max);
 	DAYLONGRAPHICSLIBRARY_API bool   RandBool   ();
+
+	inline float FRandRange(const FRange<float>& Range)
+	{
+		return (float)FRandRange(Range.Low(), Range.High());
+	}
+
 } // namespace Daylon
 
 

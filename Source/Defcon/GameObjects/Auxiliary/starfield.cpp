@@ -70,7 +70,7 @@ void Defcon::CStarfield::InitStarfield(int32 w, int32 h, float fRange, bool bMor
 }
 
 
-void Defcon::CStarfield::Move(float f)
+void Defcon::CStarfield::Move(float DeltaTime)
 {
 	Age += f;
 

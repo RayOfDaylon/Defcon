@@ -24,7 +24,6 @@ namespace Defcon
 		public:
 			CPrefs();
 			virtual ~CPrefs() {}
-			void Construct();
 
 			enum EPref 
 			{
@@ -62,16 +61,13 @@ namespace Defcon
 				fireballs_explode_on_ground,
 				fireball_value,
 				firebomber_value,
-				firebomber_speed_min,
-				firebomber_speed_max,
-				firebomber_travel_time_min,
-				firebomber_travel_time_max,
+				FirebomberSpeed,
+				FirebomberTravelTime,
 
 				ghost_player_dist_min,
 				ghost_value,
 				guppy_value,
-				guppy_speedmax,
-				guppy_speedmin,
+				GuppySpeed,
 
 				human_bonus_value,
 				human_distribution,
@@ -82,15 +78,12 @@ namespace Defcon
 				human_value_embarked,
 				human_value_liberated,
 
-				hunter_speedmax,
-				hunter_speedmin,
+				HunterSpeed,
 				hunter_value,
 
 				lander_abductodds,
-				lander_ascent_speed_min,
-				lander_ascent_speed_max,
-				lander_descent_speed_min,
-				lander_descent_speed_max,
+				LanderAscentSpeed,
+				LanderDescentSpeed,
 				lander_mature,
 				lander_value,
 
@@ -141,9 +134,12 @@ namespace Defcon
 			};
 
 			void      Init      (const FString& Str);
-			CPrefVar& Translate (const FString& Str) const;
+			FPrefVar& Translate (const FString& Str) const;
 
-			CPrefVar  Pref[EPref::count];
+			FPrefVar  Pref[EPref::count];
+
+		protected:
+			void      Construct();
 	};
 }
 
@@ -156,6 +152,7 @@ extern Defcon::CPrefs	GPrefs;
 #define FPREFVAL(_key)                 PREFVAL(_key)
 #define IPREFVAL(_key)                 (int32)PREFVAL(_key)
 #define BPREFVAL(_key)                 (bool)(1.0f == PREFVAL(_key))
+#define RPREFVAL(_key)                 GPrefs.Pref[Defcon::CPrefs::EPref::_key].Range
 
 #define CONTROLLER_EXPLICIT_REVERSE    BPREFVAL(controller_explicit_reverse)
 
@@ -194,10 +191,6 @@ extern Defcon::CPrefs	GPrefs;
 // before more enemies appear.
 #define DELAY_BETWEEN_REATTACK      FPREFVAL(delay_between_reattack)
 
-#define LANDER_DESCENT_SPEED_MIN    FPREFVAL(lander_descent_speed_min)
-#define LANDER_DESCENT_SPEED_MAX    FPREFVAL(lander_descent_speed_max)
-#define LANDER_ASCENT_SPEED_MIN     FPREFVAL(lander_ascent_speed_min)
-#define LANDER_ASCENT_SPEED_MAX     FPREFVAL(lander_ascent_speed_max)
 
 #define ATTACK_INITIALDISTANCE      FPREFVAL(attack_initialdistance)
 
@@ -221,26 +214,21 @@ extern Defcon::CPrefs	GPrefs;
 #define ENEMY_BIRTHDURATION          FPREFVAL(enemy_birthduration)
 #define FIREBALLS_EXPLODE_ON_GROUND  BPREFVAL(fireballs_explode_on_ground)
 #define FIREBALL_VALUE               IPREFVAL(fireball_value)
-
-#define FIREBOMBER_SPEED_MIN         FPREFVAL(firebomber_speed_min)
-#define FIREBOMBER_SPEED_MAX         FPREFVAL(firebomber_speed_max)
-#define FIREBOMBER_TRAVEL_TIME_MIN   FPREFVAL(firebomber_travel_time_min)
-#define FIREBOMBER_TRAVEL_TIME_MAX   FPREFVAL(firebomber_travel_time_max)
+#define FIREBOMBER_SPEED             RPREFVAL(FirebomberSpeed)
+#define FIREBOMBER_TRAVEL_TIME       RPREFVAL(FirebomberTravelTime)
 #define FIREBOMBER_VALUE             IPREFVAL(firebomber_value)
-
 #define GHOST_PLAYER_DIST_MIN        IPREFVAL(ghost_player_dist_min) 
 #define GHOST_VALUE                  IPREFVAL(ghost_value) 
-#define GUPPY_SPEEDMAX               FPREFVAL(guppy_speedmax)
-#define GUPPY_SPEEDMIN               FPREFVAL(guppy_speedmin)
+#define GUPPY_SPEED                  RPREFVAL(GuppySpeed)
 #define GUPPY_VALUE                  IPREFVAL(guppy_value)
 #define HUMAN_VALUE_DEBARKED         IPREFVAL(human_value_debarked)
 #define HUMAN_VALUE_EMBARKED         IPREFVAL(human_value_embarked)
 #define HUMAN_VALUE_LIBERATED        IPREFVAL(human_value_liberated)
-#define HUNTER_SPEEDMAX              FPREFVAL(hunter_speedmax)
-#define HUNTER_SPEEDMIN              FPREFVAL(hunter_speedmin)
+#define HUNTER_SPEED                 RPREFVAL(HunterSpeed)
 #define HUNTER_VALUE                 IPREFVAL(hunter_value)
 #define LANDER_ABDUCTODDS            FPREFVAL(lander_abductodds)
-#define LANDER_ASCENTRATE            FPREFVAL(lander_ascentrate)
+#define LANDER_ASCENT_SPEED          RPREFVAL(LanderAscentSpeed)
+#define LANDER_DESCENT_SPEED         RPREFVAL(LanderDescentSpeed)
 #define LANDER_MATURE                FPREFVAL(lander_mature)
 #define LANDER_VALUE                 IPREFVAL(lander_value)
 #define LASER_AGE_MAX                FPREFVAL(laser_age_max)

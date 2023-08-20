@@ -47,10 +47,10 @@ Defcon::CEnemy::~CEnemy()
 }
 
 
-void Defcon::CEnemy::Move(float f)
+void Defcon::CEnemy::Move(float DeltaTime)
 {
 	CFPoint temp = Inertia;
-	Super::Move(f);
+	Super::Move(DeltaTime);
 	Inertia = temp;
 }
 

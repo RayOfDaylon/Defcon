@@ -40,8 +40,9 @@ Defcon::CLander::CLander()
 	{
 		float N = NORM_(GDefconGameInstance->GetScore(), 0, 75000) + FRANDRANGE(-0.05f, 0.05f);
 		N = CLAMP(N, 0.0f, 1.0f);
-		DescentSpeed = LERP(LANDER_DESCENT_SPEED_MIN, LANDER_DESCENT_SPEED_MAX, N);
-		AscentSpeed  = LERP(LANDER_ASCENT_SPEED_MIN, LANDER_ASCENT_SPEED_MAX, N);
+
+		AscentSpeed  = Daylon::Lerp(LANDER_ASCENT_SPEED,  N);
+		DescentSpeed = Daylon::Lerp(LANDER_DESCENT_SPEED, N);
 	}
 
 	RadarColor      = MakeColorFromComponents(255, 255, 0);

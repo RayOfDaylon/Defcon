@@ -1,6 +1,8 @@
 Changelog for DaylonGraphicsLibrary UE plugin
 
-Last updated: July 23, 2023
+Last updated: August 19, 2023
+
+Added FRange class to make min/max ranges easier to handle.
 
 Added operator-- and operator++ overloads for TBindableValue.
 

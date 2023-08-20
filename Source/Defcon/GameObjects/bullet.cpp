@@ -31,7 +31,7 @@ Defcon::IBullet::IBullet()
 }
 
 
-void Defcon::IBullet::Move(float fTime)
+void Defcon::IBullet::Move(float DeltaTime)
 {
 	// Make the bullet flicker.
 	if(Sprite)
@@ -59,7 +59,7 @@ void Defcon::IBullet::Move(float fTime)
 		}
 	}
 
-	Position.MulAdd(Orientation.Fwd, fTime * Speed);
+	Position.MulAdd(Orientation.Fwd, DeltaTime * Speed);
 }
 
 

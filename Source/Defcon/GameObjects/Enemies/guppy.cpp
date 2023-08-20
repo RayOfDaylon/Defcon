@@ -29,7 +29,7 @@ Defcon::CGuppy::CGuppy()
 	PointValue = GUPPY_VALUE;
 	State      = Lounging;
 	
-	float Speed = FRANDRANGE(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
+	float Speed = Daylon::FRandRange(GUPPY_SPEED);
 
 	if(BRAND) 
 	{
@@ -115,7 +115,7 @@ void Defcon::CGuppy::Move(float DeltaTime)
 
 				//Orientation.Fwd.Set(SGN(m_targetOffset.y), 0);
 				Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
-				Position.MulAdd(Orientation.Fwd, DeltaTime * GUPPY_SPEEDMIN / 2);
+				Position.MulAdd(Orientation.Fwd, DeltaTime * GUPPY_SPEED.Low() / 2);
 			}
 			break;
 
@@ -138,7 +138,7 @@ void Defcon::CGuppy::Move(float DeltaTime)
 					CFPoint pt;
 					GArena->ShortestDirection(Position, TargetPtr->Position, pt);
 					Orientation.Fwd.x = FRANDRANGE(0.33f, 0.58f) * SGN(pt.x);
-					Position.MulAdd(Orientation.Fwd, DeltaTime * AVG(GUPPY_SPEEDMIN, GUPPY_SPEEDMAX));
+					Position.MulAdd(Orientation.Fwd, DeltaTime * Daylon::Average(GUPPY_SPEED));
 				}
 			}
 			
@@ -155,7 +155,7 @@ void Defcon::CGuppy::Move(float DeltaTime)
 			else
 			{
 				float Distance = GArena->ShortestDirection(Position, TargetPtr->Position, Orientation.Fwd);
-				float VerticalDelta = Position.y - TargetPtr->Position.y;
+				const float VerticalDelta = Position.y - TargetPtr->Position.y;
 
 				if(ABS(VerticalDelta) < BboxRadius.y && SGN(TargetPtr->Orientation.Fwd.x) != SGN(Orientation.Fwd.x))
 				{
@@ -170,14 +170,14 @@ void Defcon::CGuppy::Move(float DeltaTime)
 
 					Distance /= GArena->GetDisplayWidth();
 
-					const float speed = Distance >= 0.8f 
-						? MAP(Distance, 0.8f, 1.0f, GUPPY_SPEEDMAX, 0.0f)
-						: MAP(Distance, 0.0f, 0.8f, GUPPY_SPEEDMIN, GUPPY_SPEEDMAX);
+					const float Speed = Distance >= 0.8f 
+						? MAP(Distance, 0.8f, 1.0f, GUPPY_SPEED.High(), 0.0f)
+						: MAP(Distance, 0.0f, 0.8f, GUPPY_SPEED.Low(), GUPPY_SPEED.High());
 					
 					Orientation.Fwd.y += (float)(Amplitude * sin(Age * Frequency));
-					Position.MulAdd(Orientation.Fwd, DeltaTime * speed);
+					Position.MulAdd(Orientation.Fwd, DeltaTime * Speed);
 
-					if(IsOurPositionVisible() && CanBeInjured() && TargetPtr->CanBeInjured() && speed < 400)
+					if(IsOurPositionVisible() && CanBeInjured() && TargetPtr->CanBeInjured() && Speed < 400)
 					{
 						FiringCountdown -= DeltaTime;
 

@@ -131,12 +131,6 @@ on each frame.
 
 
 
-
-
-
- 
-
-
 Code Architecture
 -------------------------------------------------------------------------------------
 The DaylonGraphicsLibrary plugin is the same one used in Stellar Mayhem.
@@ -229,16 +223,24 @@ Future Work
 -------------------------------------------------------------------------------------
 Some declarations are outside the Defcon namespace when they shouldn't be.
 
-Should use a templated range type to handle min/max variables. The CVariant type 
-used in the prefs system should stick to scalars, but min/max prefs 
-should be then collected into ranges. We can also have FRANDRANGE e.g. 
-take the ranged type, or the ranged type can have a Random() function.
-If we don't stick to scalars in prefs, then we need another INITPREF macro 
-to take min and max values together.
+Rename IGameObject::Move to Tick (or Update).
+
+Implement bullet time. All we should need to do is in each relevant Tick 
+handler, if bullet time is active, scale the DeltaTime by 0.25 or whatever.
+The '2' key should toggle bullet time.
+
+Implement the arena bogdown feature. This is when we temporarily use a 
+light bullet time (0.5 or 0.75) when the number of debris objects 
+exceeds a certain threshold. This mimics the slowdown that occured on 
+the original arcade hardware, usually when a smartbomb was detonated 
+amidst many enemies. Despite modern hardware being fast enough, the 
+effect is actually pleasant for some.
+
+There are explicit constants here and there that should be pref vars.
 
 Secondary explosion texture atlas is used randomly, but should be 
 used based on object type or mass since it's more "oomph" than 
-the original explosion texture. E.g. all firebombers should use it.
+the original explosion texture.
 
 GameObject::m_inertia is computed by each game object class, when it should be 
 possible to compute it in a game object collection processing loop.

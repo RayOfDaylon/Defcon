@@ -2,7 +2,12 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 18, 2023
+August 20, 2023
+
+Converted min/max pref vars to range vars, using the new 
+Daylon::FRange type and its supporting global functions.
+
+All arguments to IGameObject::Move should now be 'DeltaTime'.
 
 Added secondary explosion texture atlas, 
 makes enemy destruction more entertaining.
