@@ -382,19 +382,27 @@ void UDefconGameInstance::TransitionToArena(EDefconArena Arena)
 
 	if(Arena == EDefconArena::MissionPicker)
 	{
-		// Start new game with initial number of items.
-
-		SmartbombsLeft = SMARTBOMB_INITIAL;
-
-		Humans.DeleteAll();
-
-		for(int32 i = 0; i < HUMANS_COUNT; i++)
-		{
-			Humans.Add(new Defcon::CHuman);
-		}
+		StartNewGame();
 	}
 
 	SetCurrentView(ArenaWidget);
+}
+
+
+void UDefconGameInstance::StartNewGame()
+{
+	// Start new game with initial number of items.
+
+	SmartbombsLeft = SMARTBOMB_INITIAL;
+
+	Humans.DeleteAll();
+
+	for(int32 i = 0; i < HUMANS_COUNT; i++)
+	{
+		Humans.Add(new Defcon::CHuman);
+	}
+
+	bHumansPlaced = false;
 }
 
 

@@ -117,10 +117,7 @@ void Defcon::IMission::AddHumanoids()
 		Human->Objects  = &GArena->GetObjects();
 		Human->Objects2 = &GArena->GetEnemies();
 
-		// If we're on mission 2 or higher, don't move the humans except to reset them vertically.
-		Human->InitHuman(CFPoint(
-			(GDefconGameInstance->GetScore() == 0) ? FRAND * GArena->GetWidth() * HUMAN_DISTRIBUTION : Human->Position.x, 
-			FRANDRANGE(25, 30)));
+		Human->InitHuman(Human->Position);
 	}
 	);
 }

@@ -134,6 +134,7 @@ on each frame.
 Code Architecture
 -------------------------------------------------------------------------------------
 The DaylonGraphicsLibrary plugin is the same one used in Stellar Mayhem.
+It has its own docs.txt file.
 
 Because the code was originally written in 2003 for the Win32 API, 
 it's not necessarily up-to-date with modern C++ style and especially not with UE.
@@ -155,6 +156,8 @@ added to it. The OnActivate, OnFinishActivating, and OnDeactivate methods are
 called on a view to let it know when that happens. This is in stark contrast 
 to Stellar Mayhem which only has one view and uses its state machine to 
 show/hide UI elements to simulate multiple views.
+    A tricky thing with UUserWidget is that some of its methods are called 
+at design time, so care must be taken in that regard.
 
 Parts of views are termed "widgets". A widget may derive from UUserWidget 
 or some other UMG class, or from a Slate widget.
@@ -216,6 +219,30 @@ It's declared in util_core.h but implemented in UDefconPlayViewBase.
 Using the current time, however, is a discouraged practice as it will 
 cause problems when implementing bullet time. Calls to it were removed 
 from event creation and in ILiveGameObject's motion physics.
+
+UDefconPlayViewBase contains three child widgets:
+
+    - UDefconPlayMainWidgetBase    The main play area where the action takes place.
+    - UDefconPlayRaderWidgetBase   The radar panel above the main play area.
+    - UDefconPlayStatsWidgetBase   The player info panel next to the radar panel.
+
+	 -------------------------------------------------
+	|          |                                      |
+	|  Stats   |              Radar                   |
+	|__________|______________________________________|
+	|                                                 |
+	|                                                 |
+	|                                                 |
+	|           Main                                  |
+	|                                                 |
+	|                                                 |
+	|_________________________________________________|
+
+While UDefconPlayViewBase treats game objects in the abstract, 
+it does categorize them into several collections for efficient processing, 
+so it has a general idea what kinds of objects are where. For example, 
+all player opponents are in an Enemies collection, debris is in a Debris 
+collection, etc.
 
 
 

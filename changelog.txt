@@ -2,7 +2,11 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 20, 2023
+August 22, 2023
+
+Play arena places the humans, and with a new "humans placed" flag 
+in game instance, randomizes their x-positions on the first mission 
+of a new game session.
 
 Converted min/max pref vars to range vars, using the new 
 Daylon::FRange type and its supporting global functions.

@@ -127,10 +127,8 @@ void Defcon::CScheduledTaskList::ForEachUntil(TFunction<bool(CScheduledTask*)> F
 
 void Defcon::CRestartMissionTask::Do()
 {
-	auto GI = GDefconGameInstance;
-
-	GI->SetCurrentMission(GI->GetMission()->GetID());
-	GI->TransitionToArena(EDefconArena::Prewave);
+	GDefconGameInstance->SetCurrentMission(GDefconGameInstance->GetMission()->GetID());
+	GDefconGameInstance->TransitionToArena(EDefconArena::Prewave);
 }
 
 // -----------------------------------------------------

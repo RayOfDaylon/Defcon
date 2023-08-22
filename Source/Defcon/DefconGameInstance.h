@@ -245,6 +245,15 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	UDefconViewBase*     GetCurrentView      () const { return CurrentView; }
 	void                 SetCurrentView      (UDefconViewBase* View);
 	void                 SetCurrentMission   (Defcon::EMissionID InMissionID);
+	void                 StartNewGame        ();
+
+
+	bool                 bHumansPlaced = false;
+
+	public:
+
+	bool                 GetHumansPlaced     () const { return bHumansPlaced; }
+	void                 SetHumansPlaced     (bool b = true) { bHumansPlaced = b; }
 
 	protected:
 

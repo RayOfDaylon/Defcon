@@ -152,19 +152,38 @@ void UDefconPlayViewBase::OnFinishActivating()
 	InitMapperAndTerrain();
 	InitPlayerShip();
 
+
 	PlayAreaMain->Init(&GetHumans(), &Objects, &Enemies, &Debris, &Blasts, ArenaSize);
 
-	// Start the current mission.
-	auto GI = GDefconGameInstance;
-
-	if(!IsValid(GI))
+	if(!IsValid(GDefconGameInstance))
 	{
 		return;
 	}
 
-	GI->InitMission();
 
-	AreHumansInMission = GI->GetMission()->HumansInvolved();
+	// Place humans.
+
+	GetHumans().ForEach([this](Defcon::IGameObject* Human)
+	{
+		// Move each human down to avoid starting mission above terrain from potentially fatal height.
+
+		Human->Position.y = FRANDRANGE(25, 30); // todo: use minimum terrain level pref instead of 25..30
+
+		if(!GDefconGameInstance->GetHumansPlaced())
+		{
+			// We're in the first mission of the game, so randomize each human's x-position.
+			Human->Position.x = FRANDRANGE(0.0f, GetWidth() - 1); 
+		}
+	});
+
+	GDefconGameInstance->SetHumansPlaced();
+
+
+	// Start the current mission.
+
+	GDefconGameInstance->InitMission();
+
+	AreHumansInMission = GDefconGameInstance->GetMission()->HumansInvolved();
 
 
 
