@@ -54,16 +54,6 @@ Defcon::CFireball::CFireball()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CFireball::GetClassname() const
-{
-	static char* psz = "Fireball";
-	return psz;
-}
-#endif
-
-
-
 void Defcon::CFireball::Tick(float DeltaTime)
 {
 	if(Age == 0.0f)

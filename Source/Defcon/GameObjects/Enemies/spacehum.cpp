@@ -43,15 +43,6 @@ Defcon::CSpacehum::CSpacehum()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CSpacehum::GetClassname() const
-{
-	static char* psz = "Spacehum";
-	return psz;
-};
-#endif
-
-
 void Defcon::CSpacehum::Tick(float DeltaTime)
 {
 	// Just chase the player.

@@ -48,15 +48,6 @@ Defcon::CHunter::~CHunter()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CHunter::GetClassname() const
-{
-	static char* psz = "Hunter";
-	return psz;
-};
-#endif
-
-
 void Defcon::CHunter::Tick(float DeltaTime)
 {
 	CEnemy::Tick(DeltaTime);

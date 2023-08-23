@@ -19,9 +19,8 @@
 namespace Defcon
 {
 	class IBullet;
-
+	class CHuman;
 }
-
 
 
 /*
@@ -82,28 +81,23 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 
 	void InitMapperAndTerrain     ();
-	void InitPlayerShip           ();
-	void SettlePlayer             (float DeltaTime);
-	void DoThrustSound            (float DeltaTime);
-	bool IsPlayerShipThrustActive () const;
 	void UpdateGameObjects        (float DeltaTime);
 	void ConcludeMission          ();
 
-	void CheckPlayerCollided    ();
-	void CheckIfPlayerHit       (Defcon::CGameObjectCollection& Objects);
+	void InitPlayerShip           ();
+	void SettlePlayer             (float DeltaTime);
+	bool IsPlayerShipThrustActive () const;
+	void CheckPlayerCollided      ();
+	void CheckIfPlayerHit         (Defcon::CGameObjectCollection& Objects);
+	void DoThrustSound            (float DeltaTime);
 
-	void Hyperspace             ();
-	void DetonateSmartbomb          ();
-	void DeleteAllObjects       ();
-	void OnPlayerShipDestroyed  ();
-	void DestroyPlayerShip      ();
+	void Hyperspace               ();
+	void DetonateSmartbomb        ();
+	void DeleteAllObjects         ();
+	void OnPlayerShipDestroyed    ();
+	void DestroyPlayerShip        ();
 
 	void SpecializeMaterialization(Defcon::FMaterializationParams& Params, Defcon::EObjType ObjectType);
-
-
-	// todo: do we need these?
-	Defcon::CGameObjectCollection& GetDebris  () { return Debris; }
-
 
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
@@ -125,6 +119,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	Defcon::CGameObjectCollection  Objects;  // stuff like beacons, stars, text, etc.
 	Defcon::CGameObjectCollection  Debris;
 	Defcon::CGameObjectCollection  Blasts;
+	Defcon::CGameObjectCollection  Powerups;
 
 	Defcon::CScheduledTaskList     ScheduledTasks;
 
@@ -150,15 +145,15 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 	public:
 
-	Defcon::I2DCoordMapper&               GetMainAreaMapper       () { return MainAreaMapper; }
-	const Defcon::I2DCoordMapper&         GetConstMainAreaMapper  () const { return MainAreaMapper; }
+	Defcon::I2DCoordMapper&               GetMainAreaMapper  () { return MainAreaMapper; }
+	const Defcon::I2DCoordMapper&         GetMainAreaMapper  () const { return MainAreaMapper; }
 	
-	Defcon::CPlayer&                      GetPlayerShip           ();
-	const Defcon::CPlayer&                GetPlayerShip           () const;
-	const Defcon::CGameObjectCollection&  GetConstHumans          () const;
-	Defcon::CGameObjectCollection&        GetHumans               ();
-	Defcon::CGameObjectCollection&        GetObjects              () { return Objects; }
-	Defcon::CGameObjectCollection&        GetEnemies              () { return Enemies; }
+	Defcon::CPlayer&                      GetPlayerShip      ();
+	const Defcon::CPlayer&                GetPlayerShip      () const;
+	Defcon::CGameObjectCollection&        GetHumans          ();
+	const Defcon::CGameObjectCollection&  GetHumans          () const;
+	Defcon::CGameObjectCollection&        GetObjects         () { return Objects; }
+	Defcon::CGameObjectCollection&        GetEnemies         () { return Enemies; }
 
 	float                ShortestDirection    (const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result) const;
 	void                 Lerp                 (const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result, float T) const;
@@ -181,7 +176,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	void                 IncreaseScore        (int32 Points, bool bVis, const CFPoint* P);
 	void                 CreateEnemy          (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags);
 	Defcon::CEnemy*      CreateEnemyNow       (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags);
-	Defcon::IGameObject* FindHuman            (float X) const;
+	Defcon::CHuman*      FindNearestHuman     (float X) const;
 	Defcon::IGameObject* FindEnemy            (Defcon::EObjType Kind, Defcon::IGameObject* Obj = nullptr) const { return Enemies.Find(Kind, Obj); }
 	void                 CheckIfObjectsGotHit (Defcon::CGameObjectCollection& Objects);
 	void                 ShieldBonk           (Defcon::IGameObject* Obj, float Force);
@@ -190,8 +185,12 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	void                 TransportPlayerShip  ();
 	void                 AllStopPlayerShip    ();
 
-	void                 OnSpawnEnemy         (); // debug routine
-	void                 OnSelectEnemyToSpawn (); // debug routine
+	
+	// Debugging support -------------------------------------------------------------------------------------
+
+	void                 OnSpawnEnemy         ();
+	void                 OnSelectEnemyToSpawn ();
+
 	int32                SpawnedEnemyIndex = 0;
 	
 	Defcon::EObjType SpawnedEnemyTypes[18] =

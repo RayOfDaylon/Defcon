@@ -46,14 +46,6 @@ Defcon::IBouncer::~IBouncer()
 {
 }
 
-#ifdef _DEBUG
-const char* Defcon::IBouncer::GetClassname() const
-{
-	static char* psz = "IBouncer";
-	return psz;
-};
-#endif
-
 
 void Defcon::IBouncer::Tick(float DeltaTime)
 {

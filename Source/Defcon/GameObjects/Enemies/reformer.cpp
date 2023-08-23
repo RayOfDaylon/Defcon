@@ -47,15 +47,6 @@ Defcon::CReformer::~CReformer()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CReformer::GetClassname() const
-{
-	static char* psz = "Reformer";
-	return psz;
-};
-#endif
-
-
 void Defcon::CReformer::Tick(float DeltaTime)
 {
 	// Just float around drifting horizontally.
@@ -223,15 +214,6 @@ Defcon::CReformerPart::CReformerPart()
 Defcon::CReformerPart::~CReformerPart()
 {
 }
-
-
-#ifdef _DEBUG
-const char* Defcon::CReformerPart::GetClassname() const
-{
-	static char* psz = "Reformer_part";
-	return psz;
-};
-#endif
 
 
 void Defcon::CReformerPart::Tick(float DeltaTime)

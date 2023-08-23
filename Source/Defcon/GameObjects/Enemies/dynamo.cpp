@@ -43,14 +43,6 @@ Defcon::CDynamo::~CDynamo()
 {
 }
 
-#ifdef _DEBUG
-const char* Defcon::CDynamo::GetClassname() const
-{
-	static char* psz = "Dynamo";
-	return psz;
-};
-#endif
-
 
 void Defcon::CDynamo::Tick(float DeltaTime)
 {

@@ -29,14 +29,6 @@ Defcon::CBitmapDisplayer::~CBitmapDisplayer()
 {
 }
 
-#ifdef _DEBUG
-const char* Defcon::CBitmapDisplayer::GetClassname() const
-{
-	static char* psz = "Texture";
-	return psz;
-}
-#endif
-
 
 void Defcon::CBitmapDisplayer::Tick(float DeltaTime)
 {

@@ -50,15 +50,6 @@ Defcon::CTerrain::~CTerrain()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CTerrain::GetClassname() const
-{
-	static char* psz = "Terrain";
-	return psz;
-}
-#endif
-
-
 void Defcon::CTerrain::InitTerrain(float w, float h)
 {
 	Vertices.Reserve(300);

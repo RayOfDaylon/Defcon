@@ -47,15 +47,6 @@ Defcon::CFlak::~CFlak()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CFlak::GetClassname() const
-{
-	static char* psz = "Flak";
-	return psz;
-}
-#endif
-
-
 void Defcon::CFlak::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
 	// Determine a color, Size, and shape for a debris piece.
@@ -122,15 +113,6 @@ void Defcon::CFlak::Tick(float DeltaTime)
 
 
 // ------------------------------------------------------
-
-#ifdef _DEBUG
-const char* Defcon::CGlowingFlak::GetClassname() const
-{
-	static char* psz = "Glowing_Flak";
-	return psz;
-}
-#endif
-
 
 void Defcon::CGlowingFlak::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {

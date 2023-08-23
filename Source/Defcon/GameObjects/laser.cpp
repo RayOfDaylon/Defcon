@@ -59,15 +59,6 @@ void Defcon::CLaserbeam::SetMaxLength(float Len)
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CLaserbeam::GetClassname() const
-{
-	static char* psz = "Laserbeam";
-	return psz;
-}
-#endif
-
-
 void Defcon::CLaserbeam::Create(const CFPoint& Where, const Orient2D& Aim)
 {
 	Position = Where;

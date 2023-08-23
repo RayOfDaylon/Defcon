@@ -25,15 +25,6 @@
 
 
 
-#ifdef _DEBUG
-const char* Defcon::CSmartbomb::GetClassname() const
-{
-	static char* psz = "Smartbomb";
-	return psz;
-}
-#endif
-
-
 Defcon::CSmartbomb::CSmartbomb()
 {
 	ParentType = Type;

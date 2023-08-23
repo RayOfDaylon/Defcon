@@ -62,15 +62,6 @@ Defcon::CGhost::~CGhost()
 {
 }
 
-#ifdef _DEBUG
-const char* Defcon::CGhost::GetClassname() const
-{
-	static char* psz = "Ghost";
-	return psz;
-};
-#endif
-
-
 
 void Defcon::CGhost::ConsiderFiringBullet(float DeltaTime)
 {
@@ -387,15 +378,6 @@ Defcon::CGhostPart::CGhostPart()
 Defcon::CGhostPart::~CGhostPart()
 {
 }
-
-
-#ifdef _DEBUG
-const char* Defcon::CGhostPart::GetClassname() const
-{
-	static char* psz = "Ghost_part";
-	return psz;
-};
-#endif
 
 
 void Defcon::CGhostPart::SetFlightPath(const CFPoint& From, const CFPoint& To)

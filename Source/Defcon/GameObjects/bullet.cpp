@@ -87,16 +87,6 @@ Defcon::CBullet::CBullet()
 	NumSpriteCels = GGameObjectResources.Get(Type).Atlas->Atlas.NumCels;
 }
 
-
-#ifdef _DEBUG
-const char* Defcon::CBullet::GetClassname() const
-{
-	static char* psz = "Bullet";
-	return psz;
-}
-#endif
-
-
 // -------------------------------------------------------------------------
 
 Defcon::CThinBullet::CThinBullet()
@@ -109,13 +99,4 @@ Defcon::CThinBullet::CThinBullet()
 
 	NumSpriteCels = GGameObjectResources.Get(Type).Atlas->Atlas.NumCels;
 }
-
-
-#ifdef _DEBUG
-const char* Defcon::CBullet::GetClassname() const
-{
-	static char* psz = "ThinBullet";
-	return psz;
-}
-#endif
 

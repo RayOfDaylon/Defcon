@@ -2,7 +2,16 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 22, 2023
+August 23, 2023
+
+
+Started work on invincibility powerup.
+
+Removed all .cpp code related to unused IGameObject::GetClassname method.
+
+Renamed PlayViewBase::FindHuman to FindNearestHuman.
+
+Dropped explicit Const versions of some methods.
 
 Renamed IGameObject::Move to Tick.
 

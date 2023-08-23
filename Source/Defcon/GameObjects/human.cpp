@@ -71,15 +71,6 @@ void Defcon::CHuman::OnAboutToDie()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CHuman::GetClassname() const
-{
-	static const char* psz = "Human";
-	return psz;
-}
-#endif
-
-
 void Defcon::CHuman::Notify(Defcon::EMessage msg, void* pObj)
 {
 	switch(msg)

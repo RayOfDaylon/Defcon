@@ -50,15 +50,6 @@ Defcon::CBaiter::~CBaiter()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CBaiter::GetClassname() const
-{
-	static char* psz = "Baiter";
-	return psz;
-};
-#endif
-
-
 void Defcon::CBaiter::Tick(float DeltaTime)
 {
 	// Baiters chase the player at high speed and fire at them.

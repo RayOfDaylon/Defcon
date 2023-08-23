@@ -54,14 +54,6 @@ Defcon::IFirebomber::~IFirebomber()
 {
 }
 
-#ifdef _DEBUG
-const char* Defcon::IFirebomber::GetClassname() const
-{
-	static char* psz = "Firebomber";
-	return psz;
-};
-#endif
-
 
 void Defcon::IFirebomber::Tick(float DeltaTime)
 {

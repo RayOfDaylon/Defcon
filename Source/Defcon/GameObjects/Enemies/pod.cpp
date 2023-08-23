@@ -46,15 +46,6 @@ Defcon::CPod::~CPod()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CPod::GetClassname() const
-{
-	static char* psz = "Pod";
-	return psz;
-};
-#endif
-
-
 void Defcon::CPod::Tick(float DeltaTime)
 {
 	// Just float around drifting horizontally.

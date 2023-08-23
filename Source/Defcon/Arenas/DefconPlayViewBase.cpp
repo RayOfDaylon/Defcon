@@ -104,13 +104,13 @@ int32 UDefconPlayViewBase::NativePaint
 #endif
 
 
-const Defcon::CGameObjectCollection& UDefconPlayViewBase::GetConstHumans() const 
-{ 
-	return GetConstDefconGameInstance()->GetConstHumans();
+Defcon::CGameObjectCollection& UDefconPlayViewBase::GetHumans()
+{
+	return GDefconGameInstance->GetHumans();
 }
 
 
-Defcon::CGameObjectCollection& UDefconPlayViewBase::GetHumans()
+const Defcon::CGameObjectCollection& UDefconPlayViewBase::GetHumans() const
 {
 	return GDefconGameInstance->GetHumans();
 }
@@ -327,7 +327,7 @@ void UDefconPlayViewBase::TransportPlayerShip()
 
 	if(AreHumansInMission)
 	{
-		GetConstHumans().ForEach([&](Defcon::IGameObject* Object)
+		GetHumans().ForEach([&](Defcon::IGameObject* Object)
 		{
 			auto Human = static_cast<Defcon::CHuman*>(Object);
 
@@ -1469,26 +1469,31 @@ float UDefconPlayViewBase::Xdistance(float WorldX1, float WorldX2) const
 }
 
 
-Defcon::IGameObject* UDefconPlayViewBase::FindHuman(float WorldX) const
+Defcon::CHuman* UDefconPlayViewBase::FindNearestHuman(float WorldX) const
 {
 	// Return the uncarried humanoid nearest to a given point.
 
-	Defcon::IGameObject* Obj = GetConstHumans().GetFirst();
+	Defcon::CHuman* Result = nullptr;
 
-	while(Obj != nullptr)
+	GetHumans().ForEachUntil([this, &Result, &WorldX](Defcon::IGameObject* Obj)
 	{
-		if(!static_cast<Defcon::CHuman*>(Obj)->IsBeingCarried() && Obj->Lifespan > 0.1f)
-		{
-			const float Distance = Xdistance(Obj->Position.x, WorldX);
+		auto Human = static_cast<Defcon::CHuman*>(Obj);
 
-			if(Distance < HUMAN_WITHINRANGE && Obj->Position.y < GetTerrainElev(Obj->Position.x))
+		if(!Human->IsBeingCarried() && Human->Lifespan > 0.1f)
+		{
+			const float Distance = Xdistance(Human->Position.x, WorldX);
+
+			if(Distance < HUMAN_WITHINRANGE && Human->Position.y < GetTerrainElev(Human->Position.x))
 			{
-				return Obj;
+				Result = Human;
+				return false;
 			}
 		}
-		Obj = Obj->GetNext();
-	}
-	return nullptr;
+
+		return true;
+	});
+
+	return Result;
 }
 
 

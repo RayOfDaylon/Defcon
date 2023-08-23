@@ -51,15 +51,6 @@ Defcon::CStargate::CStargate()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CStargate::GetClassname() const
-{
-	static char* psz = "Stargate";
-	return psz;
-}
-#endif
-
-
 void Defcon::CStargate::DrawSmallPart(FPainter& Painter, const I2DCoordMapper& mapper, FSlateBrush& Brush, const CFPoint& TopLeft, const CFPoint& BottomRight, const CFPoint& BoxRad)
 {
 	if(ABS(TopLeft.x - BottomRight.x) > BoxRad.x * 3)

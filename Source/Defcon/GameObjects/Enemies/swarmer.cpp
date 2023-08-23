@@ -54,15 +54,6 @@ Defcon::CSwarmer::~CSwarmer()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CSwarmer::GetClassname() const
-{
-	static char* psz = "Swarmer";
-	return psz;
-};
-#endif
-
-
 void Defcon::CSwarmer::Tick(float DeltaTime)
 {
 	// Move in slightly perturbed sine wave pattern.

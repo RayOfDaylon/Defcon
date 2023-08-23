@@ -96,15 +96,6 @@ void Defcon::CLander::OnAboutToDie()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CLander::GetClassname() const
-{
-	static char* psz = "Lander";
-	return psz;
-};
-#endif
-
-
 void Defcon::CLander::Notify(Defcon::EMessage msg, void* pObj)
 {
 	switch(msg)
@@ -194,7 +185,7 @@ void Defcon::CLander::Tick(float DeltaTime)
 				
 			if(bChaseNearestHuman)
 			{
-				auto Human = (CHuman*)GArena->FindHuman(Position.x);
+				auto Human = GArena->FindNearestHuman(Position.x);
 
 				if(Human != nullptr)
 				{
@@ -246,7 +237,7 @@ void Defcon::CLander::Tick(float DeltaTime)
 			{
 				if(GDefconGameInstance->GetMission()->HumansInvolved())
 				{
-					TrackedHumanPtr = (CHuman*)GArena->FindHuman(Position.x);
+					TrackedHumanPtr = GArena->FindNearestHuman(Position.x);
 
 					if(TrackedHumanPtr != nullptr)
 					{
@@ -355,8 +346,7 @@ void Defcon::CLander::Tick(float DeltaTime)
 
 			if(bChaseNearestHuman)
 			{
-				Defcon::CHuman* Human = (CHuman*) GArena->FindHuman(Position.x);
-				if(Human != nullptr)
+				if(GArena->FindNearestHuman(Position.x) != nullptr)
 				{
 					State = EState::Hovering;
 					break;

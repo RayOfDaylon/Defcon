@@ -67,14 +67,6 @@ void Defcon::CPlayer::InitPlayer(float fw)
 
 Defcon::CPlayer::~CPlayer() {}
 
-#ifdef _DEBUG
-const char* Defcon::CPlayer::GetClassname() const
-{
-	static char* psz = "Player";
-	return psz;
-}
-#endif
-
 
 void Defcon::CPlayer::SetIsAlive(bool b)
 {

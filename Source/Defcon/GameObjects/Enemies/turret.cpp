@@ -53,15 +53,6 @@ Defcon::CTurret::~CTurret()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CTurret::GetClassname() const
-{
-	static char* psz = "Turret";
-	return psz;
-};
-#endif
-
-
 Defcon::EColor Defcon::CTurret::GetExplosionColorBase() const
 {
 	return EColor::LightYellow;

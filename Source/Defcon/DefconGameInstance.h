@@ -282,8 +282,8 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	void                                 SetScore               (int32 Amount) { Score = Amount; }
 	int32                                AdvanceScore           (int32 Amount);
 	Defcon::CPlayer&                     GetPlayerShip          () { check(PlayerShipPtr != nullptr); return *PlayerShipPtr; }
-	const Defcon::CGameObjectCollection& GetConstHumans         () const { return Humans; }
 	Defcon::CGameObjectCollection&       GetHumans              () { return Humans; }
+	const Defcon::CGameObjectCollection& GetHumans              () const { return Humans; }
 	bool                                 AcquireSmartBomb       ();
 	int32                                GetSmartbombCount      () const { return SmartbombsLeft; }
 	void                                 BindToSmartbombCount   (TFunction<void(const int32& Val)> Delegate) { SmartbombsLeft.Bind(Delegate); }

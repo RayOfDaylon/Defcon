@@ -32,16 +32,6 @@ Defcon::CMine::CMine()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CMine::GetClassname() const
-{
-	static char* psz = "Mine";
-	return psz;
-}
-#endif
-
-
-
 void Defcon::CMine::Tick(float DeltaTime)
 {
 	Age += DeltaTime;

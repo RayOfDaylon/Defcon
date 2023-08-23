@@ -100,6 +100,8 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 	ADD_ATLAS(GHOSTPART,        GhostPartAtlas          );
 	ADD_ATLAS(REFORMERPART,     ReformerPartAtlas       );
 
+	ADD_ATLAS(POWERUP_INVINCIBILITY, PowerupInvincibilityAtlas );
+
 	check(PlayerShipExhaustAtlas);	
 	PlayerShipExhaustAtlas->Atlas.InitCache();
 
@@ -522,7 +524,7 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 	}
 
 
-	Str = FString::Printf(TEXT("%d"), GDefconGameInstance->GetConstHumans().Count());
+	Str = FString::Printf(TEXT("%d"), GDefconGameInstance->GetHumans().Count());
 	HumansLeft->SetText(FText::FromString(Str));
 
 

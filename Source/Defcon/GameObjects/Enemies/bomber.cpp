@@ -53,17 +53,6 @@ Defcon::CBomber::CBomber()
 }
 
 
-#ifdef _DEBUG
-const char* Defcon::CBomber::GetClassname() const
-{
-	static char* psz = "Bomber";
-	return psz;
-};
-#endif
-
-
-
-
 void Defcon::CBomber::OnFinishedCreating()
 {
 	Super::OnFinishedCreating();
