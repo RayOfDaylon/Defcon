@@ -22,7 +22,7 @@ namespace Defcon
 			CHuman();
 			virtual ~CHuman();
 
-			virtual void   Move                   (float DeltaTime) override;
+			virtual void   Tick                   (float DeltaTime) override;
 			virtual void   Notify                 (EMessage, void*) override;
 			virtual bool   ExplosionHasFireball   () const override { return false; }
 

@@ -21,7 +21,7 @@ namespace Defcon
 		public:
 			CSmartbomb();
 
-			virtual void Move (float DeltaTime) override;
+			virtual void Tick (float DeltaTime) override;
 			virtual void Draw (FPainter&, const I2DCoordMapper&) override;
 
 			CFPoint                   Range;

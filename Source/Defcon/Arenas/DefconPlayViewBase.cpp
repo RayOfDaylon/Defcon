@@ -632,7 +632,7 @@ class CDestroyedPlayerShip : public Defcon::ILiveGameObject
 		}
 
 
-		virtual void Move(float DeltaTime) override
+		virtual void Tick(float DeltaTime) override
 		{
 			Age += DeltaTime;
 
@@ -1051,7 +1051,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 	if(PlayerShip.IsAlive())
 	{
-		PlayerShip.Move(DeltaTime);
+		PlayerShip.Tick(DeltaTime);
 
 		PlayerShip.Position.x = WrapX(PlayerShip.Position.x);
 

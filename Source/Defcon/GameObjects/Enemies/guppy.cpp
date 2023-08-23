@@ -50,11 +50,11 @@ Defcon::CGuppy::CGuppy()
 }
 
 
-void Defcon::CGuppy::Move(float DeltaTime)
+void Defcon::CGuppy::Tick(float DeltaTime)
 {
 	// Move towards target.
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	Inertia = Position;
 	

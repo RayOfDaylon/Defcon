@@ -13,7 +13,7 @@ namespace Defcon
 		public:
 			CFireball();
 
-			virtual void    Move                   (float DeltaTime) override;
+			virtual void    Tick                   (float DeltaTime) override;
 			virtual EColor  GetExplosionColorBase  () const override;
 			virtual float   GetExplosionMass       () const override;
 			virtual bool    ExplosionHasFireball   () const  override { return false; }

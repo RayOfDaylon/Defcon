@@ -63,11 +63,11 @@ const char* Defcon::IFirebomber::GetClassname() const
 #endif
 
 
-void Defcon::IFirebomber::Move(float DeltaTime)
+void Defcon::IFirebomber::Tick(float DeltaTime)
 {
 	// Just float around drifting horizontally.
 
-	Super::Move(DeltaTime);
+	Super::Tick(DeltaTime);
 	Inertia = Position;
 
 	TravelCountdown -= DeltaTime;
@@ -178,9 +178,9 @@ Defcon::CFirebomber::~CFirebomber()
 }
 
 
-void Defcon::CFirebomber::Move(float DeltaTime)
+void Defcon::CFirebomber::Tick(float DeltaTime)
 {
-	Super::Move(DeltaTime);
+	Super::Tick(DeltaTime);
 
 	if(!(CanBeInjured() && GArena->GetPlayerShip().IsAlive() && IsOurPositionVisible()))
 	{
@@ -219,9 +219,9 @@ Defcon::CWeakFirebomber::CWeakFirebomber()
 }
 
 
-void Defcon::CWeakFirebomber::Move(float DeltaTime)
+void Defcon::CWeakFirebomber::Tick(float DeltaTime)
 {
-	Super::Move(DeltaTime);
+	Super::Tick(DeltaTime);
 
 	if(FiringCountdown <= 0.0f)
 	{

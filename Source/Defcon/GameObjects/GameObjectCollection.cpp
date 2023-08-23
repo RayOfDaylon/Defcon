@@ -234,7 +234,7 @@ bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
 			continue;
 		}
 		
-		pObj->Move(params.DeltaTime);
+		pObj->Tick(params.DeltaTime);
 
 		// Handle wraparound onto planet.
 		pObj->Position.x = GArena->WrapX(pObj->Position.x);

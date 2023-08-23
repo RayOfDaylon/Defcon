@@ -20,7 +20,7 @@ namespace Defcon
 			CBitmapDisplayer();
 			virtual ~CBitmapDisplayer();
 
-			virtual void Move(float DeltaTime) override;
+			virtual void Tick(float DeltaTime) override;
 
 	}; // CBitmapDisplayer
 }

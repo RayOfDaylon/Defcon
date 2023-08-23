@@ -95,7 +95,7 @@ void Defcon::CBomber::OnFinishedCreating()
 }
 
 
-void Defcon::CBomber::Move(float DeltaTime)
+void Defcon::CBomber::Tick(float DeltaTime)
 {
 	// Move in slightly perturbed sine wave pattern.
 
@@ -107,7 +107,7 @@ void Defcon::CBomber::Move(float DeltaTime)
 	// This was fixed by tracking Position into PreviousPosition and basing inertia on their difference,
 	// thus keeping the computation always in unwrapped space.
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	if(GArena->GetPlayerShip().IsAlive())
 	{

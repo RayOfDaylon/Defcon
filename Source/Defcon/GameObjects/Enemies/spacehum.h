@@ -16,7 +16,7 @@ namespace Defcon
 		public:
 			CSpacehum();
 			
-			virtual void  Move                  (float DeltaTime) override;
+			virtual void  Tick                  (float DeltaTime) override;
 			virtual float GetExplosionMass      () const override { return 0.1f; }
 			bool          ExplosionHasFireball  () const override { return false; }
 			void          Explode               (CGameObjectCollection&) override;

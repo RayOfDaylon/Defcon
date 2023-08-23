@@ -149,11 +149,11 @@ void Defcon::CLander::Notify(Defcon::EMessage msg, void* pObj)
 }
 
 
-void Defcon::CLander::Move(float DeltaTime)
+void Defcon::CLander::Tick(float DeltaTime)
 {
 	// Move towards target.
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	const float kHoverStartAlt = 100;
 

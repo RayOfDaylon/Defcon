@@ -38,7 +38,7 @@ const char* Defcon::CBitmapDisplayer::GetClassname() const
 #endif
 
 
-void Defcon::CBitmapDisplayer::Move(float DeltaTime)
+void Defcon::CBitmapDisplayer::Tick(float DeltaTime)
 {
 	Age += DeltaTime;
 	Position.MulAdd(Orientation.Fwd, DeltaTime);

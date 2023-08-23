@@ -31,7 +31,7 @@ Defcon::IBullet::IBullet()
 }
 
 
-void Defcon::IBullet::Move(float DeltaTime)
+void Defcon::IBullet::Tick(float DeltaTime)
 {
 	// Make the bullet flicker.
 	if(Sprite)

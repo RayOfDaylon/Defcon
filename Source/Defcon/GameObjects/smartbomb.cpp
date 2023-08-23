@@ -64,7 +64,7 @@ Defcon::CSmartbomb::CSmartbomb()
 }
 
 
-void Defcon::CSmartbomb::Move(float DeltaTime)
+void Defcon::CSmartbomb::Tick(float DeltaTime)
 {
 	// The smartbomb produces a shockwave that 
 	// moves quickly and destroys anything on the screen.

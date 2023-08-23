@@ -66,7 +66,7 @@ namespace Defcon
 
 			void InitMaterialization(const FMaterializationParams& InParams);
 
-			virtual void Move		(float DeltaTime) override;
+			virtual void Tick		(float DeltaTime) override;
 			virtual void Draw		(FPainter&, const Defcon::I2DCoordMapper&) override;
 			virtual void DrawSmall	(FPainter&, const Defcon::I2DCoordMapper&, FSlateBrush&) override {}
 

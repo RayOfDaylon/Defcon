@@ -42,7 +42,7 @@ const char* Defcon::CMine::GetClassname() const
 
 
 
-void Defcon::CMine::Move(float DeltaTime)
+void Defcon::CMine::Tick(float DeltaTime)
 {
 	Age += DeltaTime;
 

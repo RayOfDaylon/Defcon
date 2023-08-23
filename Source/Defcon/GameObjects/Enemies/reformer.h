@@ -23,7 +23,7 @@ namespace Defcon
 			CReformer();
 			virtual ~CReformer();
 
-			virtual void Move                  (float DeltaTime) override;
+			virtual void Tick                  (float DeltaTime) override;
 			virtual void Draw                  (FPainter&, const I2DCoordMapper&) override;
 			virtual void OnAboutToDie          () override;
 			virtual void Explode               (CGameObjectCollection&) override;
@@ -55,7 +55,7 @@ namespace Defcon
 			CReformerPart();
 			virtual ~CReformerPart();
 
-			virtual void  Move              (float DeltaTime) override;
+			virtual void  Tick              (float DeltaTime) override;
 			virtual float GetExplosionMass  () const override { return 0.25f; }
 			virtual void  Explode           (CGameObjectCollection&) override;
 			

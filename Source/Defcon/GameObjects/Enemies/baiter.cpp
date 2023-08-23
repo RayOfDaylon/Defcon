@@ -59,7 +59,7 @@ const char* Defcon::CBaiter::GetClassname() const
 #endif
 
 
-void Defcon::CBaiter::Move(float DeltaTime)
+void Defcon::CBaiter::Tick(float DeltaTime)
 {
 	// Baiters chase the player at high speed and fire at them.
 
@@ -77,7 +77,7 @@ void Defcon::CBaiter::Move(float DeltaTime)
 	//Drag = LERP(Drag * 30.0f, Drag, t);
 	Mass = LERP(Mass * 3.0f, Mass, t);
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	Drag = d;
 	Mass = m;

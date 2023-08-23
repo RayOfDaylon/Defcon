@@ -18,7 +18,7 @@ namespace Defcon
 	{
 		public:
 			IBullet();
-			virtual void Move         (float DeltaTime) override;
+			virtual void Tick         (float DeltaTime) override;
 			virtual void DrawSmall    (FPainter& PaintArgs, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush) override {}
 			virtual void GetInjurePt  (CFPoint&) const override;
 			virtual bool TestInjury   (const CFRect&) const override;

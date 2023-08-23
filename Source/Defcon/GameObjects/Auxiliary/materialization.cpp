@@ -40,7 +40,7 @@ void Defcon::CMaterialization::InitMaterialization(const FMaterializationParams&
 }
 
 
-void Defcon::CMaterialization::Move(float DeltaTime)
+void Defcon::CMaterialization::Tick(float DeltaTime)
 {
 	Age += DeltaTime;
 

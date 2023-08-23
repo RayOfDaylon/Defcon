@@ -64,7 +64,7 @@ const char* Defcon::CFireball::GetClassname() const
 
 
 
-void Defcon::CFireball::Move(float DeltaTime)
+void Defcon::CFireball::Tick(float DeltaTime)
 {
 	if(Age == 0.0f)
 	{
@@ -84,7 +84,7 @@ void Defcon::CFireball::Move(float DeltaTime)
 		}
 	}
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	Inertia = Position;
 

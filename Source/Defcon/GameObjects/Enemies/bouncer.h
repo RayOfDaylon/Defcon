@@ -16,7 +16,7 @@ namespace Defcon
 			IBouncer();
 			virtual ~IBouncer();
 
-			virtual void Move    (float DeltaTime) override;
+			virtual void Tick    (float DeltaTime) override;
 			virtual void Explode (CGameObjectCollection&) override;
 			
 		protected:

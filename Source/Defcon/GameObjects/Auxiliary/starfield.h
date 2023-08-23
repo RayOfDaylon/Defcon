@@ -33,7 +33,7 @@ namespace Defcon
 
 			void InitStarfield(int32, int32, float fRange = 7.0f, bool bMorphColor = false, FLinearColor nearColor = C_BLACK);
 
-			virtual void Move		(float DeltaTime) override;
+			virtual void Tick		(float DeltaTime) override;
 			virtual void Draw		(FPaintArguments&, const I2DCoordMapper&) override;
 			virtual void DrawSmall	(FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override {}
 

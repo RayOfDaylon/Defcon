@@ -68,11 +68,11 @@ Defcon::EColor Defcon::CTurret::GetExplosionColorBase() const
 }
 
 
-void Defcon::CTurret::Move(float DeltaTime)
+void Defcon::CTurret::Tick(float DeltaTime)
 {
 	// Move in slightly perturbed sine wave pattern.
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	//Inertia = Position;
 

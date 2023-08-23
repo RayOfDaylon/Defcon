@@ -57,9 +57,9 @@ const char* Defcon::CHunter::GetClassname() const
 #endif
 
 
-void Defcon::CHunter::Move(float DeltaTime)
+void Defcon::CHunter::Tick(float DeltaTime)
 {
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 
 	Inertia = Position;

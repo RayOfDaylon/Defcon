@@ -16,6 +16,6 @@ namespace Defcon
 			CBeacon();
 			~CBeacon();
 
-			virtual void    Move   (float DeltaTime) override;
+			virtual void    Tick   (float DeltaTime) override;
 	};
 }

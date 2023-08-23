@@ -17,7 +17,7 @@ namespace Defcon
 			CDynamo();
 			virtual ~CDynamo();
 
-			virtual void Move (float DeltaTime) override;
+			virtual void Tick (float DeltaTime) override;
 
 		private:
 			float	 OriginalY;

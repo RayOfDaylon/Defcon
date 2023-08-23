@@ -14,7 +14,7 @@ namespace Defcon
 		public:
 			CGuppy();
 
-			virtual void   Move                   (float DeltaTime) override;
+			virtual void   Tick                   (float DeltaTime) override;
 			virtual bool   ExplosionHasFireball   () const override { return false; }
 			virtual void   Explode                (CGameObjectCollection&) override;
 			virtual float  GetExplosionMass       () const override;

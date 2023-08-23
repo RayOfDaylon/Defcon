@@ -28,7 +28,7 @@ namespace Defcon
 			CEnemy();
 			virtual ~CEnemy();
 
-			virtual void   Move                  (float DeltaTime) override;
+			virtual void   Tick                  (float DeltaTime) override;
 
 			virtual void   SetTarget             (IGameObject* p)    { TargetPtr = p; }
 			virtual bool   ExplosionHasFireball  () const override   { return true; }

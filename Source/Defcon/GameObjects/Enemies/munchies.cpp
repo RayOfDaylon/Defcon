@@ -37,7 +37,7 @@ Defcon::IMunchie::IMunchie()
 }
 
 
-void Defcon::IMunchie::Move(float DeltaTime)
+void Defcon::IMunchie::Tick(float DeltaTime)
 {
 	CFPoint orgpos = Position;
 
@@ -53,7 +53,7 @@ void Defcon::IMunchie::Move(float DeltaTime)
 		//Drag = LERP(Drag*30.0f, Drag, t);
 		Mass = LERP(Mass*3.0f, Mass, t);
 
-		CEnemy::Move(DeltaTime);
+		CEnemy::Tick(DeltaTime);
 
 		Drag = d;
 		Mass = m;

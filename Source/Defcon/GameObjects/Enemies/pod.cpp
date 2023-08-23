@@ -55,11 +55,11 @@ const char* Defcon::CPod::GetClassname() const
 #endif
 
 
-void Defcon::CPod::Move(float DeltaTime)
+void Defcon::CPod::Tick(float DeltaTime)
 {
 	// Just float around drifting horizontally.
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	Inertia = Position;
 

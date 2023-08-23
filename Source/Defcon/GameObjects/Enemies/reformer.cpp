@@ -56,11 +56,11 @@ const char* Defcon::CReformer::GetClassname() const
 #endif
 
 
-void Defcon::CReformer::Move(float DeltaTime)
+void Defcon::CReformer::Tick(float DeltaTime)
 {
 	// Just float around drifting horizontally.
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 	Inertia = Position;
 
 	Orientation.Fwd.y = 0.1f * sinf(Frequency * (VerticalOffset + Age)); 
@@ -234,11 +234,11 @@ const char* Defcon::CReformerPart::GetClassname() const
 #endif
 
 
-void Defcon::CReformerPart::Move(float DeltaTime)
+void Defcon::CReformerPart::Tick(float DeltaTime)
 {
 	// Move in slightly perturbed sine wave pattern.
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	Inertia = Position;
 

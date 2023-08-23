@@ -18,7 +18,7 @@ namespace Defcon
 			CTurret();
 			virtual ~CTurret();
 
-			virtual void   Move                  (float DeltaTime) override;
+			virtual void   Tick                  (float DeltaTime) override;
 			virtual float  GetExplosionMass      () const override { return 1.25f; }
 			virtual EColor GetExplosionColorBase () const override;
 			virtual bool   ExplosionHasFireball  () const override { return false; }

@@ -63,11 +63,11 @@ const char* Defcon::CSwarmer::GetClassname() const
 #endif
 
 
-void Defcon::CSwarmer::Move(float DeltaTime)
+void Defcon::CSwarmer::Tick(float DeltaTime)
 {
 	// Move in slightly perturbed sine wave pattern.
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 	Inertia = Position;
 
 

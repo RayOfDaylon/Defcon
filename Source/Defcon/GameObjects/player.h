@@ -34,7 +34,7 @@ namespace Defcon
 
 			void InitPlayer(float);
 
-			virtual void  Move          (float DeltaTime) override;
+			virtual void  Tick          (float DeltaTime) override;
 			virtual void  DrawSmall     (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush) override;
 			virtual void  OnAboutToDie  () override;
 			virtual void  SetIsAlive    (bool b) override;

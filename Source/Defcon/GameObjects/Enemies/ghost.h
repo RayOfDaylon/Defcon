@@ -20,7 +20,7 @@ namespace Defcon
 			CGhost();
 			virtual ~CGhost();
 
-			virtual void Move       (float DeltaTime) override;
+			virtual void Tick       (float DeltaTime) override;
 			virtual void Draw       (FPainter&, const I2DCoordMapper&) override;
 			virtual void Explode    (CGameObjectCollection&) override;
 
@@ -56,7 +56,7 @@ namespace Defcon
 			CGhostPart();
 			virtual ~CGhostPart();
 
-			virtual void Move     (float DeltaTime) override;
+			virtual void Tick     (float DeltaTime) override;
 			virtual void Draw     (FPainter&, const I2DCoordMapper&) override;
 			virtual void Explode  (CGameObjectCollection&) override;
 			

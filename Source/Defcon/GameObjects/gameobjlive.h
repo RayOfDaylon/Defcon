@@ -36,7 +36,7 @@ namespace Defcon
 		public:
 			ILiveGameObject();
 
-			virtual void       Move                  (float DeltaTime) override;
+			virtual void       Tick                  (float DeltaTime) override;
 
 			virtual bool       ExplosionHasFireball  () const override { return true; }
 

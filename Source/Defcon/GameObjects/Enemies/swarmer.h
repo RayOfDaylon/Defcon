@@ -16,7 +16,7 @@ namespace Defcon
 			CSwarmer();
 			virtual ~CSwarmer();
 
-			virtual void  Move                  (float DeltaTime) override;
+			virtual void  Tick                  (float DeltaTime) override;
 			virtual float GetExplosionMass      () const override { return 0.1f; }
 			virtual bool  ExplosionHasFireball  () const override { return false; }
 			virtual void  Explode               (CGameObjectCollection&) override;

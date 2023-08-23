@@ -107,7 +107,7 @@ void Defcon::CHuman::Notify(Defcon::EMessage msg, void* pObj)
 }
 
 
-void Defcon::CHuman::Move(float DeltaTime)
+void Defcon::CHuman::Tick(float DeltaTime)
 {
 	// Humans walk around mostly horizontally.
 	Age += DeltaTime;

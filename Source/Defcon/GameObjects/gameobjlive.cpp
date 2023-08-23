@@ -58,7 +58,7 @@ void Defcon::ILiveGameObject::SetShieldStrength(float Strength)
 }
 
 
-void Defcon::ILiveGameObject::Move(float DeltaTime)
+void Defcon::ILiveGameObject::Tick(float DeltaTime)
 {
 	Age += DeltaTime;
 

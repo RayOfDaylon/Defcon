@@ -21,7 +21,7 @@ namespace Defcon
 
 			virtual void    OnFinishedCreating    () override;
 
-			virtual void    Move                  (float DeltaTime) override;
+			virtual void    Tick                  (float DeltaTime) override;
 			virtual EColor  GetExplosionColorBase () const override;
 			virtual float   GetExplosionMass      () const override;
 

@@ -24,7 +24,7 @@ Defcon::CBeacon::~CBeacon()
 }
 
 
-void Defcon::CBeacon::Move(float DeltaTime)
+void Defcon::CBeacon::Tick(float DeltaTime)
 {
 	// Beacons don't move, but they do flash, and we want to show that in the radar color.
 

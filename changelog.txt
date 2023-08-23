@@ -4,6 +4,8 @@ Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
 August 22, 2023
 
+Renamed IGameObject::Move to Tick.
+
 Play arena places the humans, and with a new "humans placed" flag 
 in game instance, randomizes their x-positions on the first mission 
 of a new game session.

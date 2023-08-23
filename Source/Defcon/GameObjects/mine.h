@@ -22,7 +22,7 @@ namespace Defcon
 		public:
 			CMine();
 
-			virtual void  Move               (float DeltaTime) override;
+			virtual void  Tick               (float DeltaTime) override;
 			virtual void  DrawSmall          (FPainter&, const I2DCoordMapper&, FSlateBrush&) override {}
 
 			virtual void  GetInjurePt        (CFPoint&) const override;

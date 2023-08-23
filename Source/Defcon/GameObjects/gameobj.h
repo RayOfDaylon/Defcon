@@ -12,8 +12,6 @@
 #include "Globals/GameColors.h"
 #include "Globals/GameObjectResources.h"
 
-//#define LIFESPAN_DEAD 0.0001f
-
 
 struct FPainter;
 
@@ -105,7 +103,7 @@ namespace Defcon
 			EObjType              GetType               () const;
 			void                  SetType               (EObjType n);
 								  
-			virtual void          Move                  (float DeltaTime);
+			virtual void          Tick                  (float DeltaTime);
 			virtual void          Draw                  (FPainter&, const I2DCoordMapper&);
 			virtual void          DrawSmall             (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush);
 
@@ -127,7 +125,7 @@ namespace Defcon
 			bool                  ReduceLifespanBy      (float DeltaTime);
 			void                  MarkAsDead            ();
 			bool                  MarkedForDeath        () const;
-			virtual void          OnAboutToDie();
+			virtual void          OnAboutToDie          ();
 
 			virtual float         GetCollisionForce     () const;
 			bool                  IsCollisionInjurious  () const;   
@@ -159,7 +157,7 @@ namespace Defcon
 			Orient2D        Orientation;    // Way the object is pointing/facing.
 			CFPoint         Position;       // Arena coords.
 			CFPoint         Inertia;        // Momentum vector (indicates direction and magnitude of travel during current frame).
-											// Computed manually in every object's Move function by comparing old vs. new Position.
+											// Computed manually in every object's Tick function by comparing old vs. new Position.
 											// todo: s/b able to drop this and use a temp var in upstream code.
 			CFPoint         BboxRadius;
 			I2DCoordMapper* MapperPtr          = nullptr;
@@ -181,8 +179,6 @@ namespace Defcon
 			EObjType        ParentType              = EObjType::UNKNOWN;
 			EObjType        Type                    = EObjType::UNKNOWN;
 			EObjType        CreatorType             = EObjType::UNKNOWN;
-
-			//bool            bExternallyOwned        = false;
 
 			CFPoint         ScreenSize; // todo: env data s/b obtained thru APIs? But cache coherency...
 			CFPoint         ArenaSize;

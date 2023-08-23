@@ -250,8 +250,6 @@ Future Work
 -------------------------------------------------------------------------------------
 Some declarations are outside the Defcon namespace when they shouldn't be.
 
-Rename IGameObject::Move to Tick (or Update).
-
 Implement bullet time. All we should need to do is in each relevant Tick 
 handler, if bullet time is active, scale the DeltaTime by 0.25 or whatever.
 The '2' key should toggle bullet time.

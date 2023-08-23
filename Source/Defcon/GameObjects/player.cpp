@@ -157,9 +157,9 @@ bool Defcon::CPlayer::DebarkOnePassenger(CGameObjectCollection& Humans)
 }
 
 
-void Defcon::CPlayer::Move(float DeltaTime)
+void Defcon::CPlayer::Tick(float DeltaTime)
 {
-	ILiveGameObject::Move(DeltaTime);
+	ILiveGameObject::Tick(DeltaTime);
 
 	Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
 

@@ -115,7 +115,7 @@ void Defcon::CFlak::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 }
 
 
-void Defcon::CFlak::Move(float DeltaTime)
+void Defcon::CFlak::Tick(float DeltaTime)
 {
 	Position.MulAdd(Orientation.Fwd, DeltaTime);
 }

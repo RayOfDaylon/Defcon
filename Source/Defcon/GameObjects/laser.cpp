@@ -80,7 +80,7 @@ void Defcon::CLaserbeam::Create(const CFPoint& Where, const Orient2D& Aim)
 }
 
 
-void Defcon::CLaserbeam::Move(float DeltaTime)
+void Defcon::CLaserbeam::Tick(float DeltaTime)
 {
 	// The length increases rapidly over time.
 	if(Lifespan > 0)

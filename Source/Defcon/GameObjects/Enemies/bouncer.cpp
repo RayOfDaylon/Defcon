@@ -55,9 +55,9 @@ const char* Defcon::IBouncer::GetClassname() const
 #endif
 
 
-void Defcon::IBouncer::Move(float DeltaTime)
+void Defcon::IBouncer::Tick(float DeltaTime)
 {
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	Inertia = Position;
 

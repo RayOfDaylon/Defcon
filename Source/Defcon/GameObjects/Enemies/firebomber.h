@@ -19,7 +19,7 @@ namespace Defcon
 			IFirebomber();
 			virtual ~IFirebomber();
 
-			virtual void Move(float DeltaTime) override;
+			virtual void Tick(float DeltaTime) override;
 
 			void Explode(CGameObjectCollection&) override;
 			
@@ -41,7 +41,7 @@ namespace Defcon
 			CFirebomber();
 			virtual ~CFirebomber();
 
-			virtual void Move(float DeltaTime) override;
+			virtual void Tick(float DeltaTime) override;
 	};
 
 
@@ -55,7 +55,7 @@ namespace Defcon
 			CWeakFirebomber();
 			virtual ~CWeakFirebomber();
 
-			virtual void Move(float DeltaTime) override;
+			virtual void Tick(float DeltaTime) override;
 	};
 }
 

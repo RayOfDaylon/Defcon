@@ -52,7 +52,7 @@ const char* Defcon::CDynamo::GetClassname() const
 #endif
 
 
-void Defcon::CDynamo::Move(float DeltaTime)
+void Defcon::CDynamo::Tick(float DeltaTime)
 {
 	// Just float around drifting horizontally.
 
@@ -61,7 +61,7 @@ void Defcon::CDynamo::Move(float DeltaTime)
 		OriginalY = Position.y;
 	}
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	Inertia = Position;
 

@@ -19,7 +19,7 @@ namespace Defcon
 			CPod();
 			virtual ~CPod();
 
-			virtual void Move          (float DeltaTime) override;
+			virtual void Tick          (float DeltaTime) override;
 			virtual void OnAboutToDie  () override;
 			virtual void Explode       (CGameObjectCollection&) override;
 

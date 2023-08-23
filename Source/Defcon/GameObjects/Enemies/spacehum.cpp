@@ -52,11 +52,11 @@ const char* Defcon::CSpacehum::GetClassname() const
 #endif
 
 
-void Defcon::CSpacehum::Move(float DeltaTime)
+void Defcon::CSpacehum::Tick(float DeltaTime)
 {
 	// Just chase the player.
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	Inertia = Position;
 

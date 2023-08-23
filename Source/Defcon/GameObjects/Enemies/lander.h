@@ -15,7 +15,7 @@ namespace Defcon
 			virtual ~CLander();
 
 
-			virtual void   Move                   (float DeltaTime) override;
+			virtual void   Tick                   (float DeltaTime) override;
 			virtual EColor GetExplosionColorBase  () const override;
 			virtual void   Notify                 (Defcon::EMessage, void*) override;
 			virtual void   OnAboutToDie           () override;

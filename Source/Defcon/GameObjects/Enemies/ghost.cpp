@@ -103,7 +103,7 @@ void Defcon::CGhost::ConsiderFiringBullet(float DeltaTime)
 }
 
 
-void Defcon::CGhost::Move(float DeltaTime)
+void Defcon::CGhost::Tick(float DeltaTime)
 {
 	// Just float around drifting horizontally.
 
@@ -115,7 +115,7 @@ void Defcon::CGhost::Move(float DeltaTime)
 
 	// We are in normal form (not dispersed).
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	Inertia = Position;
 
@@ -411,12 +411,12 @@ void Defcon::CGhostPart::SetFlightPath(const CFPoint& From, const CFPoint& To)
 }
 
 
-void Defcon::CGhostPart::Move(float DeltaTime)
+void Defcon::CGhostPart::Tick(float DeltaTime)
 {
 	// All we have to do is move along our predetermined spline 
 	// and at the end, rebuild a ghost.
 
-	CEnemy::Move(DeltaTime);
+	CEnemy::Tick(DeltaTime);
 
 	// We're moving along a spline, so determine our normalized distance along it.
 

@@ -25,7 +25,7 @@ namespace Defcon
 			CFlak();
 			virtual ~CFlak();
 
-			virtual void Move      (float DeltaTime) override;
+			virtual void Tick      (float DeltaTime) override;
 			virtual void Draw      (FPainter&, const I2DCoordMapper&) override;
 			virtual void DrawSmall (FPainter&, const I2DCoordMapper&, FSlateBrush&) override {}
 
