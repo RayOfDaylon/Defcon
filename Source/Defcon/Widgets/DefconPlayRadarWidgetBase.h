@@ -6,7 +6,7 @@
 #include "DefconPlayWidgetBase.h"
 #include "GameObjects/Auxiliary/stargate.h"
 #include "GameObjects/terrain.h"
-#include "GameObjects/player.h"
+#include "GameObjects/playership.h"
 #include "Main/mapper.h"
 #include "Runtime/SlateCore/Public/Brushes/SlateColorBrush.h"
 #include "DefconPlayRadarWidgetBase.generated.h"
@@ -44,7 +44,7 @@ class DEFCON_API UDefconPlayRadarWidgetBase : public UDefconPlayWidgetBase
 
 	Defcon::CArenaCoordMapper*       ArenaCoordMapperPtr = nullptr;
 	Defcon::CTerrain*                TerrainPtr          = nullptr;
-	Defcon::CPlayer*                 PlayerShipPtr       = nullptr;
+	Defcon::CPlayerShip*             PlayerShipPtr       = nullptr;
 	Defcon::CGameObjectCollection*   Objects             = nullptr;
 	Defcon::CGameObjectCollection*   Enemies             = nullptr;
 
@@ -54,8 +54,8 @@ class DEFCON_API UDefconPlayRadarWidgetBase : public UDefconPlayWidgetBase
 	void OnFinishActivating ();
 	void OnDeactivate       ();
 
-	void Init           (Defcon::CPlayer* Ptr, const FVector2D& MainSize, int32 ArenaWidth, Defcon::CArenaCoordMapper* ArenaCoordMapperPtr, 
-							Defcon::CGameObjectCollection* ObjectsPtr, Defcon::CGameObjectCollection* EnemiesPtr);
+	void Init           (Defcon::CPlayerShip* PlayerShip, const FVector2D& MainSize, int32 ArenaWidth, Defcon::CArenaCoordMapper* ArenaCoordMapper, 
+							Defcon::CGameObjectCollection* Objects, Defcon::CGameObjectCollection* Enemies);
 
 	void SetTerrain     (Defcon::CTerrain* Ptr);
 

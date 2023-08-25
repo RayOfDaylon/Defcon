@@ -28,5 +28,6 @@ namespace Defcon
 
 			float OffsetY;   // todo: this doesn't do anything?
 			float Frequency;
+			float Speed;
 	};
 }

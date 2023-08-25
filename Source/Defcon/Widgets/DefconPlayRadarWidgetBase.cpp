@@ -42,7 +42,7 @@ void UDefconPlayRadarWidgetBase::OnDeactivate()
 
 void UDefconPlayRadarWidgetBase::Init
 (
-	Defcon::CPlayer*               Ptr, 
+	Defcon::CPlayerShip*               Ptr, 
 	const FVector2D&               MainSize, 
 	int32                          ArenaWidth, 
 	Defcon::CArenaCoordMapper*     InArenaCoordMapperPtr, 

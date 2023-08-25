@@ -87,6 +87,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF( laser_age_max,                0.5f,    "seconds",      Float,        0.1f,        1.0f,   "Longest length of time a laser beam can exist"                                             );
 	INITPREF( laser_extra_count,            1,       "",             Integer,      1,           4,      "Number of extra rounds per laser shot"                                                     );
 	INITPREF( laser_multi_prob,             0.25f,   "%",            Float,        0.0f,        1.0f,   "Probablity that extra laser rounds occur per shot"                                         );
+	INITPREFR( LaserSpeed, 2000, 5000, "px/sec",   "Speed of trailing and leading ends of laser beams"                                                                );
 	INITPREF( menutext_uppercase,           0,       "",             Boolean,      0,           0,      "Make menu text appear uppercase"                                                           );
 	INITPREF( mine_damage,                 30,       "%",            Integer,      0,         100,      "Shield loss when object hits a mine"                                                       );
 	INITPREF( mine_lifespan,               10.0f,    "seconds",      Float,        1.0f,       30.0f,   "How long a mine exists after being deployed"                                               );
@@ -103,6 +104,9 @@ void Defcon::CPrefs::Construct()
 	INITPREF( player_maxthrust,             4.5f,    "",             Float,        0.1f,        5.0f,   "Maximum thrust force applicable to player ship"                                            );
 	INITPREF( player_posmargin,           450.0f,    "px",           Integer,     50,         700,      "Minimum distance between player's ship and edge of screen"                                 );
 	INITPREF( player_rebirth_delay,         2.0f,    "seconds",      Float,        0.1f,        5.0f,   "Delay between player destruction and materialization"                                      );
+
+	INITPREFR( PodSpeed,   50, 400, "px/sec", "Pod travel speed");
+
 	INITPREF( pod_value,                 1000,       "",             Integer,      0,        1000,      "Number of points earned for destroying a pod"                                              );
 	INITPREF( reformer_value,             250,       "",             Integer,      0,        1000,      "Number of points earned for destroying a reformer"                                         );
 	INITPREF( reformerpart_value,          50,       "",             Integer,      0,        1000,      "Number of points earned for destroying a reformer part"                                    );

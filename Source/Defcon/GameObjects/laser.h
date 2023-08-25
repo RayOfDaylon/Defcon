@@ -41,6 +41,8 @@ namespace Defcon
 		public:
 			CLaserbeam();
 
+			void          InitLaserBeam     (const CFPoint&, const Orient2D&, I2DCoordMapper*);
+
 			virtual void  Tick              (float DeltaTime) override;
 			virtual void  Draw              (FPainter&, const I2DCoordMapper&) override;
 			virtual void  DrawSmall         (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;
@@ -50,16 +52,11 @@ namespace Defcon
 
 			virtual bool  OccursFrequently  () const override { return true; }
 			virtual float GetCollisionForce () const override { return 1.1f; }
-			
-			void          Create            (const CFPoint&, const Orient2D&);
-			void          SetMaxLength      (float);
 
 
 		protected:
-			CFPoint       StartPosition;
-			float         Length;
-			float         Scale;
-			float         MaxAge;
-			float         MaxLength = BEAM_MAXLEN; // px
+
+			float  StartX;
+			float  EndX;
 	};
 }

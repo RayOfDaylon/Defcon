@@ -90,6 +90,7 @@ namespace Defcon
 				laser_age_max,
 				laser_extra_count,
 				laser_multi_prob,
+				LaserSpeed,
 
 				menutext_uppercase,
 
@@ -113,6 +114,7 @@ namespace Defcon
 				player_maxthrust,
 				player_posmargin,
 				player_rebirth_delay,
+				PodSpeed,
 				pod_value,
 				reformer_value,
 				reformerpart_value,
@@ -234,6 +236,7 @@ extern Defcon::CPrefs	GPrefs;
 #define LASER_AGE_MAX                FPREFVAL(laser_age_max)
 #define LASER_EXTRA_COUNT            IPREFVAL(laser_extra_count)
 #define LASER_MULTI_PROB             FPREFVAL(laser_multi_prob)
+#define LASER_SPEED                  RPREFVAL(LaserSpeed)
 #define MENUTEXT_UPPERCASE           BPREFVAL(menutext_uppercase)
 #define MINE_DAMAGE                  IPREFVAL(mine_damage)
 #define MINE_LIFESPAN                FPREFVAL(mine_lifespan)
@@ -241,6 +244,7 @@ extern Defcon::CPrefs	GPrefs;
 #define MUNCHIE_VALUE                IPREFVAL(munchie_value)
 #define OBJECT_DRAWBBOX              BPREFVAL(object_drawbbox)
 #define PHRED_VALUE                  IPREFVAL(phred_value)
+#define POD_SPEED                    RPREFVAL(PodSpeed)
 #define POD_VALUE                    IPREFVAL(pod_value)
 #define REFORMER_VALUE               IPREFVAL(reformer_value) 
 #define REFORMERPART_VALUE           IPREFVAL(reformerpart_value) 

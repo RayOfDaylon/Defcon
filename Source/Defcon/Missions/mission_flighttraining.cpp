@@ -14,7 +14,7 @@
 #include "Common/util_geom.h"
 #include "Globals/_sound.h"
 #include "GameObjects/bmpdisp.h"
-#include "GameObjects/player.h"
+#include "GameObjects/playership.h"
 #include "GameObjects/beacon.h"
 #include "Arenas/DefconPlayViewBase.h"
 

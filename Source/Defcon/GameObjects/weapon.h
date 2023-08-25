@@ -22,7 +22,7 @@ namespace Defcon
 				:
 				m_maxWeaponBursts(1),
 				m_numShotsAlive(0),
-				m_pObject(nullptr)
+				Wielder(nullptr)
 			{
 			}
 
@@ -32,7 +32,7 @@ namespace Defcon
 
 			void MountOnto(IGameObject& obj, const CFPoint& pt)
 				{
-					m_pObject = &obj; 
+					Wielder = &obj; 
 					m_mountPt = pt; 
 				}
 
@@ -42,7 +42,7 @@ namespace Defcon
 				}
 
 
-			float	m_fArenawidth;
+			//float	m_fArenawidth;
 
 		protected:
 			// Where the weapon is mounted on the object, 
@@ -62,6 +62,6 @@ namespace Defcon
 			// The object that the weapon is mounted on.
 			// We need this reference so that we can
 			// query the object for its size and location.
-			IGameObject*	m_pObject;
+			IGameObject*	Wielder;
 	};  // CWeapon
 }

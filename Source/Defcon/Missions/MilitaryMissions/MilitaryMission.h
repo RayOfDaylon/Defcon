@@ -9,7 +9,7 @@
 #include "Common/util_color.h"
 #include "Common/util_geom.h"
 #include "Globals/prefs.h"
-#include "GameObjects/player.h"
+#include "GameObjects/playership.h"
 #include "GameObjects/obj_types.h"
 #include "Arenas/DefconPlayViewBase.h"
 

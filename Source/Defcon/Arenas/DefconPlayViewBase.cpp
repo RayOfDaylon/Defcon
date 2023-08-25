@@ -291,7 +291,7 @@ void UDefconPlayViewBase::InitPlayerShip()
 	auto& PlayerShip = GetPlayerShip();
 
 	PlayerShip.MapperPtr = &MainAreaMapper;
-	PlayerShip.InitPlayer(ArenaWidth);
+	PlayerShip.InitPlayerShip();
 
 	// Position the ship at x=0, and halfway up.
 	PlayerShip.Position.Set(0.0f, ArenaSize.Y / 2);
@@ -898,13 +898,13 @@ void UDefconPlayViewBase::CreateTerrain()
 }
 
 
-Defcon::CPlayer& UDefconPlayViewBase::GetPlayerShip() 
+Defcon::CPlayerShip& UDefconPlayViewBase::GetPlayerShip() 
 {
 	return GDefconGameInstance->GetPlayerShip();
 }
 
 
-const Defcon::CPlayer& UDefconPlayViewBase::GetPlayerShip() const
+const Defcon::CPlayerShip& UDefconPlayViewBase::GetPlayerShip() const
 {
 	return GDefconGameInstance->GetPlayerShip();
 }
@@ -1625,7 +1625,7 @@ void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& ob
 
 			if(Bbox.PtInside(InjurePt) || Obj->TestInjury(Bbox))
 			{
-				// Object has been hit! Ow!!!
+				// Wielder has been hit! Ow!!!
 
 				// todo: generalize code so that all objects have a RegisterImpact() method.
 				// Can't use dynamic_cast, force all objects to be static castable to ILiveGameObject.

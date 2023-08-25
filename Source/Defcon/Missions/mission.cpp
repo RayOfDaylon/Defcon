@@ -16,7 +16,7 @@
 #include "Common/util_color.h"
 #include "Common/util_geom.h"
 #include "GameObjects/bmpdisp.h"
-#include "GameObjects/player.h"
+#include "GameObjects/playership.h"
 #include "GameObjects/human.h"
 #include "GameObjects/Auxiliary/stargate.h"
 #include "GameObjects/Enemies/lander.h"

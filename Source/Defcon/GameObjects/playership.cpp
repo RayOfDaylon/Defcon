@@ -1,10 +1,10 @@
 // Defcon - a Defender Stargate clone developed with Unreal Engine.
 // Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
 
-// player.cpp
+// playership.cpp
 
 
-#include "player.h"
+#include "playership.h"
 
 #include "Runtime/SlateCore/Public/Rendering/DrawElements.h"
 
@@ -31,7 +31,7 @@
 
 
 
-Defcon::CPlayer::CPlayer()
+Defcon::CPlayerShip::CPlayerShip()
 {
 	ParentType = Type;
 	Type       = EObjType::PLAYER;
@@ -55,20 +55,18 @@ Defcon::CPlayer::CPlayer()
 }
 
 
-void Defcon::CPlayer::InitPlayer(float fw)
+void Defcon::CPlayerShip::InitPlayerShip()
 {
 	Drag      = PLAYER_DRAG;
 	MaxThrust = PLAYER_MAXTHRUST;
 	Mass      = PLAYER_MASS;
-
-	LaserWeapon.m_fArenawidth = fw;
 }
 
 
-Defcon::CPlayer::~CPlayer() {}
+Defcon::CPlayerShip::~CPlayerShip() {}
 
 
-void Defcon::CPlayer::SetIsAlive(bool b)
+void Defcon::CPlayerShip::SetIsAlive(bool b)
 {
 	ILiveGameObject::SetIsAlive(b);
 
@@ -92,7 +90,7 @@ void Defcon::CPlayer::SetIsAlive(bool b)
 }
 
 
-void Defcon::CPlayer::OnAboutToDie()
+void Defcon::CPlayerShip::OnAboutToDie()
 {
 	// UE_LOG(LogGame, Log, TEXT("%S"), __FUNCTION__);
 
@@ -109,7 +107,7 @@ void Defcon::CPlayer::OnAboutToDie()
 }
 
 
-bool Defcon::CPlayer::EmbarkPassenger(IGameObject* pObj, CGameObjectCollection& humans)
+bool Defcon::CPlayerShip::EmbarkPassenger(IGameObject* pObj, CGameObjectCollection& humans)
 {
 	if(MarkedForDeath())
 	{
@@ -127,7 +125,7 @@ bool Defcon::CPlayer::EmbarkPassenger(IGameObject* pObj, CGameObjectCollection& 
 
 
 
-bool Defcon::CPlayer::DebarkOnePassenger(CGameObjectCollection& Humans)
+bool Defcon::CPlayerShip::DebarkOnePassenger(CGameObjectCollection& Humans)
 {
 	bool Result = false;
 
@@ -149,7 +147,7 @@ bool Defcon::CPlayer::DebarkOnePassenger(CGameObjectCollection& Humans)
 }
 
 
-void Defcon::CPlayer::Tick(float DeltaTime)
+void Defcon::CPlayerShip::Tick(float DeltaTime)
 {
 	ILiveGameObject::Tick(DeltaTime);
 
@@ -166,7 +164,7 @@ void Defcon::CPlayer::Tick(float DeltaTime)
 }
 
 
-void Defcon::CPlayer::DrawSmall(FPainter& Painter, const I2DCoordMapper& Mapper, FSlateBrush&)
+void Defcon::CPlayerShip::DrawSmall(FPainter& Painter, const I2DCoordMapper& Mapper, FSlateBrush&)
 {
 	// Draw a white 5 x 5 px diamond.
 	CFPoint P;
@@ -189,7 +187,7 @@ void Defcon::CPlayer::DrawSmall(FPainter& Painter, const I2DCoordMapper& Mapper,
 }
 
 
-void Defcon::CPlayer::FireLaserWeapon(CGameObjectCollection& goc)
+void Defcon::CPlayerShip::FireLaserWeapon(CGameObjectCollection& goc)
 {
 	LaserWeapon.Fire(goc);
 
@@ -214,7 +212,7 @@ void Defcon::CPlayer::FireLaserWeapon(CGameObjectCollection& goc)
 }
 
 
-void Defcon::CPlayer::ImpartForces(float DeltaTime)
+void Defcon::CPlayerShip::ImpartForces(float DeltaTime)
 {
 	if(!bCanMove)
 	{

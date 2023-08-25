@@ -14,7 +14,7 @@
 #include "Globals/GameColors.h"
 
 #include "GameObjects/obj_types.h"
-#include "GameObjects/player.h"
+#include "GameObjects/playership.h"
 
 #include "Arenas/DefconPlayViewBase.h"
 

@@ -33,11 +33,13 @@ Defcon::CPod::CPod()
 	PointValue = POD_VALUE;
 	RadarColor = C_MAGENTA;
 
-	Orientation.Fwd.Set(1.0f, 0.0f);
+	Orientation.Fwd.Set(BRAND ? -1 : 1, 0.0f);
 
 	CreateSprite(Type);
 	const auto& SpriteInfo = GGameObjectResources.Get(Type);
 	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
+
+	Speed = Daylon::FRandRange(POD_SPEED);
 }
 
 
@@ -56,6 +58,7 @@ void Defcon::CPod::Tick(float DeltaTime)
 
 	//UE_LOG(LogGame, Log, TEXT("%S: Pod is at %d, %d"), __FUNCTION__, (int32)Position.x, (int32)Position.y);
 
+	// todo: pods actually move vertically in a linear fashion and wraparound vertically.
 	Orientation.Fwd.y = 0.1f * sinf(Frequency * (OffsetY + Age)); 
 
 	// Cause radar blip to blink
@@ -63,7 +66,7 @@ void Defcon::CPod::Tick(float DeltaTime)
 	LerpColor(C_RED, C_BLUE, T, RadarColor);
 
 
-	Position.MulAdd(Orientation.Fwd, DeltaTime * 50.0f); // todo: maybe make each pod's speed unique
+	Position.MulAdd(Orientation.Fwd, Speed * DeltaTime);
 
 	//UE_LOG(LogGame, Log, TEXT("%S: Pod now at %d, %d"), __FUNCTION__, (int32)Position.x, (int32)Position.y);
 

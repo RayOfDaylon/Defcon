@@ -3,7 +3,7 @@
 
 #pragma once
 
-// player.h
+// playership.h
 
 #include "CoreMinimal.h"
 
@@ -22,17 +22,17 @@ class UDefconPlayerShipDebugWidgetBase;
 
 namespace Defcon
 {
-	class CPlayer : public ILiveGameObject
+	class CPlayerShip : public ILiveGameObject
 	{
 		friend class ::UDefconPlayerShipDebugWidgetBase;
 
 		typedef ILiveGameObject Super;
 
 		public:
-			CPlayer();
-			virtual ~CPlayer();
+			CPlayerShip();
+			virtual ~CPlayerShip();
 
-			void InitPlayer(float);
+			void InitPlayerShip();
 
 			virtual void  Tick          (float DeltaTime) override;
 			virtual void  DrawSmall     (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush) override;
@@ -60,6 +60,5 @@ namespace Defcon
 
 			CLaserWeapon	LaserWeapon;
 			CFPoint         PickupBboxRadius;
-
-	}; // CPlayer
+	};
 }

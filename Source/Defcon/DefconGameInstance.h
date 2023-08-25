@@ -9,7 +9,7 @@
 #include "Arenas/DefconArena.h"
 #include "Missions/mission.h"
 #include "Missions/MilitaryMissions/MilitaryMission.h"
-#include "GameObjects/player.h"
+#include "GameObjects/playership.h"
 #include "GameObjects/gameobj.h"
 #include "GameObjects/GameObjectCollection.h"
 #include "GameObjects/obj_types.h"
@@ -263,7 +263,7 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	UDefconViewBase* CurrentView = nullptr;
 
 	// Gameplay objects that persist across missions.
-	Defcon::CPlayer*               PlayerShipPtr;
+	Defcon::CPlayerShip*               PlayerShipPtr;
 	Defcon::CGameObjectCollection  Humans;
 
 
@@ -281,7 +281,7 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	int32                                GetScore               () const { return Score; }
 	void                                 SetScore               (int32 Amount) { Score = Amount; }
 	int32                                AdvanceScore           (int32 Amount);
-	Defcon::CPlayer&                     GetPlayerShip          () { check(PlayerShipPtr != nullptr); return *PlayerShipPtr; }
+	Defcon::CPlayerShip&                     GetPlayerShip          () { check(PlayerShipPtr != nullptr); return *PlayerShipPtr; }
 	Defcon::CGameObjectCollection&       GetHumans              () { return Humans; }
 	const Defcon::CGameObjectCollection& GetHumans              () const { return Humans; }
 	bool                                 AcquireSmartBomb       ();

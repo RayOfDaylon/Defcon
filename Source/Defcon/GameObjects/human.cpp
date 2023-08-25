@@ -13,7 +13,7 @@
 #include "Globals/prefs.h"
 #include "Globals/GameObjectResources.h"
 #include "GameObjects/Enemies/enemies.h"
-#include "GameObjects/player.h"
+#include "GameObjects/playership.h"
 #include "Arenas/DefconPlayViewBase.h"
 #include "DefconLogging.h"
 

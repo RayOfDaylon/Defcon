@@ -14,93 +14,85 @@
 
 void Defcon::CLaserWeapon::Fire(CGameObjectCollection& ObjectCollection)
 {
-	CLaserbeam* BeamPtr = new CLaserbeam;
+	CLaserbeam* Beam = new CLaserbeam;
 	
-	BeamPtr->SetCreatorType(m_pObject->GetType());
+	Beam->SetCreatorType(Wielder->GetType());
 
-	CFPoint P(m_pObject->Position);
+	CFPoint P(Wielder->Position);
 	P += m_emissionPt;
 
-	BeamPtr->Create(P, m_pObject->Orientation);
-	//BeamPtr->m_fArenawidth = m_fArenawidth;
-	BeamPtr->MapperPtr = m_pObject->MapperPtr;
-	
-	BeamPtr->SetMaxLength(GArena->GetDisplayWidth() * 0.75f);
+	Beam->InitLaserBeam(P, Wielder->Orientation, Wielder->MapperPtr);
 
-	ObjectCollection.Add(BeamPtr);
+	ObjectCollection.Add(Beam);
 }
 
 // -------------------------------------------------------
 
 Defcon::CLaserbeam::CLaserbeam()
-	:
-	Length(0)
 {
 	ParentType = Type;
-	Type = EObjType::LASERBEAM;
+	Type       = EObjType::LASERBEAM;
 
-	bInjurious = true;
+	bInjurious    = true;
 	bCanBeInjured = false;
-	//Color = MakeColorFromComponents(255, 0, 0);
-	bMortal = true;
-	Lifespan = LASER_AGE_MAX;
-	Scale =  FRANDRANGE(0.85f, 1.5f);// (FRAND * 0.65f + 0.85f);
-	Lifespan /= Scale;
-	MaxAge = Lifespan;
-	Scale *= BEAM_MAXLEN;
+	bMortal       = true;
+	Lifespan      = 100.0f;
 }
 
 
-void Defcon::CLaserbeam::SetMaxLength(float Len)
-{
-	MaxLength = Len;
-	Scale =  FRANDRANGE(0.85f, 1.5f);// (FRAND * 0.65f + 0.85f);
-	Scale *= MaxLength;
-}
 
-
-void Defcon::CLaserbeam::Create(const CFPoint& Where, const Orient2D& Aim)
+void Defcon::CLaserbeam::InitLaserBeam(const CFPoint& Where, const Orient2D& Aim, I2DCoordMapper* Mapper)
 {
-	Position = Where;
+	MapperPtr   = Mapper;
+	Position    = Where;
 	Orientation = Aim;
-	//float budge = FRAND;
-	//budge -= 0.5f;
-	//budge *= 3;	
-	const float Budge = FRANDRANGE(-1.5f, 1.5f);
-	Position.MulAdd(Aim.Up, Budge);
+	Position.MulAdd(Aim.Up, FRANDRANGE(-1.5f, 1.5f));
+
+	StartX = Position.x;
+	EndX   = StartX;
 }
 
 
 void Defcon::CLaserbeam::Tick(float DeltaTime)
 {
-	// The length increases rapidly over time.
-	if(Lifespan > 0)
-	{
-		//Length = 1.0f - NORM_(Lifespan, 0.0f, MaxAge);
-		Length = (MaxAge - Lifespan) / MaxAge;
+	// We destroy ourselves when the EndX hits a screen edge.
 
-		StartPosition = Position;
-		StartPosition.MulAdd(Orientation.Fwd, Length * Scale);
+	CFPoint P(EndX, Position.y);
+	CFPoint ScreenP;
+
+	MapperPtr->To(P, ScreenP);
+
+	if(Orientation.Fwd.x < 0)
+	{
+		if(ScreenP.x <= 0)
+		{
+			Lifespan = 0;
+			return;
+		}
 	}
+	else if(ScreenP.x >= GArena->GetDisplayWidth())
+	{
+		Lifespan = 0;
+		return;
+	}
+
+	StartX += LASER_SPEED.Low()  * DeltaTime * Orientation.Fwd.x;
+	EndX   += LASER_SPEED.High() * DeltaTime * Orientation.Fwd.x;
 }
 
 
 void Defcon::CLaserbeam::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
-	// todo: make laserbeam draw using a random pick 
-	// of beam textures. If we make the textures
-	// grayscale, then we can use them as masks so 
-	// that the color can still vary.
+	// todo: the trailing half of the beam should look like it's disentegrating or fading out.
 
-	const float BeamAge = Lifespan / MaxAge; // 0..1
-
-	CFPoint PtEnd(StartPosition);
-	PtEnd.MulAdd(Orientation.Fwd, Length * Scale);
+	const CFPoint StartP (StartX, Position.y), 
+                  EndP   (EndX,   Position.y);
 
 	CFPoint P1, P2;
-	Mapper.To(StartPosition, P1);
-	Mapper.To(PtEnd, P2);
+	Mapper.To(StartP, P1);
+	Mapper.To(EndP,   P2);
 
+	// todo: this check is probably not necessary
 	if(P1.Distance(P2) > Painter.GetWidth() * 2)
 	{
 		return;
@@ -123,32 +115,7 @@ void Defcon::CLaserbeam::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 
 	Color.A = 1.0f;
 
-	//c1.lerp(CFVector(1,1,1), BeamAge);
-	//c1.Mul(255);
-
-
-#if 0
-	Painter.ColorStraightLine(
-		(int32)P1.x, (int32)P1.y, (int32)P2.x, (int32)P2.y, 
-		MakeColorFromComponents(c1.x, c1.y, c1.z));
-
-	if(BeamAge > 0.5f)
-	{
-		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y, (int32)P2.x, (int32)P2.y);
-		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y+1, (int32)P2.x, (int32)P2.y+1);
-	}
-#else
 	Painter.DrawLaserBeam(P1.x, P1.y, P2.x, Color);
-
-#if 0
-	// todo: BrightenStraightLine is a no-op currently 
-	if(BeamAge > 0.5f)
-	{
-		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y,     (int32)P2.x, (int32)P2.y);
-		Painter.BrightenStraightLine((int32)P1.x, (int32)P1.y + 1, (int32)P2.x, (int32)P2.y + 1);
-	}
-#endif
-#endif
 }
 
 
@@ -159,35 +126,36 @@ void Defcon::CLaserbeam::DrawSmall(FPainter&, const I2DCoordMapper&, FSlateBrush
 
 void Defcon::CLaserbeam::GetInjurePt(CFPoint& Pt) const
 {
-	Pt = StartPosition;
-	Pt.MulAdd(Orientation.Fwd, Length * Scale);
+	Pt.Set(EndX, Position.y);
 }
 
 
 bool Defcon::CLaserbeam::TestInjury(const CFRect& R) const
 {
-	CFPoint PtEnd = StartPosition;
-	PtEnd.MulAdd(Orientation.Fwd, Length * Scale);
+	check(MapperPtr != nullptr);
 
 	// No hit if beam is above or below the target.
-	if(StartPosition.y <= R.LL.y || StartPosition.y >= R.UR.y)
+	if(Position.y <= R.LL.y || Position.y >= R.UR.y)
 	{
 		return false;
 	}
 
-	check(MapperPtr != nullptr);
+	CFPoint PtEnd;
+	GetInjurePt(PtEnd);
 
-	// Check hit in screen space.
+
+	// We can't hit test x-values in world space because it will fail if 
+	// the target is completely on the other side of the x-origin.
+
 	CFPoint Beam1, Beam2, Target1, Target2;
 
-	MapperPtr->To(StartPosition, Beam1);
-	MapperPtr->To(PtEnd, Beam2);
-	MapperPtr->To(R.LowerLeft(), Target1);
-	MapperPtr->To(R.UpperRight(), Target2);
+	MapperPtr->To(CFPoint(StartX, Position.y),  Beam1);
+	MapperPtr->To(PtEnd,                        Beam2);
+	MapperPtr->To(R.LowerLeft(),                Target1);
+	MapperPtr->To(R.UpperRight(),               Target2);
 
-	float T;
-	ORDER(Beam1.x, Beam2.x, T)
-	ORDER(Target1.x, Target2.x, T)
+	Daylon::Order(Beam1.x, Beam2.x);
+	Daylon::Order(Target1.x, Target2.x);
 
 	return (Beam1.x < Target2.x && Beam2.x > Target1.x);
 }

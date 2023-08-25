@@ -5,7 +5,7 @@
 
 #include "DefconPlayWidgetBase.h"
 #include "GameObjects/terrain.h"
-#include "GameObjects/player.h"
+#include "GameObjects/playership.h"
 #include "Main/mapper.h"
 #include "Common/util_core.h"
 #include "DaylonUtils.h"
@@ -79,7 +79,7 @@ class DEFCON_API UDefconPlayerShipDebugWidgetBase : public UDefconPlayWidgetBase
 
 	public:
 
-	Defcon::CPlayer*                 PlayerShipPtr = nullptr;
+	Defcon::CPlayerShip*                 PlayerShipPtr = nullptr;
 	Defcon::CGameObjectCollection*   Enemies       = nullptr;
 	Defcon::CGameObjectCollection*   Debris        = nullptr;
 	float                            ArenaHeight   = 0.0f;
@@ -294,7 +294,7 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	Defcon::I2DCoordMapper*          CoordMapperPtr      = nullptr;
 	Defcon::I2DCoordMapper*          CoordMapperRadarPtr = nullptr;
 	Defcon::CTerrain*                TerrainPtr          = nullptr;
-	Defcon::CPlayer*                 PlayerShipPtr       = nullptr;
+	Defcon::CPlayerShip*                 PlayerShipPtr       = nullptr;
 	Defcon::CGameObjectCollection*   Objects             = nullptr;
 	Defcon::CGameObjectCollection*   Enemies             = nullptr;
 	Defcon::CGameObjectCollection*   Debris              = nullptr;
