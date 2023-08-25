@@ -15,6 +15,10 @@ namespace Defcon
 	const bool kIncludingSprites = true;
 	const bool kExcludingSprites = !kIncludingSprites;
 
+	typedef TFunction<void(IGameObject*)> GameObjectProcessDelegate;
+	typedef TFunction<void()>             PostDeathDelegate;
+
+
 	class CGameObjectCollection
 	{
 		// A set of game objects.
@@ -24,34 +28,30 @@ namespace Defcon
 			CGameObjectCollection();
 			virtual ~CGameObjectCollection();
 
-			virtual void Add          (IGameObject*);
-			virtual void Add          (CGameObjectCollection&);
-			virtual void Delete       (IGameObject*);
-			virtual void DeleteAll    (bool IncludingSprites = false);
-			virtual void Detach       (IGameObject*);
-			virtual void DetachAll    ();
-			virtual void ForEach      (TFunction<void(IGameObject*)> Function) const;
-			virtual void ForEachUntil (TFunction<bool(IGameObject*)> Function) const;
+			virtual void  Add          (IGameObject*);
+			//virtual void Add         (CGameObjectCollection&);
+			virtual void  Delete       (IGameObject*);
+			virtual void  DeleteAll    (bool IncludingSprites = false);
+			virtual void  Detach       (IGameObject*);
+			virtual void  DetachAll    ();
+			virtual void  ForEach      (GameObjectProcessDelegate Function) const;
+			virtual void  ForEachUntil (TFunction<bool(IGameObject*)> Function) const;
 
-			virtual int32 Count       () const;
-			virtual int32 CountOf     (EObjType Kind) const;
+			virtual int32 Count        () const;
+			virtual int32 CountOf      (EObjType Kind) const;
 									  
-			IGameObject* GetFirst     () const { return First; }
-			IGameObject* Find         (EObjType Kind, IGameObject* SearchAfter = nullptr) const;
+			IGameObject*  GetFirst     () const { return First; }
+			IGameObject*  Find         (EObjType Kind, IGameObject* SearchAfter = nullptr) const;
 									  
-			virtual bool Process      (GameObjectProcessingParams&);
-			virtual void Notify       (EMessage Msg, IGameObject* Sender);
+			virtual void  Process      (GameObjectProcessingParams&);
+			virtual void  Notify       (EMessage Msg, IGameObject* Sender);
 
 		private:
-			IGameObject*    First     = nullptr;
-			int32           NumElems  = 0;
+			IGameObject*  First     = nullptr;
+			int32         NumElems  = 0;
 
 	}; // CGameObjectCollection
 
-
-
-	typedef std::function<void(IGameObject*)> GameObjectProcessDelegate;
-	typedef std::function<void()>             PostDeathDelegate;
 
 	class GameObjectProcessingParams
 	{

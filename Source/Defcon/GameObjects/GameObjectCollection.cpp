@@ -35,94 +35,97 @@ void Defcon::CGameObjectCollection::DeleteAll(bool IncludingSprites)
 }
 
 
-void Defcon::CGameObjectCollection::ForEach(TFunction<void(IGameObject*)> Function) const
+void Defcon::CGameObjectCollection::ForEach(GameObjectProcessDelegate Function) const
 {
-	auto p = First;
+	auto Obj = First;
 
-	while(p != nullptr)
+	while(Obj != nullptr)
 	{
-		Function(p);
+		Function(Obj);
 			
-		p = p->GetNext();
+		Obj = Obj->GetNext();
 	}
 }
 
 
 void Defcon::CGameObjectCollection::ForEachUntil(TFunction<bool(IGameObject*)> Function) const
 {
-	auto p = First;
+	auto Obj = First;
 
-	while(p != nullptr && Function(p))
+	while(Obj != nullptr && Function(Obj))
 	{
-		p = p->GetNext();
+		Obj = Obj->GetNext();
 	}
 }
 
 
-void Defcon::CGameObjectCollection::Add(IGameObject* p)
+void Defcon::CGameObjectCollection::Add(IGameObject* Obj)
 {
-	check(p);
-	check(p->GetType() != EObjType::UNKNOWN);
+	check(Obj);
+	check(Obj->GetType() != EObjType::UNKNOWN);
 
 	if(First != nullptr)
 	{
-		First->SetPrev(p);
-		p->SetNext(First);
-		p->SetPrev(nullptr);
+		First->SetPrev(Obj);
+		Obj->SetNext(First);
+		Obj->SetPrev(nullptr);
 	}
 	else
 	{
-		check(p->GetNext() == nullptr && p->GetPrev() == nullptr);
+		check(Obj->GetNext() == nullptr && Obj->GetPrev() == nullptr);
 	}
 
-	First = p;
+	First = Obj;
 	check(First->GetNext() != First);
 
 	NumElems++;
 }
 
 
+#if 0
 void Defcon::CGameObjectCollection::Add(CGameObjectCollection& Set)
 {
-	IGameObject* p;
+	IGameObject* Obj;
 
-	while((p = Set.GetFirst()) != nullptr)
+	while((Obj = Set.GetFirst()) != nullptr)
 	{
-		Set.Detach(p);
-		Add(p);
+		Set.Detach(Obj);
+		Add(Obj);
 	}
+}
+#endif
+
+
+void Defcon::CGameObjectCollection::Delete(IGameObject* Obj)
+{
+	check(Obj);
+
+	Detach(Obj);
+
+	delete Obj;
 }
 
 
-void Defcon::CGameObjectCollection::Delete(IGameObject* p)
+void Defcon::CGameObjectCollection::Detach(IGameObject* Obj)
 {
-	Detach(p);
+	check(Obj);
 
-	//if(!p->ExternallyOwned())
+	if(Obj->GetPrev() != nullptr)
 	{
-		delete p;
-	}
-}
-
-
-void Defcon::CGameObjectCollection::Detach(IGameObject* p)
-{
-	if(p->GetPrev() != nullptr)
-	{
-		p->GetPrev()->SetNext(p->GetNext());
+		Obj->GetPrev()->SetNext(Obj->GetNext());
 	}
 	else
 	{
-		First = p->GetNext();
+		First = Obj->GetNext();
 	}
 
-	if(p->GetNext() != nullptr)
+	if(Obj->GetNext() != nullptr)
 	{
-		p->GetNext()->SetPrev(p->GetPrev());
+		Obj->GetNext()->SetPrev(Obj->GetPrev());
 	}
 
-	p->SetNext(nullptr);
-	p->SetPrev(nullptr);
+	Obj->SetNext(nullptr);
+	Obj->SetPrev(nullptr);
 
 	NumElems--;
 }
@@ -147,114 +150,117 @@ int32 Defcon::CGameObjectCollection::CountOf(EObjType Kind) const
 {
 	int32 Result = 0;
 
-	ForEach([&](IGameObject* p) { if(p->GetType() == Kind) { Result++; } });
+	ForEach([&](IGameObject* Obj) 
+	{
+		if(Obj->GetType() == Kind) 
+		{
+			Result++; 
+		} 
+	});
 
 	return Result;
 }
 
 
-Defcon::IGameObject* Defcon::CGameObjectCollection::Find(EObjType Kind, Defcon::IGameObject* p) const
+Defcon::IGameObject* Defcon::CGameObjectCollection::Find(EObjType Kind, Defcon::IGameObject* Obj) const
 {
-	if(p == nullptr)
+	if(Obj == nullptr)
 	{
-		p = GetFirst();
+		Obj = GetFirst();
 	}
 	else
 	{
-		p = p->GetNext();
+		Obj = Obj->GetNext();
 	}
 
-	while(p != nullptr)
+	while(Obj != nullptr)
 	{
-		if(p->GetType() == Kind)
+		if(Obj->GetType() == Kind)
 		{
 			break;
 		}
 
-		p = p->GetNext();
+		Obj = Obj->GetNext();
 	}
 	
-	return p;
+	return Obj;
 }
 
 
 void Defcon::CGameObjectCollection::Notify(EMessage Msg, IGameObject* Sender)
 {
-	ForEach([&](IGameObject* pObj) { pObj->Notify(Msg, Sender); });
+	ForEach([&](IGameObject* Obj) 
+	{
+		Obj->Notify(Msg, Sender); 
+	});
 }
 
 
-bool Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& params)
+void Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& Params)
 {
 	// Perform a standard processing run on all the objects.
 	// Return true if any objects were in the collection.
 
-	check(params.MapperPtr);
+	check(Params.MapperPtr);
 
-	IGameObject* pObj = GetFirst();
-	bool b = false;
+	IGameObject* Obj = GetFirst();
 
-	while(pObj != nullptr)
+	while(Obj != nullptr)
 	{
-		b = true;
-
-		if(params.OnEvery)
+		if(Params.OnEvery)
 		{
-			params.OnEvery(pObj);
+			Params.OnEvery(Obj);
 		}
 
-		if(pObj->IsMortal() && pObj->ReduceLifespanBy(params.DeltaTime))
+		if(Obj->IsMortal() && Obj->ReduceLifespanBy(Params.DeltaTime))
 		{
-			IGameObject* pObj2 = pObj->GetNext();
+			IGameObject* Obj2 = Obj->GetNext();
 			
 #ifdef TRACE_GAMEOBJ_DEATHS
-			if(!pObj->OccursFrequently())
+			if(!Obj->OccursFrequently())
 			{
-				UE_LOG(LogGame, Log, "Mortal object of class %s deleted\n", *GObjectTypeManager.GetName(pObj->GetType());
+				UE_LOG(LogGame, Log, "Mortal object of class %s deleted\n", *GObjectTypeManager.GetName(Obj->GetType());
 			}
 #endif
-			if(params.OnDeath != nullptr)
+			if(Params.OnDeath != nullptr)
 			{
-				params.OnDeath(pObj);
+				Params.OnDeath(Obj);
 			}
 
-			if(params.UninstallSpriteIfObjectDeleted)
+			if(Params.UninstallSpriteIfObjectDeleted)
 			{
-				pObj->UninstallSprite();
+				Obj->UninstallSprite();
 			}
 
-			Delete(pObj);
-			pObj = pObj2;
+			Delete(Obj);
+			Obj = Obj2;
 
-			if(params.OnPostDeath != nullptr)
+			if(Params.OnPostDeath != nullptr)
 			{
-				params.OnPostDeath();
+				Params.OnPostDeath();
 			}
 
 			continue;
 		}
 		
-		pObj->Tick(params.DeltaTime);
+		Obj->Tick(Params.DeltaTime);
 
-		// Handle wraparound onto planet.
-		pObj->Position.x = GArena->WrapX(pObj->Position.x);
+		Obj->Position.x = GArena->WrapX(Obj->Position.x);
 
 
 		// Lots of objects temporarily exist outside arena's vertical bounds.
-		//check(pObj->Position.y >= 0 && pObj->Position.y <= params.ArenaHeight);
+		//check(Obj->Position.y >= 0 && Obj->Position.y <= Params.ArenaHeight);
 
 		// If the object has a visual, sync its position and update its animation.
 
-		if(pObj->Sprite)
+		if(Obj->Sprite)
 		{
-			CFPoint pt;
-			params.MapperPtr->To(pObj->Position, pt);
-			pObj->Sprite->SetPosition(FVector2D(pt.x, pt.y));
-			pObj->Sprite->Update(params.DeltaTime);
+			CFPoint P;
+			Params.MapperPtr->To(Obj->Position, P);
+			Obj->Sprite->SetPosition(FVector2D(P.x, P.y));
+			Obj->Sprite->Update(Params.DeltaTime);
 		}
 
-		pObj = pObj->GetNext();
+		Obj = Obj->GetNext();
 	}
-
-	return b;
 }
