@@ -207,7 +207,7 @@ int32 SDaylonSprite::OnPaint
 			AllottedGeometry.ToPaintGeometry(),
 			&Atlas.AtlasBrush,
 			ESlateDrawEffect::None,
-			Atlas.AtlasBrush.TintColor.GetSpecifiedColor() * RenderOpacity * InWidgetStyle.GetColorAndOpacityTint().A);
+			Atlas.AtlasBrush.TintColor.GetSpecifiedColor() * Tint * RenderOpacity * InWidgetStyle.GetColorAndOpacityTint().A);
 	}
 	else
 	{
@@ -220,7 +220,7 @@ int32 SDaylonSprite::OnPaint
 			PaintGeometry,
 			&Atlas.AtlasBrush,
 			ESlateDrawEffect::None,
-			Atlas.AtlasBrush.TintColor.GetSpecifiedColor() * RenderOpacity * InWidgetStyle.GetColorAndOpacityTint().A);
+			Atlas.AtlasBrush.TintColor.GetSpecifiedColor() * Tint * RenderOpacity * InWidgetStyle.GetColorAndOpacityTint().A);
 	}
 
 #if 0

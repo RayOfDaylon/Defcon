@@ -9,6 +9,7 @@
 
 #include "laser.h"
 #include "Globals/prefs.h"
+#include "Common/util_color.h"
 #include "Arenas/DefconPlayViewBase.h"
 
 
@@ -40,9 +41,8 @@ Defcon::CLaserbeam::CLaserbeam()
 
 	CreateSprite(Type);
 	InstallSprite();
-	Sprite->Hide();
-
-	// todo: colorize the sprite. Either add a tint, or use more atlases.
+	Sprite->SetSize(FVector2D(0));
+	Sprite->UpdateWidgetSize();
 }
 
 
@@ -57,6 +57,12 @@ void Defcon::CLaserbeam::InitLaserBeam(const CFPoint& Where, const Orient2D& Aim
 	EndX   = StartX;
 
 	Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
+
+	CFPoint P;
+	MapperPtr->To(Position, P);
+
+	const float MaxBeamLength = Orientation.Fwd.x < 0 ? P.x : GArena->GetDisplayWidth() - P.x;
+	EstimatedLifetime = MaxBeamLength / LASER_SPEED.High(); // at 5000 px/sec = 0.384, or 23 frames at 60 fps
 }
 
 
@@ -69,26 +75,12 @@ void Defcon::CLaserbeam::Tick(float DeltaTime)
 
 	MapperPtr->To(P, ScreenP);
 
-	if(Orientation.Fwd.x < 0)
-	{
-		if(ScreenP.x <= 0)
-		{
-			Lifespan = 0;
-			Sprite->Hide();
-			return;
-		}
-	}
-	else if(ScreenP.x >= GArena->GetDisplayWidth())
+	if(ScreenP.x <= 0 || ScreenP.x >= GArena->GetDisplayWidth())
 	{
 		Lifespan = 0;
-		Sprite->Hide();
 		return;
 	}
 
-	// Only show the sprite when it has valid geometry. Otherwise
-	// we can get a frame where the beam appears in the wrong place.
-
-	Sprite->Show();
 
 	StartX += LASER_SPEED.Low()  * DeltaTime * Orientation.Fwd.x;
 	EndX   += LASER_SPEED.High() * DeltaTime * Orientation.Fwd.x;
@@ -97,8 +89,32 @@ void Defcon::CLaserbeam::Tick(float DeltaTime)
 
 	Position.x = AVG(EndX, StartX);
 
-	Sprite->SetSize(FVector2D(ABS(EndX - StartX), 2));
+	const float BeamLength = ABS(EndX - StartX);
+	Sprite->SetSize(FVector2D(BeamLength, 2));
 	Sprite->UpdateWidgetSize();
+
+	// Set current color.
+
+	static const FLinearColor Colors[] =
+	{
+		C_WHITE,
+		C_WHITE,
+		C_WHITE,
+		C_WHITE,
+		C_LIGHTYELLOW,
+		C_LIGHTYELLOW,
+		C_LIGHTYELLOW,
+		C_YELLOW,
+		C_YELLOW,
+		C_LIGHTORANGE,
+		C_ORANGE
+	};
+
+	const int32 ColorIdx = FMath::Min(ROUND((Age / EstimatedLifetime) * (array_size(Colors) - 1)), (int32) array_size(Colors) - 1);
+
+	Sprite->SetTint(Colors[ColorIdx]);
+
+	Age += DeltaTime;
 }
 
 

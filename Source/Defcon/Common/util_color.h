@@ -42,9 +42,10 @@ constexpr auto C_BROWN        = C_DARKYELLOW;
 constexpr auto C_DARKMAGENTA  = FLinearColor(0.5f, 0.0f, 0.5f, 1.0f);
 constexpr auto C_DARKCYAN     = FLinearColor(0.0f, 0.5f, 0.5f, 1.0f);
 
-constexpr auto C_LIGHTYELLOW  = FLinearColor(1.0f, 1.0f, 0.5f, 1.0f);
-constexpr auto C_LIGHTMAGENTA = FLinearColor(1.0f, 0.5f, 1.0f, 1.0f);
-constexpr auto C_LIGHTCYAN    = FLinearColor(0.5f, 1.0f, 1.0f, 1.0f);
+constexpr auto C_LIGHTYELLOW  = FLinearColor(1.0f, 1.0f,  0.5f, 1.0f);
+constexpr auto C_LIGHTMAGENTA = FLinearColor(1.0f, 0.5f,  1.0f, 1.0f);
+constexpr auto C_LIGHTCYAN    = FLinearColor(0.5f, 1.0f,  1.0f, 1.0f);
+constexpr auto C_LIGHTORANGE  = FLinearColor(1.0f, 0.75f, 0.5f, 1.0f);
 
 constexpr auto C_HALFDARKRED  = FLinearColor(0.75f, 0.0f, 0.0f, 1.0f);
 

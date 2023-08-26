@@ -93,6 +93,7 @@ class DAYLONGRAPHICSLIBRARY_API SDaylonSprite : public SLeafWidget
 
 			const FVector2D&  GetSize       () const { return Size; }
 			void              SetSize       (const FVector2D& InSize);
+			void              SetTint       (const FLinearColor& Color) { Tint = Color; }
 			void              SetAtlas      (const FDaylonSpriteAtlas& InAtlas);
 
 			void              SetCurrentCel (int32 Index);
@@ -121,6 +122,7 @@ class DAYLONGRAPHICSLIBRARY_API SDaylonSprite : public SLeafWidget
 
 		protected:
 
+			FLinearColor                 Tint = FLinearColor::White;
 			FVector2D                    Size;
 			mutable FDaylonSpriteAtlas   Atlas;
 

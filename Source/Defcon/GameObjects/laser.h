@@ -23,7 +23,9 @@ namespace Defcon
 	{
 		// A laser weapon is used by the player 
 		// to shoot fast thin tracers at enemies.
+
 		public:
+
 			CLaserWeapon()
 			{
 				m_maxWeaponBursts = 10;
@@ -35,15 +37,16 @@ namespace Defcon
 
 	class CLaserbeam : public IGameObject
 	{
-		// The beams that the player fires.
-		// The leading position is the object's position.
-		// But we also maintain a trailing position.
+		// The beams that the player ship fires.
+
 		public:
+
 			CLaserbeam();
 
 			void          InitLaserBeam     (const CFPoint&, const Orient2D&, I2DCoordMapper*);
 
 			virtual void  Tick              (float DeltaTime) override;
+			virtual void  DrawSmall         (FPainter&, const Defcon::I2DCoordMapper&, FSlateBrush&) override {}
 
 			virtual void  GetInjurePt       (CFPoint&) const override;
 			virtual bool  TestInjury        (const CFRect&) const override;
@@ -56,5 +59,6 @@ namespace Defcon
 
 			float  StartX;
 			float  EndX;
+			float  EstimatedLifetime;
 	};
 }
