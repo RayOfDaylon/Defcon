@@ -229,6 +229,10 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	TObjectPtr<UDaylonSpriteWidgetAtlas> FireballAtlas;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
+	TObjectPtr<UDaylonSpriteWidgetAtlas> LaserbeamAtlas;
+
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
 	TObjectPtr<UDaylonSpriteWidgetAtlas> PlayerShipExhaustAtlas;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)

@@ -2,8 +2,10 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 23, 2023
+August 25, 2023
 
+Laser beams use texture atlas that give disintegrating tail 
+effect similar to arcade game.
 
 Started work on invincibility powerup.
 

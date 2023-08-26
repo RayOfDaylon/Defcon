@@ -76,16 +76,16 @@ void Defcon::CWeaponsTrainingMission::DoMakeTargets(float fElapsed)
 {
 	for(int32 Index = 0; Index < NumTargets; Index++)
 	{
-		CBeacon* p = new CBeacon;
-		p->InstallSprite();
+		CBeacon* Beacon = new CBeacon;
+		Beacon->InstallSprite();
 
-		p->Lifespan = 2.0f;
-		p->MakeHurtable();
-		p->Position.Set(
+		Beacon->Lifespan = 2.0f;
+		Beacon->MakeHurtable();
+		Beacon->Position.Set(
 			MAP(Index, 0, 6, GArena->GetDisplayWidth()*.66f, GArena->GetWidth() * 0.9f),
 			SFRAND * 0.33f * GArena->GetHeight() + GArena->GetHeight()/2);
 
-		GArena->GetObjects().Add(p);
+		GArena->GetObjects().Add(Beacon);
 	}
 }
 

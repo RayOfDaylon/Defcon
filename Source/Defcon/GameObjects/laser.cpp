@@ -37,8 +37,13 @@ Defcon::CLaserbeam::CLaserbeam()
 	bCanBeInjured = false;
 	bMortal       = true;
 	Lifespan      = 100.0f;
-}
 
+	CreateSprite(Type);
+	InstallSprite();
+	Sprite->Hide();
+
+	// todo: colorize the sprite. Either add a tint, or use more atlases.
+}
 
 
 void Defcon::CLaserbeam::InitLaserBeam(const CFPoint& Where, const Orient2D& Aim, I2DCoordMapper* Mapper)
@@ -50,6 +55,8 @@ void Defcon::CLaserbeam::InitLaserBeam(const CFPoint& Where, const Orient2D& Aim
 
 	StartX = Position.x;
 	EndX   = StartX;
+
+	Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
 }
 
 
@@ -67,60 +74,31 @@ void Defcon::CLaserbeam::Tick(float DeltaTime)
 		if(ScreenP.x <= 0)
 		{
 			Lifespan = 0;
+			Sprite->Hide();
 			return;
 		}
 	}
 	else if(ScreenP.x >= GArena->GetDisplayWidth())
 	{
 		Lifespan = 0;
+		Sprite->Hide();
 		return;
 	}
+
+	// Only show the sprite when it has valid geometry. Otherwise
+	// we can get a frame where the beam appears in the wrong place.
+
+	Sprite->Show();
 
 	StartX += LASER_SPEED.Low()  * DeltaTime * Orientation.Fwd.x;
 	EndX   += LASER_SPEED.High() * DeltaTime * Orientation.Fwd.x;
-}
 
+	// Sprites are centered, so we have to shift the x-pos accordingly.
 
-void Defcon::CLaserbeam::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
-{
-	// todo: the trailing half of the beam should look like it's disentegrating or fading out.
+	Position.x = AVG(EndX, StartX);
 
-	const CFPoint StartP (StartX, Position.y), 
-                  EndP   (EndX,   Position.y);
-
-	CFPoint P1, P2;
-	Mapper.To(StartP, P1);
-	Mapper.To(EndP,   P2);
-
-	// todo: this check is probably not necessary
-	if(P1.Distance(P2) > Painter.GetWidth() * 2)
-	{
-		return;
-	}
-
-	FLinearColor Color;
-
-	if(FRAND > 0.125f)
-	{
-		Color.R = FRANDRANGE(0.25f, 1.0f);
-		Color.G = FRAND;
-		Color.B = FRAND;
-	}
-	else
-	{
-		Color.R = 
-		Color.G = 1.0f;
-		Color.B = FRAND;
-	}
-
-	Color.A = 1.0f;
-
-	Painter.DrawLaserBeam(P1.x, P1.y, P2.x, Color);
-}
-
-
-void Defcon::CLaserbeam::DrawSmall(FPainter&, const I2DCoordMapper&, FSlateBrush&)
-{
+	Sprite->SetSize(FVector2D(ABS(EndX - StartX), 2));
+	Sprite->UpdateWidgetSize();
 }
 
 

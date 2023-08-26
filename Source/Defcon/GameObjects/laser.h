@@ -44,8 +44,6 @@ namespace Defcon
 			void          InitLaserBeam     (const CFPoint&, const Orient2D&, I2DCoordMapper*);
 
 			virtual void  Tick              (float DeltaTime) override;
-			virtual void  Draw              (FPainter&, const I2DCoordMapper&) override;
-			virtual void  DrawSmall         (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;
 
 			virtual void  GetInjurePt       (CFPoint&) const override;
 			virtual bool  TestInjury        (const CFRect&) const override;

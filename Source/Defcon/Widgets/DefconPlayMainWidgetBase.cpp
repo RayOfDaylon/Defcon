@@ -99,6 +99,7 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 	ADD_ATLAS(HUNTER,           HunterAtlas             );
 	ADD_ATLAS(GHOSTPART,        GhostPartAtlas          );
 	ADD_ATLAS(REFORMERPART,     ReformerPartAtlas       );
+	ADD_ATLAS(LASERBEAM,        LaserbeamAtlas          );
 
 	ADD_ATLAS(POWERUP_INVINCIBILITY, PowerupInvincibilityAtlas );
 
@@ -235,7 +236,7 @@ void UDefconPlayMainWidgetBase::UpdatePlayerShip(float DeltaTime)
 
 		if(PlayerShipPtr && PlayerShipPtr->IsAlive())
 		{
-			ExhaustLength =  ABS(3.0f * PlayerShipPtr->Inertia.x);
+			ExhaustLength = ABS(3.0f * PlayerShipPtr->Inertia.x);
 		}
 
 		if(ExhaustLength == 0.0f)
