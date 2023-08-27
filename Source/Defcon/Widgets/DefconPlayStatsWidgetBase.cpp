@@ -8,6 +8,12 @@
 void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
+
+	// Scale shield readout progress bar's border width to match display DPI
+	const float BorderWidth = 0.1f * GetPaintSpaceGeometry().Scale;
+	auto Style = ShieldReadout->GetWidgetStyle();
+	Style.BackgroundImage.Margin = FMargin(BorderWidth);
+	ShieldReadout->SetWidgetStyle(Style);
 }
 
 

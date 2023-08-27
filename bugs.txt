@@ -2,7 +2,7 @@ Bug list for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 22, 2023
+August 27, 2023
 
 
 FIXED: If starting on a non-humans mission (e.g. Yllabian dogfight), the next mission 
@@ -13,15 +13,14 @@ behind the world x-origin.
 
 FIXED: Hovering landers would too often switch to fighting mode (chasing the player).
 
-At HD resolution (and/or in a window), the border width for the mission picker cells 
+FIXED: At HD resolution (and/or in a window), the border width for the mission picker cells 
 and the shield readout are too thick. Also, when a mission is chosen, the expanding 
 rectangle grows to the wrong coordinates (maybe display space instead of window space?)
-
 
 FIXED: Spawning and then destroying enemies in training missions (using the debug controls) 
 would cause humans to all clump together at the x-origin in the first military mission.
 
-Still getting the "nonexistant enemy" problem in the Yllabian Dogfight mission. 
+FIXED: Still getting the "nonexistant enemy" problem in the Yllabian Dogfight mission. 
 Both hidden and out-of-bounds enemy counts reported zero, so it's likely the 
 critical hostiles count is being overly incremented somehow. Happened during 
 a packaged build (Shipping) so no checks were triggered, sigh.
@@ -34,6 +33,8 @@ hostiles count is simply wrong. With the latest changes, if the latter
 is true, then entering the stargate will exit the mission because it 
 does an actual count. If it doesn't exit, then we know there are one 
 or more invisible or out-of-bound objects somewhere.
+   With the new way mission end is determined, this problem hasn't 
+occurred despite hours of play testing.
 
 FIXED: More framerate vs. time fixes.
 
@@ -50,10 +51,12 @@ top of the arena.
 Some update (tick) handlers (e.g. CEnemy::Move variants) may still process 
 things by frame count instead of by time, causing incorrect timing 
 on frame rates other than 60 fps.
+   todo: reinvestigate; have not come across such cases recently as 
+they may have all been fixed.
 
 FIXED: View widgets do not activate/deactivate correctly, causing check assertions to fail. 
   Code architecture changed. All sprite installs/uninstalls also done in 
   main widget, not play arena view.
 
-Firebombers shoot too frequently as XP increases.
+FIXED: Firebombers shoot too frequently as XP increases.
 

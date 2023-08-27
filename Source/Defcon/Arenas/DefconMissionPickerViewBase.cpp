@@ -101,6 +101,13 @@ void UDefconMissionPickerViewBase::NativeTick(const FGeometry& MyGeometry, float
 			const float T = ExpanderAge / ExpanderLifetime;
 			StartMissionExpander->SetRenderOpacity(T);
 
+			// Although our view layout is 1920 x 1080, the actual layout size can differ due to 
+			// fitting an HD aspect ratio inside a different one, e.g. a full-size window that 
+			// has a visible title bar (as happens when running in PIE mode). So we get the 
+			// actual view layout size by taking the size of the root canvas.
+
+			const auto CanvasSize = Daylon::GetWidgetSize(RootCanvas);
+
 			auto CellWidget = GetCellWidget(CurrentCell.X, CurrentCell.Y);
 			
 			const auto CellP = Daylon::GetWidgetPosition(CellWidget);
@@ -108,8 +115,11 @@ void UDefconMissionPickerViewBase::NativeTick(const FGeometry& MyGeometry, float
 
 			auto CanvasSlot = Cast<UCanvasPanelSlot>(StartMissionExpander->Slot);
 
-			CanvasSlot->SetPosition(FVector2D(FMath::Lerp(CellP.X, 0.0, T), FMath::Lerp(CellP.Y, 0.0, T)));
-			CanvasSlot->SetSize(FVector2D(FMath::Lerp(CellS.X, 1920, T), FMath::Lerp(CellS.Y, 1080, T)));
+			const auto P = FVector2D(FMath::Lerp(CellP.X,    0, T), FMath::Lerp(CellP.Y,   0, T));
+			const auto S = FVector2D(FMath::Lerp(CellS.X, CanvasSize.X, T), FMath::Lerp(CellS.Y, CanvasSize.Y, T));
+
+			CanvasSlot->SetPosition(P);
+			CanvasSlot->SetSize(S);
 		}
 	}
 }
@@ -161,6 +171,7 @@ UBorder* UDefconMissionPickerViewBase::GetCellWidget(int32 Column, int32 Row)
 
 	// Border should be first child of canvas.
 	auto Canvas = Cast<UCanvasPanel>(GridChild->GetRootWidget());
+
 	if(!IsValid(Canvas))
 	{
 		UE_LOG(LogGame, Error, TEXT("%S: cell widget root is not a CanvasPanel widget at %d, %d"), __FUNCTION__, Column, Row);
@@ -194,14 +205,21 @@ void UDefconMissionPickerViewBase::HighlightCell(int32 Column, int32 Row, bool b
 
 	// Use thin margin if unselected, thicker otherwise.
 	auto& Brush = BorderWidget->Background;
-	Brush.Margin = FMargin(bSelected ? 0.5f : 0.125f);
+
+	//auto BorderWidth = bSelected ? 0.5f : 0.125f;
+	const auto BorderWidth = (bSelected ? 0.25f : 0.0625f) * RootCanvas->GetPaintSpaceGeometry().Scale;
+
+	Brush.Margin = FMargin(BorderWidth);
 }
 
 
 void UDefconMissionPickerViewBase::PopulateGrid()
 {
 	// Remove any design-time content from the grid.
+
 	MissionsGrid->ClearChildren();
+
+	// Populate grid.
 
 	for(int32 Row = 0; Row < CellsDown; Row++)
 	{

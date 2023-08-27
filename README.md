@@ -8,6 +8,8 @@ Example Videos
 
 Version 1.0: https://youtu.be/WTqya41q9xM
 
+August 27/2023 update (some graphic fixes): https://youtu.be/R1Yolp0zzRE
+
 The game differs from Stargate in these ways:
 - Each level is its own campaign mission and not a repeat wave  
 - After destroying all mission-critical targets, the stargate must be entered to jump to the next mission  

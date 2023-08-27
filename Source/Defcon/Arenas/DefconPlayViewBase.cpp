@@ -1625,7 +1625,7 @@ void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& ob
 
 			if(Bbox.PtInside(InjurePt) || Obj->TestInjury(Bbox))
 			{
-				// Wielder has been hit! Ow!!!
+				// Object has been hit! Ow!!!
 
 				// todo: generalize code so that all objects have a RegisterImpact() method.
 				// Can't use dynamic_cast, force all objects to be static castable to ILiveGameObject.
