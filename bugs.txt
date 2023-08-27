@@ -5,6 +5,8 @@ Repository: https://github.com/RayOfDaylon/Defcon
 August 27, 2023
 
 
+FIXED: When mission picked, expanding cell started from slightly wrong y-position.
+
 FIXED: If starting on a non-humans mission (e.g. Yllabian dogfight), the next mission 
 will have the humans clustered instead of spread out.
 

@@ -8,7 +8,8 @@
 #include "Blueprint/UserWidget.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Sound/SoundBase.h"
-#include "Runtime/UMG/Public/Components/TextBlock.h"
+#include "UMG/Public/Components/TextBlock.h"
+#include "UMG/Public/Blueprint/SlateBlueprintLibrary.h"
 #include "Algo/Reverse.h"
 
 //DECLARE_LOG_CATEGORY_EXTERN(LogDaylon, Log, All);
@@ -343,10 +344,16 @@ void Daylon::UpdateRoundedReadout(UTextBlock* Readout, float Value, int32& OldVa
 FVector2D Daylon::GetWidgetPosition(const UWidget* Widget)
 {
 	// Return a UWidget's position in layout (not screen) space. E.g. an HD canvas on a 4K screen will return HD units
-
+#if 1
+	FVector2D PixelPosition;
+	FVector2D ViewportPosition;
+	USlateBlueprintLibrary::LocalToViewport(const_cast<UWidget*>(Widget), Widget->GetCachedGeometry(), FVector2D(0), PixelPosition, ViewportPosition);
+	return ViewportPosition;
+#else
 	const auto& Geometry = Widget->GetPaintSpaceGeometry();
 
 	return Geometry.GetAbsolutePosition() / Geometry.Scale;
+#endif
 }
 
 

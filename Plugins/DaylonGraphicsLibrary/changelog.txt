@@ -1,6 +1,9 @@
 Changelog for DaylonGraphicsLibrary UE plugin
 
-Last updated: August 19, 2023
+Last updated: August 26, 2023
+
+Added Tint member to SDaylonSprite, lets sprites
+be tinted by an FLinearColor.
 
 Added FRange class to make min/max ranges easier to handle.
 

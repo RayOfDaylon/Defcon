@@ -17,8 +17,6 @@ class UBorder;
 struct FMissionInfo
 {
 	public:
-		//void SetName(const FString& Name);
-		//void SetDesc(const char*);
 
 		FString Name; // todo: should be FText
 		FString Desc;
@@ -30,6 +28,7 @@ UCLASS()
 class DEFCON_API UDefconMissionPickerViewBase : public UDefconViewBase
 {
 	GENERATED_BODY()
+
 
 	protected:
 

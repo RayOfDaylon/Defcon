@@ -10,9 +10,10 @@
 #include "UMG/Public/Components/CanvasPanel.h"
 #include "UMG/Public/Components/UniformGridSlot.h"
 #include "UMG/Public/Components/Border.h"
+//#include "UMG/Public/Blueprint/SlateBlueprintLibrary.h"
 
 
-#define DEBUG_MODULE      0
+#define DEBUG_MODULE      1
 
 #if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
@@ -115,7 +116,7 @@ void UDefconMissionPickerViewBase::NativeTick(const FGeometry& MyGeometry, float
 
 			auto CanvasSlot = Cast<UCanvasPanelSlot>(StartMissionExpander->Slot);
 
-			const auto P = FVector2D(FMath::Lerp(CellP.X,    0, T), FMath::Lerp(CellP.Y,   0, T));
+			const auto P = FVector2D(FMath::Lerp(CellP.X, 0, T), FMath::Lerp(CellP.Y, 0, T));
 			const auto S = FVector2D(FMath::Lerp(CellS.X, CanvasSize.X, T), FMath::Lerp(CellS.Y, CanvasSize.Y, T));
 
 			CanvasSlot->SetPosition(P);
@@ -226,6 +227,7 @@ void UDefconMissionPickerViewBase::PopulateGrid()
 		for(int32 Column = 0; Column < CellsAcross; Column++)
 		{
 			auto GridChild = CreateWidget(this, MissionWidgetClass);
+			check(IsValid(GridChild));
 			auto ChildSlot = MissionsGrid->AddChildToUniformGrid(GridChild, Row, Column);
 			ChildSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
 			ChildSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Fill);
