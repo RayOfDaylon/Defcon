@@ -79,7 +79,7 @@ class DEFCON_API UDefconPlayerShipDebugWidgetBase : public UDefconPlayWidgetBase
 
 	public:
 
-	Defcon::CPlayerShip*                 PlayerShipPtr = nullptr;
+	Defcon::CPlayerShip*             PlayerShipPtr = nullptr;
 	Defcon::CGameObjectCollection*   Enemies       = nullptr;
 	Defcon::CGameObjectCollection*   Debris        = nullptr;
 	float                            ArenaHeight   = 0.0f;
@@ -296,9 +296,10 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	void ClearMessages ();
 
 	Defcon::I2DCoordMapper*          CoordMapperPtr      = nullptr;
+	Defcon::I2DCoordMapper*          CoordMapperStarsPtr = nullptr;
 	Defcon::I2DCoordMapper*          CoordMapperRadarPtr = nullptr;
 	Defcon::CTerrain*                TerrainPtr          = nullptr;
-	Defcon::CPlayerShip*                 PlayerShipPtr       = nullptr;
+	Defcon::CPlayerShip*             PlayerShipPtr       = nullptr;
 	Defcon::CGameObjectCollection*   Objects             = nullptr;
 	Defcon::CGameObjectCollection*   Enemies             = nullptr;
 	Defcon::CGameObjectCollection*   Debris              = nullptr;

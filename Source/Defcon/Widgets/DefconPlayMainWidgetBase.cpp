@@ -368,7 +368,8 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 
 	for(const auto& Star : Stars)
 	{
-		CoordMapperPtr->To(Star.P, pt);
+		//CoordMapperPtr->To(Star.P, pt);
+		CoordMapperStarsPtr->To(Star.P, pt);
 
 		if(pt.x <= 0 || pt.x >= AllottedGeometry.GetLocalSize().X)
 		{

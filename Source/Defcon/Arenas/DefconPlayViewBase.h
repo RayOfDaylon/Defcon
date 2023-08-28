@@ -124,6 +124,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	Defcon::CScheduledTaskList     ScheduledTasks;
 
 	Defcon::CArenaCoordMapper      MainAreaMapper;
+	Defcon::CArenaCoordMapper      MainAreaStarsMapper;
 
 	Daylon::FLoopedSound           ShipThrustSoundLoop;
 	bool                           WasShipUnderThrust = false;

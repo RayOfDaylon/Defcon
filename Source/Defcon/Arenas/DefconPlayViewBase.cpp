@@ -271,8 +271,11 @@ void UDefconPlayViewBase::InitMapperAndTerrain()
 	const auto MainS = Daylon::GetWidgetSize(PlayAreaMain);
 
 	ArenaWidth = ArenaSize.X;
-	MainAreaMapper.Init((int32)MainS.X, (int32)MainS.Y, (int32)ArenaWidth);
+	MainAreaMapper.Init(MainS.X, MainS.Y, ArenaWidth);
 	PlayAreaMain->CoordMapperPtr = &MainAreaMapper;
+
+	MainAreaStarsMapper.Init(MainS.X, MainS.Y, ArenaWidth);
+	PlayAreaMain->CoordMapperStarsPtr = &MainAreaStarsMapper;
 
 	SAFE_DELETE(Terrain);
 	
@@ -321,7 +324,6 @@ void UDefconPlayViewBase::TransportPlayerShip()
 	// The player ship entered the stargate but the mission isn't over.
 	// If any humans are being abducted, place the ship at the highest one
 	// and maintain the ship's direction.
-	//   If no abductions, take the player to where the action is.
 
 	CFPoint P(0.0f, 0.0f);
 
@@ -370,12 +372,17 @@ void UDefconPlayViewBase::TransportPlayerShip()
 	else
 	{
 		// No humans are being abducted. 
-		// For now, teleport the player randomly.
-
+		// Apparently the arcade game teleported the ship to the other side of the planet,
+		// which in our case is the x-origin.
+#if 1
+		PlayerShip.Position.x = 0.0f;
+#else
+		// We used to teleport the player randomly.
 		do
 		{
 			PlayerShip.Position.Set(WrapX(FRAND * ArenaWidth), (FRAND * 0.8f + 0.1f) * ArenaSize.Y);
 		} while(Mission->PlayerInStargate());
+#endif
 	}
 
 	// The SettlePlayer routine assumes the player ship is visible, and when it's not, 
@@ -390,18 +397,21 @@ void UDefconPlayViewBase::TransportPlayerShip()
 
 	const float kMargin = PLAYER_POSMARGIN;
 
+	float DeltaX;
+
 	if(PlayerShip.Orientation.Fwd.x > 0)
 	{
 		// Player facing right.
-		const float dx = ScreenPt.x - kMargin;
-		MainAreaMapper.SlideBy(dx);
+		DeltaX = ScreenPt.x - kMargin;
 	}
 	else
 	{
 		// Player facing left.
-		const float dx = GetDisplayWidth() - kMargin - ScreenPt.x;
-		MainAreaMapper.SlideBy(-dx);
+		DeltaX = (GetDisplayWidth() - kMargin - ScreenPt.x) * -1;
 	}
+
+	MainAreaMapper.SlideBy(DeltaX);
+	MainAreaStarsMapper.SlideBy(DeltaX * 0.5f);
 }
 
 
@@ -431,30 +441,26 @@ void UDefconPlayViewBase::SettlePlayer(float DeltaTime)
 	CFPoint ScreenPt;
 	MainAreaMapper.To(PlayerShip.Position, ScreenPt);
 
+	float DeltaX;
+
 	if(PlayerShip.Orientation.Fwd.x > 0)
 	{
 		// Player facing right.
-		const float dx = ScreenPt.x - kMargin;
-		const float f  = FMath::Min(kPanAvail, dx);
-		MainAreaMapper.SlideBy(f);
+		DeltaX = FMath::Min(kPanAvail, ScreenPt.x - kMargin);
 	}
 	else
 	{
 		// Player facing left.
-		const float dx = GetDisplayWidth() - kMargin - ScreenPt.x;
-		const float f  = FMath::Min(kPanAvail, dx);
-		MainAreaMapper.SlideBy(-f);
+		DeltaX = FMath::Min(kPanAvail, GetDisplayWidth() - kMargin - ScreenPt.x) * -1;
 	}
+
+	MainAreaMapper.SlideBy(DeltaX);
+	MainAreaStarsMapper.SlideBy(DeltaX * 0.5f);
 }
 
 
 void UDefconPlayViewBase::AllStopPlayerShip()
 {
-	//MoveShipRightState.bActive = 
-	//MoveShipLeftState.bActive =
-	//MoveShipUpState.bActive =
-	//MoveShipDownState.bActive = false;
-
 	auto& PlayerShip = GetPlayerShip();
 
 	PlayerShip.ZeroInput();
@@ -1228,7 +1234,7 @@ void UDefconPlayViewBase::OnNavEvent(ENavigationKey Key)
 
 	CFPoint pt = MainAreaMapper.GetOffset();
 	pt.x += Direction * 100.0f;
-	pt.x = FMath::Wrap(pt.x, 0.0f, MainAreaMapper.PlanetCircumference);
+	pt.x = WrapX(pt.x);// FMath::Wrap(pt.x, 0.0f, MainAreaMapper.PlanetCircumference);
 	//pt.x = (int32)(pt.x + MainAreaMapper.PlanetCircumference) % (int32)MainAreaMapper.PlanetCircumference;
 	MainAreaMapper.ScrollTo(pt);
 

@@ -2,7 +2,19 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 25, 2023
+August 28, 2023
+
+
+The background stars pan at half the speed of the 
+foreground objects e.g. terrain. The Yllabian dogfight 
+missions lack terrain so flying can seem slow, but 
+it's what the original arcade game does.
+
+Entering the stargate before mission end and without any 
+human abductions in progress moves player ship to the 
+other side of the planet (apparently this is what the 
+original arcade game did -- the only way to teleport 
+randomly was to use the Hyperspace button).
 
 Laser beams use texture atlas that give disintegrating tail 
 effect similar to arcade game.
