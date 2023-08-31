@@ -298,7 +298,9 @@ void Defcon::CMilitaryMission::AddMissionCleaner(const CFPoint& where)
 	// to throw in various nonmission hostiles at an increasing 
 	// frequency until the player wipes out the critical opponents.
 
-	const EObjType MunchieTypes[] = { EObjType::PHRED, EObjType::BIGRED, EObjType::MUNCHIE };
+	// Munchies are spawned by phreds.
+
+	const EObjType CleanerTypes[] = { EObjType::PHRED, EObjType::BIGRED /*, EObjType::MUNCHIE*/ };
 
 	if(Age - TimeLastCleanerSpawned >= CleanerFreq)
 	{
@@ -307,7 +309,7 @@ void Defcon::CMilitaryMission::AddMissionCleaner(const CFPoint& where)
 			CleanerFreq -= 0.5f;
 		}
 
-		AddNonTarget(FRAND < BAITER_PROB ? EObjType::BAITER : MunchieTypes[IRAND(3)], where);
+		AddNonTarget(FRAND < BAITER_PROB ? EObjType::BAITER : CleanerTypes[IRAND(array_size(CleanerTypes))], where);
 	}
 }
 

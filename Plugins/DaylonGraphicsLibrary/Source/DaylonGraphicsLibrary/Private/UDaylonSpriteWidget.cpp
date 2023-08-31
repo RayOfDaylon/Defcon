@@ -2,6 +2,13 @@
 
 #include "UDaylonSpriteWidget.h"
 
+#if WITH_EDITOR
+const FText UDaylonSpriteWidget::GetPaletteCategory()
+{
+	return FText::FromString(TEXT("Daylon"));
+}
+#endif
+
 
 UDaylonSpriteWidget::UDaylonSpriteWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

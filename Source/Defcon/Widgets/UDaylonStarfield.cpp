@@ -3,6 +3,15 @@
 #include "UDaylonStarfield.h"
 
 
+
+#if WITH_EDITOR
+const FText UDaylonStarfield::GetPaletteCategory()
+{
+	return FText::FromString(TEXT("Daylon"));
+}
+#endif
+
+
 UDaylonStarfield::UDaylonStarfield(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bIsVariable = false;

@@ -2,8 +2,18 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 28, 2023
+August 31, 2023
 
+
+Muchies come in different colors instead of always being green (arcade match).
+
+Munchies don't materialize; instead are spawned by Phreds (arcade match).
+
+Rescued humans (returned to ground) emit little hearts to
+show their gratitude. The arcade game emitted score tips, 
+but we don't show score or score tips.
+
+Renamed UDefconPlayViewBase::SettlePlayer to KeepPlayerInView.
 
 The background stars pan at half the speed of the 
 foreground objects e.g. terrain. The Yllabian dogfight 

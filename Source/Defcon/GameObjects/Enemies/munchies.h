@@ -14,11 +14,13 @@ namespace Defcon
 		// Base class of munchie enemies -- munchie, phred, and bigred.
 		// Motion is done via ILiveGameObject physics.
 
+		typedef CEnemy Super;
+
 		public:
 			IMunchie();
 			virtual ~IMunchie() {}
 
-			virtual void   Tick                   (float DeltaTime) override;
+			virtual void   Tick   (float DeltaTime) override;
 
 
 		protected:
@@ -31,16 +33,26 @@ namespace Defcon
 
 	class CPhred : public IMunchie
 	{
+		typedef IMunchie Super;
+
 		public:
 			CPhred();
 			virtual ~CPhred() {}
 
+			virtual void   Tick                   (float DeltaTime) override;
 			virtual EColor GetExplosionColorBase  () const override { return EColor::Gray; }
+
+
+		protected:
+
+			float MunchieSpawnCountdown;
 	};
 
 
 	class CBigRed : public IMunchie
 	{
+		typedef IMunchie Super;
+
 		public:
 			CBigRed();
 			virtual ~CBigRed() {}
@@ -51,11 +63,17 @@ namespace Defcon
 
 	class CMunchie : public IMunchie
 	{
+		typedef IMunchie Super;
+
 		public:
 			CMunchie();
 			virtual ~CMunchie() {}
 
-			virtual EColor GetExplosionColorBase () const override { return EColor::Green; }
+			virtual EColor GetExplosionColorBase () const override { return ColorCode; }
 			virtual float  GetExplosionMass      () const override { return 0.6f; }
+
+		protected:
+			
+			EColor ColorCode;
 	};
 }

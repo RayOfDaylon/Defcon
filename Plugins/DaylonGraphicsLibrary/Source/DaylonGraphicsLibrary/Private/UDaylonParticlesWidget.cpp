@@ -3,6 +3,14 @@
 #include "UDaylonParticlesWidget.h"
 
 
+#if WITH_EDITOR
+const FText UDaylonParticlesWidget::GetPaletteCategory()
+{
+	return FText::FromString(TEXT("Daylon"));
+}
+#endif
+
+
 UDaylonParticlesWidget::UDaylonParticlesWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bIsVariable = false;

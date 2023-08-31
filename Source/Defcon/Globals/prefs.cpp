@@ -92,6 +92,9 @@ void Defcon::CPrefs::Construct()
 	INITPREF( mine_damage,                 30,       "%",            Integer,      0,         100,      "Shield loss when object hits a mine"                                                       );
 	INITPREF( mine_lifespan,               10.0f,    "seconds",      Float,        1.0f,       30.0f,   "How long a mine exists after being deployed"                                               );
 	INITPREF( missionname_uppercase,        0,       "",             Boolean,      0,           0,      "Make mission name text appear uppercase"                                                   );
+
+	INITPREFR( MunchieSpawnCountdown, 2.0f, 5.0f, "sec",   "Time for a phred to spawn a munchie"                                                                );
+
 	INITPREF( munchie_value,               50,       "",             Integer,      0,        1000,      "Number of points earned for destroying a munchie"                                          );
 	INITPREF( object_drawbbox,              0,       "",             Boolean,      0,           0,      "Show sprite bounding boxes (debugging aid)"                                                );
 	INITPREF( phred_value,                200,       "",             Integer,      0,        1000,      "Number of points earned for destroying a Phred"                                            );

@@ -37,7 +37,7 @@ Defcon::CPlayerShip::CPlayerShip()
 	Type       = EObjType::PLAYER;
 
 	// Start off invincible, switch after birth finished.
-	bMortal = false;
+	bMortal       = false;
 	bCanBeInjured = true;
 
 	LaserWeapon.MountOnto(*this, CFPoint(0,0));

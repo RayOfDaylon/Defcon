@@ -14,6 +14,7 @@
 #include "Globals/GameObjectResources.h"
 #include "GameObjects/Enemies/enemies.h"
 #include "GameObjects/playership.h"
+#include "GameObjects/bmpdisp.h"
 #include "Arenas/DefconPlayViewBase.h"
 #include "DefconLogging.h"
 
@@ -22,16 +23,16 @@
 Defcon::CHuman::CHuman()
 {
 	ParentType = Type;
-	Type = EObjType::HUMAN;
+	Type       = EObjType::HUMAN;
 
-	Objects = nullptr;
-	Carrier = nullptr;
-	Age = FRAND * 10;
-	RadarColor = C_MAGENTA;
-	SwitchFacingDirectionCountdown = FRANDRANGE(1.0f, 4.0f);
-	bCanBeInjured = true;
+	Objects               = nullptr;
+	Carrier               = nullptr;
+	Age                   = FRAND * 10;
+	RadarColor            = C_MAGENTA;
+	bCanBeInjured         = true;
 	bIsCollisionInjurious = false;
 	BboxRadius.Set(4, 10);
+	SwitchFacingDirectionCountdown = FRANDRANGE(1.0f, 4.0f);
 	
 	WalkingSpeed = FRANDRANGE(8.0f, 12.0f);
 	SwitchWalkingDirectionCountdown = FRANDRANGE(2.0f, 5.0f);
@@ -66,31 +67,38 @@ void Defcon::CHuman::OnAboutToDie()
 	// If we have an abductor, he'll get told too.
 	check(Objects != nullptr);
 
-	Objects ->Notify(Defcon::EMessage::HumanKilled, this);
-	Objects2->Notify(Defcon::EMessage::HumanKilled, this);
+	Objects ->Notify(EMessage::HumanKilled, this);
+	Objects2->Notify(EMessage::HumanKilled, this);
 }
 
 
-void Defcon::CHuman::Notify(Defcon::EMessage msg, void* pObj)
+void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 {
 	switch(msg)
 	{
-		case Defcon::EMessage::TakenAboard:
+		case EMessage::TakenAboard:
 		{
 			check(Carrier == nullptr);
 			Carrier = (IGameObject*)pObj;
 			check(Carrier != nullptr);
 			
 			// Tell everyone what happened.
-			Objects ->Notify(Defcon::EMessage::HumanTakenAboard, this);
-			Objects2->Notify(Defcon::EMessage::HumanTakenAboard, this);
+			Objects ->Notify(EMessage::HumanTakenAboard, this);
+			Objects2->Notify(EMessage::HumanTakenAboard, this);
 		}
 			break;
 
-		case Defcon::EMessage::CarrierKilled:
-		case Defcon::EMessage::Released:
+
+		case EMessage::Released:
+
+			ShowGratitude();
+
+			// deliberate fall-through
+
+		case EMessage::CarrierKilled:
 			check(Carrier != nullptr);
 			Carrier = nullptr;
+
 			break;
 	}
 
@@ -161,6 +169,7 @@ void Defcon::CHuman::Tick(float DeltaTime)
 				{
 					// We landed okay.
 					GArena->IncreaseScore(HUMAN_VALUE_LIBERATED, true, &Position);
+					ShowGratitude();
 				}
 			}
 		}
@@ -203,3 +212,21 @@ float Defcon::CHuman::GetExplosionMass() const
 {
 	return 0.5f;
 }
+
+
+void Defcon::CHuman::ShowGratitude() const
+{
+	auto Icon = new CBitmapDisplayer;
+
+	Icon->SetType(EObjType::HEART);
+	Icon->Position    = Position + CFPoint(FRANDRANGE(-30.0f, 30.0f), 30.0f);
+	Icon->Orientation.Fwd.Set((FRAND - 0.5f) * 100, 50.0f);
+
+	const auto& Info = GGameObjectResources.Get(EObjType::HEART);
+	Icon->Lifespan   =  FRANDRANGE(2.0f, 3.0f);
+
+	Icon->Sprite = Daylon::SpawnSpritePlayObject2D(Info.Atlas->Atlas, Info.Size, Info.Radius);
+
+	GArena->AddDebris(Icon);
+}
+

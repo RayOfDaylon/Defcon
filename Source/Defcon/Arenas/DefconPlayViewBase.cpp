@@ -385,9 +385,9 @@ void UDefconPlayViewBase::TransportPlayerShip()
 #endif
 	}
 
-	// The SettlePlayer routine assumes the player ship is visible, and when it's not, 
+	// The KeepPlayerInView routine assumes the player ship is visible, and when it's not, 
 	// it just slowly pans the arena until it is. We have to pan the arena immediately 
-	// so that SettlePlayer doesn't have to do anything.
+	// so that KeepPlayerInView doesn't have to do anything.
 
 	// Get the player ship's screen location. If it's not at the margin (and it almost certainly won't be)
 	// then we need to pan by the difference.
@@ -415,17 +415,16 @@ void UDefconPlayViewBase::TransportPlayerShip()
 }
 
 
-void UDefconPlayViewBase::SettlePlayer(float DeltaTime)
+void UDefconPlayViewBase::KeepPlayerInView(float DeltaTime)
 {
-	// This routine is like a deamon which works to 
-	// keep the player ship within some fixed margin 
-	// of the screen edge being pointed away from.
-	// That way, if the user reverses direction and 
-	// does nothing else, the screen will quietly pan 
-	// to put most of the arena in front of him.
+	// Ensure that the main arena widget keeps the player in view.
+	// We not only pan the arena mapper, we also keep the player ship 
+	// within some fixed margin of the screen edge being pointed away from.
+	// That way, if the user reverses direction and does nothing else, 
+	// the screen will quietly pan to put most of the arena in front of him.
 
 	// rcg, jun 24/04: a ship with a larger maxthrust 
-	// is able to outrun the settler. Increasing 
+	// is able to outrun the margin settler. Increasing 
 	// the player_marginsettlespeed fixes it, but 
 	// then the ship snaps too quickly when the 
 	// thrust is no longer applied. What we need to do
@@ -1064,9 +1063,8 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		// Constrain player vertically.
 		PlayerShip.Position.y = CLAMP(PlayerShip.Position.y, PLAYERSHIP_VMARGIN, ArenaSize.Y - PLAYERSHIP_VMARGIN);
 
-		SettlePlayer(DeltaTime);
+		KeepPlayerInView(DeltaTime);
 		DoThrustSound(DeltaTime);
-
 
 
 		if(HumansInvolved)

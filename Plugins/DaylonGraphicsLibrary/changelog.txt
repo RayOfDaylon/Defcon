@@ -1,6 +1,9 @@
 Changelog for DaylonGraphicsLibrary UE plugin
 
-Last updated: August 26, 2023
+Last updated: August 27, 2023
+
+Changed Daylon::GetWidgetPosition to fix bug where 
+it wasn't quite returning the widget's layout position.
 
 Added Tint member to SDaylonSprite, lets sprites
 be tinted by an FLinearColor.

@@ -36,6 +36,7 @@ namespace Defcon
 			bool           IsFalling              () const;
 			bool           IsOnGround             () const { return !(IsFalling() || IsBeingCarried()); }
 			void           SetToNotCarried        () { Carrier = nullptr; }
+			void           ShowGratitude          () const;
 
 			CGameObjectCollection*	Objects   = nullptr;
 			CGameObjectCollection*	Objects2  = nullptr;

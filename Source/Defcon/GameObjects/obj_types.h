@@ -51,6 +51,7 @@ namespace Defcon
 
 		EXPLOSION,
 		EXPLOSION2,
+		HEART,
 		MATERIALIZATION,
 		FLAK,
 		STAR,

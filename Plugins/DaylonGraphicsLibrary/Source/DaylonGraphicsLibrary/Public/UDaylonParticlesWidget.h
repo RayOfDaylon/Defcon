@@ -34,6 +34,10 @@ class DAYLONGRAPHICSLIBRARY_API UDaylonParticlesWidget : public UWidget
 		virtual void SynchronizeProperties () override;
 		virtual void ReleaseSlateResources (bool bReleaseChildren) override;
 
+#if WITH_EDITOR
+		const FText GetPaletteCategory() override;
+#endif
+
 
 	protected:
 

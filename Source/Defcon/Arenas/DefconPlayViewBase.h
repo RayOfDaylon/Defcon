@@ -85,7 +85,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	void ConcludeMission          ();
 
 	void InitPlayerShip           ();
-	void SettlePlayer             (float DeltaTime);
+	void KeepPlayerInView             (float DeltaTime);
 	bool IsPlayerShipThrustActive () const;
 	void CheckPlayerCollided      ();
 	void CheckIfPlayerHit         (Defcon::CGameObjectCollection& Objects);

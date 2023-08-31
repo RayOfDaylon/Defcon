@@ -98,6 +98,7 @@ namespace Defcon
 				mine_lifespan,
 
 				missionname_uppercase,
+				MunchieSpawnCountdown,
 				munchie_value,
 
 				object_drawbbox,
@@ -241,6 +242,7 @@ extern Defcon::CPrefs	GPrefs;
 #define MINE_DAMAGE                  IPREFVAL(mine_damage)
 #define MINE_LIFESPAN                FPREFVAL(mine_lifespan)
 #define MISSIONNAME_UPPERCASE        BPREFVAL(missionname_uppercase)
+#define MUNCHIE_SPAWN_COUNTDOWN      RPREFVAL(MunchieSpawnCountdown)
 #define MUNCHIE_VALUE                IPREFVAL(munchie_value)
 #define OBJECT_DRAWBBOX              BPREFVAL(object_drawbbox)
 #define PHRED_VALUE                  IPREFVAL(phred_value)

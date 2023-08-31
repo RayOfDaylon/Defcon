@@ -55,6 +55,11 @@ class DEFCON_API UDaylonStarfield : public UWidget
 
 		void Tick(float DeltaTime);
 
+#if WITH_EDITOR
+		// UWidget interface
+		virtual const FText GetPaletteCategory() override;
+#endif
+
 
 	protected:
 

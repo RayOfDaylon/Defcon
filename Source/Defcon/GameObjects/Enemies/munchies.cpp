@@ -152,6 +152,25 @@ Defcon::CPhred::CPhred()
 	CreateSprite(Type);
 	const auto& SpriteInfo = GGameObjectResources.Get(Type);
 	BboxRadius = SpriteInfo.Size / 2;
+
+	MunchieSpawnCountdown = Daylon::FRandRange(MUNCHIE_SPAWN_COUNTDOWN);
+}
+
+
+void Defcon::CPhred::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	MunchieSpawnCountdown -= DeltaTime;
+
+	if(MunchieSpawnCountdown > 0.0f)
+	{
+		return;
+	}
+
+	MunchieSpawnCountdown = Daylon::FRandRange(MUNCHIE_SPAWN_COUNTDOWN);
+
+	GArena->CreateEnemyNow(EObjType::MUNCHIE, GetType(), Position, EObjectCreationFlags::CleanerEnemy);
 }
 
 // ----------------------------------------------------------------------------------
@@ -159,15 +178,26 @@ Defcon::CPhred::CPhred()
 Defcon::CMunchie::CMunchie()
 {
 	ParentType = Type;
-	Type = EObjType::MUNCHIE;
+	Type       = EObjType::MUNCHIE;
 
 	AudioTrack = EAudioTrack::Munchie;
 	PointValue = MUNCHIE_VALUE;
 	RadarColor = MakeColorFromComponents(0, 192, 0);
-	Mass = PLAYER_MASS * 18;
+	Mass       = PLAYER_MASS * 18;
 
 	CreateSprite(Type);
 	BboxRadius = GGameObjectResources.Get(Type).Size / 2;
+
+	static const EColor ColorCodes[] =
+	{
+		EColor::Green,
+		EColor::Orange,
+		EColor::Red
+	};
+
+	ColorCode = ColorCodes[IRAND(array_size(ColorCodes))];
+
+	Sprite->SetTint(GGameColors.GetColor(ColorCode, 1.0f));
 }
 
 // ----------------------------------------------------------------------------------
