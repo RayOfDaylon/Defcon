@@ -133,6 +133,9 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	TSubclassOf<UDefconViewBase> HelpViewClass;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Views")
+	TSubclassOf<UDefconViewBase> DetailsViewClass;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Views")
 	TSubclassOf<UDefconViewBase> CreditsViewClass;
 
 	// -- Audio ----------------------------------------------------------

@@ -2,8 +2,16 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 31, 2023
+September 1, 2023
 
+
+Added a Details arena (view) that shows information on 
+each enemy type. Available by pressing Tab or Enter 
+after choosing Help from the main menu. Press Tab or Enter 
+to show the next page, or if you don't want to wait 
+for the text to finish crawling. Some enemies don't 
+have pictures (for now) because their appearance is composited 
+from other textures, and no main texture is available.
 
 Muchies come in different colors instead of always being green (arcade match).
 

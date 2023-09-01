@@ -37,7 +37,9 @@ class DEFCON_API UDefconHelpViewBase : public UDefconViewBase
 
 	virtual void OnActivate   () override;
 #endif
-	virtual void OnEscPressed () override;
+	virtual void OnEscPressed   () override;
+	virtual void OnSkipPressed  () override;
+	virtual void OnEnterPressed () override;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	UGridPanel* KeyboardControlsList;

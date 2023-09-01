@@ -153,6 +153,7 @@ void UDefconGameInstance::CreateArenas()
 	Views.Add(CreateWidget<UDefconViewBase>(PC, PostwaveViewClass));
 	Views.Add(CreateWidget<UDefconViewBase>(PC, GameOverViewClass));
 	Views.Add(CreateWidget<UDefconViewBase>(PC, HelpViewClass));
+	Views.Add(CreateWidget<UDefconViewBase>(PC, DetailsViewClass));
 	Views.Add(CreateWidget<UDefconViewBase>(PC, CreditsViewClass));
 }
 

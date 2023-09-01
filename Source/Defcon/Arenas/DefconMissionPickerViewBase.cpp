@@ -13,7 +13,7 @@
 //#include "UMG/Public/Blueprint/SlateBlueprintLibrary.h"
 
 
-#define DEBUG_MODULE      1
+#define DEBUG_MODULE      0
 
 #if(DEBUG_MODULE == 1)
 #pragma optimize("", off)

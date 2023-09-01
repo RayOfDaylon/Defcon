@@ -71,7 +71,7 @@ void UDefconViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
 	Age += DeltaTime;
 
-	if(!bDoneActivating && IsOkayToFinishActivating()/*bPaintingOccurring*/)
+	if(!bDoneActivating && IsOkayToFinishActivating())
 	{
 		// This test is probably not needed, but just to be safe.
 		if(GDefconGameInstance != nullptr && GDefconGameInstance->IsLive() && GDefconGameInstance->GetCurrentView() == this)

@@ -18,6 +18,7 @@ enum class EDefconArena : uint8
 	Postwave,
 	GameOver,
 	Help,
+	Details,
 	Credits
 };
 
@@ -32,6 +33,12 @@ enum class EDefconArena : uint8
 	               -> (Help)    -> Help    -> MainMenu
 			       -> (Info)    -> Credits -> MainMenu
 				   >> (Exit)
+
+	Help           -> (Tab)     -> Details
+	               -> (Esc)     -> MainMenu
+
+	Details        -> (Tab)     -> Help
+	               -> (Esc)     -> MainMenu
 
 	MissionPicker  -> (Select)  -> Prewave
 	MissionPicker  -> (Esc)     -> MainMenu

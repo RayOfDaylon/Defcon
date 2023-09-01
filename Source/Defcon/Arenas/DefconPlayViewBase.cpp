@@ -154,6 +154,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 
 	PlayAreaMain->Init(&GetHumans(), &Objects, &Enemies, &Debris, &Blasts, ArenaSize);
+	PlayAreaMain->OnFinishActivating();
 
 	if(!IsValid(GDefconGameInstance))
 	{
@@ -207,7 +208,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 	});
 
 
-	PlayAreaMain  -> SetSafeToStart();
+	PlayAreaMain  -> SetSafeToStart(); // todo: may not be needed
 	PlayAreaRadar -> OnFinishActivating();
 
 	bMissionDoneMsgShown = false;
@@ -748,18 +749,18 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 	// Start the player ship destruction sequence.
 	// We do this with a special game object.
 
-	auto pShip = new CDestroyedPlayerShip();
+	auto DestroyedShip = new CDestroyedPlayerShip();
 
-	pShip->InitDestroyedPlayer(PlayerShip.Position, PlayerShip.BboxRadius, DESTROYED_PLAYER_PARTICLE_SPEED, DESTROYED_PLAYER_PARTICLE_MIN_LIFETIME, DESTROYED_PLAYER_PARTICLE_MAX_LIFETIME);
+	DestroyedShip->InitDestroyedPlayer(PlayerShip.Position, PlayerShip.BboxRadius, DESTROYED_PLAYER_PARTICLE_SPEED, DESTROYED_PLAYER_PARTICLE_MIN_LIFETIME, DESTROYED_PLAYER_PARTICLE_MAX_LIFETIME);
 
-	pShip->Position        = PlayerShip.Position;
-	pShip->Orientation.Fwd = PlayerShip.Orientation.Fwd;
+	DestroyedShip->Position        = PlayerShip.Position;
+	DestroyedShip->Orientation.Fwd = PlayerShip.Orientation.Fwd;
 
-	pShip->Sprite->FlipHorizontal = (pShip->Orientation.Fwd.x < 0);
+	DestroyedShip->Sprite->FlipHorizontal = (DestroyedShip->Orientation.Fwd.x < 0);
 
-	pShip->InstallSprite();
+	DestroyedShip->InstallSprite();
 
-	Objects.Add(pShip);
+	Objects.Add(DestroyedShip);
 
 	GAudio->OutputSound(Defcon::EAudioTrack::Player_dying);
 

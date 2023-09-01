@@ -17,12 +17,25 @@ const FText UDaylonSpilltext::GetPaletteCategory()
 void UDaylonSpilltext::Reset()
 {
 	InlineCode      = FString::Printf(TEXT("<img id=\"%s\"/>"), *ImageID);
+	SecondsPerChar  = 1.0f / CharsPerSecond;
 	Age             = 0.0f;
 	SourceTextLen   = SourceText.ToString().Len();
 	NumCharsSpilled = 0;
 	IsSpilling      = true;
+}
 
-	SecondsPerChar  = 1.0f / CharsPerSecond;
+
+bool UDaylonSpilltext::IsFinished() const
+{
+	return (NumCharsSpilled >= SourceTextLen);
+}
+
+
+void UDaylonSpilltext::Finish()
+{
+	SetText(SourceText);
+	NumCharsSpilled = SourceTextLen;
+	IsSpilling = false;
 }
 
 

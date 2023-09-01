@@ -269,14 +269,15 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	void DrawObjects    (const Defcon::CGameObjectCollection* Collection, FPainter& PaintArgs) const;
 	void DrawObjectBbox (Defcon::IGameObject* Object, FPainter& PaintArgs) const;
 
-	void OnFinishActivating();
 
-	bool bDoneActivating = false;
-	bool bSafeToStart = false;
+	bool bDoneActivating     = false;
+	bool bSafeToStart        = false;
 	bool AreHumansInMission  = false;
 
 
 	public:
+
+	void OnFinishActivating();
 
 	void Init(Defcon::CGameObjectCollection* Humans, 
 			  Defcon::CGameObjectCollection* Objects, 

@@ -53,10 +53,6 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 	LOG_UWIDGET_FUNCTION
 	Super::NativeOnInitialized();
 
-	// For the duration of the playviewbase, all playobject widgets will be installed/uninstalled on our canvas.
-
-	Daylon::SetRootCanvas(RootCanvas);
-	Daylon::SetWidgetTree(WidgetTree);
 
 	// Load up the GameObjectResources global.
 
@@ -69,7 +65,7 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 	const auto UpscaleFactor = 4.25f / 3.0f;
 
 #define ADD_ATLAS(_ObjType, _Atlas) \
-	Check(_Atlas != nullptr); /* Did you forget to add Atlas asset to UUserWidget's texture list? */	\
+	Check(_Atlas != nullptr); /* Did you forget to add Atlas asset to UDefconPlayMainWidgetBase's texture list? */	\
 	_Atlas->Atlas.InitCache();	\
 	GGameObjectResources.Add(Defcon::EObjType::_ObjType, { _Atlas, _Atlas->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f });
 
@@ -119,6 +115,11 @@ void UDefconPlayMainWidgetBase::OnFinishActivating()
 
 	check(PlayerShipPtr != nullptr);
 	check(Humans != nullptr);
+
+	// Until reassociated, all sprite install/uninstall takes place on us.
+
+	Daylon::SetRootCanvas(RootCanvas);
+	Daylon::SetWidgetTree(WidgetTree);
 	
 	AreHumansInMission = GDefconGameInstance->GetMission()->HumansInvolved();
 
@@ -180,14 +181,16 @@ void UDefconPlayMainWidgetBase::NativeTick(const FGeometry& MyGeometry, float De
 	{
 		return;
 	}
-
+#if 0
+	// We call OnFinishActivating from UDefconPlayViewBase::OnFinishActivating.
+	// todo: if we don't need this code anymore, we should remove its related member vars
 	if(!bDoneActivating && bSafeToStart && Daylon::GetRootCanvas()->GetCanvasWidget())
 	{
 		OnFinishActivating();
 		bDoneActivating = true;
 		return;
 	}
-
+#endif
 
 	UpdatePlayerShip(DeltaTime);
 

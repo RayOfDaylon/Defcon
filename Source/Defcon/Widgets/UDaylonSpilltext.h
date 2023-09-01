@@ -37,9 +37,12 @@ class DEFCON_API UDaylonSpilltext : public URichTextBlock
 		UFUNCTION(BlueprintCallable, Category="DaylonSpilltext")
 		void Tick(float DeltaTime);
 
+		bool IsFinished() const;
+
+		void Finish();
+
 #if WITH_EDITOR
-	// UWidget interface
-	virtual const FText GetPaletteCategory() override;
+		virtual const FText GetPaletteCategory() override;
 #endif
 
 	protected:

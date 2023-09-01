@@ -92,3 +92,7 @@ void UDefconHelpViewBase::OnEscPressed()
 {
 	TransitionToArena(EDefconArena::MainMenu);
 }
+
+
+void UDefconHelpViewBase::OnSkipPressed()  { TransitionToArena(EDefconArena::Details); }
+void UDefconHelpViewBase::OnEnterPressed() { OnSkipPressed(); } 
