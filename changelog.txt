@@ -2,8 +2,15 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 1, 2023
+September 2, 2023
 
+
+Stars are occluded by terrain. (arcade mismatch) The arcade game 
+simply didn't draw stars below the max terrain elevation, 
+presumably to save CPU cycles by not viz-testing every frame.
+
+Background starfield doesn't require two circumnavigations 
+to sync the field to the terrain, only one as expected.
 
 Added a Details arena (view) that shows information on 
 each enemy type. Available by pressing Tab or Enter 

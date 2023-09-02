@@ -275,7 +275,7 @@ void UDefconPlayViewBase::InitMapperAndTerrain()
 	MainAreaMapper.Init(MainS.X, MainS.Y, ArenaWidth);
 	PlayAreaMain->CoordMapperPtr = &MainAreaMapper;
 
-	MainAreaStarsMapper.Init(MainS.X, MainS.Y, ArenaWidth);
+	MainAreaStarsMapper.Init(MainS.X, MainS.Y, ArenaWidth / 2);
 	PlayAreaMain->CoordMapperStarsPtr = &MainAreaStarsMapper;
 
 	SAFE_DELETE(Terrain);

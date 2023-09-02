@@ -130,11 +130,13 @@ void UDefconPlayMainWidgetBase::OnFinishActivating()
 	{
 		FStar Star;
 
-		const float X = Daylon::FRandRange(0.0f, ArenaSize.X);
+		const float X = Daylon::FRandRange(0.0f, ArenaSize.X / 2);
 
-		const auto Elev = (TerrainPtr == nullptr ? 0.0f : TerrainPtr->GetElev(X / ArenaSize.X) + 20);
+		// Due to parallax, stars aren't stationary relative to terrain, so there's 
+		// no point clipping them by the terrain here.
+		//const auto Elev = (TerrainPtr == nullptr ? 0.0f : TerrainPtr->GetElev(X / ArenaSize.X) + 20);
 
-		Star.P.Set(X, Daylon::FRandRange(Elev, ArenaSize.Y));
+		Star.P.Set(X, Daylon::FRandRange(0.0f, ArenaSize.Y));
 
 		Stars.Add(Star);
 	}
@@ -326,6 +328,13 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 ) const
 {
 	LOG_UWIDGET_FUNCTION
+
+	// Slate will already have rendered its scenegraph, in fact the call to Super::NativePaint 
+	// could be ommitted because all it does is check if there's any script-based paint handler.
+	// So whatever we draw here is going to (sigh) overlap our Slate widgets causing stars 
+	// and terrain to appear in front of all the ships. We could fix this by using custom paint 
+	// for everything, or making stars and terrain use widgets.
+
 	LayerId = Super::NativePaint(
 		Args,
 		AllottedGeometry,
@@ -335,9 +344,10 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 		InWidgetStyle,
 		bParentEnabled);
 
+
 	if(CoordMapperPtr == nullptr)
 	{
-		return LayerId;
+		return;
 	}
 
 	if(bShowOrigin)
@@ -368,21 +378,33 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 
 	// Draw the stars underneath everything.
 
-	CFPoint pt;
+	CFPoint P;
 
 	for(const auto& Star : Stars)
 	{
-		//CoordMapperPtr->To(Star.P, pt);
-		CoordMapperStarsPtr->To(Star.P, pt);
+		CoordMapperStarsPtr->To(Star.P, P);
 
-		if(pt.x <= 0 || pt.x >= AllottedGeometry.GetLocalSize().X)
+		// Skip if star isn't visible.
+		if(P.x >= AllottedGeometry.GetLocalSize().X)
 		{
 			continue;
 		}
 
+		// Skip if star occluded by terrain.
+		if(TerrainPtr != nullptr)
+		{
+			CFPoint ArenaP;
+			CoordMapperPtr->From(P, ArenaP);
+
+			if(TerrainPtr->GetElev(ArenaP.x / ArenaSize.X) >= ArenaP.y)
+			{
+				continue;
+			}
+		}
+
 		const auto Size = Star.IsBig ? 4 : 2;
 		const FVector2D S(Size, Size);
-		const FSlateLayoutTransform Translation(FVector2D(pt.x, pt.y) - S / 2);
+		const FSlateLayoutTransform Translation(FVector2D(P.x, P.y) - S / 2);
 
 		const auto Geometry = AllottedGeometry.MakeChild(S, Translation);
 
@@ -404,6 +426,7 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 		TerrainPtr->Draw(Painter, *CoordMapperPtr);
 	}
 
+	// These calls only matter for game objects that implement Draw overrides.
 	DrawObjects(Objects, Painter);
 	DrawObjects(Enemies, Painter);
 	DrawObjects(Debris,  Painter);
