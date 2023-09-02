@@ -250,6 +250,16 @@ Future Work
 -------------------------------------------------------------------------------------
 Some declarations are outside the Defcon namespace when they shouldn't be.
 
+Would be nice to have the functionality of DaylonSpritePlayObject 
+available for custom painting e.g. calling from UUserWidget::NativePaint. 
+This would solve display ordering issues when mixing custom painting
+with widget rendering. Basically the cel determiner logic would be one 
+function callable from NativeTick, and the render logic would be called 
+from NativePaint.
+
+Implement the Pause feature, which simply shorts the NativeTick 
+function until the Pause key is pressed again.
+
 Implement bullet time. All we should need to do is in each relevant Tick 
 handler, if bullet time is active, scale the DeltaTime by 0.25 or whatever.
 The '2' key should toggle bullet time.
@@ -306,3 +316,4 @@ since those objects only have mission lifetime. It would help
 clean up some lifetime issues we have between mission and play arena
 and reduce dependency on play arena from mission. Some work in this 
 direction has been started e.g. enemy creation forwards to an IMission method. 
+

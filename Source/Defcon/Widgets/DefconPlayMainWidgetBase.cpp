@@ -347,7 +347,7 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 
 	if(CoordMapperPtr == nullptr)
 	{
-		return;
+		return LayerId;
 	}
 
 	if(bShowOrigin)
