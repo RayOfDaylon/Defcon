@@ -262,6 +262,11 @@ void UDefconDetailsViewBase::NativeTick(const FGeometry& MyGeometry, float Delta
 		}
 
 		TextReadout->Tick(DeltaTime);
+
+		if(Pages[CurrentPageIdx].ObjType == Defcon::EObjType::GHOST)
+		{
+			Sprite->SetAngle(fmod(Age * 45.0f, 360.0f));
+		}
 	}
 }
 
@@ -299,7 +304,7 @@ void UDefconDetailsViewBase::ShowPage(int32 Idx)
 	UninstallSprite();
 
 	// todo: need a "pose" texture atlas for ghost and reformer enemies.
-	if(Page.ObjType != Defcon::EObjType::GHOST &&
+	if(/*Page.ObjType != Defcon::EObjType::GHOST &&*/
 	   Page.ObjType != Defcon::EObjType::REFORMER)
 	{
 		const auto& Info = GGameObjectResources.Get(Page.ObjType);

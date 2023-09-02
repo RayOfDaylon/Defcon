@@ -217,6 +217,9 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	TObjectPtr<UDaylonSpriteWidgetAtlas> HunterAtlas;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
+	TObjectPtr<UDaylonSpriteWidgetAtlas> GhostDemoAtlas;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
 	TObjectPtr<UDaylonSpriteWidgetAtlas> GhostPartAtlas;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
