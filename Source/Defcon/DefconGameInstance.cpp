@@ -208,6 +208,17 @@ void UDefconGameInstance::OnPausePressed()
 }
 
 
+void UDefconGameInstance::OnBulletTimePressed()
+{
+	if(CurrentView == nullptr)
+	{
+		return;
+	}
+
+	CurrentView->OnBulletTimePressed();
+}
+
+
 void UDefconGameInstance::OnNavEvent(ENavigationKey Key)
 {
 	// Forward event to current view.

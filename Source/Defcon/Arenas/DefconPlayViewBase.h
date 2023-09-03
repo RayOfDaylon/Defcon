@@ -68,13 +68,14 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	//virtual void OnActivate         () override;
 	virtual bool IsOkayToFinishActivating() const override;
 
-	virtual void OnFinishActivating () override;
-	virtual void OnDeactivate       () override;
-	virtual void OnEscPressed       () override;
-	virtual void OnPausePressed     () override;
-	virtual void OnNavEvent         (ENavigationKey Key) override; // todo: just for debugging
-	virtual void OnPawnNavEvent     (EDefconPawnNavigationEvent Event, bool Active) override;
-	virtual void OnPawnWeaponEvent  (EDefconPawnWeaponEvent Event, bool Active) override;
+	virtual void OnFinishActivating   () override;
+	virtual void OnDeactivate         () override;
+	virtual void OnEscPressed         () override;
+	virtual void OnPausePressed       () override;
+	virtual void OnBulletTimePressed  () override;
+	virtual void OnNavEvent           (ENavigationKey Key) override; // todo: just for debugging
+	virtual void OnPawnNavEvent       (EDefconPawnNavigationEvent Event, bool Active) override;
+	virtual void OnPawnWeaponEvent    (EDefconPawnWeaponEvent Event, bool Active) override;
 
 	virtual void OnToggleDebugStats        () override;
 	virtual void OnToggleShowBoundingBoxes () override;
@@ -144,11 +145,13 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	bool       bArenaClosing        = false;
 	bool       m_bRunSlow           = false;
 	bool       bIsPaused            = false;
+	bool       bBulletTime          = false;
 
 
 	public:
 
 	bool                                  IsPaused           () const { return bIsPaused; }
+	bool                                  IsBulletTime       () const { return bBulletTime; }
 	Defcon::I2DCoordMapper&               GetMainAreaMapper  () { return MainAreaMapper; }
 	const Defcon::I2DCoordMapper&         GetMainAreaMapper  () const { return MainAreaMapper; }
 	

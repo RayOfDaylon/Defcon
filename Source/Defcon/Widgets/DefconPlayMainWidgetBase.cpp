@@ -202,6 +202,11 @@ void UDefconPlayMainWidgetBase::NativeTick(const FGeometry& MyGeometry, float De
 		return;
 	}
 
+	if(GArena->IsBulletTime())
+	{
+		DeltaTime *= 0.25f;
+	}
+
 	UpdatePlayerShip(DeltaTime);
 
 	for(auto& Star : Stars)

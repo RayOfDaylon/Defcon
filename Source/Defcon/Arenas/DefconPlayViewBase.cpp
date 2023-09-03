@@ -143,9 +143,10 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	GArena = this;
 
-	bIsPaused = false;
-
+	bIsPaused     = false;
+	bBulletTime   = false;
 	bArenaClosing = false;
+
 	Daylon::Hide(Fader);
 
 	ShipThrustSoundLoop = GAudio->CreateLoopedSound(Defcon::EAudioTrack::Playership_thrust);
@@ -936,7 +937,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		FadeAge -= DeltaTime;
 	}
 
-	if(m_bRunSlow)
+	if(bBulletTime)
 	{
 		DeltaTime *= 0.25f;
 	}
@@ -1147,6 +1148,14 @@ void UDefconPlayViewBase::OnPausePressed()
 	bIsPaused = !bIsPaused;
 
 	AddMessage(bIsPaused ? TEXT("GAME PAUSED") : TEXT("GAME UNPAUSED"));
+}
+
+
+void UDefconPlayViewBase::OnBulletTimePressed()
+{
+	bBulletTime = !bBulletTime;
+
+	AddMessage(bBulletTime ? TEXT("BULLET TIME ON") : TEXT("BULLET TIME OFF"));
 }
 
 

@@ -34,6 +34,7 @@ class DEFCON_API UDefconViewBase : public UUserWidget
 	virtual void OnEnterPressed             () {}
 	virtual void OnSkipPressed              () {}
 	virtual void OnPausePressed             () {}
+	virtual void OnBulletTimePressed        () {}
 	virtual void OnNavEvent                 (ENavigationKey Key) {}
 	virtual void OnPawnNavEvent             (EDefconPawnNavigationEvent Event, bool Active) {}
 	virtual void OnPawnWeaponEvent          (EDefconPawnWeaponEvent Event, bool Active) {}

@@ -77,6 +77,9 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	void OnPausePressed();
 
 	UFUNCTION(BlueprintCallable, Category="Defcon")
+	void OnBulletTimePressed();
+
+	UFUNCTION(BlueprintCallable, Category="Defcon")
 	void OnNavEvent(ENavigationKey Key);
 
 	UFUNCTION(BlueprintCallable, Category="Defcon")

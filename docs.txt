@@ -49,7 +49,8 @@ L            Thrust (and point) right
 Space        Fire laser cannon
 Ctrl         Detonate smartbomb
 Backspace    Reserved for hyperspace
-P            Pause game
+B            Toggle bullet time
+P            Pause/unpause game
 Esc          Leave game
 
 The game gets harder over time. Specifically, landers will move faster, and 
@@ -72,7 +73,6 @@ Some debugging controls are available at runtime. They are:
 
 0          Toggle frame rate display
 1          Toggle player ship etc. stats
-2          Reserved for bullet time toggle (helps see animations better)
 3          Toggle bounding boxes
 4          Toggle planet origin axis line
 8          Choose type of enemy to spawn (cycles through all enemy types)
@@ -264,10 +264,6 @@ with widget rendering. Basically the cel determiner logic would be one
 function callable from NativeTick, and the render logic would be called 
 from NativePaint.
 
-Implement bullet time. All we should need to do is in each relevant Tick 
-handler, if bullet time is active, scale the DeltaTime by 0.25 or whatever.
-The '2' key should toggle bullet time.
-
 Implement the arena bogdown feature. This is when we temporarily use a 
 light bullet time (0.5 or 0.75) when the number of debris objects 
 exceeds a certain threshold. This mimics the slowdown that occured on 
@@ -321,3 +317,9 @@ clean up some lifetime issues we have between mission and play arena
 and reduce dependency on play arena from mission. Some work in this 
 direction has been started e.g. enemy creation forwards to an IMission method. 
 
+Texture atlas IDs are using the EObjType enum, which should only be 
+for game object types, but it's convenient because so many texture atlases 
+happen to be used for game objects. But we should have two enums.
+
+Need to implement more missions to fill in the "undefined" slots 
+in the mission picker, and to fill out the gameplay.
