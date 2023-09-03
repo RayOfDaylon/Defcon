@@ -74,6 +74,9 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	void OnSkipPressed();
 
 	UFUNCTION(BlueprintCallable, Category="Defcon")
+	void OnPausePressed();
+
+	UFUNCTION(BlueprintCallable, Category="Defcon")
 	void OnNavEvent(ENavigationKey Key);
 
 	UFUNCTION(BlueprintCallable, Category="Defcon")
@@ -276,6 +279,7 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	bool                           GodMode = false;
 	Defcon::FTotals                Stats;
 
+
 	public:
 
 	bool                                 IsLive                 () const;
@@ -284,7 +288,7 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	int32                                GetScore               () const { return Score; }
 	void                                 SetScore               (int32 Amount) { Score = Amount; }
 	int32                                AdvanceScore           (int32 Amount);
-	Defcon::CPlayerShip&                     GetPlayerShip          () { check(PlayerShipPtr != nullptr); return *PlayerShipPtr; }
+	Defcon::CPlayerShip&                 GetPlayerShip          () { check(PlayerShipPtr != nullptr); return *PlayerShipPtr; }
 	Defcon::CGameObjectCollection&       GetHumans              () { return Humans; }
 	const Defcon::CGameObjectCollection& GetHumans              () const { return Humans; }
 	bool                                 AcquireSmartBomb       ();

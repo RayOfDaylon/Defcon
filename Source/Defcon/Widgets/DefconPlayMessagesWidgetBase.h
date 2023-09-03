@@ -48,6 +48,8 @@ class DEFCON_API UDefconPlayMessagesWidgetBase : public UDefconUserWidgetBase
 
 		void AddMessage (const FString& Str, float Duration = 0.0f);
 		void Clear      ();
+
+		TFunction<bool()> IsPaused = [](){ return false; };
 };
 
 

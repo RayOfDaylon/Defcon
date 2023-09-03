@@ -71,6 +71,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	virtual void OnFinishActivating () override;
 	virtual void OnDeactivate       () override;
 	virtual void OnEscPressed       () override;
+	virtual void OnPausePressed     () override;
 	virtual void OnNavEvent         (ENavigationKey Key) override; // todo: just for debugging
 	virtual void OnPawnNavEvent     (EDefconPawnNavigationEvent Event, bool Active) override;
 	virtual void OnPawnWeaponEvent  (EDefconPawnWeaponEvent Event, bool Active) override;
@@ -142,15 +143,17 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	bool       AreHumansInMission   = false;
 	bool       bArenaClosing        = false;
 	bool       m_bRunSlow           = false;
+	bool       bIsPaused            = false;
 
 
 	public:
 
+	bool                                  IsPaused           () const { return bIsPaused; }
 	Defcon::I2DCoordMapper&               GetMainAreaMapper  () { return MainAreaMapper; }
 	const Defcon::I2DCoordMapper&         GetMainAreaMapper  () const { return MainAreaMapper; }
 	
-	Defcon::CPlayerShip&                      GetPlayerShip      ();
-	const Defcon::CPlayerShip&                GetPlayerShip      () const;
+	Defcon::CPlayerShip&                  GetPlayerShip      ();
+	const Defcon::CPlayerShip&            GetPlayerShip      () const;
 	Defcon::CGameObjectCollection&        GetHumans          ();
 	const Defcon::CGameObjectCollection&  GetHumans          () const;
 	Defcon::CGameObjectCollection&        GetObjects         () { return Objects; }

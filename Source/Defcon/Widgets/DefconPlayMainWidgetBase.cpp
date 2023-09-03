@@ -106,6 +106,8 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 
 #undef ADD_ATLAS
 
+	Messages->IsPaused = [](){ return GArena->IsPaused(); };
+
 	Messages->Clear();
 }
 
@@ -194,6 +196,11 @@ void UDefconPlayMainWidgetBase::NativeTick(const FGeometry& MyGeometry, float De
 		return;
 	}
 #endif
+
+	if(GArena->IsPaused())
+	{
+		return;
+	}
 
 	UpdatePlayerShip(DeltaTime);
 

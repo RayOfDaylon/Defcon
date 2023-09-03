@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-August 18, 2023
+September 3, 2023
 
 Chapters:
 
@@ -49,6 +49,8 @@ L            Thrust (and point) right
 Space        Fire laser cannon
 Ctrl         Detonate smartbomb
 Backspace    Reserved for hyperspace
+P            Pause game
+Esc          Leave game
 
 The game gets harder over time. Specifically, landers will move faster, and 
 enemies will fire bullets more accurately. Firebombers will shoot more fireballs.
@@ -250,15 +252,17 @@ Future Work
 -------------------------------------------------------------------------------------
 Some declarations are outside the Defcon namespace when they shouldn't be.
 
+Would be nice to use the Pause key instead of 'P' to pause the game. 
+Unfortunately, UE detects Pause keypresses itself and toggles inputs on/off, 
+which causes weird behavior. Until I figure out how UE manages pausing, 
+the 'P' key it is.
+
 Would be nice to have the functionality of DaylonSpritePlayObject 
 available for custom painting e.g. calling from UUserWidget::NativePaint. 
 This would solve display ordering issues when mixing custom painting
 with widget rendering. Basically the cel determiner logic would be one 
 function callable from NativeTick, and the render logic would be called 
 from NativePaint.
-
-Implement the Pause feature, which simply shorts the NativeTick 
-function until the Pause key is pressed again.
 
 Implement bullet time. All we should need to do is in each relevant Tick 
 handler, if bullet time is active, scale the DeltaTime by 0.25 or whatever.

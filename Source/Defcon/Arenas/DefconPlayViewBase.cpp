@@ -63,16 +63,16 @@ void UDefconPlayViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTim
 		return;
 	}
 
-	if(bDoneActivating)
+	if(bDoneActivating && !IsPaused())
 	{
 		UpdateGameObjects(DeltaTime);
-	}
 
-	if(Fader->IsVisible())
-	{
-		const float T = 1.0f - FMath::Max(0.0f, FadeAge / FADE_DURATION_NORMAL);
+		if(Fader->IsVisible())
+		{
+			const float T = 1.0f - FMath::Max(0.0f, FadeAge / FADE_DURATION_NORMAL);
 
-		Fader->SetRenderOpacity(T);
+			Fader->SetRenderOpacity(T);
+		}
 	}
 }
 
@@ -142,6 +142,8 @@ void UDefconPlayViewBase::OnFinishActivating()
 	Super::OnFinishActivating();
 
 	GArena = this;
+
+	bIsPaused = false;
 
 	bArenaClosing = false;
 	Daylon::Hide(Fader);
@@ -1137,6 +1139,14 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 void UDefconPlayViewBase::OnEscPressed()
 {
 	TransitionToArena(EDefconArena::MissionPicker);
+}
+
+
+void UDefconPlayViewBase::OnPausePressed()
+{
+	bIsPaused = !bIsPaused;
+
+	AddMessage(bIsPaused ? TEXT("GAME PAUSED") : TEXT("GAME UNPAUSED"));
 }
 
 

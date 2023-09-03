@@ -197,6 +197,17 @@ void UDefconGameInstance::OnSkipPressed()
 }
 
 
+void UDefconGameInstance::OnPausePressed()
+{
+	if(CurrentView == nullptr)
+	{
+		return;
+	}
+
+	CurrentView->OnPausePressed();
+}
+
+
 void UDefconGameInstance::OnNavEvent(ENavigationKey Key)
 {
 	// Forward event to current view.

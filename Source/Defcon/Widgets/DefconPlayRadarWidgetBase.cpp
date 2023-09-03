@@ -65,12 +65,6 @@ void UDefconPlayRadarWidgetBase::Init
 }
 
 
-void UDefconPlayRadarWidgetBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
-{
-	Super::NativeTick(MyGeometry, DeltaTime);
-}
-
-
 void UDefconPlayRadarWidgetBase::DrawObjects(const Defcon::CGameObjectCollection* Collection, const FPainter& Painter) const
 {
 	if(Collection == nullptr)

@@ -24,8 +24,6 @@ class DEFCON_API UDefconPlayRadarWidgetBase : public UDefconPlayWidgetBase
 
 	virtual void NativeOnInitialized() override;
 
-	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
-
 	virtual int32 NativePaint(
 		const FPaintArgs&          Args,
 		const FGeometry&           AllottedGeometry,

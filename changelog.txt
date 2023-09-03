@@ -5,6 +5,8 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 2, 2023
 
 
+Pause feature added (press P).
+
 Added sprite atlas for ghost enemy on Details arena.
 
 Stars are occluded by terrain. (arcade mismatch) The arcade game 
