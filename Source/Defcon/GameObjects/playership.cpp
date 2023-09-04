@@ -151,7 +151,10 @@ void Defcon::CPlayerShip::Tick(float DeltaTime)
 {
 	ILiveGameObject::Tick(DeltaTime);
 
-	Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
+	if(Sprite)
+	{
+		Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
+	}
 
 	// Slowly regenerate shields.
 

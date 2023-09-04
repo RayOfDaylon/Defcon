@@ -66,6 +66,5 @@ class DEFCON_API UDefconDetailsViewBase : public UDefconViewBase
 
 	TSharedPtr<Daylon::SpritePlayObject2D> Sprite;
 
-	//Daylon::FScheduledTask StartupTask;
 	bool SafeToTick = false;
 };

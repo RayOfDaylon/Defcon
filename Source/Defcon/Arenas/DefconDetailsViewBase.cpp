@@ -73,7 +73,19 @@ void UDefconDetailsViewBase::OnFinishActivating()
 	Page.Text = FText::FromString(TEXT(_Text));	\
 	Pages.Add(Page);
 
-	ADD_PAGE(STARGATE, 
+		ADD_PAGE(PLAYER, 
+			"Your ship comes equipped with laser cannon\n"
+			"and a finite supply of smart bombs. Detonate a\n"
+			"bomb to destroy all nearby enemies.\n"
+			"\n"
+			"Energy shields protect your ship but can be depleted.\n"
+			"Avoid enemy fire and collisions to let your shields recharge.\n"
+			"\n"
+			"Collide with falling humans to rescue them, then\n"
+			"carry them to the ground when convenient.\n");
+
+
+		ADD_PAGE(STARGATE, 
 			"The Stargate: fly your ship into this artificial\n"
 			"wormhole after destroying all mission targets\n"
 			"to advance to the next mission.\n"
@@ -86,7 +98,7 @@ void UDefconDetailsViewBase::OnFinishActivating()
 			"your ship to the opposite side of the planet.");
 
 
-	ADD_PAGE(LANDER, 
+		ADD_PAGE(LANDER, 
 			"Landers descend towards the ground and\n"
 			"look for humans to abduct. They fire round bullets\n"
 			"whose frequency and aim increase over time.\n"
@@ -209,11 +221,7 @@ void UDefconDetailsViewBase::OnFinishActivating()
 			"A reformer part all by itself will fly like a swarmer.");
 	}
 
-	#undef ADD_PAGE
-
-	// Wait a moment before showing the first page, to give some time for widgets to establish positions etc.
-	//StartupTask.When = 1.0f;
-	//StartupTask.What = [this](){ ShowPage(0); StartupTask.What.Reset(); };
+#undef ADD_PAGE
 }
 
 
@@ -243,8 +251,6 @@ void UDefconDetailsViewBase::NativeTick(const FGeometry& MyGeometry, float Delta
 {
 	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
-
-	//StartupTask.Tick(DeltaTime);
 
 	// Wait until widgets have settled down before ticking.
 	if(!SafeToTick && Daylon::GetWidgetPosition(TextReadout).X > 200)

@@ -4,6 +4,8 @@ Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
 September 4, 2023
 
+FIXED: Accidentally introduced a bug that would cause a 
+sprite to try installing an already installed widget.
 
 FIXED: Game over screen sometimes showed stats immediately
 instead of fading them in. We had set the stats widget opacity 

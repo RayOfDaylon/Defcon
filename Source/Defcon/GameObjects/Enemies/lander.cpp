@@ -296,6 +296,7 @@ void Defcon::CLander::Tick(float DeltaTime)
 					// them have been tracking him, they will
 					// stop doing so.
 					HumanPtr->Notify(Defcon::EMessage::TakenAboard, this);
+					GArena->AddMessage(GDefconGameInstance->GetHumans().Count() > 1 ? TEXT("ABDUCTION IN PROGRESS") : TEXT("ABDUCTION IN PROGRESS -- MISSION FAILURE IMMINENT"));
 					GAudio->OutputSound(EAudioTrack::Human_abducted);
 				}
 			}

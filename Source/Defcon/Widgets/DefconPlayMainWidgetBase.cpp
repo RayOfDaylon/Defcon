@@ -173,12 +173,14 @@ void UDefconPlayMainWidgetBase::OnMissionStarting()
 	check(PlayerShipPtr != nullptr);
 	check(Humans != nullptr);
 
+	AreHumansInMission = GDefconGameInstance->GetMission()->HumansInvolved();
+
 	PlayerShipExhaust =	Daylon::SpawnSpritePlayObject2D(PlayerShipExhaustAtlas->Atlas, FVector2D(5, 5), 0.5f);
 	PlayerShipExhaust.Pin()->Hide();
 
 	PlayerShipPtr->InstallSprite();
 
-	if(GDefconGameInstance->GetMission()->HumansInvolved())
+	if(AreHumansInMission)
 	{
 		Humans->ForEach([](Defcon::IGameObject* Human) { Human->InstallSprite(); });
 	}
@@ -197,7 +199,11 @@ void UDefconPlayMainWidgetBase::OnDeactivate()
 
 	if(AreHumansInMission)
 	{
-		Humans->ForEach([](Defcon::IGameObject* Human) { Human->UninstallSprite(); });
+		Humans->ForEach([](Defcon::IGameObject* Human) 
+		{ 
+			Human->UninstallSprite();
+		}
+		);
 
 		RootCanvas->GetCanvasWidget()->RemoveSlot(TerrainWidget.ToSharedRef());
 		TerrainWidget.Reset();
@@ -264,7 +270,7 @@ void UDefconPlayMainWidgetBase::UpdatePlayerShip(float DeltaTime)
 {
 	// The player ship is not part of the game objects array, so process its sprite here.
 
-	check(PlayerShipPtr != nullptr && PlayerShipPtr->Sprite);
+	check(PlayerShipPtr != nullptr);
 
 	if(PlayerShipPtr->Sprite == nullptr)
 	{
