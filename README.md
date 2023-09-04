@@ -6,10 +6,8 @@ Stargate was also known as Defender II in some locales.
 
 Example Videos
 
-Version 1.0: https://youtu.be/WTqya41q9xM
-
-August 27/2023 update (some graphic fixes): https://youtu.be/R1Yolp0zzRE
-
+Version 1.0: https://youtu.be/WTqya41q9xM  
+August 27/2023 update (some graphic fixes): https://youtu.be/R1Yolp0zzRE  
 September 4 update (bullet time demo): https://youtu.be/vfbQqxPOeWY
 
 The game differs from Stargate in these ways:
