@@ -40,13 +40,6 @@ void UDefconGameOverViewBase::NativeOnInitialized()
 	StatItemHits                 = TEXT("Hits");
 	StatItemCollisions           = TEXT("Collisions");
 	StatItemDeaths               = TEXT("Deaths");
-
-	auto Children = Stats->GetAllChildren();
-
-	for(auto Child : Children)
-	{
-		Child->SetRenderOpacity(0.0f);
-	}
 }
 
 
@@ -73,6 +66,14 @@ void UDefconGameOverViewBase::OnActivate()
 
 	// todo: involve viewportsize.X
 	PositionTexts(-StartingTextX, StartingTextX);
+
+
+	auto Children = Stats->GetAllChildren();
+
+	for(auto Child : Children)
+	{
+		Child->SetRenderOpacity(0.0f);
+	}
 }
 
 

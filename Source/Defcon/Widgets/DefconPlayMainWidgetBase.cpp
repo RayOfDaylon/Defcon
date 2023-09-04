@@ -5,6 +5,7 @@
 #include "GameObjects/GameObjectCollection.h"
 #include "Globals/GameObjectResources.h"
 #include "GameObjects/Enemies/enemies.h"
+#include "Widgets/SDefconTerrain.h"
 #include "Common/Painter.h"
 #include "DefconUtils.h"
 #include "DefconLogging.h"
@@ -12,7 +13,7 @@
 
 
 
-#define DEBUG_MODULE      0
+#define DEBUG_MODULE      1
 
 #if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
@@ -116,16 +117,11 @@ void UDefconPlayMainWidgetBase::OnFinishActivating()
 {
 	LOG_UWIDGET_FUNCTION
 
-	check(PlayerShipPtr != nullptr);
-	check(Humans != nullptr);
-
 	// Until reassociated, all sprite install/uninstall takes place on us.
 
 	Daylon::SetRootCanvas(RootCanvas);
 	Daylon::SetWidgetTree(WidgetTree);
 	
-	AreHumansInMission = GDefconGameInstance->GetMission()->HumansInvolved();
-
 	Stars.Empty();
 	Stars.Reserve(STARS_COUNT);
 
@@ -143,13 +139,46 @@ void UDefconPlayMainWidgetBase::OnFinishActivating()
 
 		Stars.Add(Star);
 	}
+}
+
+
+void UDefconPlayMainWidgetBase::SetTerrain(Defcon::CTerrain* InTerrain)
+{
+	Terrain = InTerrain;
+
+	if(Terrain == nullptr)
+	{
+		return;
+	}
+
+	TerrainWidget = SNew(SDefconTerrain);
+
+	TerrainWidget->SetSize(Daylon::GetWidgetSize(RootCanvas));
+	TerrainWidget->Init(Terrain->GetVertices(), CoordMapperPtr);
+
+	auto SlateCanvas = RootCanvas->GetCanvasWidget();
+
+	auto SlotArgs = SlateCanvas->AddSlot();
+
+	SlotArgs[TerrainWidget.ToSharedRef()];
+	SlotArgs.AutoSize(true);
+	SlotArgs.Alignment(FVector2D(0));
+}
+
+
+void UDefconPlayMainWidgetBase::OnMissionStarting()
+{
+	// Install the player ship and the human sprites here so that they will occlude terrain.
+
+	check(PlayerShipPtr != nullptr);
+	check(Humans != nullptr);
 
 	PlayerShipExhaust =	Daylon::SpawnSpritePlayObject2D(PlayerShipExhaustAtlas->Atlas, FVector2D(5, 5), 0.5f);
 	PlayerShipExhaust.Pin()->Hide();
 
 	PlayerShipPtr->InstallSprite();
 
-	if(AreHumansInMission)
+	if(GDefconGameInstance->GetMission()->HumansInvolved())
 	{
 		Humans->ForEach([](Defcon::IGameObject* Human) { Human->InstallSprite(); });
 	}
@@ -169,6 +198,9 @@ void UDefconPlayMainWidgetBase::OnDeactivate()
 	if(AreHumansInMission)
 	{
 		Humans->ForEach([](Defcon::IGameObject* Human) { Human->UninstallSprite(); });
+
+		RootCanvas->GetCanvasWidget()->RemoveSlot(TerrainWidget.ToSharedRef());
+		TerrainWidget.Reset();
 	}
 
 	bDoneActivating = false;
@@ -404,12 +436,12 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 		}
 
 		// Skip if star occluded by terrain.
-		if(TerrainPtr != nullptr)
+		if(Terrain != nullptr)
 		{
 			CFPoint ArenaP;
 			CoordMapperPtr->From(P, ArenaP);
 
-			if(TerrainPtr->GetElev(ArenaP.x / ArenaSize.X) >= ArenaP.y)
+			if(Terrain->GetElev(ArenaP.x / ArenaSize.X) >= ArenaP.y)
 			{
 				continue;
 			}
@@ -433,11 +465,13 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 			Star.Color * Tint * InWidgetStyle.GetColorAndOpacityTint().A);
 	}
 
-
-	if(TerrainPtr != nullptr)
+#if 0
+	// Terrain is a widget so no need to draw it here.
+	if(Terrain != nullptr)
 	{
-		TerrainPtr->Draw(Painter, *CoordMapperPtr);
+		Terrain->Draw(Painter, *CoordMapperPtr);
 	}
+#endif
 
 	// These calls only matter for game objects that implement Draw overrides.
 	DrawObjects(Objects, Painter);

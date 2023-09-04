@@ -170,6 +170,7 @@ float Defcon::CTerrain::GetElev(float X) const
 }
 
 
+#if 0
 void Defcon::CTerrain::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
 	// In UE, we draw the terrain as a set of solid lines.
@@ -233,6 +234,7 @@ void Defcon::CTerrain::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 
 	FSlateDrawElement::MakeLines(*Painter.OutDrawElements, Painter.LayerId, *Painter.PaintGeometry, LinePts, ESlateDrawEffect::None, C_RED, true, 3.0f);
 }
+#endif
 
 
 void Defcon::CTerrain::DrawSmall(FPainter& Painter, const I2DCoordMapper& Mapper, FSlateBrush&)

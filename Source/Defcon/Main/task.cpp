@@ -137,7 +137,7 @@ void Defcon::CEndMissionTask::Do()
 {
 	SAFE_DELETE(GArena->Terrain);
 
-	GArena->PlayAreaMain->TerrainPtr = nullptr;
+	GArena->PlayAreaMain ->SetTerrain(nullptr);
 	GArena->PlayAreaRadar->SetTerrain(nullptr);
 
 	GDefconGameInstance->MissionEnded();

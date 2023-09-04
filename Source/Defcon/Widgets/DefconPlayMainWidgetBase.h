@@ -6,6 +6,7 @@
 #include "DefconPlayWidgetBase.h"
 #include "GameObjects/terrain.h"
 #include "GameObjects/playership.h"
+#include "Widgets/SDefconTerrain.h"
 #include "Main/mapper.h"
 #include "Common/util_core.h"
 #include "DaylonUtils.h"
@@ -277,10 +278,14 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	bool bSafeToStart        = false;
 	bool AreHumansInMission  = false;
 
+	TSharedPtr<SDefconTerrain> TerrainWidget;
+	Defcon::CTerrain*          Terrain = nullptr;
+
 
 	public:
 
-	void OnFinishActivating();
+	void OnFinishActivating  ();
+	void OnMissionStarting   ();
 
 	void Init(Defcon::CGameObjectCollection* Humans, 
 			  Defcon::CGameObjectCollection* Objects, 
@@ -289,6 +294,7 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 			  Defcon::CGameObjectCollection* Blasts,
 			  const FVector2D& ArenaSize);
 
+	void SetTerrain(Defcon::CTerrain* Terrain);
 
 	void SetSafeToStart(bool b = true) { bSafeToStart = b; }
 
@@ -305,7 +311,6 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	Defcon::I2DCoordMapper*          CoordMapperPtr      = nullptr;
 	Defcon::I2DCoordMapper*          CoordMapperStarsPtr = nullptr;
 	Defcon::I2DCoordMapper*          CoordMapperRadarPtr = nullptr;
-	Defcon::CTerrain*                TerrainPtr          = nullptr;
 	Defcon::CPlayerShip*             PlayerShipPtr       = nullptr;
 	Defcon::CGameObjectCollection*   Objects             = nullptr;
 	Defcon::CGameObjectCollection*   Enemies             = nullptr;

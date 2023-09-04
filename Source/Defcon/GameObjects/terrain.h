@@ -27,10 +27,11 @@ namespace Defcon
 			CTerrain();
 			virtual ~CTerrain();
 
-			void          InitTerrain (float W, float H);
-			virtual void  Draw        (FPainter&, const I2DCoordMapper&) override;
-			virtual void  DrawSmall   (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;
-			float	      GetElev     (float X) const;
+			void                       InitTerrain  (float W, float H);
+			//virtual void               Draw         (FPainter&, const I2DCoordMapper&) override;
+			virtual void               DrawSmall    (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;
+			float	                   GetElev      (float X) const;
+			const TArray<FVector2D>*   GetVertices  () const { return &Vertices; }
 
 		private:
 			TArray<FVector2D>   Vertices;

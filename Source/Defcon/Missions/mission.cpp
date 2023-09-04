@@ -63,6 +63,8 @@ void Defcon::IMission::Init()
 	AddHumanoids();
 
 	GArena->GetPlayerShip().EnableInput(false);
+
+	GArena->OnMissionStarting();
 }
 
 

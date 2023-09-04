@@ -77,31 +77,15 @@ void UDefconPlayViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTim
 }
 
 
-#if 0
-int32 UDefconPlayViewBase::NativePaint
-(
-	const FPaintArgs& Args,
-	const FGeometry& AllottedGeometry,
-	const FSlateRect& MyCullingRect,
-	FSlateWindowElementList& OutDrawElements,
-	int32 LayerId,
-	const FWidgetStyle& InWidgetStyle,
-	bool bParentEnabled
-) const
-{
-	LOG_UWIDGET_FUNCTION
-	LayerId = Super::NativePaint(
-		Args,
-		AllottedGeometry,
-		MyCullingRect,
-		OutDrawElements,
-		LayerId,
-		InWidgetStyle,
-		bParentEnabled);
 
-	return LayerId;
+
+
+void UDefconPlayViewBase::OnMissionStarting()
+{
+	check(PlayAreaMain != nullptr);
+
+	PlayAreaMain->OnMissionStarting();
 }
-#endif
 
 
 Defcon::CGameObjectCollection& UDefconPlayViewBase::GetHumans()
@@ -281,11 +265,10 @@ void UDefconPlayViewBase::InitMapperAndTerrain()
 	MainAreaStarsMapper.Init(MainS.X, MainS.Y, ArenaWidth / 2);
 	PlayAreaMain->CoordMapperStarsPtr = &MainAreaStarsMapper;
 
+	// Default to no terrain as the current mission might not have any.
 	SAFE_DELETE(Terrain);
 	
-	// todo: if the current mission has no terrain, set it to nothing.
-	// todo: we need to delete Terrain and set it to nullptr when needed.
-	PlayAreaMain->TerrainPtr = nullptr;
+	PlayAreaMain ->SetTerrain(nullptr);
 	PlayAreaRadar->SetTerrain(nullptr);
 }
 
@@ -902,7 +885,7 @@ void UDefconPlayViewBase::CreateTerrain()
 	Terrain = new Defcon::CTerrain;
 	Terrain->InitTerrain(GetWidth(), GetHeight());
 
-	PlayAreaMain->TerrainPtr = Terrain;
+	PlayAreaMain ->SetTerrain(Terrain);
 	PlayAreaRadar->SetTerrain(Terrain);
 }
 

@@ -150,6 +150,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 	public:
 
+	void                                  OnMissionStarting  ();
 	bool                                  IsPaused           () const { return bIsPaused; }
 	bool                                  IsBulletTime       () const { return bBulletTime; }
 	Defcon::I2DCoordMapper&               GetMainAreaMapper  () { return MainAreaMapper; }

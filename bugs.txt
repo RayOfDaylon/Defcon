@@ -2,13 +2,17 @@ Bug list for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 2, 2023
+September 4, 2023
 
 
-Terrain and stars overlap player ship and most enemy ships. 
-Could fix by using custom paint for everything or 
-making stars and terrain use widgets. Sadly, Slate rendering 
-happens before UUserWidget::NativePaint. 
+FIXED: Game over screen sometimes showed stats immediately
+instead of fading them in. We had set the stats widget opacity 
+too early in NativeOnInitialized instead of in OnActivate.
+
+FIXED: Terrain overlaps player ship and most enemy ships.
+Terrain drawing was moved to a new widget, SDefconTerrain.
+
+Stars overlap player ship and most enemy ships. Can fix by making stars use a widget.
 
 It seems that when humans are sometimes debarked by player ship, they actually are 
 above the terrain by a small amount and need to fall for a brief moment
