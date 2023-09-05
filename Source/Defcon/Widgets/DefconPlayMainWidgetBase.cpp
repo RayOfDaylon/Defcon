@@ -97,6 +97,7 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 	ADD_ATLAS(HUNTER,           HunterAtlas             );
 	ADD_ATLAS(GHOST,            GhostDemoAtlas          );
 	ADD_ATLAS(GHOSTPART,        GhostPartAtlas          );
+	ADD_ATLAS(REFORMER,         ReformerDemoAtlas       );
 	ADD_ATLAS(REFORMERPART,     ReformerPartAtlas       );
 	ADD_ATLAS(LASERBEAM,        LaserbeamAtlas          );
 

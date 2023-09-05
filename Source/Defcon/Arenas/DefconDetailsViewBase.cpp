@@ -309,11 +309,11 @@ void UDefconDetailsViewBase::ShowPage(int32 Idx)
 
 	UninstallSprite();
 
-	// todo: need a "pose" texture atlas for ghost and reformer enemies.
-	if(/*Page.ObjType != Defcon::EObjType::GHOST &&*/
-	   Page.ObjType != Defcon::EObjType::REFORMER)
+	
+	const auto& Info = GGameObjectResources.Get(Page.ObjType);
+	
+	if(Info.Atlas.IsValid())
 	{
-		const auto& Info = GGameObjectResources.Get(Page.ObjType);
 		Sprite = Daylon::SpawnSpritePlayObject2D(Info.Atlas->Atlas, Info.Size, Info.Radius);
 
 		const auto TextReadoutP = Daylon::GetWidgetPosition(TextReadout);

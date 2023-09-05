@@ -2,8 +2,10 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 4, 2023
+September 5, 2023
 
+
+Added sprite atlas for reformer enemy on Details screen.
 
 Added player ship to Details screen.
 
