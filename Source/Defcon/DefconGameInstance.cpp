@@ -98,7 +98,7 @@ void UDefconGameInstance::Shutdown()
 	UE_LOG(LogGame, Log, TEXT("%S"), __FUNCTION__);
 
 	SAFE_DELETE(PlayerShipPtr);
-	SAFE_DELETE(MissionPtr);
+	SAFE_DELETE(Mission);
 	SAFE_DELETE(GAudio);
 
 	Super::Shutdown();
@@ -118,9 +118,9 @@ bool UDefconGameInstance::Update(float DeltaTime)
 	// then make the next mission and if it does 
 	// not exist (no more missions), then we end.
 
-	if(MissionPtr != nullptr)
+	if(Mission != nullptr)
 	{
-		return MissionPtr->Update(DeltaTime);
+		return Mission->Update(DeltaTime);
 	}
 
 	return false;
@@ -140,106 +140,56 @@ void UDefconGameInstance::CreateArenas()
 	Postwave,
 	GameOver,
 	Help,
+	Details,
 	Credits
 	*/
 
 	auto PC = GetFirstLocalPlayerController();
 
-	Views.Add(CreateWidget<UDefconViewBase>(PC, IntroViewClass));
-	Views.Add(CreateWidget<UDefconViewBase>(PC, MainMenuViewClass));
-	Views.Add(CreateWidget<UDefconViewBase>(PC, MissionPickerViewClass));
-	Views.Add(CreateWidget<UDefconViewBase>(PC, PrewaveViewClass));
-	Views.Add(CreateWidget<UDefconViewBase>(PC, PlayViewClass));
-	Views.Add(CreateWidget<UDefconViewBase>(PC, PostwaveViewClass));
-	Views.Add(CreateWidget<UDefconViewBase>(PC, GameOverViewClass));
-	Views.Add(CreateWidget<UDefconViewBase>(PC, HelpViewClass));
-	Views.Add(CreateWidget<UDefconViewBase>(PC, DetailsViewClass));
-	Views.Add(CreateWidget<UDefconViewBase>(PC, CreditsViewClass));
+#define ADD_VIEW(_class) Views.Add(CreateWidget<UDefconViewBase>(PC, _class));
+
+	ADD_VIEW( IntroViewClass         );
+	ADD_VIEW( MainMenuViewClass      );
+	ADD_VIEW( MissionPickerViewClass );
+	ADD_VIEW( PrewaveViewClass       );
+	ADD_VIEW( PlayViewClass          );
+	ADD_VIEW( PostwaveViewClass      );
+	ADD_VIEW( GameOverViewClass      );
+	ADD_VIEW( HelpViewClass          );
+	ADD_VIEW( DetailsViewClass       );
+	ADD_VIEW( CreditsViewClass       );
+
+#undef ADD_VIEW
 }
 
 
-void UDefconGameInstance::OnEscPressed()
-{
-	// Forward event to current view.
+// todo: we should just have a OnButtonPressed method that takes a button enum
+#define ON_BUTTON_PRESSED(_proc)	if(CurrentView != nullptr) { CurrentView->_proc(); }
 
-	if(CurrentView == nullptr)
-	{
-		return;
-	}
+void UDefconGameInstance::OnEscPressed        () { ON_BUTTON_PRESSED( OnEscPressed        ); }
+void UDefconGameInstance::OnEnterPressed      () { ON_BUTTON_PRESSED( OnEnterPressed      ); }
+void UDefconGameInstance::OnSkipPressed       () { ON_BUTTON_PRESSED( OnSkipPressed       ); }
+void UDefconGameInstance::OnPausePressed      () { ON_BUTTON_PRESSED( OnPausePressed      ); }
+void UDefconGameInstance::OnBulletTimePressed () { ON_BUTTON_PRESSED( OnBulletTimePressed ); }
 
-	CurrentView->OnEscPressed();
-}
-
-
-void UDefconGameInstance::OnEnterPressed()
-{
-	// Forward event to current view.
-
-	if(CurrentView == nullptr)
-	{
-		return;
-	}
-
-	CurrentView->OnEnterPressed();
-}
-
-
-void UDefconGameInstance::OnSkipPressed()
-{
-	// Forward event to current view.
-
-	if(CurrentView == nullptr)
-	{
-		return;
-	}
-
-	CurrentView->OnSkipPressed();
-}
-
-
-void UDefconGameInstance::OnPausePressed()
-{
-	if(CurrentView == nullptr)
-	{
-		return;
-	}
-
-	CurrentView->OnPausePressed();
-}
-
-
-void UDefconGameInstance::OnBulletTimePressed()
-{
-	if(CurrentView == nullptr)
-	{
-		return;
-	}
-
-	CurrentView->OnBulletTimePressed();
-}
+#undef ON_BUTTON_PRESSED
 
 
 void UDefconGameInstance::OnNavEvent(ENavigationKey Key)
 {
-	// Forward event to current view.
-
-	if(CurrentView == nullptr)
+	if(CurrentView != nullptr)
 	{
-		return;
+		CurrentView->OnNavEvent(Key);
 	}
-
-	CurrentView->OnNavEvent(Key);
 }
 
 
 void UDefconGameInstance::OnPawnNavEvent(EDefconPawnNavigationEvent Event, bool Active)
 {
-	if(CurrentView == nullptr)
+	if(CurrentView != nullptr)
 	{
-		return;
+		CurrentView->OnPawnNavEvent(Event, Active);
 	}
-
-	CurrentView->OnPawnNavEvent(Event, Active);
 }
 
 
@@ -431,9 +381,9 @@ void UDefconGameInstance::StartNewGame()
 
 void UDefconGameInstance::InitMission()
 {
-	check(MissionPtr);
+	check(Mission);
 
-	MissionPtr->Init();
+	Mission->Init();
 }
 
 
@@ -445,21 +395,21 @@ void UDefconGameInstance::MissionEnded()
 	const bool    StateOfEndedMission = GetMission()->IsComplete();
 	const bool    HumansWereInvolved  = GetMission()->HumansInvolved();
 
-	MissionPtr->Conclude();
+	Mission->Conclude();
 
-	Defcon::IMission* p = nullptr;
+	Defcon::IMission* NextMission = nullptr;
 	
 	// Only progress to the next mission if one or more humans survived.
 	if(GetHumans().Count() > 0)
 	{
-		p = Defcon::CMissionFactory::MakeNext(MissionPtr);
+		NextMission = Defcon::CMissionFactory::MakeNext(Mission);
 	}
 	
-	SAFE_DELETE(MissionPtr);
+	SAFE_DELETE(Mission);
 
-	MissionPtr = p;
+	Mission = NextMission;
 
-	MissionID = (MissionPtr != nullptr ? MissionPtr->GetID() : Defcon::EMissionID::Undefined);
+	MissionID = (Mission != nullptr ? Mission->GetID() : Defcon::EMissionID::Undefined);
 
 	auto PostWaveView = Cast<UDefconPostwaveViewBase>(Views[(int32)EDefconArena::Postwave]);
 
@@ -526,22 +476,22 @@ bool UDefconGameInstance::AcquireSmartBomb()
 
 FString UDefconGameInstance::GetCurrentMissionName() const
 {
-	if(MissionPtr == nullptr)
+	if(Mission == nullptr)
 	{
 		return TEXT("");
 	}
 
-	return MissionPtr->GetName();
+	return Mission->GetName();
 }
 
 
 void UDefconGameInstance::SetCurrentMission(Defcon::EMissionID InMissionID)
 {
-	SAFE_DELETE(MissionPtr);
+	SAFE_DELETE(Mission);
 
 	MissionID = InMissionID;
 
-	MissionPtr = Defcon::CMissionFactory::Make(InMissionID);
+	Mission = Defcon::CMissionFactory::Make(InMissionID);
 }
 
 

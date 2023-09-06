@@ -59,11 +59,6 @@ Defcon::IMission::~IMission()
 
 void Defcon::IMission::Init()
 {
-	CreateTerrain();
-	AddHumanoids();
-
-	GArena->GetPlayerShip().EnableInput(false);
-
 	GArena->OnMissionStarting();
 }
 
@@ -100,31 +95,6 @@ void Defcon::IMission::DoIntroText(float DeltaTime)
 }
 
 
-void Defcon::IMission::CreateTerrain()
-{
-	GArena->CreateTerrain();
-}
-
-
-void Defcon::IMission::AddHumanoids()
-{
-	// Most missions have humanoids. 
-	// We mod the game's humanoids for the arena.
-
-	auto& Humans = GArena->GetHumans();
-
-	Humans.ForEach([&](Defcon::IGameObject* Obj)
-	{
-		auto Human = static_cast<CHuman*>(Obj);
-		Human->Objects  = &GArena->GetObjects();
-		Human->Objects2 = &GArena->GetEnemies();
-
-		Human->InitHuman(Human->Position);
-	}
-	);
-}
-
-
 void Defcon::IMission::AddEnemy(Defcon::EObjType EnemyType, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags)
 {
 	auto Task = new CCreateEnemyTask;
@@ -139,9 +109,6 @@ void Defcon::IMission::AddEnemy(Defcon::EObjType EnemyType, Defcon::EObjType Cre
 }
 
 
-void Defcon::IMission::Conclude()
-{
-}
 
 
 #if(DEBUG_MODULE == 1)

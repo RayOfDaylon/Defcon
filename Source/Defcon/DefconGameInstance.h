@@ -246,7 +246,7 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 
 
 
-	Defcon::IMission* MissionPtr = nullptr;
+	Defcon::IMission* Mission = nullptr;
 
 	Defcon::EMissionID MissionID = Defcon::EMissionID::First;
 
@@ -297,9 +297,9 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	bool                                 AcquireSmartBomb       ();
 	int32                                GetSmartbombCount      () const { return SmartbombsLeft; }
 	void                                 BindToSmartbombCount   (TFunction<void(const int32& Val)> Delegate) { SmartbombsLeft.Bind(Delegate); }
-	void                                 TargetDestroyed        (Defcon::EObjType Kind) { if(MissionPtr != nullptr) ((Defcon::CMilitaryMission*)MissionPtr)->TargetDestroyed(Kind); }
-	Defcon::IMission*                    GetMission             () { return MissionPtr; }
-	const Defcon::IMission*              GetMission             () const { return MissionPtr; }
+	void                                 TargetDestroyed        (Defcon::EObjType Kind) { if(Mission != nullptr) ((Defcon::CMilitaryMission*)Mission)->TargetDestroyed(Kind); }
+	Defcon::IMission*                    GetMission             () { return Mission; }
+	const Defcon::IMission*              GetMission             () const { return Mission; }
 	void                                 InitMission            ();
 	void                                 MissionEnded           ();
 	FString                              GetCurrentMissionName  () const;

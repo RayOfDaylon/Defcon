@@ -25,6 +25,7 @@ namespace Defcon
 		typedef IMission Super;
 
 		public:
+
 			CMilitaryMission();
 
 			virtual bool    IsMilitary          () const override { return true; }
@@ -76,8 +77,7 @@ namespace Defcon
 
 		public:
 			CFirstContactMission() { ID = EMissionID::FirstContact; }
-
-			virtual void Init    () override;
+			virtual void Init() override;
 
 			virtual FString GetName() const override { return "First Contact"; }
 			virtual FString GetDesc() const override { return "A few landers of the Asanthi Apex arrive"; }
@@ -109,10 +109,10 @@ namespace Defcon
 
 		public:
 			CBomberShowdown() { ID = EMissionID::BomberShowdown; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Bomber Showdown"; }
-			virtual FString GetDesc() const { return "Even a few mines will blow your shields away"; }
+			virtual FString GetName() const override { return "Bomber Showdown"; }
+			virtual FString GetDesc() const override { return "Even a few mines will blow your shields away"; }
 	};
 
 
@@ -122,10 +122,10 @@ namespace Defcon
 
 		public:
 			CFirebomberShowdown() { ID = EMissionID::FirebomberShowdown; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Firebomber Showdown"; }
-			virtual FString GetDesc() const { return "These guys are hard to hit, and love to shoot"; }
+			virtual FString GetName() const override { return "Firebomber Showdown"; }
+			virtual FString GetDesc() const override { return "These guys are hard to hit, and love to shoot"; }
 	};
 
 
@@ -135,15 +135,13 @@ namespace Defcon
 
 		public:
 			CYllabianDogfight() { ID = EMissionID::YllabianDogfight; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Yllabian Dogfight"; }
-			virtual FString GetDesc() const { return "In space, no one can hear you scream"; }
+			virtual FString GetName() const override { return "Yllabian Dogfight"; }
+			virtual FString GetDesc() const override { return "In space, no one can hear you scream"; }
 
-			virtual void CreateTerrain() {}
-			virtual void AddHumanoids() {}
-			virtual void Conclude() {}
-			virtual bool HumansInvolved() const override { return false; }
+			virtual bool    UsesTerrain     () const override { return false; }
+			virtual bool    HumansInvolved  () const override { return false; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -156,15 +154,13 @@ namespace Defcon
 
 		public:
 			CYllabianDogfight2() { ID = EMissionID::YllabianDogfight2; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Yllabian Dogfight #2"; }
-			virtual FString GetDesc() const { return "Space gets more crowded"; }
+			virtual FString GetName         () const override { return "Yllabian Dogfight #2"; }
+			virtual FString GetDesc         () const override { return "Space gets more crowded"; }
 
-			virtual void CreateTerrain() {}
-			virtual void AddHumanoids() {}
-			virtual void Conclude() {}
-			virtual bool HumansInvolved() const override { return false; }
+			virtual bool    UsesTerrain     () const override { return false; }
+			virtual bool    HumansInvolved  () const override { return false; }
 
 		protected:
 			virtual void OverrideSpawnPoint(EObjType ObjType, CFPoint& SpawnPoint);
@@ -180,10 +176,10 @@ namespace Defcon
 
 		public:
 			CYllabianEscort() { ID = EMissionID::YllabianEscort; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Yllabian Escort"; }
-			virtual FString GetDesc() const { return "This ought to be interesting"; }
+			virtual FString GetName() const override { return "Yllabian Escort"; }
+			virtual FString GetDesc() const override { return "This ought to be interesting"; }
 
 
 		private:
@@ -197,10 +193,10 @@ namespace Defcon
 
 		public:
 			CFirebomberPack() { ID = EMissionID::FirebomberPack; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Firebomber Pack"; }
-			virtual FString GetDesc() const { return "A rogue cluster of firebombers in a tight formation"; }
+			virtual FString GetName() const override { return "Firebomber Pack"; }
+			virtual FString GetDesc() const override { return "A rogue cluster of firebombers in a tight formation"; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -213,10 +209,10 @@ namespace Defcon
 
 		public:
 			CApexOffensive() { ID = EMissionID::ApexOffensive; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Apex Offensive"; }
-			virtual FString GetDesc() const { return "The Apex beef up the lander escort to full strength"; }
+			virtual FString GetName() const override { return "Apex Offensive"; }
+			virtual FString GetDesc() const override { return "The Apex beef up the lander escort to full strength"; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -229,10 +225,10 @@ namespace Defcon
 
 		public:
 			CPartyMixMission() { ID = EMissionID::Random; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Party Mix"; }
-			virtual FString GetDesc() const { return "Mix it up with a random assortment of Apex enemies"; }
+			virtual FString GetName() const override { return "Party Mix"; }
+			virtual FString GetDesc() const override { return "Mix it up with a random assortment of Apex enemies"; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -269,10 +265,10 @@ namespace Defcon
 
 		public:
 			CApexOffensiveLite() { ID = EMissionID::ApexOffensiveLite; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Apex Offensive Lite"; }
-			virtual FString GetDesc() const { return "The Apex beef up their lander escort a little more"; }
+			virtual FString GetName() const override { return "Apex Offensive Lite"; }
+			virtual FString GetDesc() const override { return "The Apex beef up their lander escort a little more"; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -286,7 +282,7 @@ namespace Defcon
 
 		public:
 			CSwarm() { ID = EMissionID::swarm; }
-			virtual void Init();
+			virtual void Init() override;
 			virtual bool Update(float);
 
 			virtual FString GetName() const { return "Swarm"; }
@@ -303,10 +299,10 @@ namespace Defcon
 
 		public:
 			CLanderOverrun() { ID = EMissionID::LanderOverrun; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Lander Overrun"; }
-			virtual FString GetDesc() const { return "A large group of landers takes matters into their own hands"; }
+			virtual FString GetName() const override { return "Lander Overrun"; }
+			virtual FString GetDesc() const override { return "A large group of landers takes matters into their own hands"; }
 	};
 
 
@@ -316,10 +312,10 @@ namespace Defcon
 
 		public:
 			CReformerShowdown() { ID = EMissionID::ReformerShowdown; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Reformer Showdown"; }
-			virtual FString GetDesc() const { return "Death is only the beginning"; }
+			virtual FString GetName() const override { return "Reformer Showdown"; }
+			virtual FString GetDesc() const override { return "Death is only the beginning"; }
 	};
 
 
@@ -329,10 +325,10 @@ namespace Defcon
 
 		public:
 			CHaunted() { ID = EMissionID::Haunted; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Haunted"; }
-			virtual FString GetDesc() const { return "Landers try a little supernatural help"; }
+			virtual FString GetName() const override { return "Haunted"; }
+			virtual FString GetDesc() const override { return "Landers try a little supernatural help"; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -345,10 +341,10 @@ namespace Defcon
 
 		public:
 			CBouncersMission() { ID = EMissionID::Bouncers; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Attack of the Bouncers"; }
-			virtual FString GetDesc() const { return "Follow the bouncing ball and fire"; }
+			virtual FString GetName() const override { return "Attack of the Bouncers"; }
+			virtual FString GetDesc() const override { return "Follow the bouncing ball and fire"; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -361,10 +357,10 @@ namespace Defcon
 
 		public:
 			CGhostMission() { ID = EMissionID::Ghost; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Ghost in the Machine"; }
-			virtual FString GetDesc() const { return "These reformer mutations are also hard to kill"; }
+			virtual FString GetName() const override { return "Ghost in the Machine"; }
+			virtual FString GetDesc() const override { return "These reformer mutations are also hard to kill"; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -377,10 +373,10 @@ namespace Defcon
 
 		public:
 			CBringItOn() { ID = EMissionID::BringItOn; }
-			virtual void Init();
+			virtual void Init() override;
 
-			virtual FString GetName() const { return "Bring it On!"; }
-			virtual FString GetDesc() const { return "You guys want a piece of me? Do you? Yeah?"; }
+			virtual FString GetName() const override { return "Bring it On!"; }
+			virtual FString GetDesc() const override { return "You guys want a piece of me? Do you? Yeah?"; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;

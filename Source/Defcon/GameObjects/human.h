@@ -30,7 +30,7 @@ namespace Defcon
 			virtual EColor GetExplosionColorBase  () const override;
 			virtual float  GetExplosionMass       () const override;
 
-			void           InitHuman              (const CFPoint& pt) { Position = pt; Carrier = nullptr; Age = 0.0f; }
+			void           InitHuman              (CGameObjectCollection* Objs1, CGameObjectCollection* Objs2) { Carrier = nullptr; Age = 0.0f; Objects = Objs1; Objects2 = Objs2; }
 			IGameObject*   GetCarrier             () const { return Carrier; }
 			bool           IsBeingCarried         () const { return (GetCarrier() != nullptr); }
 			bool           IsFalling              () const;
@@ -38,16 +38,16 @@ namespace Defcon
 			void           SetToNotCarried        () { Carrier = nullptr; }
 			void           ShowGratitude          () const;
 
-			CGameObjectCollection*	Objects   = nullptr;
-			CGameObjectCollection*	Objects2  = nullptr;
-
 
 		private:
-			CFPoint         Motion;
-			IGameObject*	Carrier = nullptr;
-			float			SwitchFacingDirectionCountdown;
-			float           SwitchWalkingDirectionCountdown;
-			float           WalkingSpeed;
+
+			CFPoint                 Motion;
+			CGameObjectCollection*	Objects   = nullptr;
+			CGameObjectCollection*	Objects2  = nullptr;
+			IGameObject*	        Carrier   = nullptr;
+			float			        SwitchFacingDirectionCountdown;
+			float                   SwitchWalkingDirectionCountdown;
+			float                   WalkingSpeed;
 	};
 }
 

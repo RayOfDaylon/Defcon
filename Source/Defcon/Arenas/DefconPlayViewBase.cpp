@@ -77,9 +77,6 @@ void UDefconPlayViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTim
 }
 
 
-
-
-
 void UDefconPlayViewBase::OnMissionStarting()
 {
 	check(PlayAreaMain != nullptr);
@@ -136,7 +133,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 	ShipThrustSoundLoop = GAudio->CreateLoopedSound(Defcon::EAudioTrack::Playership_thrust);
 	WasShipUnderThrust = false;
 
-	InitMapperAndTerrain();
+	InitMappers();
 	InitPlayerShip();
 
 
@@ -151,9 +148,11 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	// Place humans.
 
-	GetHumans().ForEach([this](Defcon::IGameObject* Human)
+	GetHumans().ForEach([this](Defcon::IGameObject* Obj)
 	{
 		// Move each human down to avoid starting mission above terrain from potentially fatal height.
+
+		auto Human = static_cast<Defcon::CHuman*>(Obj);
 
 		Human->Position.y = FRANDRANGE(25, 30); // todo: use minimum terrain level pref instead of 25..30
 
@@ -162,7 +161,10 @@ void UDefconPlayViewBase::OnFinishActivating()
 			// We're in the first mission of the game, so randomize each human's x-position.
 			Human->Position.x = FRANDRANGE(0.0f, GetWidth() - 1); 
 		}
+
+		Human->InitHuman(&GetObjects(), &GetEnemies());
 	});
+
 
 	GDefconGameInstance->SetHumansPlaced();
 
@@ -173,7 +175,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	AreHumansInMission = GDefconGameInstance->GetMission()->HumansInvolved();
 
-
+	CreateTerrain();
 
 	PlayAreaRadar->Init(&GetPlayerShip(), MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
 
@@ -227,14 +229,6 @@ void UDefconPlayViewBase::OnDeactivate()
 
 	DeleteAllObjects();
 
-	// Uninstall sprites for any surviving humans.
-	//if(AreHumansInMission)
-	//{
-		//GetHumans().ForEach([](Defcon::IGameObject* Ptr) { Ptr->UninstallSprite(); });
-	//}
-
-	//GetPlayerShip().UninstallSprite();
-
 	AllStopPlayerShip();
 	GetPlayerShip().EnableInput(false);
 }
@@ -248,7 +242,7 @@ bool UDefconPlayViewBase::IsOkayToFinishActivating() const
 }
 
 
-void UDefconPlayViewBase::InitMapperAndTerrain()
+void UDefconPlayViewBase::InitMappers()
 {
 	MainAreaSize = Daylon::GetWidgetSize(PlayAreaMain);
 
@@ -264,12 +258,21 @@ void UDefconPlayViewBase::InitMapperAndTerrain()
 
 	MainAreaStarsMapper.Init(MainS.X, MainS.Y, ArenaWidth / 2);
 	PlayAreaMain->CoordMapperStarsPtr = &MainAreaStarsMapper;
+}
 
-	// Default to no terrain as the current mission might not have any.
+
+void UDefconPlayViewBase::CreateTerrain()
+{
 	SAFE_DELETE(Terrain);
-	
-	PlayAreaMain ->SetTerrain(nullptr);
-	PlayAreaRadar->SetTerrain(nullptr);
+
+	if(GDefconGameInstance->GetMission()->UsesTerrain())
+	{
+		Terrain = new Defcon::CTerrain;
+		Terrain->InitTerrain(GetWidth(), GetHeight());
+	}
+
+	PlayAreaMain ->SetTerrain(Terrain);
+	PlayAreaRadar->SetTerrain(Terrain);
 }
 
 
@@ -295,6 +298,7 @@ void UDefconPlayViewBase::InitPlayerShip()
 	PlayerShip.Orientation.Fwd.x = 1.0f;
 
 	AllStopPlayerShip();
+	PlayerShip.EnableInput(false);
 
 	NumPlayerPassengers = 0;
 }
@@ -372,9 +376,9 @@ void UDefconPlayViewBase::TransportPlayerShip()
 #endif
 	}
 
-	// The KeepPlayerInView routine assumes the player ship is visible, and when it's not, 
+	// The KeepPlayerShipInView routine assumes the player ship is visible, and when it's not, 
 	// it just slowly pans the arena until it is. We have to pan the arena immediately 
-	// so that KeepPlayerInView doesn't have to do anything.
+	// so that KeepPlayerShipInView doesn't have to do anything.
 
 	// Get the player ship's screen location. If it's not at the margin (and it almost certainly won't be)
 	// then we need to pan by the difference.
@@ -402,7 +406,7 @@ void UDefconPlayViewBase::TransportPlayerShip()
 }
 
 
-void UDefconPlayViewBase::KeepPlayerInView(float DeltaTime)
+void UDefconPlayViewBase::KeepPlayerShipInView(float DeltaTime)
 {
 	// Ensure that the main arena widget keeps the player in view.
 	// We not only pan the arena mapper, we also keep the player ship 
@@ -879,17 +883,6 @@ void UDefconPlayViewBase::AddDebris(Defcon::IGameObject* p)
 }
 
 
-void UDefconPlayViewBase::CreateTerrain()
-{
-	SAFE_DELETE(Terrain);
-	Terrain = new Defcon::CTerrain;
-	Terrain->InitTerrain(GetWidth(), GetHeight());
-
-	PlayAreaMain ->SetTerrain(Terrain);
-	PlayAreaRadar->SetTerrain(Terrain);
-}
-
-
 Defcon::CPlayerShip& UDefconPlayViewBase::GetPlayerShip() 
 {
 	return GDefconGameInstance->GetPlayerShip();
@@ -1050,7 +1043,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		// Constrain player vertically.
 		PlayerShip.Position.y = CLAMP(PlayerShip.Position.y, PLAYERSHIP_VMARGIN, ArenaSize.Y - PLAYERSHIP_VMARGIN);
 
-		KeepPlayerInView(DeltaTime);
+		KeepPlayerShipInView(DeltaTime);
 		DoThrustSound(DeltaTime);
 
 
@@ -1934,10 +1927,10 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, Defcon::EObjTy
 
 		Countdown += MaterializationLifetime;
 
-		GDefconGameInstance->MissionPtr->AddTask(MaterializationTask);
+		GDefconGameInstance->Mission->AddTask(MaterializationTask);
 	}
 
-	GDefconGameInstance->MissionPtr->AddEnemy(EnemyType, CreatorType, Where, Countdown, Flags);
+	GDefconGameInstance->Mission->AddEnemy(EnemyType, CreatorType, Where, Countdown, Flags);
 }
 
 

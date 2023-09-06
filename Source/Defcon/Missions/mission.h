@@ -84,13 +84,11 @@ namespace Defcon
 
 			virtual bool    IsMilitary      () const { return false; }
 			virtual bool	Update			(float DeltaTime);
-			virtual void	Conclude		();
-			virtual void	CreateTerrain	();
-			virtual void	AddHumanoids	();
+			virtual void	Conclude		() {}
+			virtual bool    UsesTerrain     () const { return true; }
 			virtual bool	HumansInvolved	() const { return true; }
 			virtual bool	IsComplete		() const { return true; }
 			virtual void    AddEnemy        (EObjType EnemyType, EObjType CreatorType, const CFPoint& Where, float Countdown, EObjectCreationFlags Flags);
-			//virtual void  AddEnemy        (CCreateEnemyTask* Task) { EnemyCreationTasks.Add(Task); }
 
 
 			EMissionID		GetID			() const { return ID; }
@@ -116,8 +114,6 @@ namespace Defcon
 	class ITrainingMission : public IMission
 	{
 		public:
-			virtual void AddHumanoids	() override {}
-			virtual void Conclude		() override {}
 			virtual bool HumansInvolved	() const override { return false; }
 
 		protected:

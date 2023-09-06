@@ -82,12 +82,12 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	virtual void OnToggleShowOrigin        () override;
 
 
-	void InitMapperAndTerrain     ();
 	void UpdateGameObjects        (float DeltaTime);
 	void ConcludeMission          ();
 
+	void InitMappers              ();
 	void InitPlayerShip           ();
-	void KeepPlayerInView             (float DeltaTime);
+	void KeepPlayerShipInView     (float DeltaTime);
 	bool IsPlayerShipThrustActive () const;
 	void CheckPlayerCollided      ();
 	void CheckIfPlayerHit         (Defcon::CGameObjectCollection& Objects);
