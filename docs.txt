@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 3, 2023
+September 7, 2023
 
 Chapters:
 
@@ -323,3 +323,9 @@ happen to be used for game objects. But we should have two enums.
 
 Need to implement more missions to fill in the "undefined" slots 
 in the mission picker, and to fill out the gameplay.
+
+A nicer abductions widget would be a horz box containing one 
+badge per human, each one solid pink for safe, flashing
+(and maybe red) when abducted, and subscripted when falling.
+Dead humans cause their icon to collapse from the horz box.
+ 

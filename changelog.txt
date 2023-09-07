@@ -2,8 +2,10 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 5, 2023
+September 7, 2023
 
+Added flashing alert widget to status panel which 
+appears when a human is being abducted.
 
 Added sprite atlas for reformer enemy on Details screen.
 
