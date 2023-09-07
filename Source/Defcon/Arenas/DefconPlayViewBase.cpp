@@ -196,6 +196,8 @@ void UDefconPlayViewBase::OnFinishActivating()
 		}
 	});
 
+	// Zero out the abduction count and turn off related alert.
+	AdjustAbductionCount(-AbductionCount);
 
 	PlayAreaMain  -> SetSafeToStart(); // todo: may not be needed
 	PlayAreaRadar -> OnFinishActivating();
@@ -1970,6 +1972,14 @@ void UDefconPlayViewBase::OnSpawnEnemy()
 
 	CreateEnemy(SpawnedEnemyTypes[SpawnedEnemyIndex], Defcon::EObjType::UNKNOWN, pt, 0.0f, 
 		(Defcon::EObjectCreationFlags)((int32)Defcon::EObjectCreationFlags::Materializes | (int32)Defcon::EObjectCreationFlags::NotMissionTarget));
+}
+
+
+void UDefconPlayViewBase::AdjustAbductionCount(int32 Amount)
+{
+	AbductionCount += Amount;
+
+	PlayAreaStats->UpdateAbductionAlert(AbductionCount != 0);
 }
 
 

@@ -1,7 +1,9 @@
 // Defcon - a Defender Stargate clone developed with Unreal Engine.
 // Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
 
+
 #include "DefconPlayStatsWidgetBase.h"
+#include "DaylonUtils.h"
 
 
 
@@ -60,4 +62,10 @@ void UDefconPlayStatsWidgetBase::UpdateSmartbombReadout(int32 Amount)
 	const FString Str = FString::Printf(TEXT("%d"), Amount);
 
 	SmartbombReadout->SetText(FText::FromString(Str));
+}
+
+
+void UDefconPlayStatsWidgetBase::UpdateAbductionAlert(bool State)
+{
+	Daylon::Show(AbductionAlert, State);
 }

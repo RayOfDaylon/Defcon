@@ -139,6 +139,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	float      FadeAge              = 0.0f;
 	int32      NumPlayerPassengers  = 0;
 	int32      m_nFlashScreen       = 0;//todo: is this needed?
+	int32      AbductionCount       = 0;
 	bool 	   bFinishActivating    = false;
 	bool       bMissionDoneMsgShown = false;
 	bool       AreHumansInMission   = false;
@@ -192,6 +193,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	void                 AddMessage           (const FString& Str, float Duration = 0.0f);
 	void                 TransportPlayerShip  ();
 	void                 AllStopPlayerShip    ();
+	void                 AdjustAbductionCount (int32 Amount);
 
 	
 	// Debugging support -------------------------------------------------------------------------------------

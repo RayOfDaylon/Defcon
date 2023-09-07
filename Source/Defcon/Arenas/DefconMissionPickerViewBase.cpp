@@ -313,10 +313,9 @@ void UDefconMissionPickerViewBase::OnChooseMission()
 
 	GAudio->OutputSound(Defcon::EAudioTrack::Mission_chosen);
 
-	GDefconGameInstance->SetScore(0);
-	GDefconGameInstance->GetStats().Reset();
+	// Game session starts here.
 
-	GDefconGameInstance->SetCurrentMission((Defcon::EMissionID)MissionID);
+	GDefconGameInstance->StartGameSession((Defcon::EMissionID)MissionID);
 }
 
 

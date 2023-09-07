@@ -13,34 +13,9 @@
 #include "GameObjects/gameobj.h"
 #include "GameObjects/GameObjectCollection.h"
 #include "GameObjects/obj_types.h"
+#include "Main/GameSession.h"
 #include "DefconGameInstance.generated.h"
 
-namespace Defcon
-{
-	struct FTotals
-	{
-		int32 ShotsFired                   = 0;
-		int32 SmartbombsDetonated          = 0;
-		int32 HostilesDestroyedBySmartbomb = 0;
-		int32 HostilesDestroyedByLaser     = 0;
-		int32 FriendlyFireIncidents        = 0;
-		int32 PlayerHits                   = 0;
-		int32 PlayerCollisions             = 0;
-		int32 PlayerDeaths                 = 0;
-
-		void Reset()
-		{
-			ShotsFired                   = 0;
-			SmartbombsDetonated          = 0;
-			HostilesDestroyedBySmartbomb = 0;
-			HostilesDestroyedByLaser     = 0;
-			FriendlyFireIncidents        = 0;
-			PlayerHits                   = 0;
-			PlayerCollisions             = 0;
-			PlayerDeaths                 = 0;
-		}
-	};
-}
 
 
 /*
@@ -255,6 +230,8 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	void                 SetCurrentView      (UDefconViewBase* View);
 	void                 SetCurrentMission   (Defcon::EMissionID InMissionID);
 	void                 StartNewGame        ();
+	void                 StartGameSession    (Defcon::EMissionID InMissionID);
+
 
 
 	bool                 bHumansPlaced = false;
@@ -272,7 +249,7 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	UDefconViewBase* CurrentView = nullptr;
 
 	// Gameplay objects that persist across missions.
-	Defcon::CPlayerShip*               PlayerShipPtr;
+	Defcon::CPlayerShip*           PlayerShipPtr;
 	Defcon::CGameObjectCollection  Humans;
 
 

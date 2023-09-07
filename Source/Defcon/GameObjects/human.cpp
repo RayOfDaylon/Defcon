@@ -61,6 +61,11 @@ bool Defcon::CHuman::IsFalling() const
 
 void Defcon::CHuman::OnAboutToDie()
 {
+	if(Carrier != nullptr && Carrier->GetType() != EObjType::PLAYER)
+	{
+		GArena->AdjustAbductionCount(-1);
+	}
+
 	Carrier = nullptr;
 
 	// Tell everyone what happened.
@@ -85,6 +90,11 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 			// Tell everyone what happened.
 			Objects ->Notify(EMessage::HumanTakenAboard, this);
 			Objects2->Notify(EMessage::HumanTakenAboard, this);
+
+			if(Carrier->GetType() != EObjType::PLAYER)
+			{
+				GArena->AdjustAbductionCount(1);
+			}
 		}
 			break;
 
@@ -92,11 +102,19 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 		case EMessage::Released:
 
 			ShowGratitude();
+			check(Carrier != nullptr);
+			Carrier = nullptr;
+			break;
 
-			// deliberate fall-through
 
 		case EMessage::CarrierKilled:
+
 			check(Carrier != nullptr);
+
+			if(Carrier->GetType() != EObjType::PLAYER)
+			{
+				GArena->AdjustAbductionCount(-1);
+			}
 			Carrier = nullptr;
 
 			break;

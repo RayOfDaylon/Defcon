@@ -329,11 +329,13 @@ void Defcon::CLander::Tick(float DeltaTime)
 				if(HumanPtr->Position.y > ArenaSize.y + HumanPtr->BboxRadius.y)
 				{
 					// Kill us and the human.
+					// (arcade mismatch) todo: should turn lander into a mutant.
 					State = EState::Ascended;
 					bMortal = true;
 					MarkAsDead();
 					HumanPtr->bMortal = true;
 					HumanPtr->MarkAsDead();
+					GArena->AdjustAbductionCount(-1);
 				}
 			}
 		}

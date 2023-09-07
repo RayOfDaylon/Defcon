@@ -495,6 +495,17 @@ void UDefconGameInstance::SetCurrentMission(Defcon::EMissionID InMissionID)
 }
 
 
+void UDefconGameInstance::StartGameSession(Defcon::EMissionID InMissionID)
+{
+	// todo: instance a CGameSession object.
+
+	SetScore(0);
+	GetStats().Reset();
+
+	SetCurrentMission((Defcon::EMissionID)InMissionID);
+}
+
+
 #if(DEBUG_MODULE == 1)
 #pragma optimize("", on)
 #endif

@@ -40,10 +40,15 @@ class DEFCON_API UDefconPlayStatsWidgetBase : public UDefconPlayWidgetBase
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> SmartbombReadout;
 
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UWidget> AbductionAlert;
+
+
 	public:
 
 	void UpdateShieldReadout     (float Amount);
 	void UpdateSmartbombReadout  (int32 Amount);
+	void UpdateAbductionAlert    (bool State);
 
 };
 
