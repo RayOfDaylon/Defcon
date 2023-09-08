@@ -22,12 +22,12 @@ namespace Defcon
 		public:
 			CStargate();
 
-			virtual void DrawSmall (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;
+			virtual void DrawSmall (FPainter&, const I2DCoordMapper&, FSlateBrush&) const override;
 			
 
 		private:
 
-			void DrawSmallPart(FPainter& PaintArgs, const I2DCoordMapper& mapper, FSlateBrush& Brush, const CFPoint& TopLeft, const CFPoint& BottomRight, const CFPoint&);
+			void DrawSmallPart(FPainter& PaintArgs, const I2DCoordMapper& mapper, FSlateBrush& Brush, const CFPoint& TopLeft, const CFPoint& BottomRight, const CFPoint&) const;
 	};
 }
 

@@ -35,7 +35,7 @@ namespace Defcon
 
 			virtual void Tick		(float DeltaTime) override;
 			virtual void Draw		(FPaintArguments&, const I2DCoordMapper&) override;
-			virtual void DrawSmall	(FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) override {}
+			virtual void DrawSmall	(FPaintArguments&, const I2DCoordMapper&, FSlateBrush&) const override {}
 
 			void	SetSpeedScale			(float f) { m_fSpeedMul = f; }
 			void	SetRotationSpeedScale	(float f) { m_fSpeedRotMul = f; }

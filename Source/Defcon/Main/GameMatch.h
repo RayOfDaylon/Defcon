@@ -12,41 +12,25 @@
 
 namespace Defcon
 {
-	struct FTotals
+	// todo: it's not obvious that match stats should be a member of the match.
+	// After a match, the game over view needs to show the stats, so we would 
+	// have to copy the stats to somewhere else. Unless we have the game over arena
+	// require a current match, so we'd extend the match lifetime to it.
+	// But it's easy to imagine other things that would need the stats later, so...
+
+
+	class CGameMatch
 	{
-		int32 ShotsFired                   = 0;
-		int32 SmartbombsDetonated          = 0;
-		int32 HostilesDestroyedBySmartbomb = 0;
-		int32 HostilesDestroyedByLaser     = 0;
-		int32 FriendlyFireIncidents        = 0;
-		int32 PlayerHits                   = 0;
-		int32 PlayerCollisions             = 0;
-		int32 PlayerDeaths                 = 0;
-
-		void Reset()
-		{
-			ShotsFired                   = 0;
-			SmartbombsDetonated          = 0;
-			HostilesDestroyedBySmartbomb = 0;
-			HostilesDestroyedByLaser     = 0;
-			FriendlyFireIncidents        = 0;
-			PlayerHits                   = 0;
-			PlayerCollisions             = 0;
-			PlayerDeaths                 = 0;
-		}
-	};
-
-
-	class CGameSession
-	{
-		// Tracks the state of a game being played, which starts
+		// Tracks the state of a match being played, which starts
 		// when the player chooses a mission and ends with the
 		// last mission completed or a mission ends but no humans remain.
+		// For our purposes, a match ends when the user transitions 
+		// to an arena that doesn't require a current match.
 
 		public:
 
-			CGameSession  (EMissionID InMissionID);
-			~CGameSession ();
+			CGameMatch  (EMissionID InMissionID);
+			~CGameMatch ();
 
 			IMission*                    GetMission             () { return Mission; }
 			const IMission*              GetMission             () const { return Mission; }
@@ -58,6 +42,7 @@ namespace Defcon
 			int32                        GetScore               () const { return Score; }
 			void                         SetScore               (int32 Amount) { Score = Amount; }
 			int32                        AdvanceScore           (int32 Amount);
+			void                         AdjustScore            (int32 Amount);
 
 			CPlayerShip&                 GetPlayerShip          () { check(PlayerShipPtr != nullptr); return *PlayerShipPtr; }
 
@@ -70,7 +55,7 @@ namespace Defcon
 			int32                        GetSmartbombCount      () const { return SmartbombsLeft; }
 			void                         BindToSmartbombCount   (TFunction<void(const int32& Val)> Delegate) { SmartbombsLeft.Bind(Delegate); }
 
-			FTotals&                     GetStats               () { return Stats; }
+			//FGameMatchStats&             GetStats               () { return Stats; }
 
 			bool                         GetGodMode             () const { return GodMode; }
 
@@ -88,7 +73,9 @@ namespace Defcon
 			Daylon::TBindableValue<int32>  SmartbombsLeft;
 			bool                           GodMode         = false;
 
-			FTotals                        Stats;
+			//FGameMatchStats                Stats;
 	};
 
+
+	extern CGameMatch* GGameMatch;
 } // namespace Defcon

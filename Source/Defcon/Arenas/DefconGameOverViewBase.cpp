@@ -53,7 +53,7 @@ void UDefconGameOverViewBase::OnActivate()
 
 	auto Mission = GDefconGameInstance->GetMission();
 
-	if(Mission == nullptr && GDefconGameInstance->GetHumans().Count() > 0)
+	if(Mission == nullptr && Defcon::GGameMatch->GetHumans().Count() > 0)
 	{
 		SetTitle(TEXT("VICTORY"));
 		SetSubtitle(TEXT("You defended the humans"));
@@ -233,6 +233,29 @@ void UDefconGameOverViewBase::OnEscPressed()
 
 void UDefconGameOverViewBase::OnSkipPressed()
 {
+	if(Age < TimeToIntroStats)
+	{
+		// Still waiting for stats to be introduced, so skip ahead to that.
+		Age = TimeToIntroStats;
+		return;
+	}
+
+	if(Age < TimeStatsIntroEnds)
+	{
+		// Still waiting for stats to finish being introduced, so skip ahead to that.
+		Age = TimeStatsIntroEnds;
+
+		auto Children = Stats->GetAllChildren();
+
+		for(auto Child : Children)
+		{
+			Child->SetRenderOpacity(1.0f);
+		}
+
+		return;
+	}
+
+	// Stats have been fully introduced, so skip to main menu.
 	TransitionToArena(EDefconArena::MainMenu);
 }
 

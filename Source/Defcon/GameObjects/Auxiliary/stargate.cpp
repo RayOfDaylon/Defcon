@@ -51,7 +51,7 @@ Defcon::CStargate::CStargate()
 }
 
 
-void Defcon::CStargate::DrawSmallPart(FPainter& Painter, const I2DCoordMapper& mapper, FSlateBrush& Brush, const CFPoint& TopLeft, const CFPoint& BottomRight, const CFPoint& BoxRad)
+void Defcon::CStargate::DrawSmallPart(FPainter& Painter, const I2DCoordMapper& mapper, FSlateBrush& Brush, const CFPoint& TopLeft, const CFPoint& BottomRight, const CFPoint& BoxRad) const
 {
 	if(ABS(TopLeft.x - BottomRight.x) > BoxRad.x * 3)
 	{
@@ -80,7 +80,7 @@ void Defcon::CStargate::DrawSmallPart(FPainter& Painter, const I2DCoordMapper& m
 }
 
 
-void Defcon::CStargate::DrawSmall(FPainter& Painter, const I2DCoordMapper& mapper, FSlateBrush& Brush)
+void Defcon::CStargate::DrawSmall(FPainter& Painter, const I2DCoordMapper& mapper, FSlateBrush& Brush) const
 {
 	// Draw the gate using two rectangles.
 	// Note: we have to draw it twice if it is split across a horizontal edge.

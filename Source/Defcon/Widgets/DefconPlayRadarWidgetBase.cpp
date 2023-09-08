@@ -2,6 +2,7 @@
 // Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
 
 #include "DefconPlayRadarWidgetBase.h"
+//#include "DefconGameInstance.h"
 #include "Main/mapper.h"
 #include "DefconUtils.h"
 #include "DaylonUtils.h"
@@ -42,7 +43,7 @@ void UDefconPlayRadarWidgetBase::OnDeactivate()
 
 void UDefconPlayRadarWidgetBase::Init
 (
-	Defcon::CPlayerShip*               Ptr, 
+	//Defcon::CPlayerShip*               Ptr, 
 	const FVector2D&               MainSize, 
 	int32                          ArenaWidth, 
 	Defcon::CArenaCoordMapper*     InArenaCoordMapperPtr, 
@@ -52,8 +53,11 @@ void UDefconPlayRadarWidgetBase::Init
 {
 	ArenaCoordMapperPtr = InArenaCoordMapperPtr;
 
-	PlayerShipPtr = Ptr;
+	auto PlayerShipPtr = &Defcon::GGameMatch->GetPlayerShip();
+	
 	PlayerShipPtr->RadarBrush = PlayerShipRadarImage;
+	//PlayerShipPtr = Ptr;
+	//PlayerShipPtr->RadarBrush = PlayerShipRadarImage;
 
 	const auto S = Daylon::GetWidgetSize(this);
 	CoordMapper.Player = PlayerShipPtr;
@@ -104,7 +108,8 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 		InWidgetStyle,
 		bParentEnabled);
 
-	if(Objects == nullptr)
+
+	if(Objects == nullptr || !GDefconGameInstance->MatchInProgress())
 	{
 		// The game instance hasn't started yet, so don't do anything further.
 		return LayerId;
@@ -112,27 +117,31 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 
 	auto PaintGeometry = AllottedGeometry.ToPaintGeometry();
 
-	if(PlayerShipPtr != nullptr)
-	{
-		const float ArenaHalfWidth = CoordMapper.GetScreenSize().x / 2;
 
-		CFPoint pt;
-		CFPoint ps(ArenaCoordMapperPtr->GetOffset());
-		CoordMapper.To(ps, pt);
+
+	// Draw lines where main view is on the radar view.
+
+	const float ArenaHalfWidth = CoordMapper.GetScreenSize().x / 2;
+
+	CFPoint pt;
+	CFPoint ps(ArenaCoordMapperPtr->GetOffset());
+	CoordMapper.To(ps, pt);
 		
-		TArray<FVector2f> LinePts;
-		LinePts.Add(FVector2f(pt.x, 0.0f));
-		LinePts.Add(FVector2f(pt.x, 200.0f));
+	TArray<FVector2f> LinePts;
+	LinePts.Add(FVector2f(pt.x, 0.0f));
+	LinePts.Add(FVector2f(pt.x, 200.0f));
 
-		FSlateDrawElement::MakeLines(OutDrawElements, LayerId, PaintGeometry, LinePts, ESlateDrawEffect::None, C_DARKER, true, 2.0f);
+	FSlateDrawElement::MakeLines(OutDrawElements, LayerId, PaintGeometry, LinePts, ESlateDrawEffect::None, C_DARKER, true, 2.0f);
 
-		ps.x += CoordMapper.GetScreenSize().x;
-		CoordMapper.To(ps, pt);
-		LinePts[0].X = 
-		LinePts[1].X = pt.x;
+	ps.x += CoordMapper.GetScreenSize().x;
+	CoordMapper.To(ps, pt);
+	LinePts[0].X = 
+	LinePts[1].X = pt.x;
 
-		FSlateDrawElement::MakeLines(OutDrawElements, LayerId, PaintGeometry, LinePts, ESlateDrawEffect::None, C_DARKER, true, 2.0f);
-	}
+	FSlateDrawElement::MakeLines(OutDrawElements, LayerId, PaintGeometry, LinePts, ESlateDrawEffect::None, C_DARKER, true, 2.0f);
+
+
+	// Draw other stuff
 
 	FPainter Painter;
 
@@ -163,22 +172,17 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 
 	// If we have humans, draw them too.
 
-	auto GameInstance = GDefconGameInstance;
-	const auto Mission = GameInstance->GetMission();
+	const auto Mission = GDefconGameInstance->GetMission();
 
 	if(Mission != nullptr && Mission->HumansInvolved())
 	{
-		DrawObjects(&GameInstance->GetHumans(), Painter);
+		DrawObjects(&Defcon::GGameMatch->GetHumans(), Painter);
 	}
 
 	
 	// Draw player ship last so nothing overlays it.
 
-	if(PlayerShipPtr != nullptr)
-	{
-		PlayerShipPtr->DrawSmall(Painter, CoordMapper, const_cast<FSlateColorBrush&>(RadarBrush));
-	}
-
+	Defcon::GGameMatch->GetPlayerShip().DrawSmall(Painter, CoordMapper, const_cast<FSlateColorBrush&>(RadarBrush));
 
 	return LayerId;
 }

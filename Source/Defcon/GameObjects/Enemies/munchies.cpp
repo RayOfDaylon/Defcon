@@ -161,6 +161,13 @@ void Defcon::CPhred::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Spawn a munchie but only if we're near the player.
+
+	if(!IsOurPositionVisible())
+	{
+		return;
+	}
+
 	MunchieSpawnCountdown -= DeltaTime;
 
 	if(MunchieSpawnCountdown > 0.0f)

@@ -13,10 +13,35 @@
 #include "GameObjects/gameobj.h"
 #include "GameObjects/GameObjectCollection.h"
 #include "GameObjects/obj_types.h"
-#include "Main/GameSession.h"
+#include "Main/GameMatch.h"
 #include "DefconGameInstance.generated.h"
 
+namespace Defcon
+{
+	struct FGameMatchStats
+	{
+		int32 ShotsFired                   = 0;
+		int32 SmartbombsDetonated          = 0;
+		int32 HostilesDestroyedBySmartbomb = 0;
+		int32 HostilesDestroyedByLaser     = 0;
+		int32 FriendlyFireIncidents        = 0;
+		int32 PlayerHits                   = 0;
+		int32 PlayerCollisions             = 0;
+		int32 PlayerDeaths                 = 0;
 
+		void Reset()
+		{
+			ShotsFired                   = 0;
+			SmartbombsDetonated          = 0;
+			HostilesDestroyedBySmartbomb = 0;
+			HostilesDestroyedByLaser     = 0;
+			FriendlyFireIncidents        = 0;
+			PlayerHits                   = 0;
+			PlayerCollisions             = 0;
+			PlayerDeaths                 = 0;
+		}
+	};
+}
 
 /*
 	Holds data that exists across missions, like player score, smartbomb count, humans, etc.
@@ -218,28 +243,17 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
 	TObjectPtr<UDaylonSpriteWidgetAtlas> PlayerShipAtlas;
 
+	Defcon::IMission*   Mission   = nullptr;
+	Defcon::EMissionID  MissionID = Defcon::EMissionID::First;
 
-
-
-	Defcon::IMission* Mission = nullptr;
-
-	Defcon::EMissionID MissionID = Defcon::EMissionID::First;
 
 	UDefconPlayViewBase* GetPlayView         () { return Cast<UDefconPlayViewBase>(Views[(int32)EDefconArena::Play]); }
 	UDefconViewBase*     GetCurrentView      () const { return CurrentView; }
 	void                 SetCurrentView      (UDefconViewBase* View);
 	void                 SetCurrentMission   (Defcon::EMissionID InMissionID);
-	void                 StartNewGame        ();
-	void                 StartGameSession    (Defcon::EMissionID InMissionID);
+	void                 StartGameMatch      (Defcon::EMissionID InMissionID);
 
 
-
-	bool                 bHumansPlaced = false;
-
-	public:
-
-	bool                 GetHumansPlaced     () const { return bHumansPlaced; }
-	void                 SetHumansPlaced     (bool b = true) { bHumansPlaced = b; }
 
 	protected:
 
@@ -248,39 +262,36 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 
 	UDefconViewBase* CurrentView = nullptr;
 
-	// Gameplay objects that persist across missions.
-	Defcon::CPlayerShip*           PlayerShipPtr;
-	Defcon::CGameObjectCollection  Humans;
 
-
-	// The score isn't visually shown, it's used more to track XP.
-	int32 Score = 0;
-	Daylon::TBindableValue<int32>  SmartbombsLeft;
 	bool                           GodMode = false;
-	Defcon::FTotals                Stats;
+	Defcon::FGameMatchStats        Stats;
 
 
 	public:
 
+	bool                                 MatchInProgress        () const { return (Defcon::GGameMatch != nullptr); }
 	bool                                 IsLive                 () const;
-	bool                                 GetGodMode             () const { return GodMode; }
 	bool                                 Update                 (float DeltaTime);
-	int32                                GetScore               () const { return Score; }
-	void                                 SetScore               (int32 Amount) { Score = Amount; }
-	int32                                AdvanceScore           (int32 Amount);
-	Defcon::CPlayerShip&                 GetPlayerShip          () { check(PlayerShipPtr != nullptr); return *PlayerShipPtr; }
-	Defcon::CGameObjectCollection&       GetHumans              () { return Humans; }
-	const Defcon::CGameObjectCollection& GetHumans              () const { return Humans; }
-	bool                                 AcquireSmartBomb       ();
-	int32                                GetSmartbombCount      () const { return SmartbombsLeft; }
-	void                                 BindToSmartbombCount   (TFunction<void(const int32& Val)> Delegate) { SmartbombsLeft.Bind(Delegate); }
 	void                                 TargetDestroyed        (Defcon::EObjType Kind) { if(Mission != nullptr) ((Defcon::CMilitaryMission*)Mission)->TargetDestroyed(Kind); }
 	Defcon::IMission*                    GetMission             () { return Mission; }
 	const Defcon::IMission*              GetMission             () const { return Mission; }
 	void                                 InitMission            ();
 	void                                 MissionEnded           ();
 	FString                              GetCurrentMissionName  () const;
-	Defcon::FTotals&                     GetStats               () { return Stats; }
+	Defcon::FGameMatchStats&             GetStats               () { return Stats; }
+	bool                                 GetGodMode             () const { return GodMode; }
+
+	//Defcon::CPlayerShip&                 GetPlayerShip          () { check(MatchInProgress()); return Defcon::GGameMatch->GetPlayerShip(); }
+	//bool                                 GetHumansPlaced        () const { check(MatchInProgress()); return Defcon::GGameMatch->GetHumansPlaced(); }
+	//void                                 SetHumansPlaced        (bool b = true) { check(MatchInProgress()); Defcon::GGameMatch->SetHumansPlaced(b); }
+	//int32                                GetScore               () const { return Score; }
+	//void                                 SetScore               (int32 Amount) { Score = Amount; }
+	//int32                                AdvanceScore           (int32 Amount);
+	//Defcon::CGameObjectCollection&       GetHumans              () { check(MatchInProgress()); return GameMatch->GetHumans(); }
+	//const Defcon::CGameObjectCollection& GetHumans              () const { check(MatchInProgress()); return GameMatch->GetHumans(); }
+	//bool                                 AcquireSmartBomb       ();
+	//int32                                GetSmartbombCount      () const { return SmartbombsLeft; }
+	//void                                 BindToSmartbombCount   (TFunction<void(const int32& Val)> Delegate) { SmartbombsLeft.Bind(Delegate); }
 };
 
 extern UDefconGameInstance* GDefconGameInstance;

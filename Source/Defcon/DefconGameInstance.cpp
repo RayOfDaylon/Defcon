@@ -88,8 +88,6 @@ void UDefconGameInstance::Init()
 
 	GGameObjectResources.Add(Defcon::EObjType::HUMAN,    { HumanAtlas,      HumanAtlas      ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f });
 	GGameObjectResources.Add(Defcon::EObjType::PLAYER,   { PlayerShipAtlas, PlayerShipAtlas ->Atlas.GetCelPixelSize() * UpscaleFactor, 0.5f } );
-
-	PlayerShipPtr = new Defcon::CPlayerShip;
 }
 
 
@@ -97,7 +95,7 @@ void UDefconGameInstance::Shutdown()
 {
 	UE_LOG(LogGame, Log, TEXT("%S"), __FUNCTION__);
 
-	SAFE_DELETE(PlayerShipPtr);
+	SAFE_DELETE(Defcon::GGameMatch);
 	SAFE_DELETE(Mission);
 	SAFE_DELETE(GAudio);
 
@@ -264,7 +262,9 @@ void UDefconGameInstance::OnSpawnEnemy()
 {
 	GETVIEW
 
-	const FString Str = FString::Printf(TEXT("Spawning enemy near player's position %d, %d"), (int32)PlayerShipPtr->Position.x, (int32)PlayerShipPtr->Position.y);
+	const auto& PlayerShip = Defcon::GGameMatch->GetPlayerShip();
+
+	const FString Str = FString::Printf(TEXT("Spawning enemy near player's position %d, %d"), (int32)PlayerShip.Position.x, (int32)PlayerShip.Position.y);
 	View->AddMessage(Str, 0.25f);
 
 	View->OnSpawnEnemy();
@@ -275,9 +275,10 @@ void UDefconGameInstance::OnIncrementXp()
 {
 	GETVIEW
 
-	Score += 5000;
+	Defcon::GGameMatch->AdjustScore(5000);
+	//Score += 5000;
 
-	const FString Str = FString::Printf(TEXT("XP increased to %d"), Score);
+	const FString Str = FString::Printf(TEXT("XP increased to %d"), Defcon::GGameMatch->GetScore());
 
 	View->AddMessage(Str, 1.0f);
 }
@@ -287,14 +288,16 @@ void UDefconGameInstance::OnDecrementXp()
 {
 	GETVIEW
 
-	if(Score <= 0)
+	if(Defcon::GGameMatch->GetScore() <= 0)
 	{
 		return;
 	}
 
-	Score = FMath::Max(0, Score - 5000);
+	//Score = FMath::Max(0, Score - 5000);
 
-	const FString Str = FString::Printf(TEXT("XP decreased to %d"), Score);
+	Defcon::GGameMatch->AdjustScore(-5000);
+
+	const FString Str = FString::Printf(TEXT("XP decreased to %d"), Defcon::GGameMatch->GetScore());
 
 	View->AddMessage(Str, 1.0f);
 }
@@ -314,6 +317,11 @@ void UDefconGameInstance::SetCurrentView(UDefconViewBase* View)
 	{
 		CurrentView->SetIsEnabled(false);
 		CurrentView->OnDeactivate();
+	}
+
+	if(MatchInProgress() && (!View->RequiresGameMatch()))
+	{
+		DELETE_AND_NULL(Defcon::GGameMatch);
 	}
 
 	ViewportClient->RemoveAllViewportWidgets();
@@ -353,29 +361,7 @@ void UDefconGameInstance::TransitionToArena(EDefconArena Arena)
 
 	UE_LOG(LogGame, Log, TEXT("%S: transitioning to arena %d"), __FUNCTION__, (int32)Arena);
 
-	if(Arena == EDefconArena::MissionPicker)
-	{
-		StartNewGame();
-	}
-
 	SetCurrentView(ArenaWidget);
-}
-
-
-void UDefconGameInstance::StartNewGame()
-{
-	// Start new game with initial number of items.
-
-	SmartbombsLeft = SMARTBOMB_INITIAL;
-
-	Humans.DeleteAll();
-
-	for(int32 i = 0; i < HUMANS_COUNT; i++)
-	{
-		Humans.Add(new Defcon::CHuman);
-	}
-
-	bHumansPlaced = false;
 }
 
 
@@ -400,7 +386,7 @@ void UDefconGameInstance::MissionEnded()
 	Defcon::IMission* NextMission = nullptr;
 	
 	// Only progress to the next mission if one or more humans survived.
-	if(GetHumans().Count() > 0)
+	if(Defcon::GGameMatch->GetHumans().Count() > 0)
 	{
 		NextMission = Defcon::CMissionFactory::MakeNext(Mission);
 	}
@@ -419,11 +405,11 @@ void UDefconGameInstance::MissionEnded()
 
 	if(HumansWereInvolved)
 	{
-		int32 n = GetHumans().Count();
+		const int32 NumHumans = Defcon::GGameMatch->GetHumans().Count();
 
-		if(n > 0)
+		if(NumHumans > 0)
 		{
-			Str = FString::Printf(TEXT("%s human%S remaining"), *GetNumberSpelling(n, 1), n > 1 ? "s" : "");
+			Str = FString::Printf(TEXT("%s human%S remaining"), *GetNumberSpelling(NumHumans, 1), NumHumans > 1 ? "s" : "");
 		}
 		else
 		{
@@ -437,41 +423,8 @@ void UDefconGameInstance::MissionEnded()
 }
 
 
-int32 UDefconGameInstance::AdvanceScore(int32 Amount)
-{
-	const int32 oldsmart  = Score / SMARTBOMB_VALUE;
-
-	Score += Amount; 
-
-#if 0
-	const int32 oldplayer = Score / PLAYER_REWARD_POINTS;
-	if(Score / PLAYER_REWARD_POINTS > oldplayer)
-	{
-		//m_nPlayerLivesLeft++;
-		GAudio->StopPlayingSound();
-		GAudio->OutputSound(CAudioManager::extra_ship);
-	}
-#endif
-
-	if(Score / SMARTBOMB_VALUE > oldsmart)
-	{
-		SmartbombsLeft += SMARTBOMB_RESUPPLY;
-	}
-
-	return Score; 
-}
 
 
-bool UDefconGameInstance::AcquireSmartBomb()
-{
-	if(SmartbombsLeft > 0)
-	{
-		SmartbombsLeft--;
-		return true;
-	}
-
-	return false;
-}
 
 
 FString UDefconGameInstance::GetCurrentMissionName() const
@@ -495,11 +448,12 @@ void UDefconGameInstance::SetCurrentMission(Defcon::EMissionID InMissionID)
 }
 
 
-void UDefconGameInstance::StartGameSession(Defcon::EMissionID InMissionID)
+void UDefconGameInstance::StartGameMatch(Defcon::EMissionID InMissionID)
 {
-	// todo: instance a CGameSession object.
+	check(!MatchInProgress());
 
-	SetScore(0);
+	Defcon::GGameMatch = new Defcon::CGameMatch((Defcon::EMissionID)InMissionID);
+
 	GetStats().Reset();
 
 	SetCurrentMission((Defcon::EMissionID)InMissionID);

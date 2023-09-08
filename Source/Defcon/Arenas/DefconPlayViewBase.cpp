@@ -87,13 +87,13 @@ void UDefconPlayViewBase::OnMissionStarting()
 
 Defcon::CGameObjectCollection& UDefconPlayViewBase::GetHumans()
 {
-	return GDefconGameInstance->GetHumans();
+	return Defcon::GGameMatch->GetHumans();
 }
 
 
 const Defcon::CGameObjectCollection& UDefconPlayViewBase::GetHumans() const
 {
-	return GDefconGameInstance->GetHumans();
+	return Defcon::GGameMatch->GetHumans();
 }
 
 
@@ -121,6 +121,8 @@ void UDefconPlayViewBase::OnFinishActivating()
 {
 	LOG_UWIDGET_FUNCTION
 	Super::OnFinishActivating();
+
+	check(Defcon::GGameMatch != nullptr);
 
 	GArena = this;
 
@@ -156,7 +158,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 		Human->Position.y = FRANDRANGE(25, 30); // todo: use minimum terrain level pref instead of 25..30
 
-		if(!GDefconGameInstance->GetHumansPlaced())
+		if(!Defcon::GGameMatch->GetHumansPlaced())
 		{
 			// We're in the first mission of the game, so randomize each human's x-position.
 			Human->Position.x = FRANDRANGE(0.0f, GetWidth() - 1); 
@@ -166,7 +168,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 	});
 
 
-	GDefconGameInstance->SetHumansPlaced();
+	Defcon::GGameMatch->SetHumansPlaced();
 
 
 	// Start the current mission.
@@ -177,7 +179,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	CreateTerrain();
 
-	PlayAreaRadar->Init(&GetPlayerShip(), MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
+	PlayAreaRadar->Init(/*&GetPlayerShip(), */MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
 
 
 	GetPlayerShip().BindToShieldValue([WeakThis = TWeakObjectPtr<UDefconPlayViewBase>(this)](const float& Value)
@@ -188,7 +190,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 		}
 	});
 
-	GDefconGameInstance->BindToSmartbombCount([WeakThis = TWeakObjectPtr<UDefconPlayViewBase>(this)](const int32& Value)
+	Defcon::GGameMatch->BindToSmartbombCount([WeakThis = TWeakObjectPtr<UDefconPlayViewBase>(this)](const int32& Value)
 	{
 		if(auto This = WeakThis.Get())
 		{
@@ -292,7 +294,7 @@ void UDefconPlayViewBase::InitPlayerShip()
 	PlayerShip.Position.Set(0.0f, ArenaSize.Y / 2);
 	PlayerShip.FaceRight();
 	
-	PlayAreaMain->PlayerShipPtr = &PlayerShip;
+	//PlayAreaMain->PlayerShipPtr = &PlayerShip;
 
 	// Sprite installation for player ship happens in DefconPlayMainWidgetBase
 	PlayerShip.SetIsAlive(true);
@@ -464,7 +466,7 @@ void UDefconPlayViewBase::AllStopPlayerShip()
 
 void UDefconPlayViewBase::IncreaseScore(int32 Points, bool bVis, const CFPoint* pPos)
 {
-	GDefconGameInstance->AdvanceScore((int32)Points);
+	Defcon::GGameMatch->AdvanceScore((int32)Points);
 }
 
 
@@ -887,13 +889,13 @@ void UDefconPlayViewBase::AddDebris(Defcon::IGameObject* p)
 
 Defcon::CPlayerShip& UDefconPlayViewBase::GetPlayerShip() 
 {
-	return GDefconGameInstance->GetPlayerShip();
+	return Defcon::GGameMatch->GetPlayerShip();
 }
 
 
 const Defcon::CPlayerShip& UDefconPlayViewBase::GetPlayerShip() const
 {
-	return GDefconGameInstance->GetPlayerShip();
+	return Defcon::GGameMatch->GetPlayerShip();
 }
 
 
@@ -910,34 +912,43 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	ScheduledTasks.Process(DeltaTime);
 
 
-	if(FadeAge > 0.0f)
+	if(ARENA_BOGDOWN && Debris.Count() >= 500)
 	{
-		FadeAge -= DeltaTime;
+		// Debris count over 700 can occur from smartbomb exploding many enemies.
+		// Arena bogdown lets us slow down the action to make it more intense.
+
+		float Factor = NORM_((float)Debris.Count(), 500.0f, 1500.0f);
+		Factor = CLAMP(Factor, 0.0f, 1.0f);
+
+		DeltaTime *= LERP(1.0f, 0.5f, Factor);
+
+		/*if(Debris.Count() > 250)
+		{
+			if(Debris.Count() < 500)
+			{
+				DeltaTime *= 0.8f;
+			}
+			else if(Debris.Count() < 750)
+			{
+				DeltaTime *= 0.65f;
+			}
+			else //if(Objects.Count() >= 750)
+			{
+				DeltaTime *= 0.5f;
+			}
+		}*/
 	}
 
 	if(bBulletTime)
 	{
 		DeltaTime *= 0.25f;
 	}
-	else if(ARENA_BOGDOWN)
-	{
-		if(Enemies.Count() + Objects.Count() + Debris.Count() > 250)
-		{
-			if(Enemies.Count() + Objects.Count() < 500)
-			{
-				DeltaTime *= 0.8f;
-			}
-			else if(Enemies.Count() + Objects.Count() < 750)
-			{
-				DeltaTime *= 0.65f;
-			}
-			else //if(Objects.Count() < 750)
-			{
-				DeltaTime *= 0.5f;
-			}
-		}
-	}
+	
 
+	if(FadeAge > 0.0f)
+	{
+		FadeAge -= DeltaTime;
+	}
 
 	ProcessWeaponsHits();
 
@@ -1261,9 +1272,17 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 
 		case EDefconPawnWeaponEvent::DetonateSmartbomb: 
 
-			if(GetPlayerShip().IsAlive() && GDefconGameInstance->AcquireSmartBomb())
+			if(GetPlayerShip().IsAlive())
 			{
-				DetonateSmartbomb();
+				if(Defcon::GGameMatch->AcquireSmartBomb())
+				{
+					DetonateSmartbomb();
+				}
+				else
+				{
+					AddMessage(TEXT("SMARTBOMB ORDNANCE DEPLETED"));
+					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
+				}
 			}
 
 		break;
@@ -1390,7 +1409,7 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& Obj, const
 	const int32 FIRE_AT   = 10000;
 	const int32 FIRE_LEAD = 100000;
 
-	const int32 Score = GDefconGameInstance->GetScore();
+	const int32 Score = Defcon::GGameMatch->GetScore();
 
 	EFiringAccuracy eAccuracy = EFiringAccuracy::Lead;
 

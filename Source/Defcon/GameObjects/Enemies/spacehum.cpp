@@ -34,7 +34,7 @@ Defcon::CSpacehum::CSpacehum()
 	bIsCollisionInjurious = true;
 	Brightness = FRANDRANGE(0.9f, 1.0f);
 
-	Speed = (float)GDefconGameInstance->GetScore() / 250;
+	Speed = (float)GGameMatch->GetScore() / 250;
 	Speed *= FRANDRANGE(0.9f, 1.33f);
 
 	CreateSprite(Type);

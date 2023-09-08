@@ -197,7 +197,11 @@ Global variables are:
 
 GArena                The play arena where a mission is played out.
 GAudio                The collection of available audio tracks (sounds).
-GDefconGameInstance   The singular game instance (has player, humans, missions, stats).
+GDefconGameInstance   The singular game instance (has stats).
+
+GGameMatch            Match particulars (player, humans, missions, etc.),
+                      is nullptr if no match is active.
+
 GGameObjectResources  Maps object types to their sprite atlases.
 GPrefs                Preference settings.
 GObjectTypeManager    Maps game object types to typenames (used for debugging).

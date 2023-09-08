@@ -68,7 +68,7 @@ namespace Defcon
 
 			virtual void Tick		(float DeltaTime) override;
 			virtual void Draw		(FPainter&, const Defcon::I2DCoordMapper&) override;
-			virtual void DrawSmall	(FPainter&, const Defcon::I2DCoordMapper&, FSlateBrush&) override {}
+			virtual void DrawSmall	(FPainter&, const Defcon::I2DCoordMapper&, FSlateBrush&) const override {}
 
 
 		private:

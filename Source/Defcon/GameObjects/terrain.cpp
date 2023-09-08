@@ -237,7 +237,7 @@ void Defcon::CTerrain::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 #endif
 
 
-void Defcon::CTerrain::DrawSmall(FPainter& Painter, const I2DCoordMapper& Mapper, FSlateBrush&)
+void Defcon::CTerrain::DrawSmall(FPainter& Painter, const I2DCoordMapper& Mapper, FSlateBrush&) const
 {
 	// The entire terrain is visible, so don't search for start/end points.
 	// Note that the player is always in the center, so the terrain shifts left/right.

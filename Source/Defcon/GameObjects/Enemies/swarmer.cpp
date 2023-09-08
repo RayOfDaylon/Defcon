@@ -178,7 +178,7 @@ void Defcon::CSwarmer::ConsiderFiringBullet(float DeltaTime)
 
 		// The time to fire goes down as the player XP increases.
 
-		const float XP = (float)GDefconGameInstance->GetScore();
+		const float XP = (float)GGameMatch->GetScore();
 
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);

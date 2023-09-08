@@ -105,7 +105,7 @@ namespace Defcon
 								  
 			virtual void          Tick                  (float DeltaTime);
 			virtual void          Draw                  (FPainter&, const I2DCoordMapper&);
-			virtual void          DrawSmall             (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush);
+			virtual void          DrawSmall             (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush) const;
 
 			virtual void          Notify                (EMessage, void*);
 

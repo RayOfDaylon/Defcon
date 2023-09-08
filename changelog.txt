@@ -2,7 +2,26 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 7, 2023
+September 8, 2023
+
+
+Player ship, humans, smartbomb count, and score (XP) 
+moved from CDefconGameInstance to new Defcon::CGameMatch class.
+Those items only exist during a match and weren't supposed 
+to be part of CDefconGameInstance which represents 
+the entire game application. Current mission still needs 
+to be moved as well.
+
+Arena bog down preference supported more smoothly and 
+only by checking debris count. Easy way to test is 
+to detonate a smartbomb amid a dense group of enemies.
+
+Attempting to detonate a smart bomb when none are 
+available produces a message and plays the invalid selection sound.
+
+Pressing Tab in the game over screen skips ahead to 
+introducing the stats, to finish introducing them, 
+and then to return to the main menu.
 
 Added flashing alert widget to status panel which 
 appears when a human is being abducted.
@@ -10,6 +29,9 @@ appears when a human is being abducted.
 Added sprite atlas for reformer enemy on Details screen.
 
 Added player ship to Details screen.
+
+Bullet time feature added (press B). This will probably 
+be only for debugging and unavailable in Shipping builds.
 
 Pause feature added (press P).
 

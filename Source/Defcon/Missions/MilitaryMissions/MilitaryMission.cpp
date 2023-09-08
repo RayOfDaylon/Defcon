@@ -242,7 +242,7 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 			Player.EnableInput(false);
 
 			// If the player is carrying any humans, redistribute them back to the ground to avoid clumping in next mission.
-			GDefconGameInstance->GetHumans().ForEach([this](IGameObject* pObj)
+			GGameMatch->GetHumans().ForEach([this](IGameObject* pObj)
 			{
 				auto Human = static_cast<CHuman*>(pObj);
 

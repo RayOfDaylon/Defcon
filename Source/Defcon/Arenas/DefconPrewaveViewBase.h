@@ -33,9 +33,10 @@ class DEFCON_API UDefconPrewaveViewBase : public UDefconViewBase
 		bool bParentEnabled) const override;*/
 
 
-	virtual void OnActivate   () override;
-	virtual void OnEscPressed () override;
-	virtual void OnSkipPressed() override;
+	virtual bool RequiresGameMatch    () const override { return true; }
+	virtual void OnActivate           () override;
+	virtual void OnEscPressed         () override;
+	virtual void OnSkipPressed        () override;
 
 
 	UFUNCTION(BlueprintCallable, Category=Defcon)

@@ -167,7 +167,7 @@ void Defcon::CPlayerShip::Tick(float DeltaTime)
 }
 
 
-void Defcon::CPlayerShip::DrawSmall(FPainter& Painter, const I2DCoordMapper& Mapper, FSlateBrush&)
+void Defcon::CPlayerShip::DrawSmall(FPainter& Painter, const I2DCoordMapper& Mapper, FSlateBrush&) const
 {
 	// Draw a white 5 x 5 px diamond.
 	CFPoint P;

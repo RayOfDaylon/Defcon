@@ -66,7 +66,7 @@ void Defcon::CDynamo::Tick(float DeltaTime)
 	{
 		GArena->CreateEnemy(EObjType::SPACEHUM, GetType(), Position, 0.0f, EObjectCreationFlags::EnemyPart);
 
-		const auto XP = GDefconGameInstance->GetScore();
+		const auto XP = GGameMatch->GetScore();
 		float T = NORM_(XP, 0.0f, 50000.0f);
 		T = CLAMP(T, 0.0f, 1.0f);
 

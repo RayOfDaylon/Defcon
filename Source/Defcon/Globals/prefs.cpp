@@ -32,7 +32,7 @@ void Defcon::CPrefs::Construct()
 	//        ---------------------------  -----     -------------   ----------- ---------  ------------  --------------------------------------------------------------------------------------------
 
 
-	INITPREF( arena_bogdown,                0,       "",             Boolean,      0,           0,      "Slow game down when lots of objects and debris are visible"                                );
+	INITPREF( arena_bogdown,                1,       "",             Boolean,      0,           0,      "Slow game down when lots of objects and debris are visible"                                );
 	INITPREF( attack_initialdistance,       1.0f,    "%",            Float,        0.1f,        1.0f,   "Probability of enemy materializing far away from player"                                   );
 	INITPREF( baiter_prob,                  0.33f,   "%",            Float,        0,           1,      "Probability of baiter appearing near end of mission"                                       );
 	INITPREF( baiter_spawn_frequency,       2.0f,    "seconds",      Float,        0.5f,       10.0f,   "Number of seconds before another baiter is spawned"                                        );

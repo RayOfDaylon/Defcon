@@ -41,6 +41,7 @@ class DEFCON_API UDefconViewBase : public UUserWidget
 	virtual void OnToggleDebugStats         () {}
 	virtual void OnToggleShowBoundingBoxes  () {}
 	virtual void OnToggleShowOrigin         () {}
+	virtual bool RequiresGameMatch          () const { return false; }
 
 	protected:
 

@@ -178,7 +178,7 @@ Defcon::CBouncer::~CBouncer()
 
 void Defcon::CBouncer::ResetFiringCountdown()
 {
-	float T = (float)GDefconGameInstance->GetScore() / 50000;
+	float T = (float)GGameMatch->GetScore() / 50000;
 	T = CLAMP(T, 0.0f, 1.0f);
 
 	FiringCountdown = LERP(2.0f, 0.25f, T) + Daylon::FRandRange(0.0f, 0.2f);
@@ -209,7 +209,7 @@ Defcon::CWeakBouncer::~CWeakBouncer()
 
 void Defcon::CWeakBouncer::ResetFiringCountdown()
 {
-	float T = (float)GDefconGameInstance->GetScore() / 50000;
+	float T = (float)GGameMatch->GetScore() / 50000;
 	T = CLAMP(T, 0.0f, 1.0f);
 
 	FiringCountdown = LERP(2.0f, 0.1f, T) + Daylon::FRandRange(0.0f, 0.2f);

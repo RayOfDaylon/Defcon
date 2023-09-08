@@ -38,7 +38,7 @@ Defcon::CLander::CLander()
 	MaxSpeed        = FRANDRANGE(0.5f, 1.0f);
 
 	{
-		float N = NORM_(GDefconGameInstance->GetScore(), 0, 75000) + FRANDRANGE(-0.05f, 0.05f);
+		float N = NORM_(GGameMatch->GetScore(), 0, 75000) + FRANDRANGE(-0.05f, 0.05f);
 		N = CLAMP(N, 0.0f, 1.0f);
 
 		AscentSpeed  = Daylon::Lerp(LANDER_ASCENT_SPEED,  N);
@@ -60,7 +60,7 @@ Defcon::CLander::CLander()
 
 	float ProbChaseHuman = 0.05f;
 
-	const float Score = (float)GDefconGameInstance->GetScore();
+	const float Score = (float)GGameMatch->GetScore();
 
 	if(Score > 10000 && Score <= 60000)
 	{
@@ -296,7 +296,7 @@ void Defcon::CLander::Tick(float DeltaTime)
 					// them have been tracking him, they will
 					// stop doing so.
 					HumanPtr->Notify(Defcon::EMessage::TakenAboard, this);
-					GArena->AddMessage(GDefconGameInstance->GetHumans().Count() > 1 ? TEXT("ABDUCTION IN PROGRESS") : TEXT("ABDUCTION IN PROGRESS -- MISSION FAILURE IMMINENT"));
+					GArena->AddMessage(GGameMatch->GetHumans().Count() > 1 ? TEXT("ABDUCTION IN PROGRESS") : TEXT("ABDUCTION IN PROGRESS -- MISSION FAILURE IMMINENT"));
 					GAudio->OutputSound(EAudioTrack::Human_abducted);
 				}
 			}
@@ -439,7 +439,7 @@ void Defcon::CLander::ConsiderFiringBullet(float DeltaTime)
 
 		// The time to fire goes down as the player XP increases.
 
-		const float XP = (float)GDefconGameInstance->GetScore();
+		const float XP = (float)GGameMatch->GetScore();
 
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);

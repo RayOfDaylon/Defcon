@@ -140,6 +140,8 @@ void UDefconPlayMainWidgetBase::OnFinishActivating()
 
 		Stars.Add(Star);
 	}
+
+	//PlayerShipPtr = &GDefconGameInstance->GetPlayerShip();
 }
 
 
@@ -171,6 +173,8 @@ void UDefconPlayMainWidgetBase::OnMissionStarting()
 {
 	// Install the player ship and the human sprites here so that they will occlude terrain.
 
+	auto PlayerShipPtr = &Defcon::GGameMatch->GetPlayerShip();
+
 	check(PlayerShipPtr != nullptr);
 	check(Humans != nullptr);
 
@@ -192,8 +196,10 @@ void UDefconPlayMainWidgetBase::OnDeactivate()
 {
 	LOG_UWIDGET_FUNCTION
 
-	check(PlayerShipPtr != nullptr);
+	//check(PlayerShipPtr != nullptr);
 	check(Humans != nullptr);
+
+	auto PlayerShipPtr = &Defcon::GGameMatch->GetPlayerShip();
 
 	Daylon::Uninstall(PlayerShipExhaust.Pin());
     PlayerShipPtr->UninstallSprite();
@@ -219,6 +225,13 @@ void UDefconPlayMainWidgetBase::NativeTick(const FGeometry& MyGeometry, float De
 {
 	LOG_UWIDGET_FUNCTION
 	Super::NativeTick(MyGeometry, DeltaTime);
+
+	if(!GDefconGameInstance->MatchInProgress())
+	{
+		return;
+	}
+
+	auto PlayerShipPtr = &Defcon::GGameMatch->GetPlayerShip();
 
 	// Wait until we've been initialized by the play arena.
 	if(CoordMapperPtr == nullptr || PlayerShipPtr == nullptr)
@@ -270,6 +283,8 @@ void UDefconPlayMainWidgetBase::ClearMessages()
 void UDefconPlayMainWidgetBase::UpdatePlayerShip(float DeltaTime)
 {
 	// The player ship is not part of the game objects array, so process its sprite here.
+
+	auto PlayerShipPtr = &Defcon::GGameMatch->GetPlayerShip();
 
 	check(PlayerShipPtr != nullptr);
 
@@ -397,6 +412,11 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 		bParentEnabled);
 
 
+	if(!GDefconGameInstance->MatchInProgress())
+	{
+		return LayerId;
+	}
+
 	if(CoordMapperPtr == nullptr)
 	{
 		return LayerId;
@@ -486,7 +506,9 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 	DrawObjects(Debris,  Painter);
 	DrawObjects(Blasts,  Painter);
 
-	if(bShowBoundingBoxes && PlayerShipPtr && PlayerShipPtr->IsAlive())
+	auto PlayerShipPtr = &Defcon::GGameMatch->GetPlayerShip();
+
+	if(bShowBoundingBoxes /*&& PlayerShipPtr */&& PlayerShipPtr->IsAlive())
 	{
 		DrawObjectBbox(PlayerShipPtr, Painter);
 	}
@@ -497,7 +519,7 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 
 void UDefconPlayMainWidgetBase::OnToggleDebugStats()
 {
-	PlayerShipDebug->PlayerShipPtr = PlayerShipPtr;
+	PlayerShipDebug->PlayerShipPtr = &Defcon::GGameMatch->GetPlayerShip();
 	PlayerShipDebug->Enemies       = Enemies;
 	PlayerShipDebug->Debris        = Debris;
 	PlayerShipDebug->ArenaHeight   = Daylon::GetWidgetSize(this).Y;
@@ -607,7 +629,7 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 	}
 
 
-	Str = FString::Printf(TEXT("%d"), GDefconGameInstance->GetHumans().Count());
+	Str = FString::Printf(TEXT("%d"), Defcon::GGameMatch->GetHumans().Count());
 	HumansLeft->SetText(FText::FromString(Str));
 
 

@@ -42,7 +42,7 @@ class DEFCON_API UDefconPlayRadarWidgetBase : public UDefconPlayWidgetBase
 
 	Defcon::CArenaCoordMapper*       ArenaCoordMapperPtr = nullptr;
 	Defcon::CTerrain*                TerrainPtr          = nullptr;
-	Defcon::CPlayerShip*             PlayerShipPtr       = nullptr;
+	//Defcon::CPlayerShip*             PlayerShipPtr       = nullptr;
 	Defcon::CGameObjectCollection*   Objects             = nullptr;
 	Defcon::CGameObjectCollection*   Enemies             = nullptr;
 
@@ -52,7 +52,7 @@ class DEFCON_API UDefconPlayRadarWidgetBase : public UDefconPlayWidgetBase
 	void OnFinishActivating ();
 	void OnDeactivate       ();
 
-	void Init           (Defcon::CPlayerShip* PlayerShip, const FVector2D& MainSize, int32 ArenaWidth, Defcon::CArenaCoordMapper* ArenaCoordMapper, 
+	void Init           (/*Defcon::CPlayerShip* PlayerShip, */const FVector2D& MainSize, int32 ArenaWidth, Defcon::CArenaCoordMapper* ArenaCoordMapper, 
 							Defcon::CGameObjectCollection* Objects, Defcon::CGameObjectCollection* Enemies);
 
 	void SetTerrain     (Defcon::CTerrain* Ptr);

@@ -29,7 +29,7 @@ namespace Defcon
 
 			void                       InitTerrain  (float W, float H);
 			//virtual void               Draw         (FPainter&, const I2DCoordMapper&) override;
-			virtual void               DrawSmall    (FPainter&, const I2DCoordMapper&, FSlateBrush&) override;
+			virtual void               DrawSmall    (FPainter&, const I2DCoordMapper&, FSlateBrush&) const override;
 			float	                   GetElev      (float X) const;
 			const TArray<FVector2D>*   GetVertices  () const { return &Vertices; }
 

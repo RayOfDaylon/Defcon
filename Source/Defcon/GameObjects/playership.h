@@ -35,7 +35,7 @@ namespace Defcon
 			void InitPlayerShip();
 
 			virtual void  Tick          (float DeltaTime) override;
-			virtual void  DrawSmall     (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush) override;
+			virtual void  DrawSmall     (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush) const override;
 			virtual void  OnAboutToDie  () override;
 			virtual void  SetIsAlive    (bool b) override;
 			virtual void  ImpartForces  (float) override; // For the player ship, we need to customize vertical motion.

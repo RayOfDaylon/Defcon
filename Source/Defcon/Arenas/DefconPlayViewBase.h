@@ -66,7 +66,8 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 
 	//virtual void OnActivate         () override;
-	virtual bool IsOkayToFinishActivating() const override;
+	virtual bool IsOkayToFinishActivating () const override;
+	virtual bool RequiresGameMatch        () const override { return true; }
 
 	virtual void OnFinishActivating   () override;
 	virtual void OnDeactivate         () override;

@@ -185,7 +185,7 @@ void Defcon::CFirebomber::Tick(float DeltaTime)
 
 		// The time to fire goes down as the player XP increases.
 
-		float XP = (float)GDefconGameInstance->GetScore();
+		float XP = (float)GGameMatch->GetScore();
 
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);
@@ -221,7 +221,7 @@ void Defcon::CWeakFirebomber::Tick(float DeltaTime)
 
 		// The time to fire goes down as the player XP increases.
 
-		float XP = (float)GDefconGameInstance->GetScore();
+		float XP = (float)GGameMatch->GetScore();
 
 		float T = NORM_(XP, 1000.0f, 50000.f);
 		T = CLAMP(T, 0.0f, 1.0f);

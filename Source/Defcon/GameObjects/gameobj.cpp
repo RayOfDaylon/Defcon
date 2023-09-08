@@ -76,7 +76,7 @@ bool Defcon::IGameObject::ReduceLifespanBy(float f)
 }
 
 
-void Defcon::IGameObject::DrawSmall(FPainter& Painter, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush)
+void Defcon::IGameObject::DrawSmall(FPainter& Painter, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush) const
 {
 	CFPoint pt;
 	CoordMapper.To(Position, pt);

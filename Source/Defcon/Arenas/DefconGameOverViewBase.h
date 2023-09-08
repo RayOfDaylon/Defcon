@@ -38,6 +38,7 @@ class DEFCON_API UDefconGameOverViewBase : public UDefconViewBase
 		const FWidgetStyle& InWidgetStyle,
 		bool bParentEnabled) const override;*/
 
+	virtual bool RequiresGameMatch   () const override { return true; }
 
 	virtual void OnActivate          () override;
 	virtual void OnFinishActivating  () override;

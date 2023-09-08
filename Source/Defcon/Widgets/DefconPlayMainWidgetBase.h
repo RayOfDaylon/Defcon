@@ -314,7 +314,7 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	Defcon::I2DCoordMapper*          CoordMapperPtr      = nullptr;
 	Defcon::I2DCoordMapper*          CoordMapperStarsPtr = nullptr;
 	Defcon::I2DCoordMapper*          CoordMapperRadarPtr = nullptr;
-	Defcon::CPlayerShip*             PlayerShipPtr       = nullptr;
+	//Defcon::CPlayerShip*             PlayerShipPtr       = nullptr;
 	Defcon::CGameObjectCollection*   Objects             = nullptr;
 	Defcon::CGameObjectCollection*   Enemies             = nullptr;
 	Defcon::CGameObjectCollection*   Debris              = nullptr;

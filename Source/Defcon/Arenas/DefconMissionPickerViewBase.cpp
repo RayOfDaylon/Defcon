@@ -313,9 +313,9 @@ void UDefconMissionPickerViewBase::OnChooseMission()
 
 	GAudio->OutputSound(Defcon::EAudioTrack::Mission_chosen);
 
-	// Game session starts here.
+	// Game match starts here.
 
-	GDefconGameInstance->StartGameSession((Defcon::EMissionID)MissionID);
+	GDefconGameInstance->StartGameMatch((Defcon::EMissionID)MissionID);
 }
 
 
