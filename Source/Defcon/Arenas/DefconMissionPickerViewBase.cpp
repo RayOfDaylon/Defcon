@@ -94,7 +94,7 @@ void UDefconMissionPickerViewBase::NativeTick(const FGeometry& MyGeometry, float
 		if(ExpanderAge >= ExpanderLifetime)
 		{
 			Daylon::Hide(RootCanvas);
-			GDefconGameInstance->MissionID = (Defcon::EMissionID)(CurrentCell.Y * CellsAcross + CurrentCell.X);
+			//Defcon::GGameMatch->SetMissionID = (Defcon::EMissionID)(CurrentCell.Y * CellsAcross + CurrentCell.X);
 			TransitionToArena(EDefconArena::Prewave);
 		}
 		else

@@ -178,7 +178,7 @@ void UDefconPlayMainWidgetBase::OnMissionStarting()
 	check(PlayerShipPtr != nullptr);
 	check(Humans != nullptr);
 
-	AreHumansInMission = GDefconGameInstance->GetMission()->HumansInvolved();
+	AreHumansInMission = Defcon::GGameMatch->GetMission()->HumansInvolved();
 
 	PlayerShipExhaust =	Daylon::SpawnSpritePlayObject2D(PlayerShipExhaustAtlas->Atlas, FVector2D(5, 5), 0.5f);
 	PlayerShipExhaust.Pin()->Hide();
@@ -633,7 +633,7 @@ void UDefconPlayerShipDebugWidgetBase::NativeTick(const FGeometry& MyGeometry, f
 	HumansLeft->SetText(FText::FromString(Str));
 
 
-	const auto Mission = GDefconGameInstance->GetMission();
+	const auto Mission = Defcon::GGameMatch->GetMission();
 
 	if(Mission == nullptr || !Mission->IsMilitary() || !Mission->IsRunning())
 	{

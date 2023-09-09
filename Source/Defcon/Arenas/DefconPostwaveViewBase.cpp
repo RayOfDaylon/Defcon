@@ -209,7 +209,7 @@ void UDefconPostwaveViewBase::SetSubtitle (const FString& Str) { Subtitle->SetTe
 
 void UDefconPostwaveViewBase::StartMission()
 {
-	TransitionToArena(GDefconGameInstance->GetMission() != nullptr ? EDefconArena::Prewave : EDefconArena::GameOver);
+	TransitionToArena(Defcon::GGameMatch->GetMission() != nullptr ? EDefconArena::Prewave : EDefconArena::GameOver);
 }
 
 

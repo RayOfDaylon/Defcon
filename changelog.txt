@@ -2,15 +2,19 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 8, 2023
+September 9, 2023
 
+
+Arena bog down slowest time factor increased from 0.5 to 0.67; 
+things got a little too slow when using smart bombs to clear dense areas.
+
+Current mission and god mode moved from game instance to game match.
 
 Player ship, humans, smartbomb count, and score (XP) 
 moved from CDefconGameInstance to new Defcon::CGameMatch class.
 Those items only exist during a match and weren't supposed 
 to be part of CDefconGameInstance which represents 
-the entire game application. Current mission still needs 
-to be moved as well.
+the entire game application.
 
 Arena bog down preference supported more smoothly and 
 only by checking debris count. Easy way to test is 

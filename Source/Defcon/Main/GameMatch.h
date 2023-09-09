@@ -21,43 +21,49 @@ namespace Defcon
 
 	class CGameMatch
 	{
-		// Tracks the state of a match being played, which starts
-		// when the player chooses a mission and ends with the
-		// last mission completed or a mission ends but no humans remain.
-		// For our purposes, a match ends when the user transitions 
-		// to an arena that doesn't require a current match.
+		// Tracks the state of a match being played, which starts when the
+		// player chooses a mission and ends with the last mission completed
+		// or a mission ends but no humans remain.
+		
+		// For our purposes, a match ends when the user transitions to an arena 
+		// that doesn't require a current match.
+		
+		// A match holds the player ship and humans, because those objects 
+		// persist across missions. The current mission is also a match member.
 
 		public:
 
 			CGameMatch  (EMissionID InMissionID);
 			~CGameMatch ();
 
-			IMission*                    GetMission             () { return Mission; }
-			const IMission*              GetMission             () const { return Mission; }
-			void                         InitMission            ();
-			void                         MissionEnded           ();
-			FString                      GetCurrentMissionName  () const;
-			void                         TargetDestroyed        (Defcon::EObjType Kind) { if(Mission != nullptr) ((CMilitaryMission*)Mission)->TargetDestroyed(Kind); }
+			bool                          Update                 (float DeltaTime);
+										  
+			void                          SetCurrentMission      (Defcon::EMissionID InMissionID);
+			IMission*                     GetMission             () { return Mission; }
+			const IMission*               GetMission             () const { return Mission; }
+			void                          InitMission            ();
+			void                          MissionEnded           ();
+			FString                       GetCurrentMissionName  () const;
+			void                          TargetDestroyed        (Defcon::EObjType Kind) { if(Mission != nullptr) ((CMilitaryMission*)Mission)->TargetDestroyed(Kind); }
+										  
+			int32                         GetScore               () const { return Score; }
+			void                          SetScore               (int32 Amount) { Score = Amount; }
+			int32                         AdvanceScore           (int32 Amount);
+			void                          AdjustScore            (int32 Amount);
+										  
+			CPlayerShip&                  GetPlayerShip          () { check(PlayerShip != nullptr); return *PlayerShip; }
+										  
+			CGameObjectCollection&        GetHumans              () { return Humans; }
+			const CGameObjectCollection&  GetHumans              () const { return Humans; }
+			bool                          GetHumansPlaced        () const { return bHumansPlaced; }
+			void                          SetHumansPlaced        (bool b = true) { bHumansPlaced = b; }
+										  
+			bool                          AcquireSmartBomb       ();
+			int32                         GetSmartbombCount      () const { return SmartbombsLeft; }
+			void                          BindToSmartbombCount   (TFunction<void(const int32& Val)> Delegate) { SmartbombsLeft.Bind(Delegate); }
 
-			int32                        GetScore               () const { return Score; }
-			void                         SetScore               (int32 Amount) { Score = Amount; }
-			int32                        AdvanceScore           (int32 Amount);
-			void                         AdjustScore            (int32 Amount);
-
-			CPlayerShip&                 GetPlayerShip          () { check(PlayerShipPtr != nullptr); return *PlayerShipPtr; }
-
-			CGameObjectCollection&       GetHumans              () { return Humans; }
-			const CGameObjectCollection& GetHumans              () const { return Humans; }
-			bool                         GetHumansPlaced        () const { return bHumansPlaced; }
-			void                         SetHumansPlaced        (bool b = true) { bHumansPlaced = b; }
-
-			bool                         AcquireSmartBomb       ();
-			int32                        GetSmartbombCount      () const { return SmartbombsLeft; }
-			void                         BindToSmartbombCount   (TFunction<void(const int32& Val)> Delegate) { SmartbombsLeft.Bind(Delegate); }
-
-			//FGameMatchStats&             GetStats               () { return Stats; }
-
-			bool                         GetGodMode             () const { return GodMode; }
+			bool                          GetGodMode             () const { return GodMode; }
+			void                          SetGodMode             (bool b = true) { GodMode = b; }
 
 
 		protected:
@@ -65,15 +71,13 @@ namespace Defcon
 			IMission*                      Mission         = nullptr;
 			EMissionID                     MissionID       = EMissionID::First;
 
-			CPlayerShip*                   PlayerShipPtr   = nullptr;
+			CPlayerShip*                   PlayerShip      = nullptr;
 			CGameObjectCollection          Humans;
 			bool                           bHumansPlaced   = false;
 			
 			int32                          Score           = 0;      // Not shown; used only to track XP.
 			Daylon::TBindableValue<int32>  SmartbombsLeft;
 			bool                           GodMode         = false;
-
-			//FGameMatchStats                Stats;
 	};
 
 

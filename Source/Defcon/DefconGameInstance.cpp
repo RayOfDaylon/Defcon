@@ -96,7 +96,6 @@ void UDefconGameInstance::Shutdown()
 	UE_LOG(LogGame, Log, TEXT("%S"), __FUNCTION__);
 
 	SAFE_DELETE(Defcon::GGameMatch);
-	SAFE_DELETE(Mission);
 	SAFE_DELETE(GAudio);
 
 	Super::Shutdown();
@@ -106,22 +105,6 @@ void UDefconGameInstance::Shutdown()
 bool UDefconGameInstance::IsLive() const 
 {
 	return (GAudio != nullptr); 
-}
-
-
-bool UDefconGameInstance::Update(float DeltaTime)
-{
-	// Forward the elapsed time within the mission
-	// to the current mission, and if it has ended, 
-	// then make the next mission and if it does 
-	// not exist (no more missions), then we end.
-
-	if(Mission != nullptr)
-	{
-		return Mission->Update(DeltaTime);
-	}
-
-	return false;
 }
 
 
@@ -173,21 +156,20 @@ void UDefconGameInstance::OnBulletTimePressed () { ON_BUTTON_PRESSED( OnBulletTi
 #undef ON_BUTTON_PRESSED
 
 
+#define GET_VIEW	if(CurrentView == nullptr)	{ return; }
+
+
 void UDefconGameInstance::OnNavEvent(ENavigationKey Key)
 {
-	if(CurrentView != nullptr)
-	{
-		CurrentView->OnNavEvent(Key);
-	}
+	GET_VIEW
+	CurrentView->OnNavEvent(Key);
 }
 
 
 void UDefconGameInstance::OnPawnNavEvent(EDefconPawnNavigationEvent Event, bool Active)
 {
-	if(CurrentView != nullptr)
-	{
-		CurrentView->OnPawnNavEvent(Event, Active);
-	}
+	GET_VIEW
+	CurrentView->OnPawnNavEvent(Event, Active);
 }
 
 
@@ -195,64 +177,50 @@ void UDefconGameInstance::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 {
 	// Note: not every weapon repeats while button held down, so <Active> may be moot
 
-	if(CurrentView == nullptr)
-	{
-		return;
-	}
-
+	GET_VIEW
 	CurrentView->OnPawnWeaponEvent(Event, Active);
 }
 
 
 void UDefconGameInstance::OnToggleDebugStats()
 {
-	if(CurrentView == nullptr)
-	{
-		return;
-	}
-
+	GET_VIEW
 	CurrentView->OnToggleDebugStats();
 }
 
 
 void UDefconGameInstance::OnToggleShowBoundingBoxes()
 {
-	if(CurrentView == nullptr)
-	{
-		return;
-	}
-
+	GET_VIEW
 	CurrentView->OnToggleShowBoundingBoxes();
 }
 
 
 void UDefconGameInstance::OnToggleShowOrigin()
 {
-	if(CurrentView == nullptr)
-	{
-		return;
-	}
-
+	GET_VIEW
 	CurrentView->OnToggleShowOrigin();
 }
 
+#undef GET_VIEW
 
-#define GETVIEW		auto View = Cast<UDefconPlayViewBase>(CurrentView);	if(View == nullptr)	{ return; }
+
+#define GET_PLAYVIEW		auto View = Cast<UDefconPlayViewBase>(CurrentView);	if(View == nullptr)	{ return; }
 
 
 void UDefconGameInstance::OnToggleGodMode()
 {
-	GodMode = !GodMode;
+	GET_PLAYVIEW
 
-	GETVIEW
+	Defcon::GGameMatch->SetGodMode(!Defcon::GGameMatch->GetGodMode());
 
-	View->AddMessage(FString::Printf(TEXT("God mode %s"), GodMode ? TEXT("ON") : TEXT("OFF")));
+	View->AddMessage(FString::Printf(TEXT("God mode %s"), Defcon::GGameMatch->GetGodMode() ? TEXT("ON") : TEXT("OFF")));
 }
 
 
 void UDefconGameInstance::OnSelectEnemyToSpawn()
 {
-	GETVIEW
+	GET_PLAYVIEW
 
 	View->OnSelectEnemyToSpawn();
 }
@@ -260,7 +228,7 @@ void UDefconGameInstance::OnSelectEnemyToSpawn()
 
 void UDefconGameInstance::OnSpawnEnemy()
 {
-	GETVIEW
+	GET_PLAYVIEW
 
 	const auto& PlayerShip = Defcon::GGameMatch->GetPlayerShip();
 
@@ -273,7 +241,7 @@ void UDefconGameInstance::OnSpawnEnemy()
 
 void UDefconGameInstance::OnIncrementXp()
 {
-	GETVIEW
+	GET_PLAYVIEW
 
 	Defcon::GGameMatch->AdjustScore(5000);
 	//Score += 5000;
@@ -286,14 +254,12 @@ void UDefconGameInstance::OnIncrementXp()
 
 void UDefconGameInstance::OnDecrementXp()
 {
-	GETVIEW
+	GET_PLAYVIEW
 
 	if(Defcon::GGameMatch->GetScore() <= 0)
 	{
 		return;
 	}
-
-	//Score = FMath::Max(0, Score - 5000);
 
 	Defcon::GGameMatch->AdjustScore(-5000);
 
@@ -301,6 +267,8 @@ void UDefconGameInstance::OnDecrementXp()
 
 	View->AddMessage(Str, 1.0f);
 }
+
+#undef GET_PLAYVIEW
 
 
 void UDefconGameInstance::SetCurrentView(UDefconViewBase* View)
@@ -327,11 +295,9 @@ void UDefconGameInstance::SetCurrentView(UDefconViewBase* View)
 	ViewportClient->RemoveAllViewportWidgets();
 
 	CurrentView = View;
+
 	CurrentView->AddToViewport();
-
 	CurrentView->SetIsEnabled(true);
-	//UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(GetFirstLocalPlayerController(), CurrentView, EMouseLockMode::DoNotLock, true);
-
 	CurrentView->OnActivate();
 }
 
@@ -365,38 +331,8 @@ void UDefconGameInstance::TransitionToArena(EDefconArena Arena)
 }
 
 
-void UDefconGameInstance::InitMission()
+void UDefconGameInstance::OnMissionEnded(const FString& NameOfEndedMission, bool StateOfEndedMission, bool HumansWereInvolved)
 {
-	check(Mission);
-
-	Mission->Init();
-}
-
-
-void UDefconGameInstance::MissionEnded()
-{
-	UE_LOG(LogGame, Log, TEXT("%S"), __FUNCTION__);
-
-	const FString NameOfEndedMission  = GetCurrentMissionName();
-	const bool    StateOfEndedMission = GetMission()->IsComplete();
-	const bool    HumansWereInvolved  = GetMission()->HumansInvolved();
-
-	Mission->Conclude();
-
-	Defcon::IMission* NextMission = nullptr;
-	
-	// Only progress to the next mission if one or more humans survived.
-	if(Defcon::GGameMatch->GetHumans().Count() > 0)
-	{
-		NextMission = Defcon::CMissionFactory::MakeNext(Mission);
-	}
-	
-	SAFE_DELETE(Mission);
-
-	Mission = NextMission;
-
-	MissionID = (Mission != nullptr ? Mission->GetID() : Defcon::EMissionID::Undefined);
-
 	auto PostWaveView = Cast<UDefconPostwaveViewBase>(Views[(int32)EDefconArena::Postwave]);
 
 	PostWaveView->SetTitle(FString::Printf(TEXT("MISSION \"%s\" %s"), *NameOfEndedMission, StateOfEndedMission ? TEXT("COMPLETED") : TEXT("ABORTED")).ToUpper());
@@ -423,31 +359,6 @@ void UDefconGameInstance::MissionEnded()
 }
 
 
-
-
-
-
-FString UDefconGameInstance::GetCurrentMissionName() const
-{
-	if(Mission == nullptr)
-	{
-		return TEXT("");
-	}
-
-	return Mission->GetName();
-}
-
-
-void UDefconGameInstance::SetCurrentMission(Defcon::EMissionID InMissionID)
-{
-	SAFE_DELETE(Mission);
-
-	MissionID = InMissionID;
-
-	Mission = Defcon::CMissionFactory::Make(InMissionID);
-}
-
-
 void UDefconGameInstance::StartGameMatch(Defcon::EMissionID InMissionID)
 {
 	check(!MatchInProgress());
@@ -455,8 +366,6 @@ void UDefconGameInstance::StartGameMatch(Defcon::EMissionID InMissionID)
 	Defcon::GGameMatch = new Defcon::CGameMatch((Defcon::EMissionID)InMissionID);
 
 	GetStats().Reset();
-
-	SetCurrentMission((Defcon::EMissionID)InMissionID);
 }
 
 

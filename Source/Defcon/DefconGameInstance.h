@@ -44,8 +44,10 @@ namespace Defcon
 }
 
 /*
-	Holds data that exists across missions, like player score, smartbomb count, humans, etc.
-	Also manages transitions between missions and views (arenas).
+	Our game instance initializes the audio manager, the game object type manager,
+	and the texture atlases for the player ship and humans. It creates the views, 
+	processes inputs forwarded from the player controller, starts game matches 
+	when needed, tracks match statistics, and handles view (arena) transitions.
 */
 UCLASS()
 class DEFCON_API UDefconGameInstance : public UGameInstance
@@ -58,6 +60,7 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 
 
 	public:
+
 	UFUNCTION(BlueprintCallable, Category="Defcon")
 	void CreateArenas();
 
@@ -112,7 +115,8 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	UFUNCTION(BlueprintCallable, Category="Defcon")
 	void OnDecrementXp();
 
-	// -------------------------------------------------------------------------
+
+	// -- View class types -----------------------------------------------
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Views")
 	TSubclassOf<UDefconViewBase> IntroViewClass;
@@ -144,8 +148,8 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Views")
 	TSubclassOf<UDefconViewBase> CreditsViewClass;
 
-	// -- Audio ----------------------------------------------------------
 
+	// -- Audio ----------------------------------------------------------
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Audio")
 	TObjectPtr<USoundBase> FocusChangedSound;
@@ -235,7 +239,7 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	TObjectPtr<USoundBase> MaterializationSound;
 	
 
-	// -- Common textures ------------------------------------------------
+	// -- Common textures (todo: probably not needed here) ---------------------------
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
 	TObjectPtr<UDaylonSpriteWidgetAtlas> HumanAtlas;
@@ -243,55 +247,26 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
 	TObjectPtr<UDaylonSpriteWidgetAtlas> PlayerShipAtlas;
 
-	Defcon::IMission*   Mission   = nullptr;
-	Defcon::EMissionID  MissionID = Defcon::EMissionID::First;
-
-
-	UDefconPlayViewBase* GetPlayView         () { return Cast<UDefconPlayViewBase>(Views[(int32)EDefconArena::Play]); }
-	UDefconViewBase*     GetCurrentView      () const { return CurrentView; }
-	void                 SetCurrentView      (UDefconViewBase* View);
-	void                 SetCurrentMission   (Defcon::EMissionID InMissionID);
-	void                 StartGameMatch      (Defcon::EMissionID InMissionID);
-
-
 
 	protected:
 
 	UPROPERTY(Transient)
 	TArray<UDefconViewBase*> Views;
 
-	UDefconViewBase* CurrentView = nullptr;
-
-
-	bool                           GodMode = false;
-	Defcon::FGameMatchStats        Stats;
+	UDefconViewBase*               CurrentView = nullptr;
+	Defcon::FGameMatchStats        GameMatchStats;
 
 
 	public:
 
-	bool                                 MatchInProgress        () const { return (Defcon::GGameMatch != nullptr); }
-	bool                                 IsLive                 () const;
-	bool                                 Update                 (float DeltaTime);
-	void                                 TargetDestroyed        (Defcon::EObjType Kind) { if(Mission != nullptr) ((Defcon::CMilitaryMission*)Mission)->TargetDestroyed(Kind); }
-	Defcon::IMission*                    GetMission             () { return Mission; }
-	const Defcon::IMission*              GetMission             () const { return Mission; }
-	void                                 InitMission            ();
-	void                                 MissionEnded           ();
-	FString                              GetCurrentMissionName  () const;
-	Defcon::FGameMatchStats&             GetStats               () { return Stats; }
-	bool                                 GetGodMode             () const { return GodMode; }
-
-	//Defcon::CPlayerShip&                 GetPlayerShip          () { check(MatchInProgress()); return Defcon::GGameMatch->GetPlayerShip(); }
-	//bool                                 GetHumansPlaced        () const { check(MatchInProgress()); return Defcon::GGameMatch->GetHumansPlaced(); }
-	//void                                 SetHumansPlaced        (bool b = true) { check(MatchInProgress()); Defcon::GGameMatch->SetHumansPlaced(b); }
-	//int32                                GetScore               () const { return Score; }
-	//void                                 SetScore               (int32 Amount) { Score = Amount; }
-	//int32                                AdvanceScore           (int32 Amount);
-	//Defcon::CGameObjectCollection&       GetHumans              () { check(MatchInProgress()); return GameMatch->GetHumans(); }
-	//const Defcon::CGameObjectCollection& GetHumans              () const { check(MatchInProgress()); return GameMatch->GetHumans(); }
-	//bool                                 AcquireSmartBomb       ();
-	//int32                                GetSmartbombCount      () const { return SmartbombsLeft; }
-	//void                                 BindToSmartbombCount   (TFunction<void(const int32& Val)> Delegate) { SmartbombsLeft.Bind(Delegate); }
+	UDefconPlayViewBase*      GetPlayView       () { return Cast<UDefconPlayViewBase>(Views[(int32)EDefconArena::Play]); }
+	UDefconViewBase*          GetCurrentView    () const { return CurrentView; }
+	void                      SetCurrentView    (UDefconViewBase* View);
+	void                      StartGameMatch    (Defcon::EMissionID InMissionID);
+	bool                      MatchInProgress   () const { return (Defcon::GGameMatch != nullptr); }
+	bool                      IsLive            () const;
+	Defcon::FGameMatchStats&  GetStats          () { return GameMatchStats; }
+	void                      OnMissionEnded    (const FString& NameOfEndedMission, bool StateOfEndedMission, bool HumansWereInvolved);
 };
 
 extern UDefconGameInstance* GDefconGameInstance;

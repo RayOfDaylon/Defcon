@@ -173,13 +173,13 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	// Start the current mission.
 
-	GDefconGameInstance->InitMission();
+	Defcon::GGameMatch->InitMission();
 
-	AreHumansInMission = GDefconGameInstance->GetMission()->HumansInvolved();
+	AreHumansInMission = Defcon::GGameMatch->GetMission()->HumansInvolved();
 
 	CreateTerrain();
 
-	PlayAreaRadar->Init(/*&GetPlayerShip(), */MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
+	PlayAreaRadar->Init(MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
 
 
 	GetPlayerShip().BindToShieldValue([WeakThis = TWeakObjectPtr<UDefconPlayViewBase>(this)](const float& Value)
@@ -269,7 +269,7 @@ void UDefconPlayViewBase::CreateTerrain()
 {
 	SAFE_DELETE(Terrain);
 
-	if(GDefconGameInstance->GetMission()->UsesTerrain())
+	if(Defcon::GGameMatch->GetMission()->UsesTerrain())
 	{
 		Terrain = new Defcon::CTerrain;
 		Terrain->InitTerrain(GetWidth(), GetHeight());
@@ -341,7 +341,7 @@ void UDefconPlayViewBase::TransportPlayerShip()
 
 	auto& PlayerShip = GetPlayerShip();
 
-	const auto Mission = static_cast<Defcon::CMilitaryMission*>(GDefconGameInstance->GetMission());
+	const auto Mission = static_cast<Defcon::CMilitaryMission*>(Defcon::GGameMatch->GetMission());
 
 	if(P.y != 0.0f)
 	{
@@ -799,7 +799,7 @@ void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& object
 
 				GDefconGameInstance->GetStats().PlayerHits++;
 
-				const bool bPlayerKilled = !GDefconGameInstance->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
+				const bool bPlayerKilled = !Defcon::GGameMatch->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
 
 				if(bPlayerKilled)
 				{
@@ -852,7 +852,7 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 			{
 				GDefconGameInstance->GetStats().PlayerCollisions++;
 
-				const bool bPlayerKilled = !GDefconGameInstance->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
+				const bool bPlayerKilled = !Defcon::GGameMatch->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
 
 				if(bPlayerKilled)
 				{
@@ -903,7 +903,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 {
 	if(!bArenaClosing)
 	{
-		if(!GDefconGameInstance->Update(DeltaTime))
+		if(!Defcon::GGameMatch->Update(DeltaTime))
 		{
 			ConcludeMission();
 		}
@@ -920,7 +920,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		float Factor = NORM_((float)Debris.Count(), 500.0f, 1500.0f);
 		Factor = CLAMP(Factor, 0.0f, 1.0f);
 
-		DeltaTime *= LERP(1.0f, 0.5f, Factor);
+		DeltaTime *= LERP(1.0f, 0.67f, Factor);
 
 		/*if(Debris.Count() > 250)
 		{
@@ -963,7 +963,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		m_nFlashScreen--;
 	}
 
-	const auto Mission = GDefconGameInstance->GetMission();
+	const auto Mission = Defcon::GGameMatch->GetMission();
 
 	// Mission becomes nullptr at end of game, so check for that.
 	
@@ -1536,7 +1536,7 @@ void UDefconPlayViewBase::DestroyObject(Defcon::IGameObject* pObj, bool bExplode
 
 	if(pObj->GetType() != Defcon::EObjType::PLAYER)
 	{
-		const auto Mission = GDefconGameInstance->GetMission();
+		const auto Mission = Defcon::GGameMatch->GetMission();
 
 		if(Mission != nullptr && Mission->IsMilitary())
 		{
@@ -1550,7 +1550,7 @@ void UDefconPlayViewBase::DestroyObject(Defcon::IGameObject* pObj, bool bExplode
 
 		const float ExplosionMass = pObj->GetExplosionMass();
 		
-		Defcon::EAudioTrack track;
+		Defcon::EAudioTrack Track;
 
 		if(ExplosionMass >= 1.0f) 
 		{
@@ -1562,18 +1562,18 @@ void UDefconPlayViewBase::DestroyObject(Defcon::IGameObject* pObj, bool bExplode
 				Defcon::EAudioTrack::Ship_exploding2b
 			};
 
-			track = LargeExplosionSounds[IRAND(array_size(LargeExplosionSounds))] ;
+			Track = LargeExplosionSounds[IRAND(array_size(LargeExplosionSounds))] ;
 		}
 		else if(ExplosionMass >= 0.3f)
 		{
-			track = Defcon::EAudioTrack::Ship_exploding_medium;
+			Track = Defcon::EAudioTrack::Ship_exploding_medium;
 		}
 		else
 		{
-			track = Defcon::EAudioTrack::Ship_exploding_small;
+			Track = Defcon::EAudioTrack::Ship_exploding_small;
 		}
 
-		GAudio->OutputSound(track);
+		GAudio->OutputSound(Track);
 	}
 }
 
@@ -1755,7 +1755,7 @@ void UDefconPlayViewBase::ProcessWeaponsHits()
 	CheckIfObjectsGotHit(Objects);
 	CheckIfObjectsGotHit(Enemies);
 
-	auto Mission = GDefconGameInstance->GetMission();
+	auto Mission = Defcon::GGameMatch->GetMission();
 
 	if(Mission != nullptr && Mission->HumansInvolved())
 	{
@@ -1948,10 +1948,10 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, Defcon::EObjTy
 
 		Countdown += MaterializationLifetime;
 
-		GDefconGameInstance->Mission->AddTask(MaterializationTask);
+		Defcon::GGameMatch->GetMission()->AddTask(MaterializationTask);
 	}
 
-	GDefconGameInstance->Mission->AddEnemy(EnemyType, CreatorType, Where, Countdown, Flags);
+	Defcon::GGameMatch->GetMission()->AddEnemy(EnemyType, CreatorType, Where, Countdown, Flags);
 }
 
 

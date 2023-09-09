@@ -127,7 +127,7 @@ void Defcon::CScheduledTaskList::ForEachUntil(TFunction<bool(CScheduledTask*)> F
 
 void Defcon::CRestartMissionTask::Do()
 {
-	GDefconGameInstance->SetCurrentMission(GDefconGameInstance->GetMission()->GetID());
+	Defcon::GGameMatch->SetCurrentMission(Defcon::GGameMatch->GetMission()->GetID());
 	GDefconGameInstance->TransitionToArena(EDefconArena::Prewave);
 }
 
@@ -140,7 +140,7 @@ void Defcon::CEndMissionTask::Do()
 	GArena->PlayAreaMain ->SetTerrain(nullptr);
 	GArena->PlayAreaRadar->SetTerrain(nullptr);
 
-	GDefconGameInstance->MissionEnded();
+	Defcon::GGameMatch->MissionEnded();
 }
 
 // --------------------------------------------------------
@@ -304,7 +304,7 @@ void Defcon::CCreateEnemyTask::SpecializeForLander(Defcon::CEnemy* Enemy, const 
 	CLander* p = static_cast<CLander*>(Enemy);
 	
 	p->Objects = &GArena->GetObjects();
-	p->SetDoChaseHumans(GDefconGameInstance->GetMission()->HumansInvolved());
+	p->SetDoChaseHumans(Defcon::GGameMatch->GetMission()->HumansInvolved());
 }
 
 

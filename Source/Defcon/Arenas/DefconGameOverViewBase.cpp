@@ -23,7 +23,7 @@ constexpr float TimeToRead         = 2.0f;
 constexpr float TimeToIntroStats   = TimeToCenterText + TimeToRead;
 constexpr float StatsIntroDuration = 3.0f;
 constexpr float TimeStatsIntroEnds = TimeToIntroStats + StatsIntroDuration;
-constexpr float TimeForOneHuman  = 0.1f;
+
 
 
 void UDefconGameOverViewBase::NativeOnInitialized()
@@ -51,7 +51,7 @@ void UDefconGameOverViewBase::OnActivate()
 	// Start the title texts way offstage.
 	// Assume they are at center horizontally.
 
-	auto Mission = GDefconGameInstance->GetMission();
+	auto Mission = Defcon::GGameMatch->GetMission();
 
 	if(Mission == nullptr && Defcon::GGameMatch->GetHumans().Count() > 0)
 	{
@@ -230,6 +230,7 @@ void UDefconGameOverViewBase::OnEscPressed()
 {
 	TransitionToArena(EDefconArena::MainMenu);
 }
+
 
 void UDefconGameOverViewBase::OnSkipPressed()
 {

@@ -235,7 +235,7 @@ void Defcon::CLander::Tick(float DeltaTime)
 			// 20 seconds, then switch to abduct mode.
 			if(bChaseNearestHuman || Age > LANDER_MATURE || FRAND <= LANDER_ABDUCTODDS)
 			{
-				if(GDefconGameInstance->GetMission()->HumansInvolved())
+				if(Defcon::GGameMatch->GetMission()->HumansInvolved())
 				{
 					TrackedHumanPtr = GArena->FindNearestHuman(Position.x);
 
