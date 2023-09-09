@@ -152,6 +152,9 @@ namespace Defcon
 
 			const FLinearColor&   GetRadarColor         () const;
 
+			int32                 GetID                 () const { return Id; }
+			void                  SetID                 (int32 N) { Id = N; }
+
 
 
 			Orient2D        Orientation;    // Way the object is pointing/facing.
@@ -180,6 +183,8 @@ namespace Defcon
 			EObjType        Type                    = EObjType::UNKNOWN;
 			EObjType        CreatorType             = EObjType::UNKNOWN;
 
+			int32           Id                      = -1;
+
 			CFPoint         ScreenSize; // todo: env data s/b obtained thru APIs? But cache coherency...
 			CFPoint         ArenaSize;
 
@@ -189,15 +194,15 @@ namespace Defcon
 			float           Mass                    = 1.0f;
 			float           Drag                    = 0.0f;
 
-			bool            bInjurious              = false;
-			bool            bCanBeInjured           = false;
-			bool            bIsCollisionInjurious   = false;
-
 			FLinearColor    RadarColor;
 			int32           PointValue              = 0;
 			float           AnimSpeed               = 1.0f; // todo: will likely be dropped
 			bool            bMissionTarget          = false;
 			bool            bGrounded               = false;
+			bool            bInjurious              = false;
+			bool            bCanBeInjured           = false;
+			bool            bIsCollisionInjurious   = false;
+
 
 	}; // IGameObject 
 

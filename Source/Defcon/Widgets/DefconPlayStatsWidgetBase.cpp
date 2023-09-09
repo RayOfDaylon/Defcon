@@ -65,7 +65,9 @@ void UDefconPlayStatsWidgetBase::UpdateSmartbombReadout(int32 Amount)
 }
 
 
-void UDefconPlayStatsWidgetBase::UpdateAbductionAlert(bool State)
+void UDefconPlayStatsWidgetBase::UpdateAbductionAlert(bool State, const TArray<bool>& AbductionStates)
 {
 	Daylon::Show(AbductionAlert, State);
+
+	HumansReadout->UpdateReadout(AbductionStates);
 }

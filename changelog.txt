@@ -5,6 +5,11 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 9, 2023
 
 
+Finished the new "Humans" readout on the stats panel, 
+which shows safe humans as green squares, abducted humans 
+as red squares. The number of squares decreases as 
+humans are killed.
+
 Arena bog down slowest time factor increased from 0.5 to 0.67; 
 things got a little too slow when using smart bombs to clear dense areas.
 

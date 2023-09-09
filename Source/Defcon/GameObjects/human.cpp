@@ -61,7 +61,7 @@ bool Defcon::CHuman::IsFalling() const
 
 void Defcon::CHuman::OnAboutToDie()
 {
-	if(Carrier != nullptr && Carrier->GetType() != EObjType::PLAYER)
+	if(IsBeingAbducted())
 	{
 		GArena->AdjustAbductionCount(-1);
 	}
@@ -91,7 +91,7 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 			Objects ->Notify(EMessage::HumanTakenAboard, this);
 			Objects2->Notify(EMessage::HumanTakenAboard, this);
 
-			if(Carrier->GetType() != EObjType::PLAYER)
+			if(IsBeingAbducted())
 			{
 				GArena->AdjustAbductionCount(1);
 			}
@@ -111,12 +111,15 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 
 			check(Carrier != nullptr);
 
-			if(Carrier->GetType() != EObjType::PLAYER)
 			{
-				GArena->AdjustAbductionCount(-1);
-			}
-			Carrier = nullptr;
+				const bool WasAbducted = IsBeingAbducted();
+				Carrier = nullptr;
 
+				if(WasAbducted)
+				{
+					GArena->AdjustAbductionCount(-1);
+				}
+			}
 			break;
 	}
 

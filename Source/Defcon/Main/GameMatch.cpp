@@ -15,9 +15,10 @@ Defcon::CGameMatch::CGameMatch(EMissionID InMissionID)
 
 	Humans.DeleteAll();
 
-	for(int32 i = 0; i < HUMANS_COUNT; i++)
+	for(int32 Idx = 0; Idx < HUMANS_COUNT; Idx++)
 	{
 		Humans.Add(new CHuman);
+		Humans.GetFirst()->SetID(Idx);
 	}
 
 	bHumansPlaced = false;

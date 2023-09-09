@@ -3,6 +3,9 @@
 
 .vsconfig
 
+# Windows shortcut files
+*.lnk
+
 # Compiled Object files
 *.slo
 *.lo

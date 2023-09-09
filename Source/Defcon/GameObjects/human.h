@@ -33,6 +33,7 @@ namespace Defcon
 			void           InitHuman              (CGameObjectCollection* Objs1, CGameObjectCollection* Objs2) { Carrier = nullptr; Age = 0.0f; Objects = Objs1; Objects2 = Objs2; }
 			IGameObject*   GetCarrier             () const { return Carrier; }
 			bool           IsBeingCarried         () const { return (GetCarrier() != nullptr); }
+			bool           IsBeingAbducted        () const { return (IsBeingCarried() && GetCarrier()->GetType() != EObjType::PLAYER); }
 			bool           IsFalling              () const;
 			bool           IsOnGround             () const { return !(IsFalling() || IsBeingCarried()); }
 			void           SetToNotCarried        () { Carrier = nullptr; }

@@ -985,6 +985,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	Blasts.Process(GOP);
 	Debris.Process(GOP);
 
+
 	if(HumansInvolved)
 	{
 		const auto NumHumansBefore = GetHumans().Count();
@@ -993,6 +994,8 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 		if(NumHumansNow < NumHumansBefore)
 		{
+			AdjustAbductionCount(0);
+
 			FString Str;
 
 			if(NumHumansNow > 0)
@@ -1996,9 +1999,21 @@ void UDefconPlayViewBase::OnSpawnEnemy()
 
 void UDefconPlayViewBase::AdjustAbductionCount(int32 Amount)
 {
+	// Can also be called when a human dies.
+
 	AbductionCount += Amount;
 
-	PlayAreaStats->UpdateAbductionAlert(AbductionCount != 0);
+	TArray<bool> AbductionStates;
+	AbductionStates.Reserve(GetHumans().Count());
+
+	GetHumans().ForEach([&AbductionStates](Defcon::IGameObject* Obj)
+		{
+			auto Human = static_cast<Defcon::CHuman*>(Obj);
+
+			AbductionStates.Add(Human->IsBeingAbducted());
+		});
+
+	PlayAreaStats->UpdateAbductionAlert(AbductionCount != 0, AbductionStates);
 }
 
 

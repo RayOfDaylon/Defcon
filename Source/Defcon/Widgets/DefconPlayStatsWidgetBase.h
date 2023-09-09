@@ -4,6 +4,7 @@
 #pragma once
 
 #include "DefconPlayWidgetBase.h"
+#include "DefconHumansInfoBase.h"
 #include "UMG/Public/Components/TextBlock.h"
 #include "UMG/Public/Components/ProgressBar.h"
 #include "DefconPlayStatsWidgetBase.generated.h"
@@ -43,13 +44,15 @@ class DEFCON_API UDefconPlayStatsWidgetBase : public UDefconPlayWidgetBase
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UWidget> AbductionAlert;
 
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UDefconHumansInfoBase> HumansReadout;
+
 
 	public:
 
 	void UpdateShieldReadout     (float Amount);
 	void UpdateSmartbombReadout  (int32 Amount);
-	void UpdateAbductionAlert    (bool State);
-
+	void UpdateAbductionAlert    (bool State, const TArray<bool>& AbductionStates);
 };
 
 
