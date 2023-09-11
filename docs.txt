@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 9, 2023
+September 10, 2023
 
 Chapters:
 
@@ -52,6 +52,11 @@ Backspace    Reserved for hyperspace
 B            Toggle bullet time
 P            Pause/unpause game
 Esc          Leave game
+Tab          Skip to next item
+Enter        Select/proceed
+
+Tab and Shift-Tab work in the mission picker to move the current selected
+mission highlight forward and back with row advancement during wraparound.
 
 The game gets harder over time. Specifically, landers will move faster, and 
 enemies will fire bullets more accurately. Firebombers will shoot more fireballs.
@@ -84,7 +89,7 @@ Numpad -   Decrease XP by 5,000 pts
 
 How the Game Works
 -------------------------------------------------------------------------------------
-A gameplay session starts when a mission is chosen and ends when:
+A game match starts when a mission is chosen and ends when:
 
   - Esc is pressed (game aborted)
   - A mission ends and no humans are remaining (defeat)
@@ -195,12 +200,13 @@ Event, etc. don't do any sprite processing elsewhere.
 
 Global variables are:
 
+GMessageMediator      Mediates message passing for loose coupling.
 GArena                The play arena where a mission is played out.
 GAudio                The collection of available audio tracks (sounds).
 GDefconGameInstance   The singular game instance (has stats).
 
-GGameMatch            Match particulars (player, humans, missions, etc.),
-                      is nullptr if no match is active.
+GGameMatch            Match particulars (player, humans, current mission, etc.).
+                      Is nullptr if no match is active.
 
 GGameObjectResources  Maps object types to their sprite atlases.
 GPrefs                Preference settings.
@@ -307,13 +313,6 @@ the Windows version was tuned for a 1024 px wide screen, but
 now we're at 1920. 4K (3840) doesn't have to be accounted for because 
 we're now working in Slate units which UE autoscales for us -- we can 
 remain at 1920 w/o caring what the actual screen resolution is.
-
-We maybe should have a formal "CGameplaySession" object which manages 
-the lifetime of a gameplay session from when the user chooses a mission 
-to when he aborts or the game ends in a loss or victory. This singleton 
-can then contain the humans, player ship, and anything else that 
-persists across missions during game play, instead of holding them 
-inside UDefconGameState.
 
 Mission class should probably hold the enemies/debris/etc. collections 
 since those objects only have mission lifetime. It would help 
