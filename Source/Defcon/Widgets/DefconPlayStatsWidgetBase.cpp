@@ -4,6 +4,7 @@
 
 #include "DefconPlayStatsWidgetBase.h"
 #include "DaylonUtils.h"
+#include "Globals/MessageMediator.h"
 
 
 
@@ -16,6 +17,20 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 	auto Style = ShieldReadout->GetWidgetStyle();
 	Style.BackgroundImage.Margin = FMargin(BorderWidth);
 	ShieldReadout->SetWidgetStyle(Style);
+
+	Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::AbductionCountChanged, 
+		[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
+		{
+			if(!This.IsValid())
+			{
+				return;
+			}
+			//Daylon::Show(AbductionAlert, State);
+
+			(This.Get())->HumansReadout->UpdateReadout(*static_cast<TArray<bool>*>(Payload));
+		}
+	);
+	Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
 }
 
 

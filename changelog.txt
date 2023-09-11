@@ -2,8 +2,11 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 9, 2023
+September 10, 2023
 
+
+Started using new CMessageMediator template class
+to improve loose coupling.
 
 Finished the new "Humans" readout on the stats panel, 
 which shows safe humans as green squares, abducted humans 

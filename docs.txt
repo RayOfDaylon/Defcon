@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 7, 2023
+September 9, 2023
 
 Chapters:
 
@@ -333,3 +333,9 @@ badge per human, each one solid pink for safe, flashing
 (and maybe red) when abducted, and subscripted when falling.
 Dead humans cause their icon to collapse from the horz box.
  
+Instead of recreating the horzbox content of the humans readout 
+which can cause flicker, we should set up the max count of 
+icons during init, then during update just color the living 
+humans and collapse the rest. A custom widget with its own 
+paint handler would be even more efficient.
+

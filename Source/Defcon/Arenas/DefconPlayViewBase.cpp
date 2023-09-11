@@ -14,6 +14,7 @@
 #include "GameObjects/Auxiliary/materialization.h"
 #include "Common/util_color.h"
 #include "Common/util_math.h"
+#include "Globals/MessageMediator.h"
 #include "Globals/GameColors.h"
 #include "Globals/_sound.h"
 #include "Globals/prefs.h"
@@ -2013,7 +2014,9 @@ void UDefconPlayViewBase::AdjustAbductionCount(int32 Amount)
 			AbductionStates.Add(Human->IsBeingAbducted());
 		});
 
-	PlayAreaStats->UpdateAbductionAlert(AbductionCount != 0, AbductionStates);
+	//PlayAreaStats->UpdateAbductionAlert(AbductionCount != 0, AbductionStates);
+
+	Defcon::GMessageMediator.Send(Defcon::EMessageEx::AbductionCountChanged, &AbductionStates);
 }
 
 
