@@ -51,8 +51,6 @@ class DEFCON_API UDefconPlayStatsWidgetBase : public UDefconPlayWidgetBase
 	public:
 
 	void UpdateShieldReadout     (float Amount);
-	void UpdateSmartbombReadout  (int32 Amount);
-	void UpdateAbductionAlert    (bool State, const TArray<bool>& AbductionStates);
 };
 
 

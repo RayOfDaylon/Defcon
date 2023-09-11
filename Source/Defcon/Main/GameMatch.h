@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "DaylonUtils.h"
+#include "Globals/MessageMediator.h"
 #include "GameObjects/GameObjectCollection.h"
 #include "GameObjects/playership.h"
 #include "Missions/mission.h"
@@ -59,8 +60,6 @@ namespace Defcon
 			void                          SetHumansPlaced        (bool b = true) { bHumansPlaced = b; }
 										  
 			bool                          AcquireSmartBomb       ();
-			int32                         GetSmartbombCount      () const { return SmartbombsLeft; }
-			void                          BindToSmartbombCount   (TFunction<void(const int32& Val)> Delegate) { SmartbombsLeft.Bind(Delegate); }
 
 			bool                          GetGodMode             () const { return GodMode; }
 			void                          SetGodMode             (bool b = true) { GodMode = b; }
@@ -76,7 +75,7 @@ namespace Defcon
 			bool                           bHumansPlaced   = false;
 			
 			int32                          Score           = 0;      // Not shown; used only to track XP.
-			Daylon::TBindableValue<int32>  SmartbombsLeft;
+			TBroadcastableValue<int32>     SmartbombsLeft;
 			bool                           GodMode         = false;
 	};
 

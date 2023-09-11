@@ -18,19 +18,43 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 	Style.BackgroundImage.Margin = FMargin(BorderWidth);
 	ShieldReadout->SetWidgetStyle(Style);
 
-	Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::AbductionCountChanged, 
-		[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
-		{
-			if(!This.IsValid())
+	// Subscribe to human abduction count
+	{
+		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::AbductionCountChanged, 
+			[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
 			{
-				return;
-			}
-			//Daylon::Show(AbductionAlert, State);
+				if(!This.IsValid())
+				{
+					return;
+				}
 
-			(This.Get())->HumansReadout->UpdateReadout(*static_cast<TArray<bool>*>(Payload));
-		}
-	);
-	Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
+				This.Get()->HumansReadout->UpdateReadout(*static_cast<TArray<bool>*>(Payload));
+			}
+		);
+		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
+	}
+
+	// Subscribe to smartbomb count
+	{
+		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::SmartbombCountChanged, 
+			[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
+			{
+				if(!This.IsValid())
+				{
+					return;
+				}
+
+				const int32 Amount = *static_cast<int32*>(Payload);
+
+				check(Amount >= 0);
+
+				const FString Str = FString::Printf(TEXT("%d"), Amount);
+
+				This.Get()->SmartbombReadout->SetText(FText::FromString(Str));
+			}
+		);
+		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
+	}
 }
 
 
@@ -67,22 +91,4 @@ void UDefconPlayStatsWidgetBase::UpdateShieldReadout(float Amount)
 	check(Amount >= 0.0f && Amount <= 1.0f);
 
 	ShieldReadout->SetPercent(Amount);
-}
-
-
-void UDefconPlayStatsWidgetBase::UpdateSmartbombReadout(int32 Amount)
-{
-	check(Amount >= 0);
-
-	const FString Str = FString::Printf(TEXT("%d"), Amount);
-
-	SmartbombReadout->SetText(FText::FromString(Str));
-}
-
-
-void UDefconPlayStatsWidgetBase::UpdateAbductionAlert(bool State, const TArray<bool>& AbductionStates)
-{
-	Daylon::Show(AbductionAlert, State);
-
-	HumansReadout->UpdateReadout(AbductionStates);
 }

@@ -155,6 +155,48 @@ namespace Daylon
 				return false;
 			}
 	};
+
+
+	template <typename Tval, typename Tenum> class TBroadcastableValue
+	{
+		protected:
+
+			Tval                     Value;
+			CMessageMediator<Tenum>* MessageMediator = nullptr;
+			Tenum                    Message         = Tenum::Unknown;
+			bool                     FirstTime       = true;
+
+		public:
+
+			Tval Get() const { return Value; }
+
+			
+			void Set(Tval Val) 
+			{
+				check(MessageMediator != nullptr);
+				check(Message != Tenum::Unknown);
+
+				const bool Different = (Value != Val);
+
+				Value = Val; 
+
+				if(Different || FirstTime)
+				{
+					MessageMediator->Send(Message, &Value);
+					FirstTime = false;
+				}
+			}
+
+
+			void Bind(CMessageMediator<Tenum>* InMessageMediator, Tenum InMessage)
+			{
+				check(InMessageMediator != nullptr);
+				check(InMessage != Tenum::Unknown);
+
+				MessageMediator = InMessageMediator;
+				Message         = InMessage;
+			}
+	};
 }
 
 
@@ -166,8 +208,9 @@ namespace Defcon
 	{
 		// Message                Payload type
 
-		Unknown = 0,           // nullptr
-		AbductionCountChanged  // TArray<bool>*
+		Unknown = 0,            // nullptr
+		AbductionCountChanged,  // TArray<bool>*
+		SmartbombCountChanged   // int32*
 	};
 
 
@@ -184,5 +227,17 @@ namespace Defcon
 			CMessageMediator() {}
 	};
 
+
 	extern CMessageMediator GMessageMediator;
+
+
+	template <typename Tval> class TBroadcastableValue : public Daylon::TBroadcastableValue<Tval, EMessageEx>
+	{
+		public:
+
+			void Bind(EMessageEx InMessage)
+			{
+				Daylon::TBroadcastableValue<Tval, EMessageEx>::Bind(&GMessageMediator, InMessage);
+			}
+	};
 }

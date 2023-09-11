@@ -23,7 +23,8 @@ Defcon::CGameMatch::CGameMatch(EMissionID InMissionID)
 
 	bHumansPlaced = false;
 
-	SmartbombsLeft = SMARTBOMB_INITIAL;
+	SmartbombsLeft.Bind(EMessageEx::SmartbombCountChanged);
+	SmartbombsLeft.Set(SMARTBOMB_INITIAL);
 
 	Score = 0;
 
@@ -42,9 +43,9 @@ Defcon::CGameMatch::~CGameMatch()
 
 bool Defcon::CGameMatch::AcquireSmartBomb()
 {
-	if(SmartbombsLeft > 0)
+	if(SmartbombsLeft.Get() > 0)
 	{
-		SmartbombsLeft--;
+		SmartbombsLeft.Set(SmartbombsLeft.Get() - 1);
 		return true;
 	}
 
@@ -69,7 +70,7 @@ int32 Defcon::CGameMatch::AdvanceScore(int32 Amount)
 
 	if(Score / SMARTBOMB_VALUE > OldSmart)
 	{
-		SmartbombsLeft += SMARTBOMB_RESUPPLY;
+		SmartbombsLeft.Set(SmartbombsLeft.Get() + SMARTBOMB_RESUPPLY);
 	}
 
 	return Score; 

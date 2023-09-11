@@ -191,13 +191,6 @@ void UDefconPlayViewBase::OnFinishActivating()
 		}
 	});
 
-	Defcon::GGameMatch->BindToSmartbombCount([WeakThis = TWeakObjectPtr<UDefconPlayViewBase>(this)](const int32& Value)
-	{
-		if(auto This = WeakThis.Get())
-		{
-			This->PlayAreaStats->UpdateSmartbombReadout(Value);
-		}
-	});
 
 	// Zero out the abduction count and turn off related alert.
 	AdjustAbductionCount(-AbductionCount);
@@ -2013,8 +2006,6 @@ void UDefconPlayViewBase::AdjustAbductionCount(int32 Amount)
 
 			AbductionStates.Add(Human->IsBeingAbducted());
 		});
-
-	//PlayAreaStats->UpdateAbductionAlert(AbductionCount != 0, AbductionStates);
 
 	Defcon::GMessageMediator.Send(Defcon::EMessageEx::AbductionCountChanged, &AbductionStates);
 }
