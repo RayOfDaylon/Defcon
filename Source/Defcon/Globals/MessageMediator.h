@@ -204,13 +204,24 @@ namespace Defcon
 {
 	// Defcon-specific message mediator.
 
+	struct FShieldStrengthInfo 
+	{
+		class ILiveGameObject* Object; 
+		float Value; 
+
+		bool operator == (const FShieldStrengthInfo& Rhs) const { return (Object == Rhs.Object && Value == Rhs.Value); }
+		bool operator != (const FShieldStrengthInfo& Rhs) const { return !(*this == Rhs); }
+	};
+
+
 	enum class EMessageEx
 	{
 		// Message                Payload type
 
 		Unknown = 0,            // nullptr
 		AbductionCountChanged,  // TArray<bool>*
-		SmartbombCountChanged   // int32*
+		SmartbombCountChanged,  // int32*
+		ShieldStrengthChanged   // FShieldStrengthInfo*
 	};
 
 

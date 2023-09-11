@@ -127,7 +127,14 @@ void Defcon::CScheduledTaskList::ForEachUntil(TFunction<bool(CScheduledTask*)> F
 
 void Defcon::CRestartMissionTask::Do()
 {
-	Defcon::GGameMatch->SetCurrentMission(Defcon::GGameMatch->GetMission()->GetID());
+	if(GGameMatch->GetHumans().Count() == 0)
+	{
+		// The player ship blew up but there are no more humans to defend, so...
+		GDefconGameInstance->TransitionToArena(EDefconArena::GameOver);
+		return;
+	}
+
+	GGameMatch->SetCurrentMission(GGameMatch->GetMission()->GetID());
 	GDefconGameInstance->TransitionToArena(EDefconArena::Prewave);
 }
 

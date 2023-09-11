@@ -7,6 +7,7 @@
 
 #include "CoreMinimal.h"
 
+#include "Globals/MessageMediator.h"
 #include "Common/Painter.h"
 #include "Common/util_geom.h"
 
@@ -48,6 +49,9 @@ namespace Defcon
 			void FaceLeft                     () { Orientation.Fwd.x = -1.0f; }
 			void FaceRight                    () { Orientation.Fwd.x = 1.0f; }
 
+			bool AcquireSmartBomb             ();
+			void AddSmartBombs                (int32 Amount);
+
 			void FireLaserWeapon              (CGameObjectCollection&);
 			bool EmbarkPassenger              (IGameObject*, CGameObjectCollection&);
 			bool DebarkOnePassenger           (CGameObjectCollection&);
@@ -58,7 +62,8 @@ namespace Defcon
 
 		private:
 
-			CLaserWeapon	LaserWeapon;
-			CFPoint         PickupBboxRadius;
+			TBroadcastableValue<int32>     SmartbombsLeft;
+			CLaserWeapon                   LaserWeapon;
+			CFPoint                        PickupBboxRadius;
 	};
 }

@@ -8,6 +8,7 @@
 
 #include "Common/Painter.h"
 #include "Common/util_geom.h"
+#include "Globals/MessageMediator.h"
 #include "DaylonUtils.h"
 
 #include "gameobj.h"
@@ -57,10 +58,10 @@ namespace Defcon
 			virtual void       ImpartForces          (float);
 			const CFPoint&     GetThrustVector       () const { return ThrustVector; }
 
-			virtual float      GetShieldStrength     () const    { return ShieldStrength; }
+			virtual float      GetShieldStrength     () const    { return ShieldStrength.Get().Value; }
 			virtual void       SetShieldStrength     (float f);
 			virtual bool       RegisterImpact        (float f);
-			void               BindToShieldValue     (TFunction<void(const float& Val)> Delegate) { ShieldStrength.Bind(Delegate); }
+			//void               BindToShieldValue     (TFunction<void(const float& Val)> Delegate) { ShieldStrength.Bind(Delegate); }
 
 			//bool               HasPassenger          () const { return bHasPassenger; }
 
@@ -80,8 +81,9 @@ namespace Defcon
 
 
 		private:
-			Daylon::TBindableValue<float> ShieldStrength; // 0..1 value
-			bool                          bAlive = true;
+			//Daylon::TBindableValue<float> ShieldStrength; // 0..1 value
+			TBroadcastableValue<FShieldStrengthInfo>    ShieldStrength;
+			bool                                        bAlive = true;
 	};
 
 

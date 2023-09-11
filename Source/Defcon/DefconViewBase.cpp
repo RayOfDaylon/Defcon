@@ -99,10 +99,11 @@ void UDefconViewBase::OnFinishActivating()
 
 void UDefconViewBase::OnDeactivate()
 {
-	check(bDoneActivating);
-	//check(bPaintingOccurring);
+	// todo: this check can fail sometimes if the view didn't get to tick.
+	// We need to revisit our strategy again for view activation/deactivation, maybe forcing 
+	// Tick to not happen until BeginPlay would help.
+	//check(bDoneActivating);
 
 	bDoneActivating    = false;
-	//bPaintingOccurring = false;
 }
 

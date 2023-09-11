@@ -23,9 +23,6 @@ Defcon::CGameMatch::CGameMatch(EMissionID InMissionID)
 
 	bHumansPlaced = false;
 
-	SmartbombsLeft.Bind(EMessageEx::SmartbombCountChanged);
-	SmartbombsLeft.Set(SMARTBOMB_INITIAL);
-
 	Score = 0;
 
 	SetCurrentMission((Defcon::EMissionID)InMissionID);
@@ -38,18 +35,6 @@ Defcon::CGameMatch::~CGameMatch()
 	SAFE_DELETE(Mission);
 
 	GGameMatch = nullptr;
-}
-
-
-bool Defcon::CGameMatch::AcquireSmartBomb()
-{
-	if(SmartbombsLeft.Get() > 0)
-	{
-		SmartbombsLeft.Set(SmartbombsLeft.Get() - 1);
-		return true;
-	}
-
-	return false;
 }
 
 
@@ -70,7 +55,7 @@ int32 Defcon::CGameMatch::AdvanceScore(int32 Amount)
 
 	if(Score / SMARTBOMB_VALUE > OldSmart)
 	{
-		SmartbombsLeft.Set(SmartbombsLeft.Get() + SMARTBOMB_RESUPPLY);
+		PlayerShip->AddSmartBombs(SMARTBOMB_RESUPPLY);
 	}
 
 	return Score; 
@@ -148,4 +133,6 @@ void Defcon::CGameMatch::SetCurrentMission(Defcon::EMissionID InMissionID)
 	MissionID = InMissionID;
 
 	Mission = Defcon::CMissionFactory::Make(InMissionID);
+
+	PlayerShip->SetShieldStrength(1.0f);
 }

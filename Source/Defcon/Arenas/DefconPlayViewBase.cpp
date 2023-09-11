@@ -137,7 +137,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 	WasShipUnderThrust = false;
 
 	InitMappers();
-	InitPlayerShip();
+	InitPlayerShipForMission();
 
 
 	PlayAreaMain->Init(&GetHumans(), &Objects, &Enemies, &Debris, &Blasts, ArenaSize);
@@ -183,13 +183,13 @@ void UDefconPlayViewBase::OnFinishActivating()
 	PlayAreaRadar->Init(MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
 
 
-	GetPlayerShip().BindToShieldValue([WeakThis = TWeakObjectPtr<UDefconPlayViewBase>(this)](const float& Value)
+	/*GetPlayerShip().BindToShieldValue([WeakThis = TWeakObjectPtr<UDefconPlayViewBase>(this)](const float& Value)
 	{
 		if(auto This = WeakThis.Get())
 		{
 			This->PlayAreaStats->UpdateShieldReadout(FMath::Clamp(Value, 0.0f, 1.0f));
 		}
-	});
+	});*/
 
 
 	// Zero out the abduction count and turn off related alert.
@@ -274,7 +274,7 @@ void UDefconPlayViewBase::CreateTerrain()
 }
 
 
-void UDefconPlayViewBase::InitPlayerShip()
+void UDefconPlayViewBase::InitPlayerShipForMission()
 {
 	// Set up the player ship for the start of a mission.
 
@@ -299,6 +299,10 @@ void UDefconPlayViewBase::InitPlayerShip()
 	PlayerShip.EnableInput(false);
 
 	NumPlayerPassengers = 0;
+
+	// Jiggle the player ship shield strength to force message through.
+	PlayerShip.SetShieldStrength(0.99f);
+	PlayerShip.SetShieldStrength(1.0f);
 }
 
 
@@ -474,7 +478,7 @@ float UDefconPlayViewBase::GetTerrainElev(float X) const
 
 void UDefconPlayViewBase::ConcludeMission()
 {
-	// Wave can end. todo: handle via gameinstance?
+	// Wave can end. todo: handle via game match?
 
 	if(!bArenaClosing)
 	{
@@ -760,6 +764,8 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 	Enemies.ForEach([](Defcon::IGameObject* Obj){ static_cast<Defcon::CEnemy*>(Obj)->SetTarget(nullptr); });
 }
 
+// How much to water down the collision force of an object hitting the player ship.
+constexpr float PLAYERSHIP_IMPACT_SCALE = 0.5f;
 
 void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& objects)
 {
@@ -793,7 +799,7 @@ void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& object
 
 				GDefconGameInstance->GetStats().PlayerHits++;
 
-				const bool bPlayerKilled = !Defcon::GGameMatch->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
+				const bool bPlayerKilled = !Defcon::GGameMatch->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce() * PLAYERSHIP_IMPACT_SCALE);
 
 				if(bPlayerKilled)
 				{
@@ -808,7 +814,6 @@ void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& object
 
 				if(bPlayerKilled)
 				{
-					OnPlayerShipDestroyed();
 					break;
 				}
 			}
@@ -846,7 +851,7 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 			{
 				GDefconGameInstance->GetStats().PlayerCollisions++;
 
-				const bool bPlayerKilled = !Defcon::GGameMatch->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce());
+				const bool bPlayerKilled = !Defcon::GGameMatch->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce() * PLAYERSHIP_IMPACT_SCALE);
 
 				if(bPlayerKilled)
 				{
@@ -865,7 +870,6 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 
 				if(bPlayerKilled)
 				{
-					OnPlayerShipDestroyed();
 					break;
 				}
 			}			
@@ -915,22 +919,6 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		Factor = CLAMP(Factor, 0.0f, 1.0f);
 
 		DeltaTime *= LERP(1.0f, 0.67f, Factor);
-
-		/*if(Debris.Count() > 250)
-		{
-			if(Debris.Count() < 500)
-			{
-				DeltaTime *= 0.8f;
-			}
-			else if(Debris.Count() < 750)
-			{
-				DeltaTime *= 0.65f;
-			}
-			else //if(Objects.Count() >= 750)
-			{
-				DeltaTime *= 0.5f;
-			}
-		}*/
 	}
 
 	if(bBulletTime)
@@ -1102,16 +1090,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	{
 		// The player ship is toast; restart mission.
 
-		if(!bArenaClosing)
-		{
-			bArenaClosing = true;
-			auto Task = new Defcon::CRestartMissionTask;
-
-			Task->Countdown = FADE_DURATION_NORMAL;
-			ScheduledTasks.Add(Task);
-
-			FadeAge = FADE_DURATION_NORMAL;
-		}
+		OnPlayerShipDestroyed();
 	}
 
 	// todo: If our shields are taking a beating, fritz the radar.
@@ -1271,7 +1250,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 
 			if(GetPlayerShip().IsAlive())
 			{
-				if(Defcon::GGameMatch->AcquireSmartBomb())
+				if(GetPlayerShip().AcquireSmartBomb())
 				{
 					DetonateSmartbomb();
 				}
@@ -1693,9 +1672,20 @@ void UDefconPlayViewBase::OnPlayerShipDestroyed()
 	if(!bArenaClosing)
 	{
 		bArenaClosing = true;
+
 		FadeAge = DESTROYED_PLAYER_LIFETIME * 2;
 
-		auto Task = new Defcon::CRestartMissionTask;
+		Defcon::CScheduledTask* Task = nullptr;
+
+		if(GetHumans().Count() == 0)
+		{
+			Task = new Defcon::CEndMissionTask;
+		}
+		else
+		{
+			Task = new Defcon::CRestartMissionTask;
+		}
+
 		Task->Countdown = FadeAge;
 
 		ScheduledTasks.Add(Task);

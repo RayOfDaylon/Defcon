@@ -2,8 +2,6 @@
 // Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
 
 #include "CoreMinimal.h"
-#include "DaylonUtils.h"
-#include "Globals/MessageMediator.h"
 #include "GameObjects/GameObjectCollection.h"
 #include "GameObjects/playership.h"
 #include "Missions/mission.h"
@@ -59,7 +57,6 @@ namespace Defcon
 			bool                          GetHumansPlaced        () const { return bHumansPlaced; }
 			void                          SetHumansPlaced        (bool b = true) { bHumansPlaced = b; }
 										  
-			bool                          AcquireSmartBomb       ();
 
 			bool                          GetGodMode             () const { return GodMode; }
 			void                          SetGodMode             (bool b = true) { GodMode = b; }
@@ -75,7 +72,6 @@ namespace Defcon
 			bool                           bHumansPlaced   = false;
 			
 			int32                          Score           = 0;      // Not shown; used only to track XP.
-			TBroadcastableValue<int32>     SmartbombsLeft;
 			bool                           GodMode         = false;
 	};
 

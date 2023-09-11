@@ -39,6 +39,9 @@ class DEFCON_API UDefconPlayStatsWidgetBase : public UDefconPlayWidgetBase
 	TObjectPtr<UProgressBar> ShieldReadout;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UTextBlock> ShieldLabel;
+
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> SmartbombReadout;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
@@ -48,9 +51,11 @@ class DEFCON_API UDefconPlayStatsWidgetBase : public UDefconPlayWidgetBase
 	TObjectPtr<UDefconHumansInfoBase> HumansReadout;
 
 
-	public:
+	TArray<FLinearColor>    ShieldGradient;
 
-	void UpdateShieldReadout     (float Amount);
+	//public:
+
+	//void UpdateShieldReadout     (float Amount);
 };
 
 

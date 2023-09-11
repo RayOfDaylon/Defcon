@@ -47,29 +47,24 @@ class DEFCON_API UDefconViewBase : public UUserWidget
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
-	/*virtual int32 NativePaint(
-		const FPaintArgs& Args,
-		const FGeometry& AllottedGeometry,
-		const FSlateRect& MyCullingRect,
-		FSlateWindowElementList& OutDrawElements,
-		int32 LayerId,
-		const FWidgetStyle& InWidgetStyle,
-		bool bParentEnabled) const override;*/
 
 	public:
+
 	UFUNCTION(BlueprintCallable, Category=Defcon)
 	UDefconGameInstance* GetDefconGameInstance();
 
+
 	protected:
+
 	UFUNCTION(BlueprintCallable, Category=Defcon)
 	void TransitionToArena(EDefconArena Arena);
+	
 	// todo: move these audio properties into the audio manager and add their enums, and call GAudio->OutputSound to play them.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Audio")
 	TObjectPtr<USoundBase> FocusChangedSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Audio")
 	TObjectPtr<USoundBase> InvalidSelectionSound;
-
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UCanvasPanel* RootCanvas;

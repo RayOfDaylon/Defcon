@@ -2,10 +2,26 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 10, 2023
+September 11, 2023
 
 
-Started using new CMessageMediator template class
+If all humans are killed and the player ship dies, 
+the mission ends but the game transitions to the 
+game over screen, instead of restarting the mission 
+(which is pointless to play since it's just enemies 
+without any humans to defend. Even if the next 
+mission is a dogfight, the mission after that 
+will be empty of humans).
+
+Shield strength updates use CMessageMediator class, 
+and shield readout changes color from blue to red 
+as shields weaken.
+
+Smartbomb count moved from game match to player ship.
+
+Smartbomb count updates use CMessageMediator class.
+
+Human count updates use new CMessageMediator template class
 to improve loose coupling.
 
 Finished the new "Humans" readout on the stats panel, 

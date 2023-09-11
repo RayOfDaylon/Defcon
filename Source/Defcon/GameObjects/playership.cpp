@@ -52,6 +52,9 @@ Defcon::CPlayerShip::CPlayerShip()
 
 	// Make our "pickup human" bboxrad more generous than hitbox.
 	PickupBboxRadius = Info.Size * 0.4f;
+
+	SmartbombsLeft.Bind(EMessageEx::SmartbombCountChanged);
+	SmartbombsLeft.Set(SMARTBOMB_INITIAL);
 }
 
 
@@ -107,6 +110,24 @@ void Defcon::CPlayerShip::OnAboutToDie()
 }
 
 
+void Defcon::CPlayerShip::AddSmartBombs(int32 Amount) 
+{
+	SmartbombsLeft.Set(SmartbombsLeft.Get() + Amount); 
+}
+
+
+bool Defcon::CPlayerShip::AcquireSmartBomb()
+{
+	if(SmartbombsLeft.Get() > 0)
+	{
+		SmartbombsLeft.Set(SmartbombsLeft.Get() - 1);
+		return true;
+	}
+
+	return false;
+}
+
+
 bool Defcon::CPlayerShip::EmbarkPassenger(IGameObject* pObj, CGameObjectCollection& humans)
 {
 	if(MarkedForDeath())
@@ -121,8 +142,6 @@ bool Defcon::CPlayerShip::EmbarkPassenger(IGameObject* pObj, CGameObjectCollecti
 
 	return true;
 }
-
-
 
 
 bool Defcon::CPlayerShip::DebarkOnePassenger(CGameObjectCollection& Humans)

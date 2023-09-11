@@ -3,15 +3,32 @@
 
 
 #include "DefconPlayStatsWidgetBase.h"
-#include "DaylonUtils.h"
 #include "Globals/MessageMediator.h"
-
+#include "GameObjects/gameobjlive.h"
+#include "Common/util_color.h"
 
 
 void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
+	// Build shield gradient colormap.
+	
+	const FLinearColor Colors[] = { C_RED, C_RED, /*C_ORANGE,*/ C_YELLOW, C_GREEN, C_BLUE };
+
+	float X = 0;
+	const int32 Subsize = 10;
+	ShieldGradient.Reserve(Subsize * array_size(Colors));
+
+	for(int32 i = 0; i < array_size(Colors) - 1; i++)
+	{
+		for(int32 Xlocal = 0; Xlocal < Subsize; Xlocal++)
+		{
+			ShieldGradient.Add(MakeBlendedColor(Colors[i], Colors[i + 1], Xlocal / (Subsize - 2.0f)));
+		}
+	}
+
+	
 	// Scale shield readout progress bar's border width to match display DPI
 	const float BorderWidth = 0.1f * GetPaintSpaceGeometry().Scale;
 	auto Style = ShieldReadout->GetWidgetStyle();
@@ -27,6 +44,8 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 				{
 					return;
 				}
+
+				check(Payload != nullptr);
 
 				This.Get()->HumansReadout->UpdateReadout(*static_cast<TArray<bool>*>(Payload));
 			}
@@ -44,6 +63,8 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 					return;
 				}
 
+				check(Payload != nullptr);
+
 				const int32 Amount = *static_cast<int32*>(Payload);
 
 				check(Amount >= 0);
@@ -51,6 +72,45 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 				const FString Str = FString::Printf(TEXT("%d"), Amount);
 
 				This.Get()->SmartbombReadout->SetText(FText::FromString(Str));
+			}
+		);
+		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
+	}
+
+	// Subscribe to player ship shield strength
+	{
+		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::ShieldStrengthChanged, 
+			[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
+			{
+				if(!This.IsValid())
+				{
+					return;
+				}
+
+				check(Payload != nullptr);
+
+				const auto& StrengthInfo = *static_cast<Defcon::FShieldStrengthInfo*>(Payload);
+
+				check(StrengthInfo.Object != nullptr && StrengthInfo.Value >= 0.0f);
+
+				if(StrengthInfo.Object->GetType() != Defcon::EObjType::PLAYER)
+				{
+					return;
+				}
+
+				// todo: for strengths above 1.0, blend towards white color.
+				const auto Val = FMath::Min(StrengthInfo.Value, 1.0f);
+
+				auto Readout = This.Get()->ShieldReadout;
+
+				Readout->SetPercent(StrengthInfo.Value);
+
+				const auto& Color = This->ShieldGradient[ROUND(Val * This->ShieldGradient.Num() - 1)];
+				auto Style = Readout->GetWidgetStyle();
+				Style.BackgroundImage.TintColor = FSlateColor(Color);
+				Readout->SetWidgetStyle(Style);
+				Readout->SetFillColorAndOpacity(Color);
+				This->ShieldLabel->SetColorAndOpacity(Color);
 			}
 		);
 		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
@@ -85,10 +145,11 @@ int32 UDefconPlayStatsWidgetBase::NativePaint
 		bParentEnabled);
 }
 
-
+#if 0
 void UDefconPlayStatsWidgetBase::UpdateShieldReadout(float Amount)
 {
 	check(Amount >= 0.0f && Amount <= 1.0f);
 
 	ShieldReadout->SetPercent(Amount);
 }
+#endif

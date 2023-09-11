@@ -333,29 +333,36 @@ void UDefconGameInstance::TransitionToArena(EDefconArena Arena)
 
 void UDefconGameInstance::OnMissionEnded(const FString& NameOfEndedMission, bool StateOfEndedMission, bool HumansWereInvolved)
 {
-	auto PostWaveView = Cast<UDefconPostwaveViewBase>(Views[(int32)EDefconArena::Postwave]);
+	const int32 NumHumans = Defcon::GGameMatch->GetHumans().Count();
 
-	PostWaveView->SetTitle(FString::Printf(TEXT("MISSION \"%s\" %s"), *NameOfEndedMission, StateOfEndedMission ? TEXT("COMPLETED") : TEXT("ABORTED")).ToUpper());
-
-	FString Str;
-
-	if(HumansWereInvolved)
+	if(Defcon::GGameMatch->GetPlayerShip().IsAlive() || NumHumans > 0)
 	{
-		const int32 NumHumans = Defcon::GGameMatch->GetHumans().Count();
+		auto PostWaveView = Cast<UDefconPostwaveViewBase>(Views[(int32)EDefconArena::Postwave]);
 
-		if(NumHumans > 0)
+		PostWaveView->SetTitle(FString::Printf(TEXT("MISSION \"%s\" %s"), *NameOfEndedMission, StateOfEndedMission ? TEXT("COMPLETED") : TEXT("ABORTED")).ToUpper());
+
+		FString Str;
+
+		if(HumansWereInvolved)
 		{
-			Str = FString::Printf(TEXT("%s human%S remaining"), *GetNumberSpelling(NumHumans, 1), NumHumans > 1 ? "s" : "");
+			if(NumHumans > 0)
+			{
+				Str = FString::Printf(TEXT("%s human%S remaining"), *GetNumberSpelling(NumHumans, 1), NumHumans > 1 ? "s" : "");
+			}
+			else
+			{
+				Str = TEXT("All humans killed or abducted");
+			}
 		}
-		else
-		{
-			Str = TEXT("All humans killed or abducted");
-		}
+
+		PostWaveView->SetSubtitle(Str);
+
+		TransitionToArena(EDefconArena::Postwave);
 	}
-
-	PostWaveView->SetSubtitle(Str);
-
-	TransitionToArena(EDefconArena::Postwave);
+	else
+	{
+		TransitionToArena(EDefconArena::GameOver);
+	}
 }
 
 
