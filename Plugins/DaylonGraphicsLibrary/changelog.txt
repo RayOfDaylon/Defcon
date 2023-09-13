@@ -1,6 +1,8 @@
 Changelog for DaylonGraphicsLibrary UE plugin
 
-Last updated: August 27, 2023
+Last updated: September 12, 2023
+
+Added TMessageMediator and related helper types.
 
 Changed Daylon::GetWidgetPosition to fix bug where 
 it wasn't quite returning the widget's layout position.

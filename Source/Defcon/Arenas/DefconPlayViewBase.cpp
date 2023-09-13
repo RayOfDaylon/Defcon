@@ -300,9 +300,7 @@ void UDefconPlayViewBase::InitPlayerShipForMission()
 
 	NumPlayerPassengers = 0;
 
-	// Jiggle the player ship shield strength to force message through.
-	PlayerShip.SetShieldStrength(0.99f);
-	PlayerShip.SetShieldStrength(1.0f);
+	PlayerShip.SetShieldStrength(1.0f, true);
 }
 
 

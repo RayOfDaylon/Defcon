@@ -350,6 +350,198 @@ namespace Daylon
 	};
 
 
+	// --------------------------------------------------------------------------------------------------------
+
+	/*
+		TMessageMediator (and helper types).
+
+		Class which promotes loose coupling by mediating messages between objects.
+		The mediator acts like a post office, registering recipients' delegates as message consumers, 
+		receiving messages and then forwarding them to them. Senders and recipients have no 
+		knowledge about each other, but must agree on the message payload format.
+
+									 ______________          _________________________
+		 ________                   |              |        |                         |
+		|        |                  |              | -----> | msg consumer (delegate) |
+		| sender | --- message ---> |   Mediator   |        |_________________________|
+		|________|                  |              |        |                         |
+									|______________|        |      consumer #2        |
+															|_________________________|
+																	   ...
+															 _________________________
+															|                         |
+															|      consumer #n        |
+															|_________________________|
+
+
+		No async operation; senders are blocked until a sent message is processed;
+		the entire codepath is on the same thread.
+
+		Messages are "fire and forget"; delegate signature has void return type.
+
+		The Tenum template argument must be an enum class with at least one member called "Unknown".
+	*/
+
+
+	// Message delegates have a simple API: a single void* argument, void return type.
+	// If a sender wants a return value, they can have their payload include a non-const pointer
+	// to some data that the consumer can modify.
+
+	typedef TFunction<void(void* Payload)> FMessageDelegate;
+
+
+	template <typename Tenum> struct FMessageConsumer 
+	{
+		void*                  Object   = nullptr; 
+		Tenum                  Message  = Tenum::Unknown; 
+		FMessageDelegate       MessageDelegate; 
+
+		FMessageConsumer(void* InObject, Tenum InMessage, const FMessageDelegate& InMessageDelegate)
+		{
+			check(InObject != nullptr);
+			check(InMessage != Tenum::Unknown);
+			check(InMessageDelegate);
+
+			Object          = InObject;
+			Message         = InMessage;
+			MessageDelegate = InMessageDelegate;
+		}
+
+
+		bool IsValid() const 
+		{
+			return (Object != nullptr && Message != Tenum::Unknown && MessageDelegate); 
+		}
+
+
+		bool operator == (const FMessageConsumer& Rhs) const
+		{
+			return (Object == Rhs.Object && Message == Rhs.Message);
+		}
+	};
+
+
+	template <typename Tenum> class TMessageMediator
+	{
+		// No copying allowed.
+		TMessageMediator (const TMessageMediator&) = delete;
+		TMessageMediator& operator= (const TMessageMediator&) = delete;
+
+
+		public:
+
+			TMessageMediator() {}
+
+			void Send(Tenum Message, void* Payload = nullptr)
+			{
+				for(const auto& Consumer : Consumers)
+				{
+					if(Consumer.Message == Message)
+					{
+						Consumer.MessageDelegate(Payload);
+					}
+				}
+			}
+
+
+			void RegisterConsumer(const FMessageConsumer<Tenum>& Consumer)
+			{
+				check(Consumer.IsValid());
+
+				if(!HasConsumer(Consumer))
+				{
+					Consumers.Add(Consumer);
+				}
+			}
+
+
+			void UnregisterConsumer(void* Object)
+			{
+				// Remove all delegates which recipient had registered.
+
+				// Called when object no longer needs to receive messages, or
+				// when the object is being deleted.
+
+			    for(int32 Idx = Consumers.Num() - 1; Idx >= 0; Idx--)
+				{
+					if(Consumers[Idx].Object == Object)
+					{
+						Consumers.RemoveAtSwap(Idx);
+					}
+				}
+
+				// We don't expect to need unregistering of a particular delegate i.e. Object + Message.
+			}
+
+
+		protected:
+
+			TArray<FMessageConsumer<Tenum>> Consumers;
+
+			bool HasConsumer(const FMessageConsumer<Tenum>& InConsumer) const
+			{
+				for(const auto& Consumer : Consumers)
+				{
+					if(Consumer == InConsumer)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+	};
+
+
+	template <typename Tval, typename Tenum> class TMessageableValue
+	{
+		// Use this template instead of a normal value type in order to 
+		// make it sendable to a message mediator.
+		// If Tval is non-scalar, it must provide assignment operator and operator != .
+
+		protected:
+
+			Tval                     Value;
+			TMessageMediator<Tenum>* MessageMediator = nullptr;
+			Tenum                    Message         = Tenum::Unknown;
+			bool                     FirstTime       = true;
+
+
+		public:
+
+			Tval Get() const { return Value; }
+
+			
+			void Set(Tval Val, bool Force = false) 
+			{
+				check(MessageMediator != nullptr);
+				check(Message != Tenum::Unknown);
+
+				const bool Different = (Value != Val);
+
+				Value = Val; 
+
+				if(Different || FirstTime || Force)
+				{
+					MessageMediator->Send(Message, &Value);
+					FirstTime = false;
+				}
+			}
+
+
+			void Bind(TMessageMediator<Tenum>* InMessageMediator, Tenum InMessage)
+			{
+				check(InMessageMediator != nullptr);
+				check(InMessage != Tenum::Unknown);
+
+				MessageMediator = InMessageMediator;
+				Message         = InMessage;
+			}
+	};
+
+	// --------------------------------------------------------------------------------------------------------
+	
+	
 	struct DAYLONGRAPHICSLIBRARY_API FHighScore
 	{
 	

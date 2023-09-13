@@ -53,10 +53,10 @@ bool Defcon::ILiveGameObject::RegisterImpact(float Force)
 }
 
 
-void Defcon::ILiveGameObject::SetShieldStrength(float Strength)	
+void Defcon::ILiveGameObject::SetShieldStrength(float Strength, bool Force)	
 {
 	//ShieldStrength = Strength; 
-	ShieldStrength.Set({ this, Strength });
+	ShieldStrength.Set({ this, Strength }, Force);
 	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *GObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
 }
 

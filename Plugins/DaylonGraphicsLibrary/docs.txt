@@ -2,7 +2,7 @@ Documentation for DaylonGraphicsLibrary plug-in for Unreal Engine
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/SpaceRox (inside Plugins folder)
-June 17, 2023
+September 12, 2023
 
 
 
@@ -120,6 +120,30 @@ RandBool                      Returns a random true/false value.
 RandRange                     Returns a random integer inclusively between two integers.
 
 FRandRange                    Returns a random real number inclusively between two reals.
+
+TMessageMediator              Template class that implements the Mediator pattern 
+                              (which is a completely decoupled Observer pattern).
+                              Mediators are used to make other types completely decoupled.
+                              Unlike mediators that know about recipient types and which
+                              of their methods to invoke, TMessageMediator does not; 
+                              message consumers must register delegates associated with a message ID.
+                              A message will included a void* as its payload; both the sender
+                              and consumer must agree on what (if any) data is referenced, 
+                              but the mediator itself has no idea.
+                                  Receivers call RegisterConsumer and UnregisterConsumer.
+                              Senders simply call Send.
+
+FMessageDelegate              The function signature used by mediated delegates (void<void*>).
+
+FMessageConsumer              Identifies a message consumer to a mediator during registration.
+                              A void* (normally to the receiving object), a message ID, and 
+                              a delegate are required.
+
+TMessageableValue             Template class that simplifies sending messages when a variable's
+                              value changes. It filters out redundant sending but this can 
+                              be overridden by setting Force = true in the Set method.
+                              
+
 
 UMG widgets have been retired to an #if 0 ... #endif block. 
 The code is retained there for reference.
