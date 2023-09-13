@@ -274,13 +274,6 @@ with widget rendering. Basically the cel determiner logic would be one
 function callable from NativeTick, and the render logic would be called 
 from NativePaint.
 
-Implement the arena bogdown feature. This is when we temporarily use a 
-light bullet time (0.5 or 0.75) when the number of debris objects 
-exceeds a certain threshold. This mimics the slowdown that occured on 
-the original arcade hardware, usually when a smartbomb was detonated 
-amidst many enemies. Despite modern hardware being fast enough, the 
-effect is actually pleasant for some.
-
 There are explicit constants here and there that should be pref vars.
 
 Secondary explosion texture atlas is used randomly, but should be 

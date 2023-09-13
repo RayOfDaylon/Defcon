@@ -183,6 +183,9 @@ void Defcon::CPlayerShip::Tick(float DeltaTime)
 	{
 		SetShieldStrength(FMath::Min(1.0f, Strength + DeltaTime / 20));
 	}
+
+	// Make the ship appear redder as its shields weaken.
+	Sprite->SetTint(MakeBlendedColor(C_RED, C_WHITE, Strength));
 }
 
 

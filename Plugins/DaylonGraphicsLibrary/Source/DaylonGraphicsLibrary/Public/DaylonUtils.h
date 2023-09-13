@@ -380,6 +380,9 @@ namespace Daylon
 		Messages are "fire and forget"; delegate signature has void return type.
 
 		The Tenum template argument must be an enum class with at least one member called "Unknown".
+
+		For efficiency during message sending, the mediator maintains an array of
+		consumers for each message ID, finding the array using a TMap.
 	*/
 
 
@@ -432,11 +435,16 @@ namespace Daylon
 
 			TMessageMediator() {}
 
+
 			void Send(Tenum Message, void* Payload = nullptr)
 			{
-				for(const auto& Consumer : Consumers)
+				check(Message != Tenum::Unknown);
+
+				const auto Consumers = ConsumerArrays.Find(Message);
+
+				if(Consumers != nullptr)
 				{
-					if(Consumer.Message == Message)
+					for(const auto& Consumer : *Consumers)
 					{
 						Consumer.MessageDelegate(Payload);
 					}
@@ -448,25 +456,41 @@ namespace Daylon
 			{
 				check(Consumer.IsValid());
 
-				if(!HasConsumer(Consumer))
+				auto Consumers = ConsumerArrays.Find(Consumer.Message);
+
+				if(Consumers == nullptr)
 				{
-					Consumers.Add(Consumer);
+					// No consumers exist for the message, so start a consumers array for it.
+					TArray<FMessageConsumer<Tenum>> Array;
+					Array.Add(Consumer);
+					ConsumerArrays.Add(Consumer.Message, Array);
+				}
+				else if(nullptr == Consumers->FindByPredicate([Consumer](const FMessageConsumer<Tenum>& Elem){ return (Elem.Object == Consumer.Object); }))
+				{
+					// Consumers exist for the message but not for the consumer's object, so add consumer to existing array.
+					Consumers->Add(Consumer);
 				}
 			}
 
 
 			void UnregisterConsumer(void* Object)
 			{
-				// Remove all delegates which recipient had registered.
+				// Remove all delegates which a recipient object had registered.
 
 				// Called when object no longer needs to receive messages, or
 				// when the object is being deleted.
 
-			    for(int32 Idx = Consumers.Num() - 1; Idx >= 0; Idx--)
+				for(auto& Pair : ConsumerArrays)
 				{
-					if(Consumers[Idx].Object == Object)
+					for(auto& Consumers : Pair.Value)
 					{
-						Consumers.RemoveAtSwap(Idx);
+						for(int32 Idx = Consumers.Num() - 1; Idx >= 0; Idx--)
+						{
+							if(Consumers[Idx].Object == Object)
+							{
+								Consumers.RemoveAtSwap(Idx);
+							}
+						}
 					}
 				}
 
@@ -476,20 +500,7 @@ namespace Daylon
 
 		protected:
 
-			TArray<FMessageConsumer<Tenum>> Consumers;
-
-			bool HasConsumer(const FMessageConsumer<Tenum>& InConsumer) const
-			{
-				for(const auto& Consumer : Consumers)
-				{
-					if(Consumer == InConsumer)
-					{
-						return true;
-					}
-				}
-
-				return false;
-			}
+			TMap<Tenum, TArray<FMessageConsumer<Tenum>>> ConsumerArrays;
 	};
 
 

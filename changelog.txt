@@ -2,8 +2,10 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 11, 2023
+September 13, 2023
 
+
+Player ship appears redder as its shields weaken.
 
 If all humans are killed and the player ship dies, 
 the mission ends but the game transitions to the 
