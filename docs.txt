@@ -327,14 +327,3 @@ happen to be used for game objects. But we should have two enums.
 Need to implement more missions to fill in the "undefined" slots 
 in the mission picker, and to fill out the gameplay.
 
-A nicer abductions widget would be a horz box containing one 
-badge per human, each one solid pink for safe, flashing
-(and maybe red) when abducted, and subscripted when falling.
-Dead humans cause their icon to collapse from the horz box.
- 
-Instead of recreating the horzbox content of the humans readout 
-which can cause flicker, we should set up the max count of 
-icons during init, then during update just color the living 
-humans and collapse the rest. A custom widget with its own 
-paint handler would be even more efficient.
-

@@ -360,18 +360,18 @@ namespace Daylon
 		receiving messages and then forwarding them to them. Senders and recipients have no 
 		knowledge about each other, but must agree on the message payload format.
 
-									 ______________          _________________________
-		 ________                   |              |        |                         |
-		|        |                  |              | -----> | msg consumer (delegate) |
-		| sender | --- message ---> |   Mediator   |        |_________________________|
-		|________|                  |              |        |                         |
-									|______________|        |      consumer #2        |
-															|_________________________|
-																	   ...
-															 _________________________
-															|                         |
-															|      consumer #n        |
-															|_________________________|
+                                     ______________          _________________________
+         ________                   |              |        |                         |
+        |        |                  |              | -----> | msg consumer (delegate) |
+        | sender | --- message ---> |   Mediator   |        |_________________________|
+        |________|                  |              |        |                         |
+                                    |______________|        |      consumer #2        |
+                                                            |_________________________|
+                                                                       ...
+                                                             _________________________
+                                                            |                         |
+                                                            |      consumer #n        |
+                                                            |_________________________|
 
 
 		No async operation; senders are blocked until a sent message is processed;
