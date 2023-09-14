@@ -71,7 +71,7 @@ Defcon::CLander::CLander()
 		ProbChaseHuman = 0.95f;
 	}
 
-	bChaseNearestHuman = (FRAND <= ProbChaseHuman);
+	bTryToAbduct = (FRAND <= ProbChaseHuman);
 
 
 	CreateSprite(EObjType::LANDER);
@@ -87,12 +87,12 @@ Defcon::CLander::~CLander()
 
 void Defcon::CLander::OnAboutToDie()
 {
-	if(HumanPtr != nullptr)
+	if(Abductee != nullptr)
 	{
- 		HumanPtr->Notify(EMessage::CarrierKilled, this);
+ 		Abductee->Notify(EMessage::CarrierKilled, this);
 	}
 
-	HumanPtr = nullptr;
+	Abductee = nullptr;
 }
 
 
@@ -104,14 +104,14 @@ void Defcon::CLander::Notify(Defcon::EMessage msg, void* pObj)
 
 			check(pObj != nullptr);
 
-			if(pObj == TrackedHumanPtr)
+			if(pObj == AbductionTarget)
 			{
-				TrackedHumanPtr = nullptr;
+				AbductionTarget = nullptr;
 				State = EState::Hovering;
 			}
-			if(pObj == HumanPtr)
+			if(pObj == Abductee)
 			{
-				HumanPtr = nullptr;
+				Abductee = nullptr;
 				State = EState::Fighting;
 			}
 
@@ -122,11 +122,11 @@ void Defcon::CLander::Notify(Defcon::EMessage msg, void* pObj)
 
 			check(pObj != nullptr);
 
-			if(pObj == TrackedHumanPtr)
+			if(pObj == AbductionTarget)
 			{
-				check(HumanPtr == nullptr);
+				check(Abductee == nullptr);
 				// Someone beat us to the punch.
-				TrackedHumanPtr = nullptr;
+				AbductionTarget = nullptr;
 				State = EState::Hovering;
 #ifdef _DEBUG
 				OutputDebugString("Hunter: tracked human abducted by sibling\n");
@@ -158,8 +158,8 @@ void Defcon::CLander::Tick(float DeltaTime)
 	switch(State)
 	{
 		case EState::Descending:
-			check(HumanPtr == nullptr);
-			check(TrackedHumanPtr == nullptr);
+			check(Abductee == nullptr);
+			check(AbductionTarget == nullptr);
 
 			if(Position.y < kHoverStartAlt)
 				State = EState::Hovering;
@@ -176,14 +176,14 @@ void Defcon::CLander::Tick(float DeltaTime)
 		{
 			// Move horizontally while staying over terrain.
 
-			check(HumanPtr == nullptr);
-			check(TrackedHumanPtr == nullptr);
+			check(Abductee == nullptr);
+			check(AbductionTarget == nullptr);
 
 			const float Speed = MaxSpeed * 0.33f;
 
 			CFPoint TargetPos; // where we want to move to.
 				
-			if(bChaseNearestHuman)
+			if(bTryToAbduct)
 			{
 				auto Human = GArena->FindNearestHuman(Position.x);
 
@@ -233,13 +233,13 @@ void Defcon::CLander::Tick(float DeltaTime)
 			// If we are near a human, and the odds 
 			// say so or we've been around for more than 
 			// 20 seconds, then switch to abduct mode.
-			if(bChaseNearestHuman || Age > LANDER_MATURE || FRAND <= LANDER_ABDUCTODDS)
+			if(bTryToAbduct || Age > LANDER_MATURE || FRAND <= LANDER_ABDUCTODDS)
 			{
 				if(Defcon::GGameMatch->GetMission()->HumansInvolved())
 				{
-					TrackedHumanPtr = GArena->FindNearestHuman(Position.x);
+					AbductionTarget = GArena->FindNearestHuman(Position.x);
 
-					if(TrackedHumanPtr != nullptr)
+					if(AbductionTarget != nullptr)
 					{
 						State = EState::Acquiring;
 					}
@@ -253,9 +253,9 @@ void Defcon::CLander::Tick(float DeltaTime)
 		{
 			// If human exists, move towards it into docking
 			// position. Otherwise, switch back to hovering.
-			check(HumanPtr == nullptr);
+			check(Abductee == nullptr);
 
-			if(TrackedHumanPtr == nullptr)
+			if(AbductionTarget == nullptr)
 			{
 				State = EState::Hovering;
 			}
@@ -263,7 +263,7 @@ void Defcon::CLander::Tick(float DeltaTime)
 			{
 				// Human target exists. Attempt to dock to it.
 				CFPoint target;
-				target = TrackedHumanPtr->Position;
+				target = AbductionTarget->Position;
 				target.y += 27.0f; // Don't center lander with human!
 				PositionDelta(Orientation.Fwd, Position, target, ArenaSize.x);
 				float dist = Orientation.Fwd.Length();
@@ -279,8 +279,8 @@ void Defcon::CLander::Tick(float DeltaTime)
 				if(dd.Distance(Position) < 2.0f)
 				{
 					State = EState::Ascending;
-					HumanPtr = TrackedHumanPtr;
-					TrackedHumanPtr = nullptr;
+					Abductee = AbductionTarget;
+					AbductionTarget = nullptr;
 
 					// Ascend perfectly vertical half the time,
 					// and otherwise, cut the horz. speed
@@ -295,7 +295,7 @@ void Defcon::CLander::Tick(float DeltaTime)
 					// that we've abducted him, thus if any of
 					// them have been tracking him, they will
 					// stop doing so.
-					HumanPtr->Notify(Defcon::EMessage::TakenAboard, this);
+					Abductee->Notify(Defcon::EMessage::TakenAboard, this);
 					GArena->AddMessage(GGameMatch->GetHumans().Count() > 1 ? TEXT("ABDUCTION IN PROGRESS") : TEXT("ABDUCTION IN PROGRESS -- MISSION FAILURE IMMINENT"));
 					GAudio->OutputSound(EAudioTrack::Human_abducted);
 				}
@@ -306,9 +306,9 @@ void Defcon::CLander::Tick(float DeltaTime)
 
 		case EState::Ascending:
 		{
-			check(TrackedHumanPtr == nullptr);
+			check(AbductionTarget == nullptr);
 
-			if(HumanPtr == nullptr)
+			if(Abductee == nullptr)
 			{
 				// The human we were taking was killed.
 				// (Player is a lousy shot).
@@ -326,15 +326,15 @@ void Defcon::CLander::Tick(float DeltaTime)
 				Position.MulAdd(Orientation.Fwd, DeltaTime * AscentSpeed);
 			
 				// Did we reach orbit?
-				if(HumanPtr->Position.y > ArenaSize.y + HumanPtr->BboxRadius.y)
+				if(Abductee->Position.y > ArenaSize.y + Abductee->BboxRadius.y)
 				{
 					// Kill us and the human.
 					// (arcade mismatch) todo: should turn lander into a mutant.
 					State = EState::Ascended;
 					bMortal = true;
 					MarkAsDead();
-					HumanPtr->bMortal = true;
-					HumanPtr->MarkAsDead();
+					Abductee->bMortal = true;
+					Abductee->MarkAsDead();
 					GArena->AdjustAbductionCount(-1);
 				}
 			}
@@ -344,10 +344,10 @@ void Defcon::CLander::Tick(float DeltaTime)
 
 		case EState::Fighting:
 		{
-			check(HumanPtr == nullptr);
-			check(TrackedHumanPtr == nullptr);
+			check(Abductee == nullptr);
+			check(AbductionTarget == nullptr);
 
-			if(bChaseNearestHuman)
+			if(bTryToAbduct)
 			{
 				if(GArena->FindNearestHuman(Position.x) != nullptr)
 				{

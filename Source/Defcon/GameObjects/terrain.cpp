@@ -50,8 +50,10 @@ Defcon::CTerrain::~CTerrain()
 }
 
 
-void Defcon::CTerrain::InitTerrain(float w, float h)
+void Defcon::CTerrain::InitTerrain(float w, float h, const Daylon::FRange<float>& AllowableSpan)
 {
+	// The allowable span is just a limit; the actual terrain may be some subset of it.
+
 	Vertices.Reserve(300);
 	Vertices.Empty();
 
@@ -61,8 +63,8 @@ void Defcon::CTerrain::InitTerrain(float w, float h)
 
 	// Vertex generator
 
-	const float MaxHeight = ArenaHeight * 0.45f;
-	const float MinHeight = ArenaHeight * 0.05f;
+	const float MaxHeight = AllowableSpan.High();//ArenaHeight * 0.45f;
+	const float MinHeight = AllowableSpan.Low(); //ArenaHeight * 0.05f;
 	
 	FVector2D P(0.0f, Daylon::FRandRange(MinHeight, MaxHeight)); // current point. Start at x = 0
 	Vertices.Add(P);

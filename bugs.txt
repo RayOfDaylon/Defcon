@@ -2,7 +2,7 @@ Bug list for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 12, 2023
+September 14, 2023
 
 
 FIXED: Removed flicker from humans readout in stats panel.
@@ -26,7 +26,7 @@ Terrain drawing was moved to a new widget, SDefconTerrain.
 
 Stars overlap player ship and most enemy ships. Can fix by making stars use a widget.
 
-It seems that when humans are sometimes debarked by player ship, they actually are 
+FIXED: When humans are sometimes debarked by player ship, they actually are 
 above the terrain by a small amount and need to fall for a brief moment
 before being on the ground. This causes excess gratitude icons to appear 
 or the player ship can even embark the human back if he moves quickly enough.

@@ -311,7 +311,7 @@ void Defcon::CCreateEnemyTask::SpecializeForLander(Defcon::CEnemy* Enemy, const 
 	CLander* p = static_cast<CLander*>(Enemy);
 	
 	p->Objects = &GArena->GetObjects();
-	p->SetDoChaseHumans(Defcon::GGameMatch->GetMission()->HumansInvolved());
+	p->SetDoTryToAbduct(Defcon::GGameMatch->GetMission()->HumansInvolved());
 }
 
 

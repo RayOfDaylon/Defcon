@@ -178,6 +178,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	AreHumansInMission = Defcon::GGameMatch->GetMission()->HumansInvolved();
 
+	AllowableTerrainSpan.Set(MainAreaSize.Y * 0.05f, MainAreaSize.Y * 0.45f);
 	CreateTerrain();
 
 	PlayAreaRadar->Init(MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
@@ -266,7 +267,7 @@ void UDefconPlayViewBase::CreateTerrain()
 	if(Defcon::GGameMatch->GetMission()->UsesTerrain())
 	{
 		Terrain = new Defcon::CTerrain;
-		Terrain->InitTerrain(GetWidth(), GetHeight());
+		Terrain->InitTerrain(GetWidth(), GetHeight(), AllowableTerrainSpan);
 	}
 
 	PlayAreaMain ->SetTerrain(Terrain);
@@ -324,7 +325,7 @@ void UDefconPlayViewBase::TransportPlayerShip()
 		{
 			auto Human = static_cast<Defcon::CHuman*>(Object);
 
-			if(Human->IsBeingCarried() && Human->GetCarrier()->GetType() != Defcon::EObjType::PLAYER)
+			if(Human->IsBeingAbducted())
 			{
 				// Track highest human but not one that is too close to the top of the arena.
 				if(Human->Position.y > P.y && Human->Position.y < ArenaSize.Y - 150)

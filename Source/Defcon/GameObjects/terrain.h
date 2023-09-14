@@ -27,16 +27,16 @@ namespace Defcon
 			CTerrain();
 			virtual ~CTerrain();
 
-			void                       InitTerrain  (float W, float H);
+			void                       InitTerrain  (float W, float H, const Daylon::FRange<float>& AllowableSpan);
 			//virtual void               Draw         (FPainter&, const I2DCoordMapper&) override;
 			virtual void               DrawSmall    (FPainter&, const I2DCoordMapper&, FSlateBrush&) const override;
 			float	                   GetElev      (float X) const;
 			const TArray<FVector2D>*   GetVertices  () const { return &Vertices; }
 
 		private:
-			TArray<FVector2D>   Vertices;
-			TArray<float>       Elevations;
-			float               ArenaWidth;
-			float               ArenaHeight;
+			TArray<FVector2D>      Vertices;
+			TArray<float>          Elevations;
+			float                  ArenaWidth;
+			float                  ArenaHeight;
 	};
 }

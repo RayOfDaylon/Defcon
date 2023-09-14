@@ -115,7 +115,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	UWidget* Fader;
 
-
+	Daylon::FRange<float>          AllowableTerrainSpan;
 
 	Defcon::CTerrain*              Terrain;
 	Defcon::CGameObjectCollection  Enemies;
@@ -152,18 +152,19 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 	public:
 
-	void                                  OnMissionStarting  ();
-	bool                                  IsPaused           () const { return bIsPaused; }
-	bool                                  IsBulletTime       () const { return bBulletTime; }
-	Defcon::I2DCoordMapper&               GetMainAreaMapper  () { return MainAreaMapper; }
-	const Defcon::I2DCoordMapper&         GetMainAreaMapper  () const { return MainAreaMapper; }
+	void                                  OnMissionStarting        ();
+	bool                                  IsPaused                 () const { return bIsPaused; }
+	bool                                  IsBulletTime             () const { return bBulletTime; }
+	Defcon::I2DCoordMapper&               GetMainAreaMapper        () { return MainAreaMapper; }
+	const Defcon::I2DCoordMapper&         GetMainAreaMapper        () const { return MainAreaMapper; }
 	
-	Defcon::CPlayerShip&                  GetPlayerShip      ();
-	const Defcon::CPlayerShip&            GetPlayerShip      () const;
-	Defcon::CGameObjectCollection&        GetHumans          ();
-	const Defcon::CGameObjectCollection&  GetHumans          () const;
-	Defcon::CGameObjectCollection&        GetObjects         () { return Objects; }
-	Defcon::CGameObjectCollection&        GetEnemies         () { return Enemies; }
+	Defcon::CPlayerShip&                  GetPlayerShip            ();
+	const Defcon::CPlayerShip&            GetPlayerShip            () const;
+	Defcon::CGameObjectCollection&        GetHumans                ();
+	const Defcon::CGameObjectCollection&  GetHumans                () const;
+	Defcon::CGameObjectCollection&        GetObjects               () { return Objects; }
+	Defcon::CGameObjectCollection&        GetEnemies               () { return Enemies; }
+	const Daylon::FRange<float>&          GetAllowableTerrainSpan  () const { return AllowableTerrainSpan; }
 
 	float                ShortestDirection    (const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result) const;
 	void                 Lerp                 (const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result, float T) const;

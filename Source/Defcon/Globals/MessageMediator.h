@@ -21,6 +21,13 @@ namespace Defcon
 		bool operator != (const FShieldStrengthInfo& Rhs) const { return !(*this == Rhs); }
 	};
 
+	/*
+	struct FTakenAboardInfo
+	{
+		ILiveGameObject* Carrier;
+		CHuman*          Human;
+	};*/
+
 
 	enum class EMessageEx
 	{
@@ -29,7 +36,12 @@ namespace Defcon
 		Unknown = 0,            // nullptr
 		AbductionCountChanged,  // TArray<bool>*
 		SmartbombCountChanged,  // int32*
-		ShieldStrengthChanged   // FShieldStrengthInfo*
+		ShieldStrengthChanged,   // FShieldStrengthInfo*
+		TakenAboard,            // FTakenAboardInfo*  Carrier has taken human aboard
+		CarrierKilled,          // ILiveGameObject*   Carrier has been destroyed
+		Released,               // nullptr    Player ship has released human
+		HumanKilled            // CHuman*   Human is about to die
+		//HumanTakenAboard        // CHuman*   Human has been taken aboard (redundant, use TakenAboard)
 	};
 
 

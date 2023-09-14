@@ -20,7 +20,7 @@ namespace Defcon
 			virtual void   Notify                 (Defcon::EMessage, void*) override;
 			virtual void   OnAboutToDie           () override;
 
-			void SetDoChaseHumans                 (bool b) { bChaseNearestHuman = b; }
+			void SetDoTryToAbduct                 (bool b) { bTryToAbduct = b; }
 
 			CGameObjectCollection*  Objects = nullptr;
 
@@ -34,15 +34,15 @@ namespace Defcon
 
 			enum class EState { Descending, Hovering, Acquiring, Ascending, Ascended, Fighting };
 
-			IGameObject*  HumanPtr        = nullptr;
-			IGameObject*  TrackedHumanPtr = nullptr;
+			IGameObject*  Abductee        = nullptr;
+			IGameObject*  AbductionTarget = nullptr;
 			float         MaxSpeed;
 			float         HoverAltitude; // Distance above ground, not absolute Y value.
 			float         DescentSpeed;
 			float         AscentSpeed;
 			float         FiringCountdown;
 			EState        State;
-			bool          bChaseNearestHuman;
+			bool          bTryToAbduct;
 			bool          bAscendStraight;
 	};
 }

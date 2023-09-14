@@ -139,7 +139,7 @@ void Defcon::CHuman::Tick(float DeltaTime)
 	if(SwitchFacingDirectionCountdown <= 0.0f)
 	{
 		// Make player "thrash frantically" if being abducted.
-		if(IsBeingCarried() && GetCarrier()->GetType() != EObjType::PLAYER)
+		if(IsBeingAbducted())
 		{
 			SwitchFacingDirectionCountdown = FRANDRANGE(0.25f, 1.0f);
 		}
@@ -168,7 +168,7 @@ void Defcon::CHuman::Tick(float DeltaTime)
 	{
 		float MaxH = GArena->GetTerrainElev(Position.x);
 
-		if(Position.y >= MaxH)
+		if(Position.y > MaxH)
 		{
 			// We're above the ground, so we must be 
 			// falling from a killed abductor.
@@ -216,8 +216,8 @@ void Defcon::CHuman::Tick(float DeltaTime)
 
 			MaxH = GArena->GetTerrainElev(GArena->WrapX(Position.x));
 
-			Position.y = FMath::Min(Position.y, MaxH - 5);
-			Position.y = FMath::Max(Position.y, 20);
+			Position.y = FMath::Min(Position.y, MaxH);
+			Position.y = FMath::Max(Position.y, GArena->GetAllowableTerrainSpan().Low());
 		}
 	}
 }
