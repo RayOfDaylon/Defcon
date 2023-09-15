@@ -58,12 +58,11 @@ void UDefconHumansInfoBase::UpdateReadout(const TArray<bool>& AbductionStates)
 
 		if(Idx >= CurrentHumansCount)
 		{
-			Daylon::Show(Image, false);
+			Daylon::Hide(Image);
 			continue;
 		}
-
-		// If we ever let humans be added during a mission, use this line:
-		// Daylon::Show(Image)
+		
+		Daylon::Show(Image);
 
 		Image->SetDesiredSizeOverride(FVector2D(10));
 		Image->SetBrushTintColor(FSlateColor(Colors[(int32)AbductionStates[Idx]]));
