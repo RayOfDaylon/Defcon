@@ -96,8 +96,9 @@ class DAYLONGRAPHICSLIBRARY_API SDaylonSprite : public SLeafWidget
 			void              SetTint       (const FLinearColor& Color) { Tint = Color; }
 			void              SetAtlas      (const FDaylonSpriteAtlas& InAtlas);
 
-			void              SetCurrentCel (int32 Index);
+			void              SetCurrentCel (int32 Index);                      // Useful only in static mode
 			void              SetCurrentCel (int32 CelX, int32 CelY);
+			void              SetCurrentAge (float Age) { CurrentAge = Age; }   // Useful in dynamic mode
 			void              Update        (float DeltaTime);
 			void              Reset         ();
 
@@ -115,7 +116,7 @@ class DAYLONGRAPHICSLIBRARY_API SDaylonSprite : public SLeafWidget
 
 			virtual FVector2D ComputeDesiredSize(float) const override;
 
-			bool      IsStatic = false; // Set to true to use current cel regardless of updating
+			bool      IsStatic       = false; // Set to true to use current cel regardless of updating
 			bool      FlipHorizontal = false;
 			bool      FlipVertical   = false;
 

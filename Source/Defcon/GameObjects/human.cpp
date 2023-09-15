@@ -42,7 +42,12 @@ Defcon::CHuman::CHuman()
 	Motion.Normalize();
 
 	//UE_LOG(LogGame, Log, TEXT("Creating human sprite"));
-	CreateSprite(EObjType::HUMAN);
+	CreateSprite(Type);
+
+	Sprite->FlipHorizontal = (Motion.x < 0);
+
+	// Randomize the starting age so the animated walk texture doesn't cause walking in sync with other nearby humans
+	Sprite->SetCurrentAge(Age);
 }
 
 
@@ -91,6 +96,10 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 			Objects ->Notify(EMessage::HumanTakenAboard, this);
 			Objects2->Notify(EMessage::HumanTakenAboard, this);
 
+			// Stop animating.
+			Sprite->IsStatic = true;
+			Sprite->SetCurrentCel(BRAND ? 4 : 6);
+
 			if(IsBeingAbducted())
 			{
 				GArena->AdjustAbductionCount(1);
@@ -101,6 +110,7 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 
 		case EMessage::Released:
 
+			Sprite->IsStatic = false;
 			ShowGratitude();
 			check(Carrier != nullptr);
 			Carrier = nullptr;
@@ -133,6 +143,7 @@ void Defcon::CHuman::Tick(float DeltaTime)
 	Age += DeltaTime;
 
 
+#if 0
 	// Flip sprite every now and then.
 	SwitchFacingDirectionCountdown -= DeltaTime;
 
@@ -150,11 +161,11 @@ void Defcon::CHuman::Tick(float DeltaTime)
 	
 		Sprite->FlipHorizontal = !Sprite->FlipHorizontal;
 	}
-
+#endif
 
 	if(IsBeingCarried())
 	{
-		// Stay underneath the abductor.
+		// Stay underneath the carrier.
 		IGameObject* pCarrier = GetCarrier();
 		// todo: this check failed after player died. We need to ensure that carrier is nulled out
 		check(pCarrier->GetType() == EObjType::LANDER || pCarrier->GetType() == EObjType::PLAYER);
@@ -210,6 +221,9 @@ void Defcon::CHuman::Tick(float DeltaTime)
 
 				// Every now and then, have the human just loiter.
 				WalkingSpeed = FRAND < 0.25f ? 0.1f : FRANDRANGE(8.0f, 12.0f);
+
+				Sprite->IsStatic       = (WalkingSpeed <= 0.1f);
+				Sprite->FlipHorizontal = (Motion.x < 0);
 			}
 
 			Position.MulAdd(Motion, DeltaTime * WalkingSpeed);

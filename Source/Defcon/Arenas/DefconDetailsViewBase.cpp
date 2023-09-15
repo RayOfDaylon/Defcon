@@ -16,39 +16,6 @@
 #endif
 
 
-#if 0
-
-
-void UDefconDetailsViewBase::OnActivate()
-{
-	LOG_UWIDGET_FUNCTION
-	Super::OnActivate();
-}
-
-
-int32 UDefconDetailsViewBase::NativePaint
-(
-		const FPaintArgs& Args,
-		const FGeometry& AllottedGeometry,
-		const FSlateRect& MyCullingRect,
-		FSlateWindowElementList& OutDrawElements,
-		int32 LayerId,
-		const FWidgetStyle& InWidgetStyle,
-		bool bParentEnabled
-) const
-{
-	LOG_UWIDGET_FUNCTION
-	return Super::NativePaint(
-		Args,
-		AllottedGeometry,
-		MyCullingRect,
-		OutDrawElements,
-		LayerId,
-		InWidgetStyle,
-		bParentEnabled);
-}
-#endif
-
 
 void UDefconDetailsViewBase::OnFinishActivating()
 {
@@ -79,10 +46,21 @@ void UDefconDetailsViewBase::OnFinishActivating()
 			"bomb to destroy all nearby enemies.\n"
 			"\n"
 			"Energy shields protect your ship but can be depleted.\n"
-			"Avoid enemy fire and collisions to let your shields recharge.\n"
+			"Avoid enemy fire and collisions to let your shields recharge.");
+
+
+		ADD_PAGE(HUMAN, 
+			"Each game starts with fifteen humans randomly placed\n"
+			"on the ground. You must protect them in order to win.\n"
+			"\n"
+			"Lander enemies seek out and abduct humans, giving you\n"
+			"only a short time to rescue them by catching them as they fall.\n"
 			"\n"
 			"Collide with falling humans to rescue them, then\n"
-			"carry them to the ground when convenient.\n");
+			"carry them to the ground when convenient.\n"
+			"\n"
+			"Be careful when engaging enemies at low altitude to\n"
+			"avoid shooting humans.");
 
 
 		ADD_PAGE(STARGATE, 

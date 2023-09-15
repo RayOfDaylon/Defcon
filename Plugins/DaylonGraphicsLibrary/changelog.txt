@@ -1,6 +1,16 @@
 Changelog for DaylonGraphicsLibrary UE plugin
 
-Last updated: September 12, 2023
+Last updated: September 15, 2023
+
+Added SDaylonSprite::SetCurrentAge method to allow
+changing where the animation starts or continues from.
+Used e.g. by Defcon to keep human sprites from 
+walking perfectly in sync with each other. If you 
+spawn sprites at different times, this is less 
+of an issue.
+
+TMessageMediator groups message consumers by message ID, 
+increasing message sending performance.
 
 Added TMessageMediator and related helper types.
 
