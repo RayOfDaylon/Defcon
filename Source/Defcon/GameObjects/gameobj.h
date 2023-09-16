@@ -117,25 +117,26 @@ namespace Defcon
 			virtual float         GetExplosionMass        () const;
 			virtual void          AddExplosionDebris      (const FExplosionParams& Params, CGameObjectCollection& Debris);
 			
-			void                  ZeroVelocity          ();
-			const CFPoint&        GetVelocity           () const;
+			void                  ZeroVelocity            ();
+			const CFPoint&        GetVelocity             () const;
 
-			void                  MakeHurtable          (bool b = true);
-			bool                  IsMortal              () const;
-			bool                  ReduceLifespanBy      (float DeltaTime);
-			void                  MarkAsDead            ();
-			bool                  MarkedForDeath        () const;
-			virtual void          OnAboutToDie          ();
+			void                  MakeHurtable            (bool b = true);
+			bool                  IsMortal                () const;
+			bool                  ReduceLifespanBy        (float DeltaTime);
+			void                  MarkAsDead              ();
+			bool                  MarkedForDeath          () const;
+			virtual void          OnAboutToDie            ();
 
-			virtual float         GetCollisionForce     () const;
-			bool                  IsCollisionInjurious  () const;   
-			void                  SetCollisionInjurious (bool b = true);
-			bool                  IsInjurious           () const;
-			bool                  CanBeInjured          () const;
-			virtual void          GetInjurePt           (CFPoint&) const;
-			virtual bool          TestInjury            (const CFRect&) const;
+			virtual float         GetCollisionForce       () const;
+			bool                  IsCollisionInjurious    () const;   
+			void                  SetCollisionInjurious   (bool b = true);
+			bool                  IsInjurious             () const;
+			bool                  CanBeInjured            () const;
+			virtual bool          CanBeInjuredBySmartbomb () const { return true; }
+			virtual void          GetInjurePt             (CFPoint&) const;
+			virtual bool          TestInjury              (const CFRect&) const;
 
-			virtual int32         GetPointValue         () const;
+			virtual int32         GetPointValue           () const;
 
 			// todo: external ownership is only used by the options arena, which we currently don't use,
 			// and we should revisit why it was externally owning stuff because maybe we can drop it.
@@ -143,17 +144,17 @@ namespace Defcon
 			//bool                  ExternallyOwned       () const; // todo: smart pointers would be better for this
 			//void                  SetExternalOwnership  (bool b);
 
-			bool                  IsMissionTarget       () const;
-			void                  SetAsMissionTarget    (bool b = true);
+			bool                  IsMissionTarget         () const;
+			void                  SetAsMissionTarget      (bool b = true);
 
-			virtual void          CreateSprite          (EObjType Kind);
-			virtual void          InstallSprite         ();
-			virtual void          UninstallSprite       ();
+			virtual void          CreateSprite            (EObjType Kind);
+			virtual void          InstallSprite           ();
+			virtual void          UninstallSprite         ();
 
-			const FLinearColor&   GetRadarColor         () const;
+			const FLinearColor&   GetRadarColor           () const;
 
-			int32                 GetID                 () const { return Id; }
-			void                  SetID                 (int32 N) { Id = N; }
+			int32                 GetID                   () const { return Id; }
+			void                  SetID                   (int32 N) { Id = N; }
 
 
 

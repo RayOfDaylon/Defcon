@@ -117,9 +117,13 @@ namespace Defcon
 				player_rebirth_delay,
 				PodSpeed,
 				pod_value,
+
+				RadarIsPlayerCentric,
 				reformer_value,
 				reformerpart_value,
+
 				scoretips_showenemypoints,
+
 				smartbomb_initial,
 				smartbomb_lifespan,
 				smartbomb_max_flashscreen,
@@ -127,6 +131,7 @@ namespace Defcon
 				smartbomb_value,	
 				smartbomb_wavepush,
 				smartbomb_wavepushmin,
+
 				sound_active,
 				stars_count,
 				spacehum_value,
@@ -170,6 +175,8 @@ extern Defcon::CPrefs	GPrefs;
 #define PLAYER_MAXTHRUST            FPREFVAL(player_maxthrust)
 #define PLAYER_MASS                 FPREFVAL(player_mass)
 #define PLAYER_DRAG                 FPREFVAL(player_drag)
+
+#define RADAR_IS_PLAYER_CENTRIC     BPREFVAL(RadarIsPlayerCentric)
 
 #define SMARTBOMB_INITIAL           IPREFVAL(smartbomb_initial)
 #define SMARTBOMB_VALUE             IPREFVAL(smartbomb_value)

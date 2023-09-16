@@ -43,7 +43,6 @@ void UDefconPlayRadarWidgetBase::OnDeactivate()
 
 void UDefconPlayRadarWidgetBase::Init
 (
-	//Defcon::CPlayerShip*               Ptr, 
 	const FVector2D&               MainSize, 
 	int32                          ArenaWidth, 
 	Defcon::CArenaCoordMapper*     InArenaCoordMapperPtr, 
@@ -56,8 +55,6 @@ void UDefconPlayRadarWidgetBase::Init
 	auto PlayerShipPtr = &Defcon::GGameMatch->GetPlayerShip();
 	
 	PlayerShipPtr->RadarBrush = PlayerShipRadarImage;
-	//PlayerShipPtr = Ptr;
-	//PlayerShipPtr->RadarBrush = PlayerShipRadarImage;
 
 	const auto S = Daylon::GetWidgetSize(this);
 	CoordMapper.Player = PlayerShipPtr;
@@ -119,7 +116,8 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 
 
 
-	// Draw lines where main view is on the radar view.
+	// Draw two lines showing the main arena left/right edges.
+	// These should always be equidistant from the player (wait, what?)
 
 	const float ArenaHalfWidth = CoordMapper.GetScreenSize().x / 2;
 
@@ -154,8 +152,6 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 	Painter.RenderOpacity    = InWidgetStyle.GetColorAndOpacityTint().A;
 	//Painter.InWidgetStyle    = &InWidgetStyle;
 
-	// Draw two lines showing the main arena left/right edges.
-	// These should always be equidistant from the player.
 
 	// Draw terrain first, everything else can overlay it.
 

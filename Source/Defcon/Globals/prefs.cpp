@@ -111,6 +111,8 @@ void Defcon::CPrefs::Construct()
 	INITPREFR( PodSpeed,   50, 400, "px/sec", "Pod travel speed");
 
 	INITPREF( pod_value,                 1000,       "",             Integer,      0,        1000,      "Number of points earned for destroying a pod"                                              );
+	INITPREF( RadarIsPlayerCentric,         0,       "",             Boolean,      0,           0,      "Radar keeps player ship fixed, otherwise screen edges are fixed (arcade match)"            );
+
 	INITPREF( reformer_value,             250,       "",             Integer,      0,        1000,      "Number of points earned for destroying a reformer"                                         );
 	INITPREF( reformerpart_value,          50,       "",             Integer,      0,        1000,      "Number of points earned for destroying a reformer part"                                    );
 	INITPREF( scoretips_showenemypoints,    0,       "",             Boolean,      0,           0,      "Show floating score text when enemy destroyed"                                             );

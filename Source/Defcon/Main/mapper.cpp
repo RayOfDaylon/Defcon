@@ -10,6 +10,7 @@
 #include "mapper.h"
 #include "Common/util_core.h"
 #include "GameObjects/gameobj.h"
+#include "Globals/prefs.h"
 
 #include "Arenas/DefconPlayViewBase.h"
 
@@ -123,17 +124,22 @@ void Defcon::CRadarCoordMapper::To(const CFPoint& In, CFPoint& Result) const
 	// Map from Cartesian pixel space to arena radar space.
 	// The ship is always in the horz center of the radar.
 
-	check(Player);
+	// todo: we could save time by subclassing player-centric and non-player-centric versions of the radar mapper
+	// since the mapper type is constant for the game lifetime.
 
-	float x = Player->Position.x;
-	x -= HalfCircumference;
-
-	if(x < 0)
+	if(RADAR_IS_PLAYER_CENTRIC)
 	{
-		x += PlanetCircumference;
-	}
+		check(Player != nullptr);
 
-	Offset.x = x;
+		float x = Player->Position.x - HalfCircumference;
+
+		if(x < 0)
+		{
+			x += PlanetCircumference;
+		}
+
+		Offset.x = x;
+	}
 
 	// Offset.x now has the point of arena space that 
 	// starts on the left edge of the radar.
@@ -156,6 +162,8 @@ void Defcon::CRadarCoordMapper::To(const CFPoint& In, CFPoint& Result) const
 void Defcon::CRadarCoordMapper::From(const CFPoint& In, CFPoint& Result) const
 {
 	// Map a point from radar space to planet space.
+	// This probably isn't used, but still.
+	// todo: if we're not player centric, this code is wrong.
 
 	check(Player);
 

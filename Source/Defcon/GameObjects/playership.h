@@ -36,11 +36,12 @@ namespace Defcon
 
 			void InitPlayerShip();
 
-			virtual void   Tick               (float DeltaTime) override;
-			virtual void   DrawSmall          (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush) const override;
-			virtual void   OnAboutToDie       () override;
-			virtual void   SetIsAlive         (bool b) override;
-			virtual void   ImpartForces       (float) override; // For the player ship, we need to customize vertical motion.
+			virtual void   Tick                    (float DeltaTime) override;
+			virtual void   DrawSmall               (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush) const override;
+			virtual void   OnAboutToDie            () override;
+			virtual void   SetIsAlive              (bool b) override;
+			virtual void   ImpartForces            (float) override; // For the player ship, we need to customize vertical motion.
+			virtual bool   CanBeInjuredBySmartbomb () const override { return false; }
 
 			void           FaceLeft           () { Orientation.Fwd.x = -1.0f; }
 			void           FaceRight          () { Orientation.Fwd.x = 1.0f; }
@@ -52,6 +53,7 @@ namespace Defcon
 			bool           EmbarkPassenger    (IGameObject*, CGameObjectCollection&);
 			bool           DebarkOnePassenger (CGameObjectCollection&);
 			const CFPoint& GetPickupRadiusBox () const { return PickupBboxRadius; }
+
 
 			FSlateBrush     RadarBrush;
 

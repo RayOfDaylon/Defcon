@@ -79,9 +79,7 @@ void Defcon::CSmartbomb::Tick(float DeltaTime)
 
 	Targets->ForEach([&](Defcon::IGameObject* Target)
 	{
-		if(Target->CanBeInjured() 
-			&& Target->GetType() != EObjType::PLAYER // todo: maybe have a CanBeInjuredBySmartbomb method or generalize CanBeInjured
-			&& Target->GetType() != EObjType::HUMAN)
+		if(Target->CanBeInjuredBySmartbomb() && Target->CanBeInjured())
 		{
 			MapperPtr->To(Target->Position, P);
 
@@ -98,7 +96,7 @@ void Defcon::CSmartbomb::Tick(float DeltaTime)
 
 	Debris->ForEach([&](IGameObject* pObj)
 	{
-		if(pObj->GetType() != EObjType::TEXT)
+		//if(pObj->GetType() != EObjType::TEXT) // we have no such objects
 		{
 			MapperPtr->To(pObj->Position, P);
 

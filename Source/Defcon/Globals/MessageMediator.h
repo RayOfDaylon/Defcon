@@ -37,10 +37,11 @@ namespace Defcon
 		AbductionCountChanged,  // TArray<bool>*
 		SmartbombCountChanged,  // int32*
 		ShieldStrengthChanged,   // FShieldStrengthInfo*
-		TakenAboard,            // FTakenAboardInfo*  Carrier has taken human aboard
-		CarrierKilled,          // ILiveGameObject*   Carrier has been destroyed
-		Released,               // nullptr    Player ship has released human
-		HumanKilled            // CHuman*   Human is about to die
+		SetTopMessage            // FString*
+		//TakenAboard,            // FTakenAboardInfo*  Carrier has taken human aboard
+		//CarrierKilled,          // ILiveGameObject*   Carrier has been destroyed
+		//Released,               // nullptr    Player ship has released human
+		//HumanKilled            // CHuman*   Human is about to die
 		//HumanTakenAboard        // CHuman*   Human has been taken aboard (redundant, use TakenAboard)
 	};
 

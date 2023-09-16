@@ -4,6 +4,21 @@ Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
 September 15, 2023
 
+Added boolean RaderIsPlayerCentric pref which, if false, 
+arcade matches the radar centricity where the edges of 
+the visible arena stay fixed in position instead of 
+the player ship. Technically, a radar would always 
+have the ship centered, and setting the pref to true 
+will allow that.
+
+Changed color of play area section dividers from gray to dark red.
+Also thickened the stats-radar divider a bit to look closer 
+in linewidth to the horizontal divider.
+
+Added UTextBlock "TopMessage" to main arena widget, 
+which now shows the "game paused" message instead of 
+using the message log. It will also show the planned
+"pod intersection" message.
 
 Added help page for humans.
 

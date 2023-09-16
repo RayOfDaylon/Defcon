@@ -46,6 +46,7 @@ void UDefconPlayMainWidgetBase::Init
 	ArenaSize = InArenaSize;
 
 	ClearMessages();
+	TopMessage->SetText(FText::FromString(""));
 }
 
 
@@ -111,6 +112,19 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 	Messages->IsPaused = [](){ return GArena->IsPaused(); };
 
 	Messages->Clear();
+
+	Defcon::FMessageConsumer Consumer(this, Defcon::EMessageEx::SetTopMessage, 
+		[TextBlock = TWeakObjectPtr<UTextBlock>(TopMessage)](void* Payload)
+		{
+			check(Payload != nullptr);
+
+			if(TextBlock.IsValid())
+			{
+				TextBlock->SetText(FText::FromString(*(const FString*)Payload)); 
+			} 
+		});
+
+	Defcon::GMessageMediator.RegisterConsumer(Consumer);
 }
 
 

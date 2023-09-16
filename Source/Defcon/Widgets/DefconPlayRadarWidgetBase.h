@@ -42,20 +42,21 @@ class DEFCON_API UDefconPlayRadarWidgetBase : public UDefconPlayWidgetBase
 
 	Defcon::CArenaCoordMapper*       ArenaCoordMapperPtr = nullptr;
 	Defcon::CTerrain*                TerrainPtr          = nullptr;
-	//Defcon::CPlayerShip*             PlayerShipPtr       = nullptr;
 	Defcon::CGameObjectCollection*   Objects             = nullptr;
 	Defcon::CGameObjectCollection*   Enemies             = nullptr;
 
 
 	public:
 
-	void OnFinishActivating ();
-	void OnDeactivate       ();
+	void                        OnFinishActivating ();
+	void                        OnDeactivate       ();
 
-	void Init           (/*Defcon::CPlayerShip* PlayerShip, */const FVector2D& MainSize, int32 ArenaWidth, Defcon::CArenaCoordMapper* ArenaCoordMapper, 
-							Defcon::CGameObjectCollection* Objects, Defcon::CGameObjectCollection* Enemies);
+	void                        Init               (const FVector2D& MainSize, int32 ArenaWidth, Defcon::CArenaCoordMapper* ArenaCoordMapper, 
+							                        Defcon::CGameObjectCollection* Objects, Defcon::CGameObjectCollection* Enemies);
 
-	void SetTerrain     (Defcon::CTerrain* Ptr);
+	void                        SetTerrain         (Defcon::CTerrain* Ptr);
+
+	Defcon::CRadarCoordMapper&  GetCoordMapperPtr  () { return CoordMapper; }
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Textures)

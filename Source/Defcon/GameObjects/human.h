@@ -22,22 +22,24 @@ namespace Defcon
 			CHuman();
 			virtual ~CHuman();
 
-			virtual void   Tick                   (float DeltaTime) override;
-			virtual void   Notify                 (EMessage, void*) override;
-			virtual bool   ExplosionHasFireball   () const override { return false; }
+			virtual void   Tick                    (float DeltaTime) override;
+			virtual void   Notify                  (EMessage, void*) override;
+			virtual bool   ExplosionHasFireball    () const override { return false; }
 
-			virtual void   OnAboutToDie           () override;
-			virtual EColor GetExplosionColorBase  () const override;
-			virtual float  GetExplosionMass       () const override;
+			virtual void   OnAboutToDie            () override;
+			virtual EColor GetExplosionColorBase   () const override;
+			virtual float  GetExplosionMass        () const override;
+			virtual bool   CanBeInjuredBySmartbomb () const override { return false; }
 
-			void           InitHuman              (CGameObjectCollection* Objs1, CGameObjectCollection* Objs2) { Carrier = nullptr; Age = 0.0f; Objects = Objs1; Objects2 = Objs2; }
-			IGameObject*   GetCarrier             () const { return Carrier; }
-			bool           IsBeingCarried         () const { return (GetCarrier() != nullptr); }
-			bool           IsBeingAbducted        () const { return (IsBeingCarried() && GetCarrier()->GetType() != EObjType::PLAYER); }
-			bool           IsFalling              () const;
-			bool           IsOnGround             () const { return !(IsFalling() || IsBeingCarried()); }
-			void           SetToNotCarried        () { Carrier = nullptr; }
-			void           ShowGratitude          () const;
+
+			void           InitHuman               (CGameObjectCollection* Objs1, CGameObjectCollection* Objs2) { Carrier = nullptr; Age = 0.0f; Objects = Objs1; Objects2 = Objs2; }
+			IGameObject*   GetCarrier              () const { return Carrier; }
+			bool           IsBeingCarried          () const { return (GetCarrier() != nullptr); }
+			bool           IsBeingAbducted         () const { return (IsBeingCarried() && GetCarrier()->GetType() != EObjType::PLAYER); }
+			bool           IsFalling               () const;
+			bool           IsOnGround              () const { return !(IsFalling() || IsBeingCarried()); }
+			void           SetToNotCarried         () { Carrier = nullptr; }
+			void           ShowGratitude           () const;
 
 
 		private:

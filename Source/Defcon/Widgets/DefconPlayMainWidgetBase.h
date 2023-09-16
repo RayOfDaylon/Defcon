@@ -259,11 +259,13 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	FSlateBrush DebrisBrushSquare;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	UDefconPlayerShipDebugWidgetBase* PlayerShipDebug;
+	TObjectPtr<UDefconPlayerShipDebugWidgetBase> PlayerShipDebug;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	UDefconPlayMessagesWidgetBase* Messages;
+	TObjectPtr<UDefconPlayMessagesWidgetBase> Messages;
 
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UTextBlock> TopMessage;
 
 	TWeakPtr<Daylon::SpritePlayObject2D> PlayerShipExhaust;
 
@@ -314,7 +316,7 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	Defcon::I2DCoordMapper*          CoordMapperPtr      = nullptr;
 	Defcon::I2DCoordMapper*          CoordMapperStarsPtr = nullptr;
 	Defcon::I2DCoordMapper*          CoordMapperRadarPtr = nullptr;
-	//Defcon::CPlayerShip*             PlayerShipPtr       = nullptr;
+
 	Defcon::CGameObjectCollection*   Objects             = nullptr;
 	Defcon::CGameObjectCollection*   Enemies             = nullptr;
 	Defcon::CGameObjectCollection*   Debris              = nullptr;

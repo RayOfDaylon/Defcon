@@ -78,6 +78,41 @@ void UDefconPlayViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTim
 }
 
 
+int32 UDefconPlayViewBase::NativePaint
+(
+	const FPaintArgs&        Args,
+	const FGeometry&         AllottedGeometry,
+	const FSlateRect&        MyCullingRect,
+	FSlateWindowElementList& OutDrawElements,
+	int32                    LayerId,
+	const FWidgetStyle&      InWidgetStyle,
+	bool                     bParentEnabled
+) const
+{
+	LOG_UWIDGET_FUNCTION
+
+	return Super::NativePaint(
+		Args,
+		AllottedGeometry,
+		MyCullingRect,
+		OutDrawElements,
+		LayerId,
+		InWidgetStyle,
+		bParentEnabled);
+
+/*	todo: for the new radar view edges, we need to draw them here
+	because at the bottom, they overlap a red divider which is outside the radar widget.
+	We'll need to draw six half-gray lines, three on the top and three on the bottom, 
+	looking like this:
+
+	  _____________________
+	 |                     |
+
+	 |_____________________|
+*/
+}
+
+
 void UDefconPlayViewBase::OnMissionStarting()
 {
 	check(PlayAreaMain != nullptr);
@@ -184,16 +219,8 @@ void UDefconPlayViewBase::OnFinishActivating()
 	PlayAreaRadar->Init(MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
 
 
-	/*GetPlayerShip().BindToShieldValue([WeakThis = TWeakObjectPtr<UDefconPlayViewBase>(this)](const float& Value)
-	{
-		if(auto This = WeakThis.Get())
-		{
-			This->PlayAreaStats->UpdateShieldReadout(FMath::Clamp(Value, 0.0f, 1.0f));
-		}
-	});*/
-
-
 	// Zero out the abduction count and turn off related alert.
+	// todo: abduction count parameter is not actually used anymore, should refactor.
 	AdjustAbductionCount(-AbductionCount);
 
 	PlayAreaMain  -> SetSafeToStart(); // todo: may not be needed
@@ -215,7 +242,7 @@ void UDefconPlayViewBase::OnDeactivate()
 	LOG_UWIDGET_FUNCTION
 	Super::OnDeactivate();
 
-	PlayAreaMain->OnDeactivate();
+	PlayAreaMain ->OnDeactivate();
 	PlayAreaRadar->OnDeactivate();
 
 	// Because the object collections are owned by us and not by the current mission,
@@ -447,6 +474,19 @@ void UDefconPlayViewBase::KeepPlayerShipInView(float DeltaTime)
 
 	MainAreaMapper.SlideBy(DeltaX);
 	MainAreaStarsMapper.SlideBy(DeltaX * 0.5f);
+
+
+	if(!RADAR_IS_PLAYER_CENTRIC)
+	{
+		// Update the radar coord mapper.
+	
+		CFPoint L;
+		MainAreaMapper.From(CFPoint(0, 0), L);
+
+		const float VVC = WrapX(L.x + MainAreaSize.X / 2 - ArenaWidth / 2);
+
+		PlayAreaRadar->GetCoordMapperPtr().ScrollTo(CFPoint(VVC, 0.0f));
+	}
 }
 
 
@@ -1111,7 +1151,11 @@ void UDefconPlayViewBase::OnPausePressed()
 {
 	bIsPaused = !bIsPaused;
 
-	AddMessage(bIsPaused ? TEXT("GAME PAUSED") : TEXT("GAME UNPAUSED"));
+	//AddMessage(bIsPaused ? TEXT("GAME PAUSED") : TEXT("GAME UNPAUSED"));
+
+	FString Str = bIsPaused ? TEXT("GAME PAUSED") : TEXT("");
+
+	Defcon::GMessageMediator.Send(Defcon::EMessageEx::SetTopMessage, &Str);
 }
 
 
