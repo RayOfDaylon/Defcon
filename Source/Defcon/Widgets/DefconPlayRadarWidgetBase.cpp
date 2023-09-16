@@ -115,7 +115,7 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 	auto PaintGeometry = AllottedGeometry.ToPaintGeometry();
 
 
-
+#if 0
 	// Draw two lines showing the main arena left/right edges.
 	// These should always be equidistant from the player (wait, what?)
 
@@ -137,7 +137,7 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 	LinePts[1].X = pt.x;
 
 	FSlateDrawElement::MakeLines(OutDrawElements, LayerId, PaintGeometry, LinePts, ESlateDrawEffect::None, C_DARKER, true, 2.0f);
-
+#endif
 
 	// Draw other stuff
 

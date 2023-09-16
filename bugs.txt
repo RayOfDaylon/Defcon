@@ -5,6 +5,10 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 15, 2023
 
 
+Humans still show gratitude when just walking around 
+and bumping into local terrain span i.e. they walk 
+enough above the terrain to make them fall back.
+
 FIXED: Human walk animation had one frame too many.
 
 FIXED: Humans readout fails to reset when restarting game match.
@@ -29,6 +33,7 @@ FIXED: Terrain overlaps player ship and most enemy ships.
 Terrain drawing was moved to a new widget, SDefconTerrain.
 
 Stars overlap player ship and most enemy ships. Can fix by making stars use a widget.
+Although the problem is so faint it could rank as the most cosmetic bug ever.
 
 FIXED: When humans are sometimes debarked by player ship, they actually are 
 above the terrain by a small amount and need to fall for a brief moment

@@ -18,6 +18,17 @@ void FPainter::DrawLaserBeam(float X, float Y, float X2, const FLinearColor& Col
 }
 
 
+void FPainter::DrawLine(float X1, float Y1, float X2, float Y2, const FLinearColor& Color, float LineWidth)
+{
+	TArray<FVector2f> Points;
+
+	Points.Add(FVector2f(X1, Y1));
+	Points.Add(FVector2f(X2, Y2));
+
+	FSlateDrawElement::MakeLines(*OutDrawElements, LayerId, *PaintGeometry, Points, ESlateDrawEffect::None, Color, true, LineWidth);
+}
+
+
 void FPainter::ColorRect(float Left, float Top, float Right, float Bottom, const FLinearColor& Color, float Linewidth)
 {
 	TArray<FVector2f> Points;

@@ -31,7 +31,8 @@ struct FPainter
 	void DrawLaserBeam         (float X, float Y, float X2, const FLinearColor& Color);
 	void ColorRect             (float Left, float Top, float Right, float Bottom, const FLinearColor& Color, float Linewidth = 2.0f);
 	void FillRect              (float Left, float Top, float Right, float Bottom, const FLinearColor& Color);
-	void ColorStraightLine     (int32 X, int32 Y, int32 W, int32 H, const FLinearColor& Color) {}
+	//void ColorStraightLine     (int32 X, int32 Y, int32 W, int32 H, const FLinearColor& Color) {}
+	void DrawLine              (float X1, float Y1, float X2, float Y2, const FLinearColor& Color, float LineWidth);
 	void BrightenStraightLine  (float X, float Y, float, float) {}
 	//void DarkenRect            (int32 Left, int32 Top, int32 Right, int32 Bottom, float Amount) {}
 };

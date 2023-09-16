@@ -56,7 +56,7 @@ class DEFCON_API UDefconPlayRadarWidgetBase : public UDefconPlayWidgetBase
 
 	void                        SetTerrain         (Defcon::CTerrain* Ptr);
 
-	Defcon::CRadarCoordMapper&  GetCoordMapperPtr  () { return CoordMapper; }
+	Defcon::CRadarCoordMapper&  GetCoordMapper     () { return CoordMapper; }
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Textures)

@@ -91,7 +91,7 @@ int32 UDefconPlayViewBase::NativePaint
 {
 	LOG_UWIDGET_FUNCTION
 
-	return Super::NativePaint(
+	(void) Super::NativePaint(
 		Args,
 		AllottedGeometry,
 		MyCullingRect,
@@ -110,6 +110,52 @@ int32 UDefconPlayViewBase::NativePaint
 
 	 |_____________________|
 */
+
+	if(/*RADAR_IS_PLAYER_CENTRIC ||*/ !IsValid(PlayAreaRadar))
+	{
+		return LayerId;
+	}
+
+	FPainter Painter;
+
+	auto PaintGeom = AllottedGeometry.ToPaintGeometry();
+
+	Painter.AllottedGeometry = &AllottedGeometry;
+	Painter.Args             = &Args;
+	Painter.bParentEnabled   = bParentEnabled;
+	Painter.LayerId          = LayerId;
+	Painter.MyCullingRect    = &MyCullingRect;
+	Painter.OutDrawElements  = &OutDrawElements;
+	Painter.RenderOpacity    = InWidgetStyle.GetColorAndOpacityTint().A;
+	Painter.PaintGeometry    = &PaintGeom;
+
+
+	const auto RadarSize = Daylon::GetWidgetSize(PlayAreaRadar);
+	const auto RadarPos  = Daylon::GetWidgetPosition(PlayAreaRadar);
+
+	const float T = 2.5f;
+	const float B = RadarSize.Y + 2.5f; 
+
+	CFPoint P, P2;
+	MainAreaMapper.From(CFPoint(0, 0), P);
+	PlayAreaRadar->GetCoordMapper().To(P, P2);
+
+	const float L = P2.x + RadarPos.X;
+
+	MainAreaMapper.From(CFPoint(MainAreaSize.X, 0), P);
+	PlayAreaRadar->GetCoordMapper().To(P, P2);
+
+	const float R = P2.x + RadarPos.X;
+
+	Painter.DrawLine(L, T + 17, L, T - 2, C_DARK, 5.0f);
+	Painter.DrawLine(R, T + 17, R, T - 2, C_DARK, 5.0f);
+	Painter.DrawLine(L, T, R, T, C_DARK, 9.0f);
+			
+	Painter.DrawLine(L, B - 17, L, B + 2.0f, C_DARK, 5.0f);
+	Painter.DrawLine(R, B - 17, R, B + 2.0f, C_DARK, 5.0f);
+	Painter.DrawLine(L, B, R, B, C_DARK, 9.0f);
+
+	return LayerId;
 }
 
 
@@ -485,7 +531,7 @@ void UDefconPlayViewBase::KeepPlayerShipInView(float DeltaTime)
 
 		const float VVC = WrapX(L.x + MainAreaSize.X / 2 - ArenaWidth / 2);
 
-		PlayAreaRadar->GetCoordMapperPtr().ScrollTo(CFPoint(VVC, 0.0f));
+		PlayAreaRadar->GetCoordMapper().ScrollTo(CFPoint(VVC, 0.0f));
 	}
 }
 
