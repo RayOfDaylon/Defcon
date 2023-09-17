@@ -91,7 +91,7 @@ void Defcon::CGameMatch::MissionEnded()
 	UE_LOG(LogGame, Log, TEXT("%S"), __FUNCTION__);
 
 	const FString NameOfEndedMission  = GetCurrentMissionName();
-	const bool    StateOfEndedMission = GetMission()->IsComplete();
+	const bool    StateOfEndedMission = GetMission()->IsMissionComplete();
 	const bool    HumansWereInvolved  = GetMission()->HumansInvolved();
 
 	Mission->Conclude();

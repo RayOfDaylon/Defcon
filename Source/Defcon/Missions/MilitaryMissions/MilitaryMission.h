@@ -35,7 +35,7 @@ namespace Defcon
 			virtual void    MakeTargets         (float DeltaTime, const CFPoint& Where) { UpdateWaves(Where); }
 			virtual void    TargetDestroyed     (EObjType Kind);
 			virtual void    AddNonTarget        (EObjType Kind, const CFPoint& P);
-			virtual bool    IsComplete          () const override;
+			virtual bool    IsMissionComplete          () const override;
 			virtual int32   TargetsRemaining    () const;
 			virtual int32   TotalHostilesInPlay () const;
 			virtual int32   LandersRemaining    () const { return NumLandersRemaining; }

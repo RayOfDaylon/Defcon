@@ -38,7 +38,7 @@ namespace Defcon
 			bool           IsBeingAbducted         () const { return (IsBeingCarried() && GetCarrier()->GetType() != EObjType::PLAYER); }
 			bool           IsFalling               () const;
 			bool           IsOnGround              () const { return !(IsFalling() || IsBeingCarried()); }
-			void           SetToNotCarried         () { Carrier = nullptr; }
+			void           SetToNotCarried         () { Carrier = nullptr; bCanBeInjured = true; }
 			void           ShowGratitude           () const;
 
 

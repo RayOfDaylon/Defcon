@@ -1102,7 +1102,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 		{
 			GOP.OnPostDeath = [this, MilitaryMission]()
 			{
-				if(MilitaryMission->IsComplete())
+				if(MilitaryMission->IsMissionComplete())
 				{
 					AddMessage(TEXT("ALL MISSION TARGETS DESTROYED -- PROCEED TO STARGATE"), DURATION_IMPORTANT_MESSAGE);
 					bMissionDoneMsgShown = true;
@@ -1643,7 +1643,7 @@ void UDefconPlayViewBase::DestroyObject(Defcon::IGameObject* pObj, bool bExplode
 }
 
 
-void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& objects)
+void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& ObjectsToCheck)
 {
 	// See if anything got hit, and if so, 
 	// mark them for injury or death.
@@ -1675,7 +1675,7 @@ void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& ob
 		
 		Obj->GetInjurePt(InjurePt);
 
-		Defcon::IGameObject* Obj2 = objects.GetFirst();
+		Defcon::IGameObject* Obj2 = ObjectsToCheck.GetFirst();
 
 		while(Obj2 != nullptr)
 		{
@@ -1691,12 +1691,14 @@ void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& ob
 				Obj2 = Obj2->GetNext();
 				continue;
 			}
-			else if(Obj->GetType() == Defcon::EObjType::MINE && ENEMIES_MINESDONTHURT)
+			
+			if(Obj->GetType() == Defcon::EObjType::MINE && ENEMIES_MINESDONTHURT)
 			{
 				// For non-players, mines don't hurt.
 				Obj2 = Obj2->GetNext();
 				continue;
 			}
+			
 
 			GetMainAreaMapper().To(Obj2->Position, ScreenPos);
 

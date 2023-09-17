@@ -104,6 +104,12 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 			{
 				GArena->AdjustAbductionCount(1);
 			}
+			else
+			{
+				// While we're being carried by the player ship, we're invincible.
+				// This prevents friendly fire issues.
+				bCanBeInjured = false;
+			}
 		}
 			break;
 
@@ -113,13 +119,15 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 			Sprite->IsStatic = false;
 			ShowGratitude();
 			check(Carrier != nullptr);
-			Carrier = nullptr;
+			SetToNotCarried();
 			break;
 
 
 		case EMessage::CarrierKilled:
 
 			check(Carrier != nullptr);
+
+			bCanBeInjured = true;
 
 			{
 				const bool WasAbducted = IsBeingAbducted();
@@ -140,28 +148,8 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 void Defcon::CHuman::Tick(float DeltaTime)
 {
 	// Humans walk around mostly horizontally.
+
 	Age += DeltaTime;
-
-
-#if 0
-	// Flip sprite every now and then.
-	SwitchFacingDirectionCountdown -= DeltaTime;
-
-	if(SwitchFacingDirectionCountdown <= 0.0f)
-	{
-		// Make player "thrash frantically" if being abducted.
-		if(IsBeingAbducted())
-		{
-			SwitchFacingDirectionCountdown = FRANDRANGE(0.25f, 1.0f);
-		}
-		else
-		{
-			SwitchFacingDirectionCountdown = FRANDRANGE(1.0f, 4.0f);
-		}
-	
-		Sprite->FlipHorizontal = !Sprite->FlipHorizontal;
-	}
-#endif
 
 	if(IsBeingCarried())
 	{

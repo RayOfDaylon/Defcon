@@ -5,6 +5,10 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 16, 2023
 
 
+Adjusted human animation to closer match stride to walking speed.
+
+Adjusted radar panel background, organized material assets better.
+
 Added dark green interlace background to radar panel.
 
 Customized collision force for spacehum, swarmer, munchie, 

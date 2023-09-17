@@ -2,12 +2,21 @@ Bug list for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 15, 2023
+September 16, 2023
 
+
+FIXED: Humans carried by player sometimes will get struck 
+by friendly fire, probably because the laser bolt 
+trailing point manages to intersect the human hitbox.
+Their "can be injured" state is set to false while being carried
+by the player.
 
 Humans still show gratitude when just walking around 
 and bumping into local terrain span i.e. they walk 
 enough above the terrain to make them fall back.
+
+FIXED: Human walk animation stride too large, not congruent 
+with speed they're actually moving.
 
 FIXED: Human walk animation had one frame too many.
 
@@ -86,7 +95,7 @@ FIXED: Firebomber Showdown mission had dynamos spawning only at the
 top of the arena.
 
 Some update (tick) handlers (e.g. CEnemy::Move variants) may still process 
-things by frame count instead of by time, causing incorrect timing 
+or evaluate things by frame count instead of by time, causing incorrect timing 
 on frame rates other than 60 fps.
    todo: reinvestigate; have not come across such cases recently as 
 they may have all been fixed.

@@ -168,7 +168,7 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 }
 
 
-bool Defcon::CMilitaryMission::IsComplete() const
+bool Defcon::CMilitaryMission::IsMissionComplete() const
 {
 	// Report if the mission has ended and the player is allowed to leave.
 	// All the waves must have occured, no more mission target creation tasks are pending,
@@ -232,13 +232,14 @@ bool Defcon::CMilitaryMission::Update(float DeltaTime)
 	{
 		GArena->AllStopPlayerShip();
 
-		if(!IsComplete())
+		if(!IsMissionComplete())
 		{
 			GArena->TransportPlayerShip();
 		}
 		else
 		{
 			// Warp to next mission.
+
 			auto& Player = GArena->GetPlayerShip();
 			Player.EnableInput(false);
 

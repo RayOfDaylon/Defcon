@@ -87,7 +87,7 @@ namespace Defcon
 			virtual void	Conclude		() {}
 			virtual bool    UsesTerrain     () const { return true; }
 			virtual bool	HumansInvolved	() const { return true; }
-			virtual bool	IsComplete		() const { return true; }
+			virtual bool	IsMissionComplete		() const { return true; }
 			virtual void    AddEnemy        (EObjType EnemyType, EObjType CreatorType, const CFPoint& Where, float Countdown, EObjectCreationFlags Flags);
 
 
