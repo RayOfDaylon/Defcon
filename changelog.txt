@@ -2,8 +2,13 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 15, 2023
+September 16, 2023
 
+
+Added dark green interlace background to radar panel.
+
+Customized collision force for spacehum, swarmer, munchie, 
+guppy, hunter, and reformer part.
 
 Changed radar's visible arena section lines to use 
 arcade style thick rectangle sections.

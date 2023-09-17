@@ -24,8 +24,8 @@ namespace Defcon
 
 	struct FEnemySpawnCounts
 	{
-		EObjType Kind;			// Type of enemy to spawn
-		int32	NumPerWave[4];  // How many of said enemy type to spawn in each wave
+		EObjType Kind;			 // Type of enemy to spawn
+		int32    NumPerWave[4];  // How many of said enemy type to spawn in each wave
 	};
 
 

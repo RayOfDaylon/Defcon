@@ -262,6 +262,14 @@ Future Work
 -------------------------------------------------------------------------------------
 Some declarations are outside the Defcon namespace when they shouldn't be.
 
+Pod intersection is being worked on, hope to have it in soon.
+
+Might switch radar background to use a horizontally stretched texture 
+instead of a material, since the interlace effect is static. Although 
+it probably saves texture sampling to have the shader compute the effect.
+Otoh, if we bring back radar fritzing, a material would be a good way 
+to animate it.
+
 Would be nice to use the Pause key instead of 'P' to pause the game. 
 Unfortunately, UE detects Pause keypresses itself and toggles inputs on/off, 
 which causes weird behavior. Until I figure out how UE manages pausing, 

@@ -5,6 +5,7 @@
 
 
 #include "enemies.h"
+#include "Globals/prefs.h"
 
 
 namespace Defcon
@@ -16,6 +17,7 @@ namespace Defcon
 			virtual ~CHunter();
 
 			virtual void   Tick                   (float DeltaTime) override;
+			virtual float  GetCollisionForce      () const override { return 0.01f * HUNTER_COLLISION_FORCE; }
 			virtual EColor GetExplosionColorBase  () const override;
 			virtual float  GetExplosionMass       () const override;
 

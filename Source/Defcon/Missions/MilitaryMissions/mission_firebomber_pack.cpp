@@ -16,7 +16,7 @@ void Defcon::CFirebomberPack::Init()
 {
 	Super::Init();
 
-	JFactor = 0.5f;
+	SpawnTimeFactor = 0.5f;
 
 	SpawnRangeHorizontal = GArena->GetDisplayWidth();
 

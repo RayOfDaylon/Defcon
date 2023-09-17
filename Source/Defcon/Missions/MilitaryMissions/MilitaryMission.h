@@ -54,9 +54,9 @@ namespace Defcon
 
 			TArray<FEnemySpawnCounts> EnemySpawnCountsArray;
 			int32                     MaxWaves               = 0;
-			float                     JFactor                = 0.5f;
-			float                     MinSpawnAlt            = 0.2f;
-			float                     MaxSpawnAlt            = 0.8f;
+			float                     SpawnTimeFactor        = 0.5f; // Larger values cause higher chance of enemies spawning farther apart in time.
+			                                                         // Given N enemies per wave, a factor of 1.0 could make the last enemy take up to N seconds to spawn.
+			Daylon::FRange<float>     SpawnAltitudeRange     = Daylon::FRange<float>(0.2f, 0.8f);
 			float                     SpawnRangeHorizontal;
 
 			CFRect                    StargateRect;

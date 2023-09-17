@@ -16,7 +16,7 @@ void Defcon::CYllabianDogfight2::Init()
 {
 	Super::Init();
 
-	JFactor = 0.1f;
+	SpawnTimeFactor = 0.1f;
 
 	AddEnemySpawnInfo({EObjType::GUPPY,   { 24, 30, 30, 30 } });
 	AddEnemySpawnInfo({EObjType::SWARMER, {  3,  3,  3,  3 } });

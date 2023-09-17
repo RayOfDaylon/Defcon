@@ -4,6 +4,7 @@
 #pragma once
 
 #include "enemies.h"
+#include "Globals/prefs.h"
 
 
 namespace Defcon
@@ -17,6 +18,7 @@ namespace Defcon
 			virtual ~CSwarmer();
 
 			virtual void  Tick                  (float DeltaTime) override;
+			virtual float GetCollisionForce     () const override { return 0.01f * SWARMER_COLLISION_FORCE; }
 			virtual float GetExplosionMass      () const override { return 0.1f; }
 			virtual bool  ExplosionHasFireball  () const override { return false; }
 			virtual void  Explode               (CGameObjectCollection&) override;

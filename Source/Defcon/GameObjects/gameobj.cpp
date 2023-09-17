@@ -249,8 +249,8 @@ void Defcon::IGameObject::UninstallSprite()
 }
 
 
-void                 Defcon::IGameObject::Init(const CFPoint& InArenaSize, const CFPoint& InScreenSize) { ArenaSize = InArenaSize; ScreenSize = InScreenSize; }
-void                 Defcon::IGameObject::Draw(FPainter& Painter, const I2DCoordMapper& mapper) {}
+void                 Defcon::IGameObject::Init  (const CFPoint& InArenaSize, const CFPoint& InScreenSize) { ArenaSize = InArenaSize; ScreenSize = InScreenSize; }
+void                 Defcon::IGameObject::Draw  (FPainter& Painter, const I2DCoordMapper& mapper) {}
 
 void                 Defcon::IGameObject::OnFinishedCreating()                 {}
 void                 Defcon::IGameObject::OnAboutToDie()                       {}
@@ -275,7 +275,7 @@ void                 Defcon::IGameObject::MakeHurtable(bool b)                 {
 bool                 Defcon::IGameObject::IsMortal() const                     { return bMortal; }
 void                 Defcon::IGameObject::MarkAsDead()                         { Lifespan = 0.0001f; bMortal = true; }
 bool                 Defcon::IGameObject::MarkedForDeath() const               { return (bMortal && Lifespan <= 0.0001f); }
-float                Defcon::IGameObject::GetCollisionForce() const            { return 0.01f * COLLISION_DAMAGE; } // todo: s/b a per-class value and multiply by the object's velocity.
+float                Defcon::IGameObject::GetCollisionForce() const            { return 0.01f * COLLISION_DAMAGE; } 
 bool                 Defcon::IGameObject::IsCollisionInjurious() const         { return bIsCollisionInjurious; }
 void                 Defcon::IGameObject::SetCollisionInjurious(bool b)        { bIsCollisionInjurious = b; }
 bool                 Defcon::IGameObject::IsInjurious() const                  { return bInjurious; }
@@ -286,8 +286,6 @@ void                 Defcon::IGameObject::SetAsMissionTarget(bool b)           {
 const FLinearColor&  Defcon::IGameObject::GetRadarColor() const                { return RadarColor; }
 Defcon::EColor       Defcon::IGameObject::GetExplosionColorBase() const        { return EColor::Gray; }
 bool                 Defcon::IGameObject::IsOurPositionVisible() const         { return GArena->IsPointVisible(Position); }
-//bool                 Defcon::IGameObject::ExternallyOwned() const              { return bExternallyOwned; }
-//void                 Defcon::IGameObject::SetExternalOwnership(bool b)         { bExternallyOwned = b; }
 
 
 

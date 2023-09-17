@@ -5,6 +5,7 @@
 
 
 #include "enemies.h"
+#include "Globals/prefs.h"
 
 
 namespace Defcon
@@ -19,6 +20,7 @@ namespace Defcon
 			virtual void   Explode                (CGameObjectCollection&) override;
 			virtual float  GetExplosionMass       () const override;
 			virtual EColor GetExplosionColorBase  () const override;
+			virtual float  GetCollisionForce      () const override { return 0.01f * GUPPY_COLLISION_FORCE; }
 
 
 		protected:

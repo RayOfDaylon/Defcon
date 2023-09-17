@@ -18,7 +18,7 @@ void Defcon::CYllabianDogfight::Init()
 
 	//MaxWaves = 3;
 
-	JFactor = 0.1f;
+	SpawnTimeFactor = 0.1f;
 
 	AddEnemySpawnInfo({ EObjType::GUPPY,   { 12, 15, 9 } });
 	AddEnemySpawnInfo({ EObjType::SWARMER, {  6,  3, 6 } });

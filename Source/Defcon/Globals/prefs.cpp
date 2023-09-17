@@ -42,7 +42,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF( bouncer_value,              200,       "",             Integer,      0,        1000,      "Number of points earned for destroying a bouncer"                                          );
 	INITPREF( bullet_damage,               20,       "%",            Integer,      0,         100,      "Shield loss when object hit by a bullet"                                                   );
 	INITPREF( bullets_hit_terrain,          1,       "",             Boolean,      0,           0,      "Make enemy bullets unable to penetrate terrain"                                            );
-	INITPREF( collision_damage,            20,       "%",            Integer,      0,         100,      "Shield loss when objects collide"                                                          );
+	INITPREF( collision_damage,            20,       "%",            Integer,      0,         100,      "Default shield loss when objects collide"                                                          );
 	INITPREF( controller_explicit_reverse,  0.0f,    "",             Boolean,      0.0f,        0.0f,   "Controller uses explicit reverse button"                                                   );
 	INITPREF( debris_drawradar,             0,       "",             Boolean,      0,           0,      "Show debris particles on radar display"                                                    );
 	INITPREF( debris_dual_prob,             0.75f,   "%",            Float,        0.0f,        1.0f,   "Probablity that an explosion ejects double the normal debris"                              );
@@ -64,6 +64,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF( ghost_value,                250,       "",             Integer,      0,        1000,      "Number of points earned for destroying a ghost"                                            );
 	INITPREF( ghost_player_dist_min,      400,       "px",           Integer,      0,        1000,      "Distance from player at which ghost will split"                                            ); 
 
+	INITPREF ( GuppyCollisionForce,        17,       "%",            Integer,      0,         100,      "Shield loss when colliding with Yllabian space guppy"                                      );
 	INITPREFR( GuppySpeed,  150, 300, "px/sec",   "Guppy flight speed"                                                                );
 
 	INITPREF( guppy_value,                200,       "",             Integer,      0,        1000,      "Number of points earned for destroying a space guppy"                                      );
@@ -75,6 +76,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF( human_value_debarked,       250,       "",             Integer,      0,        1000,      "Points earned when a humanoid is flown back to the ground"                                 );
 	INITPREF( human_value_embarked,       500,       "",             Integer,      0,        1000,      "Points earned when a humanoid is picked up in the air"                                     );
 	INITPREF( human_value_liberated,      250,       "",             Integer,      0,        1000,      "Points earned when a humanoid falls safely to the ground"                                  );
+	INITPREF ( HunterCollisionForce,       30,       "%",            Integer,      0,         100,      "Shield loss when colliding with hunter"                                                    );
 	INITPREFR( HunterSpeed,  200, 400, "px/sec",   "Hunter flight speed"                                                                );
 	INITPREF( hunter_value,               250,       "",             Integer,      0,        1000,      "Number of points earned for destroying a hunter"                                           );
 	INITPREF( lander_abductodds,            0.0001f, "%",            Float,        0.00001f,    0.001f, "Probability per frame that a humanoid within range will be abducted"                       );
@@ -93,6 +95,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF( mine_lifespan,               10.0f,    "seconds",      Float,        1.0f,       30.0f,   "How long a mine exists after being deployed"                                               );
 	INITPREF( missionname_uppercase,        0,       "",             Boolean,      0,           0,      "Make mission name text appear uppercase"                                                   );
 
+	INITPREF ( MunchieCollisionForce,      15,       "%",            Integer,      0,         100,      "Shield loss when colliding with munchie"                                                   );
 	INITPREFR( MunchieSpawnCountdown, 2.0f, 5.0f, "sec",   "Time for a phred to spawn a munchie"                                                                );
 
 	INITPREF( munchie_value,               50,       "",             Integer,      0,        1000,      "Number of points earned for destroying a munchie"                                          );
@@ -114,6 +117,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF( RadarIsPlayerCentric,         0,       "",             Boolean,      0,           0,      "Radar keeps player ship fixed, otherwise screen edges are fixed (arcade match)"            );
 
 	INITPREF( reformer_value,             250,       "",             Integer,      0,        1000,      "Number of points earned for destroying a reformer"                                         );
+	INITPREF( ReformerPartCollisionForce,  15,       "%",            Integer,      0,         100,      "Shield loss when colliding with reformer part"                                             );
 	INITPREF( reformerpart_value,          50,       "",             Integer,      0,        1000,      "Number of points earned for destroying a reformer part"                                    );
 	INITPREF( scoretips_showenemypoints,    0,       "",             Boolean,      0,           0,      "Show floating score text when enemy destroyed"                                             );
 	INITPREF( smartbomb_initial,            3.0f,    "",             Integer,      0,          20,      "Initial number of smart bombs when starting a game"                                        );
@@ -124,14 +128,17 @@ void Defcon::CPrefs::Construct()
 	INITPREF( smartbomb_wavepushmin,       15.0f,    "px/frame",     Float,        5.0f,       50.0f,   "Debris is additionally pushed by smartbomb shockwave this fast regardless of location"     );
 	INITPREF( smartbomb_max_flashscreen,   15,       "frames",       Integer,      1,          50,      "How long a smartbomb shockwave is visible"                                                 );
 	INITPREF( sound_active,                 1,       "",             Boolean,      0,           0,      "Enable sound effects (disable, e.g., if you want to run a music program while playing)"    );
+	INITPREF( SpacehumCollisionForce,       5,       "%",            Integer,      0,         100,      "Shield loss when colliding with spacehum"                                                  );
 	INITPREF( spacehum_value,             100,       "",             Integer,      0,        1000,      "Number of points earned for destroying a space hum"                                        );
 	INITPREF( stars_count,                100,       "",             Integer,      0,        1000,      "Number of background stars per 100 x 100 pixel area"                                       );
+	INITPREF( SwarmerCollisionForce,       10,       "%",            Integer,      0,         100,      "Shield loss when colliding with swarmer"                                                   );
 	INITPREF( swarmer_value,              150,       "",             Integer,      0,        1000,      "Number of points earned for destroying a swarmer"                                          );
 	INITPREF( swarmers_per_pod,             6,       "",             Integer,      0,          20,      "Number of swarmers a destroyed pod releases"                                               );
 
 
 #undef INITPREF
 #undef INITPREF2
+#undef INITPREFR
 }
 
 

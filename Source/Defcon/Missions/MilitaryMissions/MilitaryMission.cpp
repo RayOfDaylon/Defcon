@@ -134,16 +134,16 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 	
 	const float ArenaWidth = GArena->GetWidth();
 
-	for(int32 I = 0; I < EnemySpawnCountsArray.Num(); I++)	
+	for(int32 EnemyTypeIndex = 0; EnemyTypeIndex < EnemySpawnCountsArray.Num(); EnemyTypeIndex++)	
 	{	
-		for(int32 J = 0; J < EnemySpawnCountsArray[I].NumPerWave[WaveIndex]; J++)	
+		for(int32 SpawnCountIndex = 0; SpawnCountIndex < EnemySpawnCountsArray[EnemyTypeIndex].NumPerWave[WaveIndex]; SpawnCountIndex++)	
 		{	
 			CFPoint SpawnPoint;
 
 			SpawnPoint.x = FRANDRANGE(-0.5f, 0.5f) * SpawnRangeHorizontal + Where.x;	
 			SpawnPoint.x = (float)fmod(SpawnPoint.x, ArenaWidth);	
 
-			switch(EnemySpawnCountsArray[I].Kind)	
+			switch(EnemySpawnCountsArray[EnemyTypeIndex].Kind)	
 			{	
 				// Make these enemies spawn in upper half
 				case EObjType::LANDER:	
@@ -152,14 +152,15 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 					break;	
 					
 				default:	
-					SpawnPoint.y = FRANDRANGE(MinSpawnAlt, MaxSpawnAlt);	
+					SpawnPoint.y = Daylon::FRandRange(SpawnAltitudeRange);
+					break;
 			}	
 
 			SpawnPoint.y *= GArena->GetHeight();
 
-			OverrideSpawnPoint(EnemySpawnCountsArray[I].Kind, SpawnPoint);
+			OverrideSpawnPoint(EnemySpawnCountsArray[EnemyTypeIndex].Kind, SpawnPoint);
 
-			GArena->CreateEnemy(EnemySpawnCountsArray[I].Kind, EObjType::UNKNOWN, SpawnPoint, FRANDRANGE(0.0f, JFactor * J), EObjectCreationFlags::StandardEnemy);	
+			GArena->CreateEnemy(EnemySpawnCountsArray[EnemyTypeIndex].Kind, EObjType::UNKNOWN, SpawnPoint, FRANDRANGE(0.0f, SpawnTimeFactor * SpawnCountIndex), EObjectCreationFlags::StandardEnemy);	
 		}	
 	}	
 	

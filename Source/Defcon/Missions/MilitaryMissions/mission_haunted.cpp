@@ -19,7 +19,7 @@ void Defcon::CHaunted::Init()
 		"Engage enemy forces and eliminate."
 		;
 
-	JFactor = 0.1f;
+	SpawnTimeFactor = 0.1f;
 
 	AddEnemySpawnInfo({ EObjType::LANDER, { 10, 10, 10 } });
 	AddEnemySpawnInfo({ EObjType::DYNAMO, {  3,  5,  3 } });

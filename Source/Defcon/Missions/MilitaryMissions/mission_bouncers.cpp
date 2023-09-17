@@ -18,7 +18,7 @@ void Defcon::CBouncersMission::Init()
 
 	IntroText = "A group of bouncers has decided to 'drop' in.";
 
-	JFactor = 0.1f;
+	SpawnTimeFactor = 0.1f;
 
 	AddEnemySpawnInfo({ EObjType::LANDER,          { 10, 10, 10, } });
 	AddEnemySpawnInfo({ EObjType::BOMBER,          {  3,  5,  3  } });

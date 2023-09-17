@@ -67,6 +67,7 @@ namespace Defcon
 				ghost_player_dist_min,
 				ghost_value,
 				guppy_value,
+				GuppyCollisionForce,
 				GuppySpeed,
 
 				human_bonus_value,
@@ -78,6 +79,7 @@ namespace Defcon
 				human_value_embarked,
 				human_value_liberated,
 
+				HunterCollisionForce,
 				HunterSpeed,
 				hunter_value,
 
@@ -98,6 +100,7 @@ namespace Defcon
 				mine_lifespan,
 
 				missionname_uppercase,
+				MunchieCollisionForce,
 				MunchieSpawnCountdown,
 				munchie_value,
 
@@ -120,6 +123,7 @@ namespace Defcon
 
 				RadarIsPlayerCentric,
 				reformer_value,
+				ReformerPartCollisionForce,
 				reformerpart_value,
 
 				scoretips_showenemypoints,
@@ -133,9 +137,11 @@ namespace Defcon
 				smartbomb_wavepushmin,
 
 				sound_active,
+				SpacehumCollisionForce,
 				stars_count,
 				spacehum_value,
 				swarmer_value,
+				SwarmerCollisionForce,
 				swarmers_per_pod,
 
 				count
@@ -229,11 +235,13 @@ extern Defcon::CPrefs	GPrefs;
 #define FIREBOMBER_VALUE             IPREFVAL(firebomber_value)
 #define GHOST_PLAYER_DIST_MIN        IPREFVAL(ghost_player_dist_min) 
 #define GHOST_VALUE                  IPREFVAL(ghost_value) 
+#define GUPPY_COLLISION_FORCE        FPREFVAL(GuppyCollisionForce)
 #define GUPPY_SPEED                  RPREFVAL(GuppySpeed)
 #define GUPPY_VALUE                  IPREFVAL(guppy_value)
 #define HUMAN_VALUE_DEBARKED         IPREFVAL(human_value_debarked)
 #define HUMAN_VALUE_EMBARKED         IPREFVAL(human_value_embarked)
 #define HUMAN_VALUE_LIBERATED        IPREFVAL(human_value_liberated)
+#define HUNTER_COLLISION_FORCE       FPREFVAL(HunterCollisionForce)
 #define HUNTER_SPEED                 RPREFVAL(HunterSpeed)
 #define HUNTER_VALUE                 IPREFVAL(hunter_value)
 #define LANDER_ABDUCTODDS            FPREFVAL(lander_abductodds)
@@ -249,6 +257,7 @@ extern Defcon::CPrefs	GPrefs;
 #define MINE_DAMAGE                  IPREFVAL(mine_damage)
 #define MINE_LIFESPAN                FPREFVAL(mine_lifespan)
 #define MISSIONNAME_UPPERCASE        BPREFVAL(missionname_uppercase)
+#define MUNCHIE_COLLISION_FORCE      FPREFVAL(MunchieCollisionForce)
 #define MUNCHIE_SPAWN_COUNTDOWN      RPREFVAL(MunchieSpawnCountdown)
 #define MUNCHIE_VALUE                IPREFVAL(munchie_value)
 #define OBJECT_DRAWBBOX              BPREFVAL(object_drawbbox)
@@ -256,11 +265,14 @@ extern Defcon::CPrefs	GPrefs;
 #define POD_SPEED                    RPREFVAL(PodSpeed)
 #define POD_VALUE                    IPREFVAL(pod_value)
 #define REFORMER_VALUE               IPREFVAL(reformer_value) 
+#define REFORMERPART_COLLISION_FORCE FPREFVAL(ReformerPartCollisionForce)
 #define REFORMERPART_VALUE           IPREFVAL(reformerpart_value) 
 #define SCORETIPS_SHOWENEMYPOINTS    BPREFVAL(scoretips_showenemypoints)
 #define SOUND_ACTIVE                 BPREFVAL(sound_active)
 #define SPACEHUM_VALUE               IPREFVAL(spacehum_value)
+#define SPACEHUM_COLLISION_FORCE     FPREFVAL(SpacehumCollisionForce)
 #define STARS_COUNT                  IPREFVAL(stars_count)
 #define SWARMER_VALUE                IPREFVAL(swarmer_value)
+#define SWARMER_COLLISION_FORCE      FPREFVAL(SwarmerCollisionForce)
 #define SWARMERS_PER_POD             IPREFVAL(swarmers_per_pod)
 

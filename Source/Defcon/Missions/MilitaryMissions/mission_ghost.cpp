@@ -24,7 +24,7 @@ void Defcon::CGhostMission::Init()
 		"Engage enemy forces and eliminate them."
 		;
 
-	JFactor = 0.1f;
+	SpawnTimeFactor = 0.1f;
 
 	AddEnemySpawnInfo({ EObjType::DYNAMO,   {  2,  5,  2 } });
 	AddEnemySpawnInfo({ EObjType::GHOST,    { 10, 15, 15 } });

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "enemies.h"
+#include "Globals/prefs.h"
 
 
 namespace Defcon
@@ -56,6 +57,7 @@ namespace Defcon
 			virtual ~CReformerPart();
 
 			virtual void  Tick              (float DeltaTime) override;
+			virtual float GetCollisionForce () const override { return 0.01f * REFORMERPART_COLLISION_FORCE; }
 			virtual float GetExplosionMass  () const override { return 0.25f; }
 			virtual void  Explode           (CGameObjectCollection&) override;
 			

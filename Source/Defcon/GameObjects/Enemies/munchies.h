@@ -5,6 +5,7 @@
 
 #include "enemies.h"
 #include "Globals/_sound.h"
+#include "Globals/prefs.h"
 
 
 namespace Defcon
@@ -71,6 +72,8 @@ namespace Defcon
 
 			virtual EColor GetExplosionColorBase () const override { return ColorCode; }
 			virtual float  GetExplosionMass      () const override { return 0.6f; }
+			virtual float  GetCollisionForce     () const override { return 0.01f * MUNCHIE_COLLISION_FORCE; }
+
 
 		protected:
 			
