@@ -64,7 +64,7 @@ void Defcon::CDynamo::Tick(float DeltaTime)
 		&& GArena->GetPlayerShip().IsAlive()
 		&& IsOurPositionVisible())
 	{
-		GArena->CreateEnemy(EObjType::SPACEHUM, GetType(), Position, 0.0f, EObjectCreationFlags::EnemyPart);
+		GArena->SpawnGameObject(EObjType::SPACEHUM, GetType(), Position, 0.0f, EObjectCreationFlags::EnemyPart);
 
 		const auto XP = GGameMatch->GetScore();
 		float T = NORM_(XP, 0.0f, 50000.0f);

@@ -59,14 +59,14 @@ namespace Defcon
 
 
 
-	class CCreateEnemyTask : public CScheduledTask
+	class CCreateGameObjectTask : public CScheduledTask
 	{
 		public:
 
-			CCreateEnemyTask() {}
+			CCreateGameObjectTask() {}
 
 			CFPoint   Where;
-			EObjType  EnemyType      = EObjType::UNKNOWN;
+			EObjType  ObjType      = EObjType::UNKNOWN;
 			EObjType  CreatorType    = EObjType::UNKNOWN;
 			bool      bMissionTarget = false;
 

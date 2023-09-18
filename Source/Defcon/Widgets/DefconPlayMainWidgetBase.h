@@ -309,10 +309,6 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	void OnToggleShowBoundingBoxes ();
 	void OnToggleShowOrigin        ();
 
-
-	void AddMessage    (const FString& Str, float Duration = 0.0f);
-	void ClearMessages ();
-
 	Defcon::I2DCoordMapper*          CoordMapperPtr      = nullptr;
 	Defcon::I2DCoordMapper*          CoordMapperStarsPtr = nullptr;
 	Defcon::I2DCoordMapper*          CoordMapperRadarPtr = nullptr;

@@ -90,16 +90,16 @@ void Defcon::IMission::DoIntroText(float DeltaTime)
 
 	for(const auto& IntroTextLine : IntroTextLines)
 	{
-		GArena->AddMessage(IntroTextLine);
+		Defcon::GMessageMediator.TellUser(IntroTextLine);
 	}
 }
 
 
-void Defcon::IMission::AddEnemy(Defcon::EObjType EnemyType, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags)
+void Defcon::IMission::AddGameObject(Defcon::EObjType ObjType, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags)
 {
-	auto Task = new CCreateEnemyTask;
+	auto Task = new CCreateGameObjectTask;
 
-	Task->EnemyType			= EnemyType;
+	Task->ObjType			= ObjType;
 	Task->CreatorType       = CreatorType;
 	Task->Where				= Where;
 	Task->bMissionTarget	= HasFlag(Flags, EObjectCreationFlags::IsMissionTarget);

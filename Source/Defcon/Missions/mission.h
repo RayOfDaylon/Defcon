@@ -82,20 +82,20 @@ namespace Defcon
 			virtual FString GetName() const = 0;
 			virtual FString GetDesc() const = 0;
 
-			virtual bool    IsMilitary      () const { return false; }
-			virtual bool	Update			(float DeltaTime);
-			virtual void	Conclude		() {}
-			virtual bool    UsesTerrain     () const { return true; }
-			virtual bool	HumansInvolved	() const { return true; }
-			virtual bool	IsMissionComplete		() const { return true; }
-			virtual void    AddEnemy        (EObjType EnemyType, EObjType CreatorType, const CFPoint& Where, float Countdown, EObjectCreationFlags Flags);
+			virtual bool    IsMilitary         () const { return false; }
+			virtual bool	Update			   (float DeltaTime);
+			virtual void	Conclude		   () {}
+			virtual bool    UsesTerrain        () const { return true; }
+			virtual bool	HumansInvolved	   () const { return true; }
+			virtual bool	IsMissionComplete  () const { return true; }
+			virtual void    AddGameObject      (EObjType ObjType, EObjType CreatorType, const CFPoint& Where, float Countdown, EObjectCreationFlags Flags);
 
 
-			EMissionID		GetID			() const { return ID; }
-			void			AddTask         (CScheduledTask* p) { ScheduledTasks.Add(p); }
-			bool			IsRunning		() const { return (GArena != nullptr); }
-
-			const FString&  GetIntroText    () const { return IntroText; }
+			EMissionID		GetID			   () const { return ID; }
+			void			AddTask            (CScheduledTask* p) { ScheduledTasks.Add(p); }
+			bool			IsRunning		   () const { return (GArena != nullptr); }
+											   
+			const FString&  GetIntroText       () const { return IntroText; }
 
 
 		protected:

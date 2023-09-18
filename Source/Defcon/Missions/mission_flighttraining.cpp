@@ -124,7 +124,7 @@ void Defcon::CFlightTrainingMission::CheckTargetCollided(float DeltaTime)
 					Str = TEXT("All done! Yay!");
 				}
 
-				GArena->AddMessage(Str);
+				Defcon::GMessageMediator.TellUser(Str);
 
 				break;
 			}

@@ -50,9 +50,9 @@ void Defcon::CMilitaryMission::Init()
 	{
 		for(int32 i = 0; i < 10; i++)
 		{
-			//auto pEvt = new CCreateEnemyTask;
+			//auto pEvt = new CCreateGameObjectTask;
 			pEvt->Init(p);
-			pEvt->EnemyType = EObjType::TURRET;
+			pEvt->ObjType = EObjType::TURRET;
 			pEvt->Countdown = 0.0f;
 			float ArenaWidth = gpArena->GetWidth();
 			float X = FRAND * ArenaWidth;
@@ -160,7 +160,7 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 
 			OverrideSpawnPoint(EnemySpawnCountsArray[EnemyTypeIndex].Kind, SpawnPoint);
 
-			GArena->CreateEnemy(EnemySpawnCountsArray[EnemyTypeIndex].Kind, EObjType::UNKNOWN, SpawnPoint, FRANDRANGE(0.0f, SpawnTimeFactor * SpawnCountIndex), EObjectCreationFlags::StandardEnemy);	
+			GArena->SpawnGameObject(EnemySpawnCountsArray[EnemyTypeIndex].Kind, EObjType::UNKNOWN, SpawnPoint, FRANDRANGE(0.0f, SpawnTimeFactor * SpawnCountIndex), EObjectCreationFlags::StandardEnemy);	
 		}	
 	}	
 	
@@ -184,7 +184,7 @@ bool Defcon::CMilitaryMission::IsMissionComplete() const
 
 	EnemyCreationTasks.ForEachUntil([&Result](CScheduledTask* Task)
 	{
-		auto EnemyCreationTask = static_cast<CCreateEnemyTask*>(Task);
+		auto EnemyCreationTask = static_cast<CCreateGameObjectTask*>(Task);
 		
 		if(!EnemyCreationTask->bMissionTarget)
 		{
@@ -327,7 +327,7 @@ void Defcon::CMilitaryMission::AddNonTarget(EObjType ObjType, const CFPoint& Whe
 	X = (float)fmod(X, ArenaWidth);
 	float Y = FRANDRANGE(0.3f, 0.8f) * GArena->GetHeight();
 
-	GArena->CreateEnemy(ObjType, EObjType::UNKNOWN, CFPoint(X, Y), 0.0f, EObjectCreationFlags::CleanerEnemy);
+	GArena->SpawnGameObject(ObjType, EObjType::UNKNOWN, CFPoint(X, Y), 0.0f, EObjectCreationFlags::CleanerEnemy);
 }
 
 
@@ -340,7 +340,7 @@ void Defcon::CMilitaryMission::AddBaiter(const CFPoint& Where)
 	X = (float)fmod(X, ArenaWidth);
 	float Y = FRANDRANGE(0.2f, 0.8f) * GArena->GetHeight();
 
-	GArena->CreateEnemy(EObjType::BAITER, EObjType::UNKNOWN, CFPoint(X, Y), 0.0f, EObjectCreationFlags::CleanerEnemy);
+	GArena->SpawnGameObject(EObjType::BAITER, EObjType::UNKNOWN, CFPoint(X, Y), 0.0f, EObjectCreationFlags::CleanerEnemy);
 }
 
 

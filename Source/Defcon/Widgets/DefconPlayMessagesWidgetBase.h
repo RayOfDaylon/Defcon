@@ -32,7 +32,7 @@ class DEFCON_API UDefconPlayMessagesWidgetBase : public UDefconUserWidgetBase
 
 	protected:
 
-	//virtual void NativeOnInitialized() override;
+	virtual void NativeOnInitialized() override;
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 

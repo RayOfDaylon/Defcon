@@ -214,28 +214,28 @@ void UDefconGameInstance::OnToggleGodMode()
 
 	Defcon::GGameMatch->SetGodMode(!Defcon::GGameMatch->GetGodMode());
 
-	View->AddMessage(FString::Printf(TEXT("God mode %s"), Defcon::GGameMatch->GetGodMode() ? TEXT("ON") : TEXT("OFF")));
+	Defcon::GMessageMediator.TellUser(FString::Printf(TEXT("God mode %s"), Defcon::GGameMatch->GetGodMode() ? TEXT("ON") : TEXT("OFF")));
 }
 
 
-void UDefconGameInstance::OnSelectEnemyToSpawn()
+void UDefconGameInstance::OnSelectGameObjectToSpawn()
 {
 	GET_PLAYVIEW
 
-	View->OnSelectEnemyToSpawn();
+	View->OnSelectGameObjectToSpawn();
 }
 
 
-void UDefconGameInstance::OnSpawnEnemy()
+void UDefconGameInstance::OnSpawnGameObject()
 {
 	GET_PLAYVIEW
 
 	const auto& PlayerShip = Defcon::GGameMatch->GetPlayerShip();
 
 	const FString Str = FString::Printf(TEXT("Spawning enemy near player's position %d, %d"), (int32)PlayerShip.Position.x, (int32)PlayerShip.Position.y);
-	View->AddMessage(Str, 0.25f);
+	Defcon::GMessageMediator.TellUser(Str, 0.25f);
 
-	View->OnSpawnEnemy();
+	View->OnSpawnGameObject();
 }
 
 
@@ -247,8 +247,7 @@ void UDefconGameInstance::OnIncrementXp()
 	//Score += 5000;
 
 	const FString Str = FString::Printf(TEXT("XP increased to %d"), Defcon::GGameMatch->GetScore());
-
-	View->AddMessage(Str, 1.0f);
+	Defcon::GMessageMediator.TellUser(Str, 1.0f);
 }
 
 
@@ -264,8 +263,7 @@ void UDefconGameInstance::OnDecrementXp()
 	Defcon::GGameMatch->AdjustScore(-5000);
 
 	const FString Str = FString::Printf(TEXT("XP decreased to %d"), Defcon::GGameMatch->GetScore());
-
-	View->AddMessage(Str, 1.0f);
+	Defcon::GMessageMediator.TellUser(Str, 1.0f);
 }
 
 #undef GET_PLAYVIEW

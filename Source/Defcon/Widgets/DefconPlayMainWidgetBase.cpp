@@ -35,7 +35,7 @@ void UDefconPlayMainWidgetBase::Init
 	Defcon::CGameObjectCollection* InEnemies, 
 	Defcon::CGameObjectCollection* InDebris,
 	Defcon::CGameObjectCollection* InBlasts,
-	const FVector2D& InArenaSize
+	const FVector2D&               InArenaSize
 )
 {
 	Humans    = InHumans;
@@ -45,8 +45,10 @@ void UDefconPlayMainWidgetBase::Init
 	Blasts    = InBlasts;
 	ArenaSize = InArenaSize;
 
-	ClearMessages();
-	TopMessage->SetText(FText::FromString(""));
+	Defcon::GMessageMediator.Send(Defcon::EMessageEx::ClearNormalMessages);
+
+	FText Text = FText::FromString(TEXT(""));
+	Defcon::GMessageMediator.Send(Defcon::EMessageEx::SetTopMessage, &Text);
 }
 
 
@@ -113,18 +115,26 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 
 	Messages->Clear();
 
-	Defcon::FMessageConsumer Consumer(this, Defcon::EMessageEx::SetTopMessage, 
-		[TextBlock = TWeakObjectPtr<UTextBlock>(TopMessage)](void* Payload)
-		{
-			check(Payload != nullptr);
-
-			if(TextBlock.IsValid())
+	{
+		Defcon::FMessageConsumer Consumer(this, Defcon::EMessageEx::SetTopMessage, 
+			[TextBlock = TWeakObjectPtr<UTextBlock>(TopMessage)](void* Payload)
 			{
-				TextBlock->SetText(FText::FromString(*(const FString*)Payload)); 
-			} 
-		});
+				check(Payload != nullptr);
 
-	Defcon::GMessageMediator.RegisterConsumer(Consumer);
+				if(TextBlock.IsValid())
+				{
+					// todo: this string sanitization is a bit pricey, but if we ever localize, we'll make the strings right from the start.
+					// The whole '--' to em-dash conversion is just so we don't have to type em dashes for now.
+					auto Str = ((const FText*)Payload)->ToString();
+
+					Str = Str.Replace(TEXT("--"), TEXT("\x2014"), ESearchCase::CaseSensitive);
+
+					TextBlock->SetText(FText::FromString(Str)); 
+				} 
+			});
+
+		Defcon::GMessageMediator.RegisterConsumer(Consumer);
+	}
 }
 
 
@@ -186,6 +196,7 @@ void UDefconPlayMainWidgetBase::SetTerrain(Defcon::CTerrain* InTerrain)
 void UDefconPlayMainWidgetBase::OnMissionStarting()
 {
 	// Install the player ship and the human sprites here so that they will occlude terrain.
+	// todo: they don't (we broke something again).
 
 	auto PlayerShipPtr = &Defcon::GGameMatch->GetPlayerShip();
 
@@ -268,7 +279,7 @@ void UDefconPlayMainWidgetBase::NativeTick(const FGeometry& MyGeometry, float De
 		return;
 	}
 
-	if(GArena->IsBulletTime())
+	if(GArena->IsBulletTime())  // todo: DRY violation
 	{
 		DeltaTime *= 0.25f;
 	}
@@ -279,18 +290,6 @@ void UDefconPlayMainWidgetBase::NativeTick(const FGeometry& MyGeometry, float De
 	{
 		Star.Update(DeltaTime);
 	}
-}
-
-
-void UDefconPlayMainWidgetBase::AddMessage(const FString& Str, float Duration)
-{
-	Messages->AddMessage(Str, Duration);
-}
-
-
-void UDefconPlayMainWidgetBase::ClearMessages()
-{
-	Messages->Clear();
 }
 
 
@@ -506,15 +505,9 @@ int32 UDefconPlayMainWidgetBase::NativePaint
 			Star.Color * Tint * InWidgetStyle.GetColorAndOpacityTint().A);
 	}
 
-#if 0
-	// Terrain is a widget so no need to draw it here.
-	if(Terrain != nullptr)
-	{
-		Terrain->Draw(Painter, *CoordMapperPtr);
-	}
-#endif
 
 	// These calls only matter for game objects that implement Draw overrides.
+	// todo: be more efficient if we could know the Draw overriding objects in advance.
 	DrawObjects(Objects, Painter);
 	DrawObjects(Enemies, Painter);
 	DrawObjects(Debris,  Painter);
@@ -548,8 +541,8 @@ void UDefconPlayMainWidgetBase::OnToggleShowBoundingBoxes()
 {
 	bShowBoundingBoxes = !bShowBoundingBoxes;
 
-	FString Str = FString::Printf(TEXT("Bounding boxes %s"), bShowBoundingBoxes ? TEXT("ON") : TEXT("OFF"));
-	AddMessage(Str);
+	const FString Str = FString::Printf(TEXT("Bounding boxes %s"), bShowBoundingBoxes ? TEXT("ON") : TEXT("OFF"));
+	Defcon::GMessageMediator.TellUser(Str);
 }
 
 

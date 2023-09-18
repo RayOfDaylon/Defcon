@@ -3,6 +3,7 @@
 
 
 #include "DefconPlayMessagesWidgetBase.h"
+#include "Globals/MessageMediator.h"
 
 
 #define DEBUG_MODULE      0
@@ -15,6 +16,40 @@
 
 
 constexpr float MessageLifetime = 1.5f;
+
+
+
+void UDefconPlayMessagesWidgetBase::NativeOnInitialized()
+{
+	{
+		Defcon::FMessageConsumer Consumer(this, Defcon::EMessageEx::NormalMessage, 
+			[This = TWeakObjectPtr<UDefconPlayMessagesWidgetBase>(this)](void* Payload)
+			{
+				check(Payload != nullptr);
+
+				if(This.IsValid())
+				{
+					const auto& Msg = *(Defcon::FNormalMessage*)Payload;
+					This->AddMessage(Msg.Text, Msg.Duration); 
+				} 
+			});
+
+		Defcon::GMessageMediator.RegisterConsumer(Consumer);
+	}
+
+	{
+		Defcon::FMessageConsumer Consumer(this, Defcon::EMessageEx::ClearNormalMessages, 
+			[This = TWeakObjectPtr<UDefconPlayMessagesWidgetBase>(this)](void* Payload)
+			{
+				if(This.IsValid())
+				{
+					This->Clear();
+				} 
+			});
+
+		Defcon::GMessageMediator.RegisterConsumer(Consumer);
+	}
+}
 
 
 void UDefconPlayMessagesWidgetBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)

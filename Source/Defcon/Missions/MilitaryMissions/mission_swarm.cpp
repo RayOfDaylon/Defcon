@@ -89,9 +89,9 @@ void Defcon::CSwarm::MakeTargets(float fElapsed, const CFPoint& where)
 		{
 			for(j = 0; j < waves[i].count[WaveIndex]; j++)
 			{
-				CCreateEnemyTask* p = new CCreateEnemyTask;
+				CCreateGameObjectTask* p = new CCreateGameObjectTask;
 				p->Init(gpArena);
-				p->EnemyType = waves[i].type;
+				p->ObjType = waves[i].type;
 				p->Countdown = FRAND * 0.1f * j;
 				float wp = gpArena->GetWidth();
 				float x = (FRAND - 0.5f) * 0.2f * gpArena->GetDisplayWidth() + wp/2;

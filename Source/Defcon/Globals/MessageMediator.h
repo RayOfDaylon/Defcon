@@ -15,7 +15,7 @@ namespace Defcon
 	struct FShieldStrengthInfo 
 	{
 		class ILiveGameObject* Object; 
-		float Value; 
+		float                  Value; 
 
 		bool operator == (const FShieldStrengthInfo& Rhs) const { return (Object == Rhs.Object && Value == Rhs.Value); }
 		bool operator != (const FShieldStrengthInfo& Rhs) const { return !(*this == Rhs); }
@@ -28,21 +28,29 @@ namespace Defcon
 		CHuman*          Human;
 	};*/
 
+	struct FNormalMessage
+	{
+		FString Text;
+		float   Duration;
+	};
+
 
 	enum class EMessageEx
 	{
 		// Message                Payload type
 
-		Unknown = 0,            // nullptr
-		AbductionCountChanged,  // TArray<bool>*
-		SmartbombCountChanged,  // int32*
+		Unknown = 0,             // nullptr
+		AbductionCountChanged,   // TArray<bool>*
+		SmartbombCountChanged,   // int32*
 		ShieldStrengthChanged,   // FShieldStrengthInfo*
-		SetTopMessage            // FString*
-		//TakenAboard,            // FTakenAboardInfo*  Carrier has taken human aboard
-		//CarrierKilled,          // ILiveGameObject*   Carrier has been destroyed
-		//Released,               // nullptr    Player ship has released human
+		SetTopMessage,           // FText*
+		NormalMessage,           // FNormalMessage*
+		ClearNormalMessages      // nullptr
+		//TakenAboard,           // FTakenAboardInfo*  Carrier has taken human aboard
+		//CarrierKilled,         // ILiveGameObject*   Carrier has been destroyed
+		//Released,              // nullptr    Player ship has released human
 		//HumanKilled            // CHuman*   Human is about to die
-		//HumanTakenAboard        // CHuman*   Human has been taken aboard (redundant, use TakenAboard)
+		//HumanTakenAboard       // CHuman*   Human has been taken aboard (redundant, use TakenAboard)
 	};
 
 
@@ -57,6 +65,14 @@ namespace Defcon
 		public:
 			
 			CMessageMediator() {}
+
+			// Convenience message encoders/abstractors.
+
+			void TellUser(const FString& Str, float Duration = 0.0f) const
+			{
+				FNormalMessage Msg = { Str, Duration };
+				Send(EMessageEx::NormalMessage, &Msg);
+			}
 	};
 
 

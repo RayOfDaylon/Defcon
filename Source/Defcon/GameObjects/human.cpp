@@ -68,7 +68,7 @@ void Defcon::CHuman::OnAboutToDie()
 {
 	if(IsBeingAbducted())
 	{
-		GArena->AdjustAbductionCount(-1);
+		GArena->OnHumansChanged();
 	}
 
 	Carrier = nullptr;
@@ -102,7 +102,7 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 
 			if(IsBeingAbducted())
 			{
-				GArena->AdjustAbductionCount(1);
+				GArena->OnHumansChanged();
 			}
 			else
 			{
@@ -125,17 +125,16 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 
 		case EMessage::CarrierKilled:
 
-			check(Carrier != nullptr);
 
-			bCanBeInjured = true;
+			check(Carrier != nullptr);
 
 			{
 				const bool WasAbducted = IsBeingAbducted();
-				Carrier = nullptr;
+				SetToNotCarried();
 
 				if(WasAbducted)
 				{
-					GArena->AdjustAbductionCount(-1);
+					GArena->OnHumansChanged();
 				}
 			}
 			break;

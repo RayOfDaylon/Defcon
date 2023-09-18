@@ -111,7 +111,7 @@ bool Defcon::CWeaponsTrainingMission::AreAllTargetsHit(float fElapsed)
 			Str = TEXT("All targets destroyed.");
 		}
 
-		GArena->AddMessage(Str);
+		Defcon::GMessageMediator.TellUser(Str);
 	}
 
 	return (GArena->GetObjects().Find(EObjType::BEACON) == nullptr);

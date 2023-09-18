@@ -104,10 +104,10 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	void OnToggleGodMode();
 
 	UFUNCTION(BlueprintCallable, Category="Defcon")
-	void OnSelectEnemyToSpawn();
+	void OnSelectGameObjectToSpawn();
 
 	UFUNCTION(BlueprintCallable, Category="Defcon")
-	void OnSpawnEnemy();
+	void OnSpawnGameObject();
 
 	UFUNCTION(BlueprintCallable, Category="Defcon")
 	void OnIncrementXp();

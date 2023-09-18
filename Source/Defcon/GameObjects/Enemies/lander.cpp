@@ -296,7 +296,10 @@ void Defcon::CLander::Tick(float DeltaTime)
 					// them have been tracking him, they will
 					// stop doing so.
 					Abductee->Notify(Defcon::EMessage::TakenAboard, this);
-					GArena->AddMessage(GGameMatch->GetHumans().Count() > 1 ? TEXT("ABDUCTION IN PROGRESS") : TEXT("ABDUCTION IN PROGRESS -- MISSION FAILURE IMMINENT"));
+
+					FString Str = GGameMatch->GetHumans().Count() > 1 ? TEXT("ABDUCTION IN PROGRESS") : TEXT("ABDUCTION IN PROGRESS -- MISSION FAILURE IMMINENT");
+					GMessageMediator.TellUser(Str);
+
 					GAudio->OutputSound(EAudioTrack::Human_abducted);
 				}
 			}
@@ -335,7 +338,7 @@ void Defcon::CLander::Tick(float DeltaTime)
 					MarkAsDead();
 					Abductee->bMortal = true;
 					Abductee->MarkAsDead();
-					GArena->AdjustAbductionCount(-1);
+					GArena->OnHumansChanged();
 				}
 			}
 		}

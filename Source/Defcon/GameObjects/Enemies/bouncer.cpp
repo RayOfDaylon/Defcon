@@ -187,7 +187,7 @@ void Defcon::CBouncer::ResetFiringCountdown()
 
 void Defcon::CBouncer::FireWeapon()
 {
-	GArena->CreateEnemy(EObjType::FIREBALL, GetType(), Position, 0.0f, EObjectCreationFlags::EnemyPart);
+	GArena->SpawnGameObject(EObjType::FIREBALL, GetType(), Position, 0.0f, EObjectCreationFlags::EnemyPart);
 }
 
 

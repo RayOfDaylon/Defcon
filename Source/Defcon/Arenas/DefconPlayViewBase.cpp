@@ -217,7 +217,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 	ShipThrustSoundLoop = GAudio->CreateLoopedSound(Defcon::EAudioTrack::Playership_thrust);
 	WasShipUnderThrust = false;
 
-	InitMappers();
+	InitCoordMappers();
 	InitPlayerShipForMission();
 
 
@@ -264,10 +264,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	PlayAreaRadar->Init(MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
 
-
-	// Zero out the abduction count and turn off related alert.
-	// todo: abduction count parameter is not actually used anymore, should refactor.
-	AdjustAbductionCount(-AbductionCount);
+	OnHumansChanged();
 
 	PlayAreaMain  -> SetSafeToStart(); // todo: may not be needed
 	PlayAreaRadar -> OnFinishActivating();
@@ -314,7 +311,7 @@ bool UDefconPlayViewBase::IsOkayToFinishActivating() const
 }
 
 
-void UDefconPlayViewBase::InitMappers()
+void UDefconPlayViewBase::InitCoordMappers()
 {
 	MainAreaSize = Daylon::GetWidgetSize(PlayAreaMain);
 
@@ -375,12 +372,6 @@ void UDefconPlayViewBase::InitPlayerShipForMission()
 	NumPlayerPassengers = 0;
 
 	PlayerShip.SetShieldStrength(1.0f, true);
-}
-
-
-void UDefconPlayViewBase::AddMessage(const FString& Str, float Duration)
-{
-	PlayAreaMain->AddMessage(Str, Duration);
 }
 
 
@@ -697,10 +688,10 @@ class CDestroyedPlayerShip : public Defcon::ILiveGameObject
 		{
 			Type          = Defcon::EObjType::DESTROYED_PLAYER;
 			CreatorType   = Defcon::EObjType::PLAYER;
-			Lifespan     = DESTROYED_PLAYER_LIFETIME;
+			Lifespan      = DESTROYED_PLAYER_LIFETIME;
 			bMortal       = true;
 			bCanBeInjured = false;
-			Age          = 0.0f;
+			Age           = 0.0f;
 
 			CreateSprite(Defcon::EObjType::DESTROYED_PLAYER);
 		}
@@ -1061,7 +1052,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 		if(NumHumansNow < NumHumansBefore)
 		{
-			AdjustAbductionCount(0);
+			OnHumansChanged();
 
 			FString Str;
 
@@ -1073,7 +1064,9 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 			{
 				Str = TEXT("ALL HUMANS ABDUCTED OR KILLED");
 			}
-			AddMessage(Str, 3.0f);
+
+			Defcon::GMessageMediator.TellUser(Str, 3.0f);
+
 		}
 	}
 
@@ -1093,7 +1086,8 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 			{
 				if(MilitaryMission->LandersRemaining() == 1)
 				{
-					AddMessage(TEXT("ALL LANDERS DESTROYED"), DURATION_IMPORTANT_MESSAGE);
+					FString Str = TEXT("ALL LANDERS DESTROYED");
+					Defcon::GMessageMediator.TellUser(Str, DURATION_IMPORTANT_MESSAGE);
 				}
 			}
 		};
@@ -1104,7 +1098,8 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 			{
 				if(MilitaryMission->IsMissionComplete())
 				{
-					AddMessage(TEXT("ALL MISSION TARGETS DESTROYED -- PROCEED TO STARGATE"), DURATION_IMPORTANT_MESSAGE);
+					FText Text = FText::FromString(TEXT("ALL MISSION TARGETS DESTROYED -- PROCEED TO STARGATE"));
+					Defcon::GMessageMediator.Send(Defcon::EMessageEx::SetTopMessage, &Text);
 					bMissionDoneMsgShown = true;
 				}
 			};
@@ -1197,11 +1192,9 @@ void UDefconPlayViewBase::OnPausePressed()
 {
 	bIsPaused = !bIsPaused;
 
-	//AddMessage(bIsPaused ? TEXT("GAME PAUSED") : TEXT("GAME UNPAUSED"));
+	FText Text = FText::FromString(bIsPaused ? TEXT("GAME PAUSED") : TEXT(""));
 
-	FString Str = bIsPaused ? TEXT("GAME PAUSED") : TEXT("");
-
-	Defcon::GMessageMediator.Send(Defcon::EMessageEx::SetTopMessage, &Str);
+	Defcon::GMessageMediator.Send(Defcon::EMessageEx::SetTopMessage, &Text);
 }
 
 
@@ -1209,7 +1202,8 @@ void UDefconPlayViewBase::OnBulletTimePressed()
 {
 	bBulletTime = !bBulletTime;
 
-	AddMessage(bBulletTime ? TEXT("BULLET TIME ON") : TEXT("BULLET TIME OFF"));
+	FString Str = (bBulletTime ? TEXT("BULLET TIME ON") : TEXT("BULLET TIME OFF"));
+	Defcon::GMessageMediator.TellUser(Str);
 }
 
 
@@ -1345,7 +1339,9 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 				}
 				else
 				{
-					AddMessage(TEXT("SMARTBOMB ORDNANCE DEPLETED"));
+					FString Str = TEXT("SMARTBOMB ORDNANCE DEPLETED");
+					Defcon::GMessageMediator.TellUser(Str);
+
 					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
 				}
 			}
@@ -1997,7 +1993,7 @@ void UDefconPlayViewBase::SpecializeMaterialization(Defcon::FMaterializationPara
 }
 
 
-void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags)
+void UDefconPlayViewBase::SpawnGameObject(Defcon::EObjType ObjType, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags)
 {
 	const auto MaterializationLifetime = ENEMY_BIRTHDURATION;
 
@@ -2018,7 +2014,7 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, Defcon::EObjTy
 		Params.Colors            = { C_WHITE, C_RED, C_YELLOW, C_ORANGE, C_LIGHTYELLOW };
 		Params.TargetBoxRadius.Set(0.0f, 0.0f);
 
-		SpecializeMaterialization(Params, EnemyType);
+		SpecializeMaterialization(Params, ObjType);
 
 		auto MaterializationTask = new Defcon::CCreateMaterializationTask;
 		MaterializationTask->InitMaterializationTask(Params);
@@ -2029,17 +2025,17 @@ void UDefconPlayViewBase::CreateEnemy(Defcon::EObjType EnemyType, Defcon::EObjTy
 		Defcon::GGameMatch->GetMission()->AddTask(MaterializationTask);
 	}
 
-	Defcon::GGameMatch->GetMission()->AddEnemy(EnemyType, CreatorType, Where, Countdown, Flags);
+	Defcon::GGameMatch->GetMission()->AddGameObject(ObjType, CreatorType, Where, Countdown, Flags);
 }
 
 
-Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::EObjType EnemyType, Defcon::EObjType CreatorType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags)
+Defcon::CEnemy* UDefconPlayViewBase::SpawnGameObjectNow(Defcon::EObjType ObjType, Defcon::EObjType CreatorType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags)
 {
 	// Create an enemy immediately by executing its Do method and not putting the task into a task list.
 
-	auto Task = new Defcon::CCreateEnemyTask;
+	auto Task = new Defcon::CCreateGameObjectTask;
 
-	Task->EnemyType      = EnemyType;
+	Task->ObjType        = ObjType;
 	Task->CreatorType    = CreatorType;
 	Task->Where          = Where;
 	Task->bMissionTarget = Defcon::HasFlag(Flags, Defcon::EObjectCreationFlags::IsMissionTarget);
@@ -2050,33 +2046,31 @@ Defcon::CEnemy* UDefconPlayViewBase::CreateEnemyNow(Defcon::EObjType EnemyType, 
 }
 
 
-void UDefconPlayViewBase::OnSelectEnemyToSpawn()
+void UDefconPlayViewBase::OnSelectGameObjectToSpawn()
 {
-	SpawnedEnemyIndex = (SpawnedEnemyIndex + 1) % array_size(SpawnedEnemyTypes);
+	SpawnedGameObjectIndex = (SpawnedGameObjectIndex + 1) % array_size(SpawnedGameObjectTypes);
 
-	FString Str = FString::Printf(TEXT("Enemy type %s chosen"), *Defcon::GObjectTypeManager.GetName(SpawnedEnemyTypes[SpawnedEnemyIndex]));
+	FString Str = FString::Printf(TEXT("Enemy type %s chosen"), *Defcon::GObjectTypeManager.GetName(SpawnedGameObjectTypes[SpawnedGameObjectIndex]));
 
-	AddMessage(Str, 0.25f);
+	Defcon::GMessageMediator.TellUser(Str, 0.25f);
 }
 
 
-void UDefconPlayViewBase::OnSpawnEnemy()
+void UDefconPlayViewBase::OnSpawnGameObject()
 {
 	// Debug tool, lets us spawn enemies on demand to test materialization, etc.
 
-	auto pt = GetPlayerShip().Position;
-	pt.x = WrapX(pt.x + 300 * SGN(GetPlayerShip().Orientation.Fwd.x));
+	auto P = GetPlayerShip().Position;
+	P.x = WrapX(P.x + 300 * SGN(GetPlayerShip().Orientation.Fwd.x));
 
-	CreateEnemy(SpawnedEnemyTypes[SpawnedEnemyIndex], Defcon::EObjType::UNKNOWN, pt, 0.0f, 
+	SpawnGameObject(SpawnedGameObjectTypes[SpawnedGameObjectIndex], Defcon::EObjType::UNKNOWN, P, 0.0f, 
 		(Defcon::EObjectCreationFlags)((int32)Defcon::EObjectCreationFlags::Materializes | (int32)Defcon::EObjectCreationFlags::NotMissionTarget));
 }
 
 
-void UDefconPlayViewBase::AdjustAbductionCount(int32 Amount)
+void UDefconPlayViewBase::OnHumansChanged()
 {
 	// Can also be called when a human dies.
-
-	AbductionCount += Amount;
 
 	TArray<bool> AbductionStates;
 	AbductionStates.Reserve(GetHumans().Count());

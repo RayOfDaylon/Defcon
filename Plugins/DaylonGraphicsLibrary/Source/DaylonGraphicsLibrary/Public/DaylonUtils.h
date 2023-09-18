@@ -436,7 +436,7 @@ namespace Daylon
 			TMessageMediator() {}
 
 
-			void Send(Tenum Message, void* Payload = nullptr)
+			void Send(Tenum Message, void* Payload = nullptr) const
 			{
 				check(Message != Tenum::Unknown);
 

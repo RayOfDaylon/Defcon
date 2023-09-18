@@ -177,7 +177,7 @@ void Defcon::CPhred::Tick(float DeltaTime)
 
 	MunchieSpawnCountdown = Daylon::FRandRange(MUNCHIE_SPAWN_COUNTDOWN);
 
-	GArena->CreateEnemyNow(EObjType::MUNCHIE, GetType(), Position, EObjectCreationFlags::CleanerEnemy);
+	GArena->SpawnGameObjectNow(EObjType::MUNCHIE, GetType(), Position, EObjectCreationFlags::CleanerEnemy);
 }
 
 // ----------------------------------------------------------------------------------

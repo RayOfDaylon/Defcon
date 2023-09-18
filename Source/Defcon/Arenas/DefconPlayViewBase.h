@@ -65,42 +65,42 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 		bool bParentEnabled) const override;
 
 
-	//virtual void OnActivate         () override;
-	virtual bool IsOkayToFinishActivating () const override;
-	virtual bool RequiresGameMatch        () const override { return true; }
+	//virtual void OnActivate               () override;
+	virtual bool IsOkayToFinishActivating   () const override;
+	virtual bool RequiresGameMatch          () const override { return true; }
 
-	virtual void OnFinishActivating   () override;
-	virtual void OnDeactivate         () override;
-	virtual void OnEscPressed         () override;
-	virtual void OnPausePressed       () override;
-	virtual void OnBulletTimePressed  () override;
-	virtual void OnNavEvent           (ENavigationKey Key) override; // todo: just for debugging
-	virtual void OnPawnNavEvent       (EDefconPawnNavigationEvent Event, bool Active) override;
-	virtual void OnPawnWeaponEvent    (EDefconPawnWeaponEvent Event, bool Active) override;
+	virtual void OnFinishActivating         () override;
+	virtual void OnDeactivate               () override;
+	virtual void OnEscPressed               () override;
+	virtual void OnPausePressed             () override;
+	virtual void OnBulletTimePressed        () override;
+	virtual void OnNavEvent                 (ENavigationKey Key) override; // todo: just for debugging
+	virtual void OnPawnNavEvent             (EDefconPawnNavigationEvent Event, bool Active) override;
+	virtual void OnPawnWeaponEvent          (EDefconPawnWeaponEvent Event, bool Active) override;
 
-	virtual void OnToggleDebugStats        () override;
-	virtual void OnToggleShowBoundingBoxes () override;
-	virtual void OnToggleShowOrigin        () override;
+	virtual void OnToggleDebugStats         () override;
+	virtual void OnToggleShowBoundingBoxes  () override;
+	virtual void OnToggleShowOrigin         () override;
 
 
-	void UpdateGameObjects        (float DeltaTime);
-	void ConcludeMission          ();
+	void         UpdateGameObjects          (float DeltaTime);
+	void         ConcludeMission            ();
+										    
+	void         InitCoordMappers           ();
+	void         InitPlayerShipForMission   ();
+	void         KeepPlayerShipInView       (float DeltaTime);
+	bool         IsPlayerShipThrustActive   () const;
+	void         CheckPlayerCollided        ();
+	void         CheckIfPlayerHit           (Defcon::CGameObjectCollection& Objects);
+	void         DoThrustSound              (float DeltaTime);
+										    
+	void         Hyperspace                 ();
+	void         DetonateSmartbomb          ();
+	void         DeleteAllObjects           ();
+	void         OnPlayerShipDestroyed      ();
+	void         DestroyPlayerShip          ();
 
-	void InitMappers              ();
-	void InitPlayerShipForMission ();
-	void KeepPlayerShipInView     (float DeltaTime);
-	bool IsPlayerShipThrustActive () const;
-	void CheckPlayerCollided      ();
-	void CheckIfPlayerHit         (Defcon::CGameObjectCollection& Objects);
-	void DoThrustSound            (float DeltaTime);
-
-	void Hyperspace               ();
-	void DetonateSmartbomb        ();
-	void DeleteAllObjects         ();
-	void OnPlayerShipDestroyed    ();
-	void DestroyPlayerShip        ();
-
-	void SpecializeMaterialization(Defcon::FMaterializationParams& Params, Defcon::EObjType ObjectType);
+	void         SpecializeMaterialization  (Defcon::FMaterializationParams& Params, Defcon::EObjType ObjectType);
 
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
@@ -140,7 +140,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	float      FadeAge              = 0.0f;
 	int32      NumPlayerPassengers  = 0;
 	int32      m_nFlashScreen       = 0;//todo: is this needed?
-	int32      AbductionCount       = 0;
+	
 	bool 	   bFinishActivating    = false;
 	bool       bMissionDoneMsgShown = false;
 	bool       AreHumansInMission   = false;
@@ -166,46 +166,46 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	Defcon::CGameObjectCollection&        GetEnemies               () { return Enemies; }
 	const Daylon::FRange<float>&          GetAllowableTerrainSpan  () const { return AllowableTerrainSpan; }
 
-	float                ShortestDirection    (const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result) const;
-	void                 Lerp                 (const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result, float T) const;
-	float                Xdistance            (float WorldX1, float WorldX2) const;
-	float                HorzDistance         (const CFPoint& WorldPosA, const CFPoint& WorldPosB) const { return Xdistance(WorldPosA.x, WorldPosB.x); }
-	float                WrapX                (float WorldX) const;
-	bool                 IsPointVisible       (const CFPoint& WorldPos) const;
-
-	float                GetWidth             () const { return ArenaWidth; }
-	float                GetHeight            () const { return ArenaSize.Y; }
-	float                GetDisplayWidth      () const { return MainAreaSize.X; }
-	float                GetTerrainElev       (float X) const;
-	bool                 HasTerrain           () const { return true; } // todo: support no-terrain missions
-	void                 CreateTerrain        ();
-	void                 AddDebris            (Defcon::IGameObject* Obj);
-	void                 LayMine              (Defcon::IGameObject& Obj, const CFPoint& From, int32, int32);
-	Defcon::IBullet*     FireBullet           (Defcon::IGameObject&, const CFPoint& From, int32 SoundID, int32);
-	bool                 IsEnding             () const { return bArenaClosing; }
-	void                 DestroyObject        (Defcon::IGameObject* Obj, bool bExplode = true);
-	void                 IncreaseScore        (int32 Points, bool bVis, const CFPoint* P);
-	void                 CreateEnemy          (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags);
-	Defcon::CEnemy*      CreateEnemyNow       (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags);
-	Defcon::CHuman*      FindNearestHuman     (float X) const;
-	Defcon::IGameObject* FindEnemy            (Defcon::EObjType Kind, Defcon::IGameObject* Obj = nullptr) const { return Enemies.Find(Kind, Obj); }
-	void                 CheckIfObjectsGotHit (Defcon::CGameObjectCollection& Objects);
-	void                 ShieldBonk           (Defcon::IGameObject* Obj, float Force);
-	void                 ProcessWeaponsHits   ();
-	void                 AddMessage           (const FString& Str, float Duration = 0.0f);
-	void                 TransportPlayerShip  ();
-	void                 AllStopPlayerShip    ();
-	void                 AdjustAbductionCount (int32 Amount);
+	float                                 ShortestDirection        (const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result) const;
+	void                                  Lerp                     (const CFPoint& WorldPosA, const CFPoint& WorldPosB, CFPoint& Result, float T) const;
+	float                                 Xdistance                (float WorldX1, float WorldX2) const;
+	float                                 HorzDistance             (const CFPoint& WorldPosA, const CFPoint& WorldPosB) const { return Xdistance(WorldPosA.x, WorldPosB.x); }
+	float                                 WrapX                    (float WorldX) const;
+	bool                                  IsPointVisible           (const CFPoint& WorldPos) const;
+						                  					       
+	float                                 GetWidth                 () const { return ArenaWidth; }
+	float                                 GetHeight                () const { return ArenaSize.Y; }
+	float                                 GetDisplayWidth          () const { return MainAreaSize.X; }
+	float                                 GetTerrainElev           (float X) const;
+	bool                                  HasTerrain               () const { return true; } // todo: support no-terrain missions
+	void                                  CreateTerrain            ();
+	void                                  AddDebris                (Defcon::IGameObject* Obj);
+	void                                  LayMine                  (Defcon::IGameObject& Obj, const CFPoint& From, int32, int32);
+	Defcon::IBullet*                      FireBullet               (Defcon::IGameObject&, const CFPoint& From, int32 SoundID, int32);
+	bool                                  IsEnding                 () const { return bArenaClosing; }
+	void                                  DestroyObject            (Defcon::IGameObject* Obj, bool bExplode = true);
+	void                                  IncreaseScore            (int32 Points, bool bVis, const CFPoint* P);
+	void                                  SpawnGameObject          (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags);
+	Defcon::CEnemy*                       SpawnGameObjectNow       (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags);
+	Defcon::CHuman*                       FindNearestHuman         (float X) const;
+	Defcon::IGameObject*                  FindEnemy                (Defcon::EObjType Kind, Defcon::IGameObject* Obj = nullptr) const { return Enemies.Find(Kind, Obj); }
+	void                                  CheckIfObjectsGotHit     (Defcon::CGameObjectCollection& Objects);
+	void                                  ShieldBonk               (Defcon::IGameObject* Obj, float Force);
+	void                                  ProcessWeaponsHits       ();
+	void                                  TransportPlayerShip      ();
+	void                                  AllStopPlayerShip        ();
+	void                                  OnHumansChanged          ();
+	//void                                AddMessage               (const FString& Str, float Duration = 0.0f);
 
 	
 	// Debugging support -------------------------------------------------------------------------------------
 
-	void                 OnSpawnEnemy         ();
-	void                 OnSelectEnemyToSpawn ();
+	void                 OnSpawnGameObject         ();
+	void                 OnSelectGameObjectToSpawn ();
 
-	int32                SpawnedEnemyIndex = 0;
+	int32                SpawnedGameObjectIndex = 0;
 	
-	Defcon::EObjType SpawnedEnemyTypes[18] =
+	Defcon::EObjType     SpawnedGameObjectTypes[18] =
 	{
 		Defcon::EObjType::LANDER,
 		Defcon::EObjType::HUNTER,
