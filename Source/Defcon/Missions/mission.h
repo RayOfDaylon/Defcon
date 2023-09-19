@@ -88,7 +88,7 @@ namespace Defcon
 			virtual bool    UsesTerrain        () const { return true; }
 			virtual bool	HumansInvolved	   () const { return true; }
 			virtual bool	IsMissionComplete  () const { return true; }
-			virtual void    AddGameObject      (EObjType ObjType, EObjType CreatorType, const CFPoint& Where, float Countdown, EObjectCreationFlags Flags);
+			virtual void    AddGameObject      (EObjType ObjType, EObjType CreatorType, const CFPoint& Where, float Countdown, EObjectCreationFlags Flags, const Daylon::FMetadata* Options = nullptr);
 
 
 			EMissionID		GetID			   () const { return ID; }

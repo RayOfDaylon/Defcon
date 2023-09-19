@@ -118,6 +118,7 @@ namespace Defcon
 				player_maxthrust,
 				player_posmargin,
 				player_rebirth_delay,
+				PodIntersectionWidth,
 				PodSpeed,
 				pod_value,
 
@@ -262,6 +263,7 @@ extern Defcon::CPrefs	GPrefs;
 #define MUNCHIE_VALUE                IPREFVAL(munchie_value)
 #define OBJECT_DRAWBBOX              BPREFVAL(object_drawbbox)
 #define PHRED_VALUE                  IPREFVAL(phred_value)
+#define POD_INTERSECTION_WIDTH       RPREFVAL(PodIntersectionWidth)
 #define POD_SPEED                    RPREFVAL(PodSpeed)
 #define POD_VALUE                    IPREFVAL(pod_value)
 #define REFORMER_VALUE               IPREFVAL(reformer_value) 

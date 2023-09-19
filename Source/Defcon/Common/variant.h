@@ -15,6 +15,26 @@
 #include "DaylonUtils.h"
 
 
+namespace Daylon
+{
+	union FVariant 
+	{
+		bool   Boolean;
+		int32  Integer;
+		double Real;
+	};
+
+	struct FMetadata
+	{
+		TMap<FString, FVariant> Map;
+
+		bool   GetBool    (const FString& Key) const { return Map[Key].Boolean; }
+		double GetReal    (const FString& Key) const { return Map[Key].Real; }
+		int32  GetInteger (const FString& Key) const { return Map[Key].Integer; }
+	};
+}
+
+
 enum class EVarType
 {
 	Boolean,

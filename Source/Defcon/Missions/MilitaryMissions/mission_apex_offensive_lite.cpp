@@ -29,7 +29,7 @@ void Defcon::CApexOffensiveLite::Init()
 	AddEnemySpawnInfo({ EObjType::FIREBOMBER_TRUE, { 1, 1, 1, 1 } });
 	AddEnemySpawnInfo({ EObjType::FIREBOMBER_WEAK, { 1, 1, 1, 1 } });
 	AddEnemySpawnInfo({ EObjType::DYNAMO,          { 2, 2, 2, 1 } });
-	AddEnemySpawnInfo({ EObjType::POD,             { 2, 1, 0, 0 } });
+	//AddEnemySpawnInfo({ EObjType::POD,             { 2, 2, 0, 0 } });
 	AddEnemySpawnInfo({ EObjType::BOMBER,          { 2, 2, 1, 0 } });
 }
 

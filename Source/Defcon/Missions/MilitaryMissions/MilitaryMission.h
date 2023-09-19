@@ -39,6 +39,7 @@ namespace Defcon
 			virtual int32   TargetsRemaining    () const;
 			virtual int32   TotalHostilesInPlay () const;
 			virtual int32   LandersRemaining    () const { return NumLandersRemaining; }
+			virtual int32   StartingPodCount    () const { return 0; }
 			bool            PlayerInStargate    () const;
 
 
@@ -98,6 +99,8 @@ namespace Defcon
 			virtual FString GetName() const override { return "Reinforcements"; }
 			virtual FString GetDesc() const override { return "The landers bring some friends to escort them"; }
 
+			virtual int32   StartingPodCount  () const override { return 2; }
+
 		private:
 			virtual void MakeTargets  (float, const CFPoint&) override;
 	};
@@ -113,6 +116,9 @@ namespace Defcon
 
 			virtual FString GetName() const override { return "Bomber Showdown"; }
 			virtual FString GetDesc() const override { return "Even a few mines will blow your shields away"; }
+
+			virtual int32   StartingPodCount  () const override { return 3; }
+
 	};
 
 
@@ -163,7 +169,8 @@ namespace Defcon
 			virtual bool    HumansInvolved  () const override { return false; }
 
 		protected:
-			virtual void OverrideSpawnPoint(EObjType ObjType, CFPoint& SpawnPoint);
+			virtual void    OverrideSpawnPoint  (EObjType ObjType, CFPoint& SpawnPoint);
+			virtual int32   StartingPodCount    () const override { return 4; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -180,6 +187,7 @@ namespace Defcon
 
 			virtual FString GetName() const override { return "Yllabian Escort"; }
 			virtual FString GetDesc() const override { return "This ought to be interesting"; }
+			virtual int32   StartingPodCount  () const override { return 5; }
 
 
 		private:
@@ -197,6 +205,7 @@ namespace Defcon
 
 			virtual FString GetName() const override { return "Firebomber Pack"; }
 			virtual FString GetDesc() const override { return "A rogue cluster of firebombers in a tight formation"; }
+			virtual int32   StartingPodCount  () const override { return 4; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -213,6 +222,7 @@ namespace Defcon
 
 			virtual FString GetName() const override { return "Apex Offensive"; }
 			virtual FString GetDesc() const override { return "The Apex beef up the lander escort to full strength"; }
+			virtual int32   StartingPodCount  () const override { return 4; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -229,6 +239,7 @@ namespace Defcon
 
 			virtual FString GetName() const override { return "Party Mix"; }
 			virtual FString GetDesc() const override { return "Mix it up with a random assortment of Apex enemies"; }
+			virtual int32   StartingPodCount  () const override { return 4; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -238,7 +249,7 @@ namespace Defcon
 			int32 IdxEnemyTypes = 0;
 
 
-			EObjType EnemyTypes[15] = 
+			EObjType EnemyTypes[14] = 
 			{
 				EObjType::LANDER,
 				EObjType::LANDER,
@@ -247,7 +258,7 @@ namespace Defcon
 				EObjType::GUPPY,
 				EObjType::GUPPY,
 				EObjType::BOMBER,
-				EObjType::POD,
+				//EObjType::POD,
 				EObjType::SWARMER,
 				EObjType::FIREBOMBER_TRUE,
 				EObjType::FIREBOMBER_WEAK,
@@ -269,6 +280,7 @@ namespace Defcon
 
 			virtual FString GetName() const override { return "Apex Offensive Lite"; }
 			virtual FString GetDesc() const override { return "The Apex beef up their lander escort a little more"; }
+			virtual int32   StartingPodCount  () const override { return 3; }
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;
@@ -345,6 +357,8 @@ namespace Defcon
 
 			virtual FString GetName() const override { return "Attack of the Bouncers"; }
 			virtual FString GetDesc() const override { return "Follow the bouncing ball and fire"; }
+			virtual int32   StartingPodCount  () const override { return 4; }
+
 
 		private:
 			virtual void MakeTargets(float, const CFPoint&) override;

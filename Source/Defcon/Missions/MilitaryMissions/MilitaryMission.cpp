@@ -40,31 +40,7 @@ void Defcon::CMilitaryMission::Init()
 
 	SpawnRangeHorizontal = GArena->GetWidth() * ATTACK_INITIALDISTANCE;
 
-#if 0
-	// Turrets are an experiment, maybe later we'll have them.
-	// Add some turrets.
-
-	check(gpArena != nullptr);
-
-	if(gpArena->HasTerrain())
-	{
-		for(int32 i = 0; i < 10; i++)
-		{
-			//auto pEvt = new CCreateGameObjectTask;
-			pEvt->Init(p);
-			pEvt->ObjType = EObjType::TURRET;
-			pEvt->Countdown = 0.0f;
-			float ArenaWidth = gpArena->GetWidth();
-			float X = FRAND * ArenaWidth;
-			X = (float)fmod(X, ArenaWidth);
-			float Y = p->GetTerrainElev(X) - 10;
-			pEvt->Where.Set(X, Y);
-			pEvt->bMissionTarget = false; // can leave turrets alive w/o aborting mission
-			pEvt->m_bMaterializes = false;
-			AddTask(pEvt);
-		}
-	}
-#endif
+	NumTargetsRemaining = StartingPodCount();
 }
 
 
@@ -130,9 +106,64 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 		return;
 	}
 
+	const float ArenaWidth = GArena->GetWidth();
+
+
+	// See if we have any pods in the first wave. If so, set up a pod intersection.
+
+	if(WaveIndex == 0)
+	{
+		const int32 NumPods = StartingPodCount();
+
+		if(NumPods > 1)
+		{
+			// Spawn the pods so that eventually meet up within smart bomb range.
+			// To simplify things, make them all spawn simultaneously.
+
+			// The width of the intersection area depends on XP. The more XP, the wider the area.
+			const float XP = FMath::Min(1.0f, GGameMatch->GetScore() / 50000.0f);
+		
+			const float PodIntersectionWidth = Daylon::Lerp(POD_INTERSECTION_WIDTH, XP) * GArena->GetDisplayWidth();
+
+			// Pick where the intersection will happen. It shouldn't be near the player.
+			const float PodIntersectionX = ArenaWidth * FRANDRANGE(0.33f, 0.67f);
+
+			// Pick how long it takes the intersection to form.
+			const float PodIntersectionTime = FRANDRANGE(3.0f, 8.0f);
+
+			for(int32 PodIndex = 0; PodIndex < NumPods; PodIndex++)
+			{
+				// Pick a random place where the pod will end up.
+				CFPoint EndSpawnPoint(
+					fmod(PodIntersectionX + FRANDRANGE(-PodIntersectionWidth / 2, PodIntersectionWidth / 2), ArenaWidth), 
+					GArena->GetHeight() * Daylon::FRandRange(SpawnAltitudeRange));
+
+				// Pick a x-velocity for the pod.
+				const float PodSpeedX = Daylon::FRandRange(POD_SPEED);
+				const float PodOrientationX = SBRAND;
+
+				// Work backwards to determine starting spawn point.
+				CFPoint SpawnPoint = EndSpawnPoint;
+				SpawnPoint.x -= PodSpeedX * PodOrientationX * PodIntersectionTime;
+				SpawnPoint.x = GArena->WrapX(SpawnPoint.x);
+
+				Daylon::FMetadata Options;
+
+				Daylon::FVariant Value;
+
+				Value.Real = PodOrientationX;
+				Options.Map.Add(TEXT("OrientationX"), Value); 
+
+				Value.Real = PodSpeedX;
+				Options.Map.Add(TEXT("SpeedX"), Value); 
+
+				GArena->SpawnGameObject(EObjType::POD, EObjType::UNKNOWN, SpawnPoint, 0.0f, EObjectCreationFlags::StandardEnemy, &Options);	
+			}
+		}
+	}
+
 	RepopCounter = 0.0f;
 	
-	const float ArenaWidth = GArena->GetWidth();
 
 	for(int32 EnemyTypeIndex = 0; EnemyTypeIndex < EnemySpawnCountsArray.Num(); EnemyTypeIndex++)	
 	{	

@@ -111,7 +111,9 @@ void Defcon::CPrefs::Construct()
 	INITPREF( player_posmargin,           450.0f,    "px",           Integer,     50,         700,      "Minimum distance between player's ship and edge of screen"                                 );
 	INITPREF( player_rebirth_delay,         2.0f,    "seconds",      Float,        0.1f,        5.0f,   "Delay between player destruction and materialization"                                      );
 
-	INITPREFR( PodSpeed,   50, 400, "px/sec", "Pod travel speed");
+
+	INITPREFR( PodIntersectionWidth,    0.2f,   0.8f, "%",      "Pod intersection width (percentage of visible screen width)");
+	INITPREFR( PodSpeed,               50,    400,    "px/sec", "Pod travel speed");
 
 	INITPREF( pod_value,                 1000,       "",             Integer,      0,        1000,      "Number of points earned for destroying a pod"                                              );
 	INITPREF( RadarIsPlayerCentric,         0,       "",             Boolean,      0,           0,      "Radar keeps player ship fixed, otherwise screen edges are fixed (arcade match)"            );

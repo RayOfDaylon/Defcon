@@ -95,7 +95,15 @@ void Defcon::IMission::DoIntroText(float DeltaTime)
 }
 
 
-void Defcon::IMission::AddGameObject(Defcon::EObjType ObjType, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags)
+void Defcon::IMission::AddGameObject
+(
+	Defcon::EObjType             ObjType, 
+	Defcon::EObjType             CreatorType, 
+	const CFPoint&               Where, 
+	float                        Countdown, 
+	Defcon::EObjectCreationFlags Flags, 
+	const Daylon::FMetadata*     Options
+)
 {
 	auto Task = new CCreateGameObjectTask;
 
@@ -104,6 +112,11 @@ void Defcon::IMission::AddGameObject(Defcon::EObjType ObjType, Defcon::EObjType 
 	Task->Where				= Where;
 	Task->bMissionTarget	= HasFlag(Flags, EObjectCreationFlags::IsMissionTarget);
 	Task->Countdown         = Countdown; 
+	
+	if(Options != nullptr)
+	{
+		Task->Options           = *Options;
+	}
 
 	EnemyCreationTasks.Add(Task);
 }

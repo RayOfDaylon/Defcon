@@ -25,7 +25,7 @@ void Defcon::CYllabianEscort::Init()
 
 	AddEnemySpawnInfo({ EObjType::GUPPY,   { 24, 30, 30, 30 } });
 	AddEnemySpawnInfo({ EObjType::SWARMER, {  3,  3,  3,  3 } });
-	AddEnemySpawnInfo({ EObjType::POD,     {  3,  3,  3,  0 } });
+	//AddEnemySpawnInfo({ EObjType::POD,     {  3,  3,  3,  0 } });
 	AddEnemySpawnInfo({ EObjType::DYNAMO,  { 10,  7,  4,  3 } });
 	AddEnemySpawnInfo({ EObjType::HUNTER,  {  3,  4,  4,  3 } });
 	AddEnemySpawnInfo({ EObjType::LANDER,  { 10, 12, 10,  5 } });

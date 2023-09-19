@@ -177,7 +177,6 @@ void Defcon::CCreateGameObjectTask::Do()
 		case EObjType::DYNAMO:          SpecializeForDynamo         (Enemy, Where); break;
 		case EObjType::SPACEHUM:        SpecializeForSpacehum       (Enemy, Where); break;
 		case EObjType::BAITER:          SpecializeForBaiter         (Enemy, Where); break;
-		case EObjType::POD:             SpecializeForPod            (Enemy, Where); break;
 		case EObjType::SWARMER:         SpecializeForSwarmer        (Enemy, Where); break;
 		case EObjType::REFORMER:        SpecializeForReformer       (Enemy, Where); break;
 		case EObjType::REFORMERPART:    SpecializeForReformerPart   (Enemy, Where); break;
@@ -186,7 +185,10 @@ void Defcon::CCreateGameObjectTask::Do()
 		case EObjType::PHRED:           SpecializeForPhred          (Enemy, Where); break;
 		case EObjType::BIGRED:          SpecializeForBigRed         (Enemy, Where); break;
 		case EObjType::MUNCHIE:         SpecializeForMunchie        (Enemy, Where); break;
-		case EObjType::TURRET:          SpecializeForTurret         (Enemy, Where); break;
+		//case EObjType::TURRET:          SpecializeForTurret         (Enemy, Where); break;
+		
+		case EObjType::POD:  			SpecializeForPod            (Enemy, Where); break;
+
 
 		default:
 			check(false);
@@ -368,7 +370,9 @@ void Defcon::CCreateGameObjectTask::SpecializeForSpacehum(Defcon::CEnemy* Enemy,
 
 void Defcon::CCreateGameObjectTask::SpecializeForPod(Defcon::CEnemy* Enemy, const CFPoint& where)
 {
-	SET_RANDOM_FWD_ORIENT
+	check(Options.Map.Num() >= 2);
+	Enemy->Orientation.Fwd.x = Options.GetReal(TEXT("OrientationX"));
+	static_cast<CPod*>(Enemy)->SetSpeed(Options.GetReal(TEXT("SpeedX")));
 }
 
 

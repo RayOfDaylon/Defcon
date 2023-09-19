@@ -23,11 +23,13 @@ namespace Defcon
 			virtual void OnAboutToDie  () override;
 			virtual void Explode       (CGameObjectCollection&) override;
 
+			void SetSpeed(float InSpeed) { Speed = InSpeed; }
+
 
 		private:
 
 			float OffsetY;   // todo: this doesn't do anything?
 			float Frequency;
-			float Speed;
+			float Speed = 0.0f;
 	};
 }

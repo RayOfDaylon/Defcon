@@ -23,6 +23,7 @@ namespace Defcon
 }
 
 
+
 /*
 	Base class of the play view widget blueprint, which holds the main screen, the radar screen, 
 	and the stats panel, i.e.:
@@ -185,7 +186,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	bool                                  IsEnding                 () const { return bArenaClosing; }
 	void                                  DestroyObject            (Defcon::IGameObject* Obj, bool bExplode = true);
 	void                                  IncreaseScore            (int32 Points, bool bVis, const CFPoint* P);
-	void                                  SpawnGameObject          (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags);
+	void                                  SpawnGameObject          (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags, const Daylon::FMetadata* Options = nullptr);
 	Defcon::CEnemy*                       SpawnGameObjectNow       (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags);
 	Defcon::CHuman*                       FindNearestHuman         (float X) const;
 	Defcon::IGameObject*                  FindEnemy                (Defcon::EObjType Kind, Defcon::IGameObject* Obj = nullptr) const { return Enemies.Find(Kind, Obj); }

@@ -6,6 +6,7 @@
 #include "CoreMinimal.h"
 #include "Common/util_geom.h"
 #include "GameObjects/obj_types.h"
+#include "Common/variant.h"
 
 
 
@@ -65,10 +66,11 @@ namespace Defcon
 
 			CCreateGameObjectTask() {}
 
-			CFPoint   Where;
-			EObjType  ObjType      = EObjType::UNKNOWN;
-			EObjType  CreatorType    = EObjType::UNKNOWN;
-			bool      bMissionTarget = false;
+			CFPoint            Where;
+			Daylon::FMetadata  Options;
+			EObjType           ObjType        = EObjType::UNKNOWN;
+			EObjType           CreatorType    = EObjType::UNKNOWN;
+			bool               bMissionTarget = false;
 
 			virtual void Do() override;
 

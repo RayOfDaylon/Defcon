@@ -1993,7 +1993,15 @@ void UDefconPlayViewBase::SpecializeMaterialization(Defcon::FMaterializationPara
 }
 
 
-void UDefconPlayViewBase::SpawnGameObject(Defcon::EObjType ObjType, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags)
+void UDefconPlayViewBase::SpawnGameObject
+(
+	Defcon::EObjType               ObjType, 
+	Defcon::EObjType               CreatorType, 
+	const CFPoint&                 Where, 
+	float                          Countdown, 
+	Defcon::EObjectCreationFlags   Flags, 
+	const Daylon::FMetadata*       Options
+)
 {
 	const auto MaterializationLifetime = ENEMY_BIRTHDURATION;
 
@@ -2016,6 +2024,11 @@ void UDefconPlayViewBase::SpawnGameObject(Defcon::EObjType ObjType, Defcon::EObj
 
 		SpecializeMaterialization(Params, ObjType);
 
+		/*if(Options != nullptr)
+		{
+			Params.Extra = *Options;
+		}*/
+
 		auto MaterializationTask = new Defcon::CCreateMaterializationTask;
 		MaterializationTask->InitMaterializationTask(Params);
 		MaterializationTask->Countdown = Countdown;
@@ -2025,7 +2038,7 @@ void UDefconPlayViewBase::SpawnGameObject(Defcon::EObjType ObjType, Defcon::EObj
 		Defcon::GGameMatch->GetMission()->AddTask(MaterializationTask);
 	}
 
-	Defcon::GGameMatch->GetMission()->AddGameObject(ObjType, CreatorType, Where, Countdown, Flags);
+	Defcon::GGameMatch->GetMission()->AddGameObject(ObjType, CreatorType, Where, Countdown, Flags, Options);
 }
 
 

@@ -33,13 +33,13 @@ Defcon::CPod::CPod()
 	PointValue = POD_VALUE;
 	RadarColor = C_MAGENTA;
 
-	Orientation.Fwd.Set(BRAND ? -1 : 1, 0.0f);
+	//Orientation.Fwd.Set(BRAND ? -1 : 1, 0.0f);
+	//Speed = Daylon::FRandRange(POD_SPEED);
 
 	CreateSprite(Type);
 	const auto& SpriteInfo = GGameObjectResources.Get(Type);
 	BboxRadius.Set(SpriteInfo.Size.X / 2, SpriteInfo.Size.Y / 2);
 
-	Speed = Daylon::FRandRange(POD_SPEED);
 }
 
 
