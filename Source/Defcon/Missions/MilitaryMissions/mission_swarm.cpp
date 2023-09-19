@@ -21,9 +21,9 @@ void Defcon::CSwarm::Init()
 }
 
 
-bool Defcon::CSwarm::Update(float fElapsed)
+bool Defcon::CSwarm::Tick(float fElapsed)
 {
-	if(!Super::Update(fElapsed))
+	if(!Super::Tick(fElapsed))
 		return false;
 
 	DoIntroText(fElapsed);

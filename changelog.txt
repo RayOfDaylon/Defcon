@@ -2,8 +2,12 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 17, 2023
+September 19, 2023
 
+
+Pod intersection timer message displayed.
+
+"Smart bomb awarded" message appears when a smart bomb is gained.
 
 "All mission targets destroyed" message now a permanent message 
 instead of a normal message, so it remains displayed 

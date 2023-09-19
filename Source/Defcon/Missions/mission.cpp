@@ -63,7 +63,7 @@ void Defcon::IMission::Init()
 }
 
 
-bool Defcon::IMission::Update(float DeltaTime) 
+bool Defcon::IMission::Tick(float DeltaTime) 
 {
 	Age += DeltaTime; 
 

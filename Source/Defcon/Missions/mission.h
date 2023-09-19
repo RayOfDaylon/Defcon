@@ -83,17 +83,17 @@ namespace Defcon
 			virtual FString GetDesc() const = 0;
 
 			virtual bool    IsMilitary         () const { return false; }
-			virtual bool	Update			   (float DeltaTime);
-			virtual void	Conclude		   () {}
+			virtual bool	Tick               (float DeltaTime);
+			virtual void	Conclude           () {}
 			virtual bool    UsesTerrain        () const { return true; }
 			virtual bool	HumansInvolved	   () const { return true; }
 			virtual bool	IsMissionComplete  () const { return true; }
 			virtual void    AddGameObject      (EObjType ObjType, EObjType CreatorType, const CFPoint& Where, float Countdown, EObjectCreationFlags Flags, const Daylon::FMetadata* Options = nullptr);
 
 
-			EMissionID		GetID			   () const { return ID; }
+			EMissionID		GetID              () const { return ID; }
 			void			AddTask            (CScheduledTask* p) { ScheduledTasks.Add(p); }
-			bool			IsRunning		   () const { return (GArena != nullptr); }
+			bool			IsRunning          () const { return (GArena != nullptr); }
 											   
 			const FString&  GetIntroText       () const { return IntroText; }
 
@@ -128,7 +128,7 @@ namespace Defcon
 			CFlightTrainingMission() { ID = EMissionID::FlightTraining; }
 
 			virtual void    Init     () override;
-			virtual bool    Update   (float DeltaTime) override;
+			virtual bool    Tick     (float DeltaTime) override;
 			virtual FString GetName  () const override { return "Flight Training"; }
 			virtual FString GetDesc  () const override { return "Practice flying your new ship"; }
 
@@ -147,7 +147,7 @@ namespace Defcon
 			CWeaponsTrainingMission() { ID = EMissionID::WeaponsTraining; }
 
 			virtual void    Init     () override;
-			virtual bool    Update   (float DeltaTime) override;
+			virtual bool    Tick     (float DeltaTime) override;
 			virtual FString GetName  () const override { return "Weapons Training"; }
 			virtual FString GetDesc  () const override { return "Practice shooting at various targets"; }
 

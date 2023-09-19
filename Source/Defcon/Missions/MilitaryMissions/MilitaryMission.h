@@ -20,6 +20,21 @@ namespace Defcon
 	// todo: might be a better way to define missions than as classes. We're repeating a lot of class defs here.
 
 
+	class CPodIntersectionAlert
+	{
+		float Countdown      = 0.0f;
+		int32 PreviousSecond = 0;
+
+		public:
+
+			CPodIntersectionAlert  (float Time);
+			~CPodIntersectionAlert ();
+
+			void  Tick  (float DeltaTime);
+			bool  Done  () const { return (Countdown < 0.0f); }
+	};
+
+
 	class CMilitaryMission : public IMission
 	{
 		typedef IMission Super;
@@ -27,15 +42,16 @@ namespace Defcon
 		public:
 
 			CMilitaryMission();
+			virtual ~CMilitaryMission();
 
 			virtual bool    IsMilitary          () const override { return true; }
 
 			virtual void    Init                () override;
-			virtual bool    Update              (float DeltaTime) override;
+			virtual bool    Tick                (float DeltaTime) override;
 			virtual void    MakeTargets         (float DeltaTime, const CFPoint& Where) { UpdateWaves(Where); }
 			virtual void    TargetDestroyed     (EObjType Kind);
 			virtual void    AddNonTarget        (EObjType Kind, const CFPoint& P);
-			virtual bool    IsMissionComplete          () const override;
+			virtual bool    IsMissionComplete   () const override;
 			virtual int32   TargetsRemaining    () const;
 			virtual int32   TotalHostilesInPlay () const;
 			virtual int32   LandersRemaining    () const { return NumLandersRemaining; }
@@ -52,6 +68,8 @@ namespace Defcon
 			void            AddStargate         ();
 			void            AddEnemySpawnInfo   (const FEnemySpawnCounts& EnemySpawnCounts);
 			void            UpdateWaves         (const CFPoint& Where);
+
+			CPodIntersectionAlert*    PodIntersectionAlert   = nullptr;
 
 			TArray<FEnemySpawnCounts> EnemySpawnCountsArray;
 			int32                     MaxWaves               = 0;
@@ -294,8 +312,8 @@ namespace Defcon
 
 		public:
 			CSwarm() { ID = EMissionID::swarm; }
-			virtual void Init() override;
-			virtual bool Update(float);
+			virtual void Init () override;
+			virtual bool Tick (float);
 
 			virtual FString GetName() const { return "Swarm"; }
 			virtual FString GetDesc() const { return "A huge swarmer fleet takes you on by itself"; }

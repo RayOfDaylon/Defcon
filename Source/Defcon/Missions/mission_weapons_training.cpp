@@ -49,9 +49,9 @@ void Defcon::CWeaponsTrainingMission::Init()
 }
 
 
-bool Defcon::CWeaponsTrainingMission::Update(float fElapsed)
+bool Defcon::CWeaponsTrainingMission::Tick(float fElapsed)
 {
-	if(!IMission::Update(fElapsed))
+	if(!IMission::Tick(fElapsed))
 	{
 		return false;
 	}

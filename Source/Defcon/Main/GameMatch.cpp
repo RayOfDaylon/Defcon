@@ -56,6 +56,9 @@ int32 Defcon::CGameMatch::AdvanceScore(int32 Amount)
 	if(Score / SMARTBOMB_VALUE > OldSmart)
 	{
 		PlayerShip->AddSmartBombs(SMARTBOMB_RESUPPLY);
+
+		FString Str = TEXT("SMART BOMB AWARDED");
+		GMessageMediator.Send(EMessageEx::NormalMessage, &Str);
 	}
 
 	return Score; 
@@ -71,7 +74,7 @@ bool Defcon::CGameMatch::Update(float DeltaTime)
 
 	if(Mission != nullptr)
 	{
-		return Mission->Update(DeltaTime);
+		return Mission->Tick(DeltaTime);
 	}
 
 	return false;

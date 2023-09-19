@@ -47,6 +47,7 @@ UDefconPlayViewBase* GArena = nullptr;
 
 
 
+
 void UDefconPlayViewBase::NativeOnInitialized()
 {
 	LOG_UWIDGET_FUNCTION

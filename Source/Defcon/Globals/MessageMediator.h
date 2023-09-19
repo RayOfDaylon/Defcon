@@ -34,6 +34,11 @@ namespace Defcon
 		float   Duration;
 	};
 
+	/*struct FPodIntersectionInfo
+	{
+		float Time;
+	};*/
+
 
 	enum class EMessageEx
 	{
@@ -46,6 +51,7 @@ namespace Defcon
 		SetTopMessage,           // FText*
 		NormalMessage,           // FNormalMessage*
 		ClearNormalMessages      // nullptr
+		//PodIntersectionStarted   // FPodIntersectionInfo*
 		//TakenAboard,           // FTakenAboardInfo*  Carrier has taken human aboard
 		//CarrierKilled,         // ILiveGameObject*   Carrier has been destroyed
 		//Released,              // nullptr    Player ship has released human

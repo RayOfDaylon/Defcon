@@ -482,14 +482,13 @@ namespace Daylon
 
 				for(auto& Pair : ConsumerArrays)
 				{
-					for(auto& Consumers : Pair.Value)
+					auto& Consumers = Pair.Value;
+
+					for(int32 Idx = Consumers.Num() - 1; Idx >= 0; Idx--)
 					{
-						for(int32 Idx = Consumers.Num() - 1; Idx >= 0; Idx--)
+						if(Consumers[Idx].Object == Object)
 						{
-							if(Consumers[Idx].Object == Object)
-							{
-								Consumers.RemoveAtSwap(Idx);
-							}
+							Consumers.RemoveAtSwap(Idx);
 						}
 					}
 				}

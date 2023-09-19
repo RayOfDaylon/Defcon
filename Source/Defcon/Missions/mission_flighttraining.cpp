@@ -39,9 +39,9 @@ void Defcon::CFlightTrainingMission::Init()
 }
 
 
-bool Defcon::CFlightTrainingMission::Update(float DeltaTime)
+bool Defcon::CFlightTrainingMission::Tick(float DeltaTime)
 {
-	if(!IMission::Update(DeltaTime))
+	if(!IMission::Tick(DeltaTime))
 	{
 		return false;
 	}

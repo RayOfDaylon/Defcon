@@ -26,8 +26,67 @@
 #endif
 
 
+
+
+Defcon::CPodIntersectionAlert::CPodIntersectionAlert(float Time)
+{
+	Countdown = Time;
+	/*
+	FMessageConsumer MessageConsumer(this, EMessageEx::PodIntersectionStarted, 
+		[this](void* Payload)
+		{ 
+			check(Payload != nullptr);
+			Countdown = ((FPodIntersectionInfo*)Payload)->Time;
+		});
+
+	GMessageMediator.RegisterConsumer(MessageConsumer);*/
+}
+
+
+Defcon::CPodIntersectionAlert::~CPodIntersectionAlert()
+{
+	//GMessageMediator.UnregisterConsumer(this);
+
+	auto Text = FText();
+	GMessageMediator.Send(EMessageEx::SetTopMessage, &Text);
+}
+
+
+void Defcon::CPodIntersectionAlert::Tick(float DeltaTime)
+{
+	Countdown -= DeltaTime;
+
+	if(Countdown < 0)
+	{
+		//PreviousSecond = 0;
+		//auto Text = FText();
+		//GMessageMediator.Send(EMessageEx::SetTopMessage, &Text);
+		return;
+	}
+
+	int32 CurrentSecond = (int32)Countdown;
+
+	if(CurrentSecond != PreviousSecond)
+	{
+		PreviousSecond = CurrentSecond;
+
+		auto Text = FText::FromString(FString::Printf(TEXT("POD INTERSECTION - 0:0%d"), CurrentSecond));
+
+		GMessageMediator.Send(EMessageEx::SetTopMessage, &Text);
+	}
+}
+
+
+// ---------------------------------------------------------------------------
+
 Defcon::CMilitaryMission::CMilitaryMission()
 {
+}
+
+
+Defcon::CMilitaryMission::~CMilitaryMission()
+{
+	SAFE_DELETE(PodIntersectionAlert);
 }
 
 
@@ -147,6 +206,8 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 				SpawnPoint.x -= PodSpeedX * PodOrientationX * PodIntersectionTime;
 				SpawnPoint.x = GArena->WrapX(SpawnPoint.x);
 
+
+				// Include extra spawn options.
 				Daylon::FMetadata Options;
 
 				Daylon::FVariant Value;
@@ -159,6 +220,11 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 
 				GArena->SpawnGameObject(EObjType::POD, EObjType::UNKNOWN, SpawnPoint, 0.0f, EObjectCreationFlags::StandardEnemy, &Options);	
 			}
+
+			PodIntersectionAlert = new CPodIntersectionAlert(PodIntersectionTime);
+
+			//FPodIntersectionInfo Payload = { PodIntersectionTime };
+			//GMessageMediator.Send(EMessageEx::PodIntersectionStarted, &Payload);
 		}
 	}
 
@@ -250,14 +316,24 @@ bool Defcon::CMilitaryMission::IsMissionComplete() const
 }
 
 
-bool Defcon::CMilitaryMission::Update(float DeltaTime)
+bool Defcon::CMilitaryMission::Tick(float DeltaTime)
 {
-	if(!Super::Update(DeltaTime))
+	if(!Super::Tick(DeltaTime))
 	{
 		return false;
 	}
 
 	RepopCounter += DeltaTime;
+
+	if(PodIntersectionAlert != nullptr)
+	{
+		PodIntersectionAlert->Tick(DeltaTime);
+
+		if(PodIntersectionAlert->Done())
+		{
+			DELETE_AND_NULL(PodIntersectionAlert);
+		}
+	}
 
 	if(PlayerInStargate())
 	{

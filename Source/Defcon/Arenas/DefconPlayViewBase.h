@@ -23,7 +23,6 @@ namespace Defcon
 }
 
 
-
 /*
 	Base class of the play view widget blueprint, which holds the main screen, the radar screen, 
 	and the stats panel, i.e.:
