@@ -132,6 +132,7 @@ namespace Defcon
 				smartbomb_initial,
 				smartbomb_lifespan,
 				smartbomb_max_flashscreen,
+				SmartbombRadiusFactor,
 				smartbomb_resupply,
 				smartbomb_value,	
 				smartbomb_wavepush,
@@ -189,6 +190,7 @@ extern Defcon::CPrefs	GPrefs;
 #define SMARTBOMB_VALUE             IPREFVAL(smartbomb_value)
 #define SMARTBOMB_RESUPPLY          IPREFVAL(smartbomb_resupply)
 #define SMARTBOMB_LIFESPAN          FPREFVAL(smartbomb_lifespan)
+#define SMARTBOMB_RADIUS_FACTOR     FPREFVAL(SmartbombRadiusFactor)
 #define SMARTBOMB_WAVEPUSH          FPREFVAL(smartbomb_wavepush)//200.0f
 #define SMARTBOMB_WAVEPUSHMIN       FPREFVAL(smartbomb_wavepushmin)//100.0f
 #define SMARTBOMB_MAX_FLASHSCREEN   IPREFVAL(smartbomb_max_flashscreen)

@@ -25,7 +25,7 @@
 
 
 
-Defcon::CSmartbomb::CSmartbomb()
+Defcon::CSmartbombShockwave::CSmartbombShockwave()
 {
 	ParentType = Type;
 	Type       = EObjType::SMARTBOMB;
@@ -55,7 +55,21 @@ Defcon::CSmartbomb::CSmartbomb()
 }
 
 
-void Defcon::CSmartbomb::Tick(float DeltaTime)
+CFPoint Defcon::CSmartbombShockwave::GetBlastRadius() const
+{
+	// If we scale the Range (which is a diameter) by 0.5 to get the blast radius,
+	// it's technically correct but feels underpowered i.e. there'll be 
+	// visible enemies that don't blow up because the player ship is 
+	// usually moving fast and brings new enemies into view while the 
+	// shockwave is receding behind and not reaching them. So we fudge 
+	// using a preference where 0.5f is technically correct but higher 
+	// values can feel better.
+
+	return Range * SMARTBOMB_RADIUS_FACTOR;
+}
+
+
+void Defcon::CSmartbombShockwave::Tick(float DeltaTime)
 {
 	// The smartbomb produces a shockwave that 
 	// moves quickly and destroys anything on the screen.
@@ -67,10 +81,9 @@ void Defcon::CSmartbomb::Tick(float DeltaTime)
 
 	Age += DeltaTime;
 
-	CFPoint Radius = Range;
-	float T = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
-	Radius *= T;
-	float Shockwave = Radius.x;
+	const auto T         = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
+	const auto Radius    = GetBlastRadius() * T;
+	const auto Shockwave = Radius.x;
 
 	CFPoint P, BombPos;
 	MapperPtr->To(Position, BombPos);
@@ -120,7 +133,7 @@ void Defcon::CSmartbomb::Tick(float DeltaTime)
 }
 
 
-void Defcon::CSmartbomb::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
+void Defcon::CSmartbombShockwave::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
 	check(GGameObjectResources.SmartbombBrushPtr != nullptr);
 
@@ -129,9 +142,9 @@ void Defcon::CSmartbomb::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 		return;
 	}
 
-	const float T = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
-	const CFPoint Radius = Range * T;
-	const float Shockwave = Radius.x;
+	const auto T = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
+	const auto Radius = GetBlastRadius() * T;
+	const auto Shockwave = Radius.x;
 
 	CFRect R;
 	Mapper.To(Position, R.LL);

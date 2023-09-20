@@ -1015,12 +1015,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	CheckIfPlayerHit(Objects);
 
 	// Move and draw everyone.
-	//m_virtualScreen.Clear(gGameColors.GetColor(0, (float)m_nFlashScreen/SMARTBOMB_MAX_FLASHSCREEN));
 
-	if(m_nFlashScreen > 0)
-	{
-		m_nFlashScreen--;
-	}
 
 	const auto Mission = Defcon::GGameMatch->GetMission();
 
@@ -1866,17 +1861,16 @@ void UDefconPlayViewBase::DetonateSmartbomb()
 
 		GAudio->OutputSound(Defcon::EAudioTrack::Smartbomb);
 
-		auto BombPtr = new Defcon::CSmartbomb;
+		auto SmartBombShockwave = new Defcon::CSmartbombShockwave;
 
-		BombPtr->MapperPtr = &GetMainAreaMapper();
-		BombPtr->Position = GetPlayerShip().Position;
-		BombPtr->Range.Set(MainAreaSize.X, MainAreaSize.Y);
-		BombPtr->Targets = &Enemies;
-		BombPtr->Debris = &Debris;
+		SmartBombShockwave->Range.Set(MainAreaSize.X, MainAreaSize.Y);
 
-		Blasts.Add(BombPtr);
+		SmartBombShockwave->MapperPtr = &GetMainAreaMapper();
+		SmartBombShockwave->Position  = GetPlayerShip().Position;
+		SmartBombShockwave->Targets   = &Enemies;
+		SmartBombShockwave->Debris    = &Debris;
 
-		m_nFlashScreen = SMARTBOMB_MAX_FLASHSCREEN;
+		Blasts.Add(SmartBombShockwave);
 	}
 }
 

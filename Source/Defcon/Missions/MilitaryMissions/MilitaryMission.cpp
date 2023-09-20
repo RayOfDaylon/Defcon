@@ -31,22 +31,11 @@
 Defcon::CPodIntersectionAlert::CPodIntersectionAlert(float Time)
 {
 	Countdown = Time;
-	/*
-	FMessageConsumer MessageConsumer(this, EMessageEx::PodIntersectionStarted, 
-		[this](void* Payload)
-		{ 
-			check(Payload != nullptr);
-			Countdown = ((FPodIntersectionInfo*)Payload)->Time;
-		});
-
-	GMessageMediator.RegisterConsumer(MessageConsumer);*/
 }
 
 
 Defcon::CPodIntersectionAlert::~CPodIntersectionAlert()
 {
-	//GMessageMediator.UnregisterConsumer(this);
-
 	auto Text = FText();
 	GMessageMediator.Send(EMessageEx::SetTopMessage, &Text);
 }
@@ -58,9 +47,6 @@ void Defcon::CPodIntersectionAlert::Tick(float DeltaTime)
 
 	if(Countdown < 0)
 	{
-		//PreviousSecond = 0;
-		//auto Text = FText();
-		//GMessageMediator.Send(EMessageEx::SetTopMessage, &Text);
 		return;
 	}
 
@@ -196,6 +182,8 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 			// Pick how long it takes the intersection to form.
 			const float PodIntersectionTime = FRANDRANGE(3.0f, 8.0f);
 
+			float Direction = 1.0f;
+
 			for(int32 PodIndex = 0; PodIndex < NumPods; PodIndex++)
 			{
 				// Pick a random place where the pod will end up.
@@ -205,7 +193,11 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 
 				// Pick a x-velocity for the pod.
 				const float PodSpeedX = Daylon::FRandRange(POD_SPEED);
-				const float PodOrientationX = SBRAND;
+
+				// Alternate between moving right and left, otherwise all the pods might wind up
+				// moving in the same direction which would lower the difficulty.
+				const float PodOrientationX = Direction;
+				Direction *= -1.0f;
 
 				// Work backwards to determine starting spawn point.
 				CFPoint SpawnPoint = EndSpawnPoint;
@@ -228,9 +220,6 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 			}
 
 			PodIntersectionAlert = new CPodIntersectionAlert(PodIntersectionTime);
-
-			//FPodIntersectionInfo Payload = { PodIntersectionTime };
-			//GMessageMediator.Send(EMessageEx::PodIntersectionStarted, &Payload);
 		}
 	}
 

@@ -126,6 +126,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF( smartbomb_value,          20000.0f,    "",             Integer,   1000,      100000,      "Number of points needed to earn extra smart bombs"                                         );
 	INITPREF( smartbomb_resupply,           1,       "",             Integer,      1,          10,      "Number of smart bombs given when earned"                                                   );
 	INITPREF( smartbomb_lifespan,           0.75f,   "seconds",      Float,        0.1f,        2.0f,   "How long a smartbomb shockwave persists"                                                   );
+	INITPREF( SmartbombRadiusFactor,        0.75f,   "%",            Float,        0.5f,      1.0f,     "Percentage of screen width to use for smartbomb shockwave radius"                          );
 	INITPREF( smartbomb_wavepush,          30.0f,    "px/frame",     Float,        5.0f,      100.0f,   "Debris near player is pushed at this speed by smartbomb shockwave"                         );
 	INITPREF( smartbomb_wavepushmin,       15.0f,    "px/frame",     Float,        5.0f,       50.0f,   "Debris is additionally pushed by smartbomb shockwave this fast regardless of location"     );
 	INITPREF( smartbomb_max_flashscreen,   15,       "frames",       Integer,      1,          50,      "How long a smartbomb shockwave is visible"                                                 );

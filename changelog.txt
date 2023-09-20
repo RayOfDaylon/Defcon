@@ -2,8 +2,17 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 19, 2023
+September 20, 2023
 
+
+Added smart bomb radius factor preference to let 
+the reach of the smart bomb shockwave be customizable.
+
+Assign horizontal direction for pods to alternate 
+between left/right instead of being chosen randomly, 
+to avoid cases where a pod intersection forms by 
+all the pods moving towards it from the same 
+direction.
 
 Code cleanup (enemy game object instantation).
 

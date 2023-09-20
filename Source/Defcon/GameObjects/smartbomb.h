@@ -16,10 +16,10 @@ class UDefconPlayViewBase;
 
 namespace Defcon
 {
-	class CSmartbomb : public IGameObject
+	class CSmartbombShockwave : public IGameObject
 	{
 		public:
-			CSmartbomb();
+			CSmartbombShockwave();
 
 			virtual void Tick (float DeltaTime) override;
 			virtual void Draw (FPainter&, const I2DCoordMapper&) override;
@@ -30,6 +30,9 @@ namespace Defcon
 			CGameObjectCollection*    Debris     = nullptr;
 
 		protected:
+
+			CFPoint GetBlastRadius() const;
+
 			UMaterialInstanceDynamic* MID;
 			FName                     NameColor;
 			FName                     NameOs;
