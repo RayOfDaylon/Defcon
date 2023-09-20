@@ -9,6 +9,9 @@ namespace Defcon
 {
 	enum class EObjType
 	{
+		// todo: we've mixed texture IDs in this enum when they should be in their own list, 
+		// no matter how closely it matches this list.
+
 		PLAYER = 0,
 		DESTROYED_PLAYER,
 		HUMAN,		
@@ -18,53 +21,43 @@ namespace Defcon
 
 		// Enemies.
 		ENEMY,
-		LANDER,
-		HUNTER,
-		GUPPY,
-		BOMBER,
-		BOMBER_LEFT, // not really an object type, just used to fetch left-facing texture atlas
-		POD,
-		SWARMER,
-		
+
 		BAITER,
-		IMUNCHIE,
-		PHRED,
 		BIGRED,
-		MUNCHIE,
-
-		FIREBOMBER,
-		FIREBOMBER_TRUE,
-		FIREBOMBER_WEAK,
-		FIREBALL,
-		DYNAMO,
-		SPACEHUM,
-		REFORMER,
-		REFORMERPART,
-
-		GHOST,
-		GHOSTPART,
-		
+		BOMBER,
+		BOMBER_LEFT, // Not an object type; used to fetch left-facing texture atlas.
 		BOUNCER,
 		BOUNCER_TRUE,
 		BOUNCER_WEAK,
+		DYNAMO,
+		FIREBALL,
+		FIREBOMBER,
+		FIREBOMBER_TRUE,
+		FIREBOMBER_WEAK,
+		GHOST,
+		GHOSTPART,
+		GUPPY,
+		HUNTER,
+		IMUNCHIE,
+		LANDER,
+		MUNCHIE,
+		PHRED,
+		POD,
+		REFORMER,
+		REFORMERPART,
+		SPACEHUM,
+		SWARMER,
 		TURRET,
 
+		// Other stuff.
 		EXPLOSION,
 		EXPLOSION2,
 		HEART,
 		MATERIALIZATION,
-		FLAK,
+		FLAK,             // We don't use this, but we might later.
 		STAR,
-		TEXT,
 		TEXTURE,
 		STARGATE,
-
-		// Used in other arenas.
-		STATICTEXT,
-		DRAWING,
-		MISSIONTILE,
-		SLIDER,
-		//STORY,		
 
 		// Weapons fire.
 		MINE,

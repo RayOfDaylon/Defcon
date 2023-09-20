@@ -126,31 +126,6 @@ void UDefconMissionPickerViewBase::NativeTick(const FGeometry& MyGeometry, float
 }
 
 
-#if 0
-int32 UDefconMissionPickerViewBase::NativePaint
-(
-	const FPaintArgs& Args,
-	const FGeometry& AllottedGeometry,
-	const FSlateRect& MyCullingRect,
-	FSlateWindowElementList& OutDrawElements,
-	int32 LayerId,
-	const FWidgetStyle& InWidgetStyle,
-	bool bParentEnabled
-) const
-{
-	LOG_UWIDGET_FUNCTION
-	return Super::NativePaint(
-		Args,
-		AllottedGeometry,
-		MyCullingRect,
-		OutDrawElements,
-		LayerId,
-		InWidgetStyle,
-		bParentEnabled);
-}
-#endif
-
-
 UBorder* UDefconMissionPickerViewBase::GetCellWidget(int32 Column, int32 Row)
 {
 	if(Column < 0 || Column >= CellsAcross || Row < 0 || Row >= CellsDown)
@@ -282,12 +257,30 @@ void UDefconMissionPickerViewBase::OnSkipPressed()
 {
 	auto Where = CurrentCell;
 	
-	Where.X++;
-
-	if(Where.X >= CellsAcross)
+	if(ShiftKeyDown)
 	{
-		Where.X = 0;
-		Where.Y = (Where.Y + 1) % CellsDown;
+		Where.X--;
+
+		if(Where.X < 0)
+		{
+			Where.X = CellsAcross - 1;
+			Where.Y--;
+
+			if(Where.Y < 0)
+			{
+				Where.Y = CellsDown - 1;
+			}
+		}
+	}
+	else
+	{
+		Where.X++;
+
+		if(Where.X >= CellsAcross)
+		{
+			Where.X = 0;
+			Where.Y = (Where.Y + 1) % CellsDown;
+		}
 	}
 
 	ChangeCurrentCell(Where.X - CurrentCell.X, Where.Y - CurrentCell.Y);

@@ -156,6 +156,15 @@ void UDefconGameInstance::OnBulletTimePressed () { ON_BUTTON_PRESSED( OnBulletTi
 #undef ON_BUTTON_PRESSED
 
 
+void UDefconGameInstance::OnShiftPressed(bool IsDown)
+{
+	if(CurrentView != nullptr) 
+	{
+		CurrentView->OnShiftPressed(IsDown);
+	}
+}
+
+
 #define GET_VIEW	if(CurrentView == nullptr)	{ return; }
 
 

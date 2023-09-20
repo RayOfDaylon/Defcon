@@ -10,24 +10,27 @@ namespace Defcon
 {
 	class CLander : public CEnemy
 	{
+		typedef CEnemy Super;
+
 		public:
 			CLander();
 			virtual ~CLander();
 
 
+			virtual void   OnFinishedCreating     (const Daylon::FMetadata& Options) override;
 			virtual void   Tick                   (float DeltaTime) override;
 			virtual EColor GetExplosionColorBase  () const override;
 			virtual void   Notify                 (Defcon::EMessage, void*) override;
 			virtual void   OnAboutToDie           () override;
 
-			void SetDoTryToAbduct                 (bool b) { bTryToAbduct = b; }
+			void           SetDoTryToAbduct       (bool b) { bTryToAbduct = b; }
 
 			CGameObjectCollection*  Objects = nullptr;
 
 
 		protected:
 
-			void ConsiderFiringBullet(float DeltaTime);
+			void ConsiderFiringBullet (float DeltaTime);
 
 
 		private:

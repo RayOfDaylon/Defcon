@@ -41,11 +41,19 @@ Defcon::CSwarmer::CSwarmer()
 	FiringCountdown       = FRANDRANGE(1.0f, 3.0f);
 	SoundCountdown        = Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX);
 
-	Orientation.Fwd.Set(1.0f, 0.0f);
+	Orientation.Fwd.Set(SBRAND, 0.0f);
 
 	CreateSprite(Type);
 
 	BboxRadius = GGameObjectResources.Get(Type).Size / 2;
+}
+
+
+void Defcon::CSwarmer::OnFinishedCreating(const Daylon::FMetadata& Options)
+{
+	Super::OnFinishedCreating(Options);
+
+	SetOriginalPosition(Position);
 }
 
 

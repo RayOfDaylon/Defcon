@@ -68,6 +68,7 @@ namespace Defcon
 			void            AddStargate         ();
 			void            AddEnemySpawnInfo   (const FEnemySpawnCounts& EnemySpawnCounts);
 			void            UpdateWaves         (const CFPoint& Where);
+			void            CancelPodIntersectionAlert();
 
 			CPodIntersectionAlert*    PodIntersectionAlert   = nullptr;
 

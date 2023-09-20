@@ -15,13 +15,16 @@ namespace Defcon
 		// and all of its swarmers if you collide perfectly with it. A glancing
 		// collision will have some swarmers survive.
 
+		typedef CEnemy Super;
+
 		public:
 			CPod();
 			virtual ~CPod();
 
-			virtual void Tick          (float DeltaTime) override;
-			virtual void OnAboutToDie  () override;
-			virtual void Explode       (CGameObjectCollection&) override;
+			virtual void OnFinishedCreating  (const Daylon::FMetadata& Options) override;
+			virtual void Tick                (float DeltaTime) override;
+			virtual void OnAboutToDie        () override;
+			virtual void Explode             (CGameObjectCollection&) override;
 
 			void SetSpeed(float InSpeed) { Speed = InSpeed; }
 

@@ -15,6 +15,7 @@ namespace Defcon
 		// The behavior makes it hard to hit. The parts are 
 		// invulnerable to weapons fire while in transit.
 
+		typedef CEnemy Super;
 
 		public:
 			CGhost();
@@ -52,17 +53,20 @@ namespace Defcon
 		// to transport elsewhere. It is given a path to 
 		// fly and a length of time to be in flight.
 
+		typedef CEnemy Super;
+
 		public:
 			CGhostPart();
 			virtual ~CGhostPart();
 
-			virtual void Tick     (float DeltaTime) override;
-			virtual void Draw     (FPainter&, const I2DCoordMapper&) override;
-			virtual void Explode  (CGameObjectCollection&) override;
+			virtual void OnFinishedCreating (const Daylon::FMetadata& Options) override;
+			virtual void Tick               (float DeltaTime) override;
+			virtual void Draw               (FPainter&, const I2DCoordMapper&) override;
+			virtual void Explode            (CGameObjectCollection&) override;
 			
 
-			void SetFlightPath     (const CFPoint&, const CFPoint&);
-			void SetFlightDuration (float t) { MaxAge = t; }
+			void SetFlightPath              (const CFPoint&, const CFPoint&);
+			void SetFlightDuration          (float t) { MaxAge = t; }
 
 		protected:
 			CBezierSpline2D	Path;

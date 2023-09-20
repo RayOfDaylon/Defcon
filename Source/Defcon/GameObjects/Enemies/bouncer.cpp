@@ -42,6 +42,14 @@ Defcon::IBouncer::IBouncer()
 }
 
 
+void Defcon::IBouncer::OnFinishedCreating(const Daylon::FMetadata& Options)
+{
+	Super::OnFinishedCreating(Options);
+
+	Orientation.Fwd.x =  FRANDRANGE(5.0f, 20.0f) * SBRAND;
+}
+
+
 Defcon::IBouncer::~IBouncer()
 {
 }

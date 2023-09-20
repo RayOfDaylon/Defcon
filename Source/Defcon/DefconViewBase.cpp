@@ -89,6 +89,8 @@ void UDefconViewBase::OnActivate()
 	check(!bDoneActivating);
 
 	Age = 0.0f;
+
+	ShiftKeyDown = false;
 }
 
 

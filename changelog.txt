@@ -5,6 +5,12 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 19, 2023
 
 
+Code cleanup (enemy game object instantation).
+
+Holding down Shift key while pressing Tab key will reverse 
+selection direction in the mission picker screen. It will 
+also navigate to the previous page in the Details screen.
+
 Pod intersection timer message displayed.
 
 "Smart bomb awarded" message appears when a smart bomb is gained.

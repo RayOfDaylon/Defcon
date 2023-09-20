@@ -53,9 +53,9 @@ Defcon::CBomber::CBomber()
 }
 
 
-void Defcon::CBomber::OnFinishedCreating()
+void Defcon::CBomber::OnFinishedCreating(const Daylon::FMetadata& Options)
 {
-	Super::OnFinishedCreating();
+	Super::OnFinishedCreating(Options);
 
 	if(Orientation.Fwd.x < 0)
 	{

@@ -32,7 +32,7 @@ namespace Defcon
 
 			virtual void   SetTarget             (IGameObject* p)    { TargetPtr = p; }
 			virtual bool   ExplosionHasFireball  () const override   { return true; }
-
+			//virtual void   OnCreated             (const Daylon::FMetadata& Options) {};
 
 		protected:
 

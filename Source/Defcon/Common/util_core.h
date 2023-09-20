@@ -8,6 +8,8 @@
 	Core General-purpose utility header file.
 */
 
+#include "CoreMinimal.h"
+
 
 //float GameTime();
 
@@ -42,3 +44,38 @@ extern "C"
 } /* extern "C" */
 #endif
 
+namespace Daylon
+{
+	// A candidate for the plugin, but it'd be also nice to consolidate with FScheduledTask.
+	// IScheduledTask is when you prefer to subclass and the delegate is a virtual override.
+
+	class IScheduledTask
+	{
+		public:
+			IScheduledTask() {}
+			virtual ~IScheduledTask() {}
+
+			float   Countdown = 0.0f; // If this is not set, task will run immediately.
+
+			virtual void Do() = 0;
+	};
+
+
+	class CScheduledTaskList
+	{
+		// Tasks to be run at some time in the future.
+
+		public:
+			virtual ~CScheduledTaskList();
+
+			void  Add           (IScheduledTask*);
+			void  Process       (float DeltaTime);
+			void  DeleteAll     ();
+			bool  IsEmpty       () const { return Tasks.IsEmpty(); }
+			void  ForEach       (TFunction<void(IScheduledTask*)> Function) const;
+			void  ForEachUntil  (TFunction<bool(IScheduledTask*)> Function) const;
+
+		private:
+			TArray<IScheduledTask*>  Tasks;
+	};
+}

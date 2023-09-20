@@ -92,7 +92,7 @@ namespace Defcon
 
 
 			EMissionID		GetID              () const { return ID; }
-			void			AddTask            (CScheduledTask* p) { ScheduledTasks.Add(p); }
+			void			AddTask            (Daylon::IScheduledTask* p) { ScheduledTasks.Add(p); }
 			bool			IsRunning          () const { return (GArena != nullptr); }
 											   
 			const FString&  GetIntroText       () const { return IntroText; }
@@ -102,12 +102,12 @@ namespace Defcon
 
 			void DoIntroText(float DeltaTime);
 
-			CScheduledTaskList     ScheduledTasks;
-			CScheduledTaskList     EnemyCreationTasks;
-			FString                IntroText;
-			EMissionID             ID          = EMissionID::Undefined;
-			float                  Age         = 0.0f;
-			bool                   IntroIsDone = false;
+			Daylon::CScheduledTaskList   ScheduledTasks;
+			Daylon::CScheduledTaskList   EnemyCreationTasks;
+			FString                      IntroText;
+			EMissionID                   ID          = EMissionID::Undefined;
+			float                        Age         = 0.0f;
+			bool                         IntroIsDone = false;
 	};
 
 

@@ -12,12 +12,15 @@ namespace Defcon
 	{
 		// A bouncer bounces on the terrain. 
 
+		typedef CEnemy Super;
+
 		public:
 			IBouncer();
 			virtual ~IBouncer();
 
-			virtual void Tick    (float DeltaTime) override;
-			virtual void Explode (CGameObjectCollection&) override;
+			virtual void OnFinishedCreating (const Daylon::FMetadata& Options) override;
+			virtual void Tick               (float DeltaTime) override;
+			virtual void Explode            (CGameObjectCollection&) override;
 			
 		protected:
 
@@ -33,6 +36,8 @@ namespace Defcon
 
 	class CBouncer : public IBouncer
 	{
+		typedef IBouncer Super;
+
 		public:
 			CBouncer();
 			virtual ~CBouncer();
@@ -44,6 +49,8 @@ namespace Defcon
 
 	class CWeakBouncer : public IBouncer
 	{
+		typedef IBouncer Super;
+
 		public:
 			CWeakBouncer();
 			virtual ~CWeakBouncer();

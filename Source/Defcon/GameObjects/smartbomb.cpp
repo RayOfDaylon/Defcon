@@ -96,7 +96,7 @@ void Defcon::CSmartbomb::Tick(float DeltaTime)
 
 	Debris->ForEach([&](IGameObject* pObj)
 	{
-		//if(pObj->GetType() != EObjType::TEXT) // we have no such objects
+		//if(pObj->GetType() != EObjType::TEXT) // we have no such objects, and "TEXT" conflicts with UE's TEXT macro anyway
 		{
 			MapperPtr->To(pObj->Position, P);
 

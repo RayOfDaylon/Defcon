@@ -252,7 +252,8 @@ void Defcon::IGameObject::UninstallSprite()
 void                 Defcon::IGameObject::Init  (const CFPoint& InArenaSize, const CFPoint& InScreenSize) { ArenaSize = InArenaSize; ScreenSize = InScreenSize; }
 void                 Defcon::IGameObject::Draw  (FPainter& Painter, const I2DCoordMapper& mapper) {}
 
-void                 Defcon::IGameObject::OnFinishedCreating()                 {}
+void                 Defcon::IGameObject::OnFinishedCreating(const Daylon::FMetadata&) {}
+
 void                 Defcon::IGameObject::OnAboutToDie()                       {}
 void                 Defcon::IGameObject::Notify(EMessage, void*)              {}
 void                 Defcon::IGameObject::GetInjurePt(CFPoint&) const          {}

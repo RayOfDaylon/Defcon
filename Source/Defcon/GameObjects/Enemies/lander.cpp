@@ -49,8 +49,6 @@ Defcon::CLander::CLander()
 	HoverAltitude   = FRAND * 20 + 40;
 	FiringCountdown = FRANDRANGE(1.0f, 3.0f);
 
-	const float Speed = FRANDRANGE(0.25f, 1.0f) * (BRAND ? -1 : 1);
-	Orientation.Fwd.Set(Speed, 0);
 
 	// With increasing probability over 10,000 pts,
 	// and the nearest human is behind us, then 
@@ -77,6 +75,18 @@ Defcon::CLander::CLander()
 	CreateSprite(EObjType::LANDER);
 
 	BboxRadius = GGameObjectResources.Get(Type).Size * (0.5f * 0.75f);//.Set(Info.Size.X * 0.5f * 0.75f, Info.Size.Y * 0.5f * 0.75f);
+}
+
+
+void Defcon::CLander::OnFinishedCreating(const Daylon::FMetadata& Options)
+{
+	Super::OnFinishedCreating(Options);
+
+	Orientation.Fwd.Set(FRANDRANGE(0.25f, 1.0f) * SBRAND, 0);
+
+	Objects = &GArena->GetObjects();
+
+	SetDoTryToAbduct(Defcon::GGameMatch->GetMission()->HumansInvolved());
 }
 
 

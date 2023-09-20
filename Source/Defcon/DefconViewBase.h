@@ -30,6 +30,7 @@ class DEFCON_API UDefconViewBase : public UUserWidget
 	virtual void OnActivate                 ();
 	virtual void OnFinishActivating         ();
 	virtual void OnDeactivate               ();
+	virtual void OnShiftPressed             (bool IsDown) { ShiftKeyDown = IsDown; }
 	virtual void OnEscPressed               () {}
 	virtual void OnEnterPressed             () {}
 	virtual void OnSkipPressed              () {}
@@ -70,6 +71,7 @@ class DEFCON_API UDefconViewBase : public UUserWidget
 	UCanvasPanel* RootCanvas;
 
 	
-	float Age = 0.0f;
+	float        Age             = 0.0f;
 	mutable bool bDoneActivating = false;
+	bool         ShiftKeyDown    = false;
 };

@@ -124,7 +124,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	Defcon::CGameObjectCollection  Blasts;
 	Defcon::CGameObjectCollection  Powerups;
 
-	Defcon::CScheduledTaskList     ScheduledTasks;
+	Daylon::CScheduledTaskList     ScheduledTasks;
 
 	Defcon::CArenaCoordMapper      MainAreaMapper;
 	Defcon::CArenaCoordMapper      MainAreaStarsMapper;

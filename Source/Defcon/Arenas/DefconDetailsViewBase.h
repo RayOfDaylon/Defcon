@@ -53,9 +53,10 @@ class DEFCON_API UDefconDetailsViewBase : public UDefconViewBase
 	virtual void OnSkipPressed       () override;
 	virtual void OnEnterPressed      () override;
 
-	void ShowPage        (int32 Idx);
-	void ShowNextPage    ();
-	void UninstallSprite ();
+	void         ShowPage            (int32 Idx);
+	void         ShowPreviousPage    ();
+	void         ShowNextPage        ();
+	void         UninstallSprite     ();
 
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))

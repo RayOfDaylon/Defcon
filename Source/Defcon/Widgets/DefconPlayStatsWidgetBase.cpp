@@ -14,7 +14,7 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 
 	// Build shield gradient colormap.
 	
-	const FLinearColor Colors[] = { C_RED, C_RED, /*C_ORANGE,*/ C_YELLOW, C_GREEN, C_BLUE };
+	const FLinearColor Colors[] = { C_RED, C_RED, /*C_ORANGE,*/ C_YELLOW, C_DARKGREEN, C_BLUE };
 
 	float X = 0;
 	const int32 Subsize = 10;
@@ -24,7 +24,7 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 	{
 		for(int32 Xlocal = 0; Xlocal < Subsize; Xlocal++)
 		{
-			ShieldGradient.Add(MakeBlendedColor(Colors[i], Colors[i + 1], Xlocal / (Subsize - 2.0f)));
+			ShieldGradient.Add(FLinearColor::LerpUsingHSV/*MakeBlendedColor*/(Colors[i], Colors[i + 1], Xlocal / (Subsize - 1.0f)));
 		}
 	}
 

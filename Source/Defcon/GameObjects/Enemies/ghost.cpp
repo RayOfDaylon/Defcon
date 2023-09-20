@@ -375,6 +375,14 @@ Defcon::CGhostPart::CGhostPart()
 }
 
 
+void Defcon::CGhostPart::OnFinishedCreating(const Daylon::FMetadata& Options)
+{
+	Super::OnFinishedCreating(Options);
+
+	SetCollisionInjurious(false);
+}
+
+
 Defcon::CGhostPart::~CGhostPart()
 {
 }

@@ -12,11 +12,15 @@ namespace Defcon
 	class CSwarmer : public CEnemy
 	{
 		// A swarmer is a tiny orange guy that flies and shoots, and normally erupts from pods.
+		// If materializing directly, it is a mission-critical target.
+
+		typedef CEnemy Super;
 
 		public:
 			CSwarmer();
 			virtual ~CSwarmer();
 
+			virtual void  OnFinishedCreating    (const Daylon::FMetadata& Options) override;
 			virtual void  Tick                  (float DeltaTime) override;
 			virtual float GetCollisionForce     () const override { return 0.01f * SWARMER_COLLISION_FORCE; }
 			virtual float GetExplosionMass      () const override { return 0.1f; }

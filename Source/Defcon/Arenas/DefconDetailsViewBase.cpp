@@ -235,7 +235,8 @@ void UDefconDetailsViewBase::NativeTick(const FGeometry& MyGeometry, float Delta
 	{
 		SafeToTick = true;
 
-		ShowPage(0);
+		CurrentPageIdx = 0;
+		ShowPage(CurrentPageIdx);
 	}
 
 	if(SafeToTick)
@@ -266,6 +267,20 @@ void UDefconDetailsViewBase::ShowNextPage()
 	CurrentPageIdx++;
 
 	if(CurrentPageIdx >= Pages.Num())
+	{
+		TransitionToArena(EDefconArena::Help);
+		return;
+	}
+
+	ShowPage(CurrentPageIdx);
+}
+
+
+void UDefconDetailsViewBase::ShowPreviousPage()
+{
+	CurrentPageIdx--;
+
+	if(CurrentPageIdx < 0)
 	{
 		TransitionToArena(EDefconArena::Help);
 		return;
@@ -325,7 +340,14 @@ void UDefconDetailsViewBase::OnEscPressed()
 
 void UDefconDetailsViewBase::OnSkipPressed()
 {
-	ShowNextPage();
+	if(ShiftKeyDown)
+	{
+		ShowPreviousPage();
+	}
+	else
+	{
+		ShowNextPage();
+	}
 }
 
 

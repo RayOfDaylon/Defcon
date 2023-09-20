@@ -49,6 +49,7 @@ class DEFCON_API UDefconMissionPickerViewBase : public UDefconViewBase
 	virtual void OnEscPressed   () override;
 	virtual void OnEnterPressed () override;
 	virtual void OnSkipPressed  () override;
+
 	virtual void OnNavEvent     (ENavigationKey Key) override;
 
 

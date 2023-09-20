@@ -20,6 +20,8 @@ namespace Defcon
 		// will be. The player can (and should) shoot the 
 		// parts before they successfully merge.
 
+		typedef CEnemy Super;
+
 		public:
 			CReformer();
 			virtual ~CReformer();
@@ -52,16 +54,19 @@ namespace Defcon
 
 	class CReformerPart : public CEnemy
 	{
+		typedef CEnemy Super;
+
 		public:
 			CReformerPart();
 			virtual ~CReformerPart();
 
-			virtual void  Tick              (float DeltaTime) override;
-			virtual float GetCollisionForce () const override { return 0.01f * REFORMERPART_COLLISION_FORCE; }
-			virtual float GetExplosionMass  () const override { return 0.25f; }
-			virtual void  Explode           (CGameObjectCollection&) override;
+			virtual void  OnFinishedCreating  (const Daylon::FMetadata& Options) override;
+			virtual void  Tick                (float DeltaTime) override;
+			virtual float GetCollisionForce   () const override { return 0.01f * REFORMERPART_COLLISION_FORCE; }
+			virtual float GetExplosionMass    () const override { return 0.25f; }
+			virtual void  Explode             (CGameObjectCollection&) override;
 			
-			void SetOriginalPosition(const CFPoint& P) { OriginalPos = P; }
+			void          SetOriginalPosition (const CFPoint& P) { OriginalPos = P; }
 
 		private:
 			CFPoint  OriginalPos;

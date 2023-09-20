@@ -4,6 +4,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Common/util_core.h"
 #include "Common/util_geom.h"
 #include "GameObjects/obj_types.h"
 #include "Common/variant.h"
@@ -14,45 +15,16 @@ namespace Defcon
 {
 	class CEnemy;
 
-	class CScheduledTask
-	{
-		public:
-			CScheduledTask() {}
-			virtual ~CScheduledTask() {}
-
-			float   Countdown = 0.0f; // If this is not set, task will run immediately.
-
-			virtual void Do() = 0;
-	};
 
 
-	class CScheduledTaskList
-	{
-		// Tasks to be run at some time in the future.
-
-		public:
-			virtual ~CScheduledTaskList();
-
-			void  Add           (CScheduledTask*);
-			void  Process       (float DeltaTime);
-			void  DeleteAll     ();
-			bool  IsEmpty       () const { return Tasks.IsEmpty(); }
-			void  ForEach       (TFunction<void(CScheduledTask*)> Function) const;
-			void  ForEachUntil  (TFunction<bool(CScheduledTask*)> Function) const;
-
-		private:
-			TArray<CScheduledTask*>  Tasks;
-	};
-
-
-	class CRestartMissionTask : public CScheduledTask
+	class CRestartMissionTask : public Daylon::IScheduledTask
 	{
 		public:
 			virtual void Do() override;
 	};
 
 
-	class CEndMissionTask : public CScheduledTask
+	class CEndMissionTask : public Daylon::IScheduledTask
 	{
 		public:
 			virtual void Do() override;
@@ -60,7 +32,7 @@ namespace Defcon
 
 
 
-	class CCreateGameObjectTask : public CScheduledTask
+	class CCreateGameObjectTask : public Daylon::IScheduledTask
 	{
 		public:
 
@@ -76,7 +48,7 @@ namespace Defcon
 
 		protected:
 
-			CEnemy* CreateEnemy                 ();
+			CEnemy* InstantiateGameObject       ();
 
 			void SpecializeForLander			(CEnemy*, const CFPoint&);
 			void SpecializeForGuppy				(CEnemy*, const CFPoint&);

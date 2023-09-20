@@ -7,6 +7,7 @@
 #include "DaylonUtils.h"
 #include "GameObjects/obj_types.h"
 #include "Globals/prefs.h"
+#include "Common/variant.h"
 #include "Common/util_geom.h"
 #include "Common/util_color.h"
 #include "Globals/GameColors.h"
@@ -87,7 +88,7 @@ namespace Defcon
 			virtual ~IGameObject();
 
 			virtual void          Init                  (const CFPoint& ArenaSize, const CFPoint& ScreenSize);
-			virtual void          OnFinishedCreating    ();
+			virtual void          OnFinishedCreating    (const Daylon::FMetadata&);
 			virtual bool          OccursFrequently      () const;
 
 			// Linked list stuff.

@@ -1763,7 +1763,7 @@ void UDefconPlayViewBase::OnPlayerShipDestroyed()
 
 		FadeAge = DESTROYED_PLAYER_LIFETIME * 2;
 
-		Defcon::CScheduledTask* Task = nullptr;
+		Daylon::IScheduledTask* Task = nullptr;
 
 		if(GetHumans().Count() == 0)
 		{
@@ -1883,7 +1883,7 @@ void UDefconPlayViewBase::DetonateSmartbomb()
 
 namespace Defcon
 {
-	class CCreateMaterializationTask : public CScheduledTask
+	class CCreateMaterializationTask : public Daylon::IScheduledTask
 	{
 		Defcon::FMaterializationParams Params;
 

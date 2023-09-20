@@ -71,6 +71,9 @@ class DEFCON_API UDefconGameInstance : public UGameInstance
 	void OnEscPressed();
 
 	UFUNCTION(BlueprintCallable, Category="Defcon")
+	void OnShiftPressed(bool IsDown);
+
+	UFUNCTION(BlueprintCallable, Category="Defcon")
 	void OnEnterPressed();
 
 	UFUNCTION(BlueprintCallable, Category="Defcon")

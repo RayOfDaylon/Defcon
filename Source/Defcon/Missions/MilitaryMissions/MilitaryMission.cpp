@@ -86,7 +86,7 @@ Defcon::CMilitaryMission::CMilitaryMission()
 
 Defcon::CMilitaryMission::~CMilitaryMission()
 {
-	SAFE_DELETE(PodIntersectionAlert);
+	CancelPodIntersectionAlert();
 }
 
 
@@ -100,6 +100,12 @@ void Defcon::CMilitaryMission::Init()
 	SpawnRangeHorizontal = GArena->GetWidth() * ATTACK_INITIALDISTANCE;
 
 	NumTargetsRemaining = StartingPodCount();
+}
+
+
+void Defcon::CMilitaryMission::CancelPodIntersectionAlert()
+{
+	SAFE_DELETE(PodIntersectionAlert);
 }
 
 
@@ -279,7 +285,7 @@ bool Defcon::CMilitaryMission::IsMissionComplete() const
 
 	bool Result = true;
 
-	EnemyCreationTasks.ForEachUntil([&Result](CScheduledTask* Task)
+	EnemyCreationTasks.ForEachUntil([&Result](Daylon::IScheduledTask* Task)
 	{
 		auto EnemyCreationTask = static_cast<CCreateGameObjectTask*>(Task);
 		
@@ -331,7 +337,7 @@ bool Defcon::CMilitaryMission::Tick(float DeltaTime)
 
 		if(PodIntersectionAlert->Done())
 		{
-			DELETE_AND_NULL(PodIntersectionAlert);
+			CancelPodIntersectionAlert();
 		}
 	}
 
@@ -372,17 +378,25 @@ bool Defcon::CMilitaryMission::Tick(float DeltaTime)
 }
 
 
-void Defcon::CMilitaryMission::TargetDestroyed(EObjType Kind)
+void Defcon::CMilitaryMission::TargetDestroyed(EObjType ObjType)
 {
 	check(NumTargetsRemaining > 0);
 
 	NumTargetsRemaining--;
 
-	if(Kind == EObjType::LANDER) 
+	switch(ObjType)
 	{
-		check(NumLandersRemaining > 0);
+		case EObjType::LANDER:
+			check(NumLandersRemaining > 0);
+			NumLandersRemaining--;
+			break;
 
-		NumLandersRemaining--; 
+		case EObjType::POD:
+			if(PodIntersectionAlert != nullptr)
+			{
+				CancelPodIntersectionAlert();
+			}
+			break;
 	} 
 }
 

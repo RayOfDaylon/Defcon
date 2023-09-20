@@ -211,6 +211,14 @@ Defcon::CReformerPart::CReformerPart()
 }
 
 
+void Defcon::CReformerPart::OnFinishedCreating(const Daylon::FMetadata& Options)
+{
+	Super::OnFinishedCreating(Options);
+
+	SetOriginalPosition(Position);
+}
+
+
 Defcon::CReformerPart::~CReformerPart()
 {
 }
