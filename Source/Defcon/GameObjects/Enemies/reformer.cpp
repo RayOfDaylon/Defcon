@@ -211,7 +211,7 @@ Defcon::CReformerPart::CReformerPart()
 }
 
 
-void Defcon::CReformerPart::OnFinishedCreating(const Daylon::FMetadata& Options)
+void Defcon::CReformerPart::OnFinishedCreating(const FMetadata& Options)
 {
 	Super::OnFinishedCreating(Options);
 

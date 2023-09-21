@@ -21,12 +21,13 @@ namespace Defcon
 			CPod();
 			virtual ~CPod();
 
-			virtual void OnFinishedCreating  (const Daylon::FMetadata& Options) override;
+			virtual void OnFinishedCreating  (const FMetadata& Options) override;
 			virtual void Tick                (float DeltaTime) override;
 			virtual void OnAboutToDie        () override;
 			virtual void Explode             (CGameObjectCollection&) override;
 
-			void SetSpeed(float InSpeed) { Speed = InSpeed; }
+			void SetSpeed       (float InSpeed) { Speed = InSpeed; }
+			void SetSmartbombID (int32 ID) { SmartbombID = ID; }
 
 
 		private:
@@ -34,5 +35,6 @@ namespace Defcon
 			float OffsetY;   // todo: this doesn't do anything?
 			float Frequency;
 			float Speed = 0.0f;
+			int32 SmartbombID = -1;
 	};
 }

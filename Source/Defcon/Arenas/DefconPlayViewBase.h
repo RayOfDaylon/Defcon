@@ -184,7 +184,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	bool                                  IsEnding                 () const { return bArenaClosing; }
 	void                                  DestroyObject            (Defcon::IGameObject* Obj, bool bExplode = true);
 	void                                  IncreaseScore            (int32 Points, bool bVis, const CFPoint* P);
-	void                                  SpawnGameObject          (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags, const Daylon::FMetadata* Options = nullptr);
+	void                                  SpawnGameObject          (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, float Countdown, Defcon::EObjectCreationFlags Flags, const Defcon::FMetadata* Options = nullptr);
 	Defcon::CEnemy*                       SpawnGameObjectNow       (Defcon::EObjType Kind, Defcon::EObjType CreatorType, const CFPoint& Where, Defcon::EObjectCreationFlags Flags);
 	Defcon::CHuman*                       FindNearestHuman         (float X) const;
 	Defcon::IGameObject*                  FindEnemy                (Defcon::EObjType Kind, Defcon::IGameObject* Obj = nullptr) const { return Enemies.Find(Kind, Obj); }
@@ -194,7 +194,6 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	void                                  TransportPlayerShip      ();
 	void                                  AllStopPlayerShip        ();
 	void                                  OnHumansChanged          ();
-	//void                                AddMessage               (const FString& Str, float Duration = 0.0f);
 
 	
 	// Debugging support -------------------------------------------------------------------------------------

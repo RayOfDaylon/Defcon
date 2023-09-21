@@ -19,7 +19,7 @@ namespace Defcon
 		public:
 			CBomber();
 
-			virtual void    OnFinishedCreating    (const Daylon::FMetadata& Options) override;
+			virtual void    OnFinishedCreating    (const FMetadata& Options) override;
 
 			virtual void    Tick                  (float DeltaTime) override;
 			virtual EColor  GetExplosionColorBase () const override;

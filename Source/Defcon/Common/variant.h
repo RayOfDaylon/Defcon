@@ -24,14 +24,39 @@ namespace Daylon
 		double Real;
 	};
 
-	struct FMetadata
+	template<typename E> struct FMetadata
 	{
-		TMap<FString, FVariant> Map;
+		void   Add        (const E& Key, FVariant Value) { Map.Add(Key, Value); }
+		void   Add        (const E& Key, bool Value)   { FVariant Var; Var.Boolean = Value; Add(Key, Var); }
+		void   Add        (const E& Key, int32 Value)  { FVariant Var; Var.Integer = Value; Add(Key, Var); }
+		void   Add        (const E& Key, float Value)  { FVariant Var; Var.Real    = Value; Add(Key, Var); }
+		void   Add        (const E& Key, double Value) { FVariant Var; Var.Real    = Value; Add(Key, Var); }
 
-		bool   Has        (const FString& Key) const { return (Map.Find(Key) != nullptr); }
-		bool   GetBool    (const FString& Key) const { return Map[Key].Boolean; }
-		double GetReal    (const FString& Key) const { return Map[Key].Real; }
-		int32  GetInteger (const FString& Key) const { return Map[Key].Integer; }
+		int32  Num        () const { return Map.Num(); }
+		bool   Has        (const E& Key) const { return (Map.Find(Key) != nullptr); }
+		bool   GetBool    (const E& Key) const { return Map[Key].Boolean; }
+		double GetReal    (const E& Key) const { return Map[Key].Real; }
+		int32  GetInteger (const E& Key) const { return Map[Key].Integer; }
+
+
+		protected:
+
+			TMap<E, FVariant> Map;
+	};
+}
+
+
+namespace Defcon
+{
+	enum class EMetadataKey : uint8
+	{
+		SpeedX,        // real
+		OrientationX,  // real
+		SmartbombID    // int
+	};
+
+	struct FMetadata : public Daylon::FMetadata<EMetadataKey>
+	{
 	};
 }
 

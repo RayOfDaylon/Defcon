@@ -375,7 +375,7 @@ Defcon::CGhostPart::CGhostPart()
 }
 
 
-void Defcon::CGhostPart::OnFinishedCreating(const Daylon::FMetadata& Options)
+void Defcon::CGhostPart::OnFinishedCreating(const FMetadata& Options)
 {
 	Super::OnFinishedCreating(Options);
 

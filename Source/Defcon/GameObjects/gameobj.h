@@ -98,7 +98,7 @@ namespace Defcon
 			virtual ~IGameObject();
 
 			virtual void          Init                    (const CFPoint& ArenaSize, const CFPoint& ScreenSize);
-			virtual void          OnFinishedCreating      (const Daylon::FMetadata&);
+			virtual void          OnFinishedCreating      (const FMetadata&);
 			virtual bool          OccursFrequently        () const;
 														  
 			// Linked list stuff.						  
@@ -112,6 +112,7 @@ namespace Defcon
 			EObjType              GetCreatorType          () const;
 			void                  SetCreatorType          (EObjType T);
 			void                  SetKillerType           (EObjType T) { KillerType = T; }
+			void                  SetKillerId             (int32 ID) { KillerID = ID; }
 			EObjType              GetType                 () const;
 			void                  SetType                 (EObjType T);
 								  						  
@@ -145,7 +146,7 @@ namespace Defcon
 			void                  SetCollisionInjurious   (bool b = true);
 			bool                  IsInjurious             () const;
 			bool                  CanBeInjured            () const;
-			virtual bool          CanBeInjuredBySmartbomb () const { return true; }
+			virtual bool          CanBeInjuredBySmartbomb (int32 BombID) const { return true; }
 			virtual void          GetInjurePt             (CFPoint&) const;
 			virtual bool          TestInjury              (const CFRect&) const;
 
@@ -197,6 +198,7 @@ namespace Defcon
 			EObjType        Type                    = EObjType::UNKNOWN;
 			EObjType        CreatorType             = EObjType::UNKNOWN;
 			EObjType        KillerType              = EObjType::UNKNOWN;
+			int32           KillerID                = -1;
 			
 			EDeathStyle     DeathStyle              = EDeathStyle::Normal;
 

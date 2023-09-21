@@ -40,14 +40,14 @@ Defcon::CPod::CPod()
 }
 
 
-void Defcon::CPod::OnFinishedCreating(const Daylon::FMetadata& Options)
+void Defcon::CPod::OnFinishedCreating(const FMetadata& Options)
 {
 	Super::OnFinishedCreating(Options);
 
-	check(Options.Map.Num() >= 2);
+	check(Options.Num() >= 2);
 
-	Orientation.Fwd.x = Options.GetReal(TEXT("OrientationX"));
-	SetSpeed(Options.GetReal(TEXT("SpeedX")));
+	Orientation.Fwd.x = Options.GetReal(EMetadataKey::OrientationX);
+	SetSpeed(Options.GetReal(EMetadataKey::SpeedX));
 }
 
 
@@ -88,8 +88,8 @@ void Defcon::CPod::OnAboutToDie()
 	{
 		// Dying normally; release swarmers.
 
-		Daylon::FMetadata Options;
-		Daylon::FMetadata* OptionsPtr = nullptr;
+		FMetadata Options;
+		FMetadata* OptionsPtr = nullptr;
 
 		if(KillerType == EObjType::SMARTBOMB)
 		{
@@ -99,9 +99,7 @@ void Defcon::CPod::OnAboutToDie()
 			// in an attempt to destroy the swarmers, or just as insurance when he has lots of bombs.
 			// For that, we need to track and include a smartbomb ID.
 
-			Daylon::FVariant Value;
-			Value.Real = SMARTBOMB_LIFESPAN;
-			Options.Map.Add(TEXT("SmartbombInvulnerabilityCountdown"), Value);
+			Options.Add(EMetadataKey::SmartbombID, KillerID);
 			OptionsPtr = &Options;
 		}
 

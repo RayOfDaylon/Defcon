@@ -18,7 +18,7 @@ namespace Defcon
 			IBouncer();
 			virtual ~IBouncer();
 
-			virtual void OnFinishedCreating (const Daylon::FMetadata& Options) override;
+			virtual void OnFinishedCreating (const FMetadata& Options) override;
 			virtual void Tick               (float DeltaTime) override;
 			virtual void Explode            (CGameObjectCollection&) override;
 			

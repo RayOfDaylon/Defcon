@@ -102,7 +102,7 @@ void Defcon::IMission::AddGameObject
 	const CFPoint&               Where, 
 	float                        Countdown, 
 	Defcon::EObjectCreationFlags Flags, 
-	const Daylon::FMetadata*     Options
+	const FMetadata*     Options
 )
 {
 	auto Task = new CCreateGameObjectTask;

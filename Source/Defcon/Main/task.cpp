@@ -75,6 +75,10 @@ void Defcon::CCreateGameObjectTask::Do()
 
 	check(GameObj != nullptr);
 
+	static int32 ObjectID = 0;
+
+	GameObj->SetID(ObjectID++);
+
 	GameObj->SetCreatorType(CreatorType);
 
 	GameObj->MapperPtr = &GArena->GetMainAreaMapper();

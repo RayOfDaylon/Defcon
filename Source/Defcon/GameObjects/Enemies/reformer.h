@@ -60,7 +60,7 @@ namespace Defcon
 			CReformerPart();
 			virtual ~CReformerPart();
 
-			virtual void  OnFinishedCreating  (const Daylon::FMetadata& Options) override;
+			virtual void  OnFinishedCreating  (const FMetadata& Options) override;
 			virtual void  Tick                (float DeltaTime) override;
 			virtual float GetCollisionForce   () const override { return 0.01f * REFORMERPART_COLLISION_FORCE; }
 			virtual float GetExplosionMass    () const override { return 0.25f; }

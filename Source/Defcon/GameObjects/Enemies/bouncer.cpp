@@ -42,7 +42,7 @@ Defcon::IBouncer::IBouncer()
 }
 
 
-void Defcon::IBouncer::OnFinishedCreating(const Daylon::FMetadata& Options)
+void Defcon::IBouncer::OnFinishedCreating(const FMetadata& Options)
 {
 	Super::OnFinishedCreating(Options);
 

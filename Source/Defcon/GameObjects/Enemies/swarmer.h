@@ -20,13 +20,13 @@ namespace Defcon
 			CSwarmer();
 			virtual ~CSwarmer();
 
-			virtual void  OnFinishedCreating      (const Daylon::FMetadata& Options) override;
+			virtual void  OnFinishedCreating      (const FMetadata& Options) override;
 			virtual void  Tick                    (float DeltaTime) override;
 			virtual float GetCollisionForce       () const override { return 0.01f * SWARMER_COLLISION_FORCE; }
 			virtual float GetExplosionMass        () const override { return 0.1f; }
 			virtual bool  ExplosionHasFireball    () const override { return false; }
 			virtual void  Explode                 (CGameObjectCollection&) override;
-			virtual bool  CanBeInjuredBySmartbomb () const override { return (SmartbombInvulnerabilityCountdown <= 0.0f); }
+			virtual bool  CanBeInjuredBySmartbomb (int32 BombID) const override { return (SmartbombID != BombID); }
 
 			void SetOriginalPosition  (const CFPoint& pt) { OriginalPos = pt; }
 
@@ -43,6 +43,6 @@ namespace Defcon
 			float   HalfwayAltitude;
 			float   TimeTargetWithinRange;
 			float   SoundCountdown;
-			float   SmartbombInvulnerabilityCountdown = 0.0f;
+			int32   SmartbombID = -1;
 	};
 }

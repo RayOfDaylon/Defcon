@@ -29,7 +29,7 @@ namespace Defcon
 			virtual void   OnAboutToDie            () override;
 			virtual EColor GetExplosionColorBase   () const override;
 			virtual float  GetExplosionMass        () const override;
-			virtual bool   CanBeInjuredBySmartbomb () const override { return false; }
+			virtual bool   CanBeInjuredBySmartbomb (int32 BombID) const override { return false; }
 
 
 			void           InitHuman               (CGameObjectCollection* Objs1, CGameObjectCollection* Objs2) { Carrier = nullptr; Age = 0.0f; Objects = Objs1; Objects2 = Objs2; }

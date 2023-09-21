@@ -49,15 +49,15 @@ Defcon::CSwarmer::CSwarmer()
 }
 
 
-void Defcon::CSwarmer::OnFinishedCreating(const Daylon::FMetadata& Options)
+void Defcon::CSwarmer::OnFinishedCreating(const FMetadata& Options)
 {
 	Super::OnFinishedCreating(Options);
 
 	SetOriginalPosition(Position);
 
-	if(Options.Has(TEXT("SmartbombInvulnerabilityCountdown")))
+	if(Options.Has(EMetadataKey::SmartbombID))
 	{
-		SmartbombInvulnerabilityCountdown = Options.GetReal(TEXT("SmartbombInvulnerabilityCountdown"));
+		SmartbombID = Options.GetInteger(EMetadataKey::SmartbombID);
 	}
 }
 
@@ -73,9 +73,6 @@ void Defcon::CSwarmer::Tick(float DeltaTime)
 
 	CEnemy::Tick(DeltaTime);
 	Inertia = Position;
-
-	SmartbombInvulnerabilityCountdown -= DeltaTime;
-
 
 	if(TargetPtr == nullptr)
 	{

@@ -78,7 +78,7 @@ Defcon::CLander::CLander()
 }
 
 
-void Defcon::CLander::OnFinishedCreating(const Daylon::FMetadata& Options)
+void Defcon::CLander::OnFinishedCreating(const FMetadata& Options)
 {
 	Super::OnFinishedCreating(Options);
 

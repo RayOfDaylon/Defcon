@@ -53,7 +53,7 @@ Defcon::CBomber::CBomber()
 }
 
 
-void Defcon::CBomber::OnFinishedCreating(const Daylon::FMetadata& Options)
+void Defcon::CBomber::OnFinishedCreating(const FMetadata& Options)
 {
 	Super::OnFinishedCreating(Options);
 

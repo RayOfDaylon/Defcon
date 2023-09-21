@@ -39,7 +39,7 @@ namespace Defcon
 			CCreateGameObjectTask() {}
 
 			CFPoint            Where;
-			Daylon::FMetadata  Options;
+			FMetadata  Options;
 			EObjType           ObjType        = EObjType::UNKNOWN;
 			EObjType           CreatorType    = EObjType::UNKNOWN;
 			bool               bMissionTarget = false;

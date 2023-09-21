@@ -206,15 +206,10 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 
 
 				// Include extra spawn options.
-				Daylon::FMetadata Options;
+				FMetadata Options;
 
-				Daylon::FVariant Value;
-
-				Value.Real = PodOrientationX;
-				Options.Map.Add(TEXT("OrientationX"), Value); 
-
-				Value.Real = PodSpeedX;
-				Options.Map.Add(TEXT("SpeedX"), Value); 
+				Options.Add(EMetadataKey::OrientationX, PodOrientationX); 
+				Options.Add(EMetadataKey::SpeedX, PodSpeedX); 
 
 				GArena->SpawnGameObject(EObjType::POD, EObjType::UNKNOWN, SpawnPoint, 0.0f, EObjectCreationFlags::StandardEnemy, &Options);	
 			}

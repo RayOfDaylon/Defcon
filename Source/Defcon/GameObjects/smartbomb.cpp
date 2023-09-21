@@ -24,11 +24,14 @@
 #endif
 
 
-
 Defcon::CSmartbombShockwave::CSmartbombShockwave()
 {
 	ParentType = Type;
 	Type       = EObjType::SMARTBOMB;
+	
+	static int32 SmartbombShockwaveID = 100000;
+
+	SetID(SmartbombShockwaveID++);
 
 	NameColor = TEXT("Color");
 	NameOs    = TEXT("Os");
@@ -52,13 +55,6 @@ Defcon::CSmartbombShockwave::CSmartbombShockwave()
 			MID = nullptr;
 		}
 	}
-
-	// todo: if pod intersection active (mission has pod intersection object, or all the pods are still intact)
-	// then predetermine if they will all be destroyed by the shockwave. 
-	// If so, have them blow up in extra colorful fashion and release no swarmers.
-	// Otherwise, blow them up normal and release swarmers (but the swarmers should be immune to us).
-	// A "smartbomb ID" would be the safest route.
-
 }
 
 
@@ -158,7 +154,7 @@ void Defcon::CSmartbombShockwave::Tick(float DeltaTime)
 
 	Targets->ForEach([&](Defcon::IGameObject* Target)
 	{
-		if(Target->CanBeInjuredBySmartbomb() && Target->CanBeInjured())
+		if(Target->CanBeInjuredBySmartbomb(Id) && Target->CanBeInjured())
 		{
 			MapperPtr->To(Target->Position, TargetScreenPos);
 
@@ -175,6 +171,7 @@ void Defcon::CSmartbombShockwave::Tick(float DeltaTime)
 				}
 
 				Target->SetKillerType(EObjType::SMARTBOMB);
+				Target->SetKillerId(Id);
 				GArena->DestroyObject(Target);
 			}
 		}

@@ -1992,7 +1992,7 @@ void UDefconPlayViewBase::SpawnGameObject
 	const CFPoint&                 Where, 
 	float                          Countdown, 
 	Defcon::EObjectCreationFlags   Flags, 
-	const Daylon::FMetadata*       Options
+	const Defcon::FMetadata*       Options
 )
 {
 	const auto MaterializationLifetime = ENEMY_BIRTHDURATION;

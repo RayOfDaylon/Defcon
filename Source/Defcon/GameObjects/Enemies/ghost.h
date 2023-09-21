@@ -59,7 +59,7 @@ namespace Defcon
 			CGhostPart();
 			virtual ~CGhostPart();
 
-			virtual void OnFinishedCreating (const Daylon::FMetadata& Options) override;
+			virtual void OnFinishedCreating (const FMetadata& Options) override;
 			virtual void Tick               (float DeltaTime) override;
 			virtual void Draw               (FPainter&, const I2DCoordMapper&) override;
 			virtual void Explode            (CGameObjectCollection&) override;
