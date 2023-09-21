@@ -52,6 +52,14 @@ Game sounds may be loud. Until a volume setting is added, it's recommended to ma
 
 All graphics are done in UMG/Slate, to push those subsystems even harder than in Stellar Mayhem.
 
+Some game development topics covered:
+- Switching among different UMG screens  
+- Using animated textures  
+- Mixing Slate with UMG  
+- Using a mediator to promote loose coupling  
+- Using scheduled tasks to simplify things that must happen later  
+- Using metadata to customize object creation
+
 If you prefer to just download a Windows binary to play the game, one is available at https://www.daylongraphics.com/download/defcon/Defcon.zip
 
 Version: 1.0  
