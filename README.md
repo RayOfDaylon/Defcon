@@ -55,10 +55,14 @@ All graphics are done in UMG/Slate, to push those subsystems even harder than in
 Some game development topics covered:
 - Switching among different UMG screens  
 - Using animated textures  
+- Implementing object behavior with state machines  
 - Mixing Slate with UMG  
-- Using a mediator to promote loose coupling  
-- Using scheduled tasks to simplify things that must happen later  
-- Using metadata to customize object creation
+- Simulating particle effects with widgets  
+- Overriding UUserWidget::NativePaint to render 2D effects directly  
+- Using mediators and delegates to promote loose coupling  
+- Simplifying things that must happen later by using scheduled tasks  
+- Using metadata to customize object creation  
+- Centralizing constant values in a preferences table
 
 If you prefer to just download a Windows binary to play the game, one is available at https://www.daylongraphics.com/download/defcon/Defcon.zip
 
