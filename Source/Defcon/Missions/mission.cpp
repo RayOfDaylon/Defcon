@@ -115,7 +115,7 @@ void Defcon::IMission::AddGameObject
 	
 	if(Options != nullptr)
 	{
-		Task->Options           = *Options;
+		Task->Options = *Options;
 	}
 
 	EnemyCreationTasks.Add(Task);

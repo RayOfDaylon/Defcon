@@ -28,6 +28,7 @@ namespace Daylon
 	{
 		TMap<FString, FVariant> Map;
 
+		bool   Has        (const FString& Key) const { return (Map.Find(Key) != nullptr); }
 		bool   GetBool    (const FString& Key) const { return Map[Key].Boolean; }
 		double GetReal    (const FString& Key) const { return Map[Key].Real; }
 		int32  GetInteger (const FString& Key) const { return Map[Key].Integer; }

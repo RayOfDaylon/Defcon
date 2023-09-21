@@ -24,17 +24,19 @@ namespace Defcon
 			virtual void Tick (float DeltaTime) override;
 			virtual void Draw (FPainter&, const I2DCoordMapper&) override;
 
-			CFPoint                   Range;
-			I2DCoordMapper*           MapperPtr  = nullptr;
-			CGameObjectCollection*    Targets    = nullptr;
-			CGameObjectCollection*    Debris     = nullptr;
+			void         InitSmartbombShockwave (const CFPoint& InRange, const I2DCoordMapper* InMapper, CGameObjectCollection* InTargets, CGameObjectCollection* InDebris);
+
 
 		protected:
-
-			CFPoint GetBlastRadius() const;
 
 			UMaterialInstanceDynamic* MID;
 			FName                     NameColor;
 			FName                     NameOs;
+
+			CFPoint                   Range;
+			CGameObjectCollection*    Targets  = nullptr;
+			CGameObjectCollection*    Debris   = nullptr;
+
+			bool                      DestroyingPodIntersection = false;
 	};
 }

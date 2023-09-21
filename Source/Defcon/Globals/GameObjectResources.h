@@ -28,7 +28,7 @@ struct FGameObjectInfo
 
 struct FGameObjectResources
 {
-	FSlateBrush*   SmartbombBrushPtr      = nullptr;
+	FSlateBrush*   SmartbombShockwaveBrushPtr      = nullptr;
 	FSlateBrush*   DebrisBrushRoundPtr    = nullptr;
 	FSlateBrush*   DebrisBrushSquarePtr   = nullptr;
 

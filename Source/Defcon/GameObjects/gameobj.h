@@ -33,12 +33,24 @@ namespace Defcon
 		CleanerEnemy  = Materializes | NotMissionTarget
 	};
 
-
+	/*
 	// todo: could be a template function supporting all mask-oriented enum classes
 	inline bool HasFlag(EObjectCreationFlags Flags, EObjectCreationFlags Which)
 	{
 		return(0 != ((int32)Flags & (int32)Which));
+	}*/
+
+	template<typename E> bool HasFlag(E Flags, E Which)
+	{
+		return(0 != ((int32)Flags & (int32)Which));
 	}
+
+	
+	enum class EDeathStyle : uint8
+	{
+		Normal,         // Object dies normally (e.g. pod release swarmers).
+		IncludeCrew     // Object dies and destroys its crew (e.g. pod destroyed during pod intersection).
+	};
 
 
 	enum class EMessage : uint8
@@ -77,38 +89,37 @@ namespace Defcon
 
 	class IGameObject
 	{
-		// Base class for all game entities.
-		// A shot or piece of debris can be 
-		// based on this class (although their drag 
-		// coefficients tend to be very low or even zero). 
+		// Base class for all game entities. A shot or piece of debris can be 
+		// based on this class (although their drag coefficients tend to be very low or even zero). 
 
 		public:
 
 			IGameObject();
 			virtual ~IGameObject();
 
-			virtual void          Init                  (const CFPoint& ArenaSize, const CFPoint& ScreenSize);
-			virtual void          OnFinishedCreating    (const Daylon::FMetadata&);
-			virtual bool          OccursFrequently      () const;
-
-			// Linked list stuff.
-			IGameObject*          GetNext               ();
-			IGameObject*          GetPrev               ();
-			void                  SetNext               (IGameObject* p);
-			void                  SetPrev               (IGameObject* p);
-
-			// Identify stuff.
-			EObjType              GetParentType         () const;
-			EObjType              GetCreatorType        () const;
-			void                  SetCreatorType        (EObjType n);
-			EObjType              GetType               () const;
-			void                  SetType               (EObjType n);
-								  
-			virtual void          Tick                  (float DeltaTime);
-			virtual void          Draw                  (FPainter&, const I2DCoordMapper&);
-			virtual void          DrawSmall             (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush) const;
-
-			virtual void          Notify                (EMessage, void*);
+			virtual void          Init                    (const CFPoint& ArenaSize, const CFPoint& ScreenSize);
+			virtual void          OnFinishedCreating      (const Daylon::FMetadata&);
+			virtual bool          OccursFrequently        () const;
+														  
+			// Linked list stuff.						  
+			IGameObject*          GetNext                 ();
+			IGameObject*          GetPrev                 ();
+			void                  SetNext                 (IGameObject* p);
+			void                  SetPrev                 (IGameObject* p);
+														  
+			// Identify stuff.							  
+			EObjType              GetParentType           () const;
+			EObjType              GetCreatorType          () const;
+			void                  SetCreatorType          (EObjType T);
+			void                  SetKillerType           (EObjType T) { KillerType = T; }
+			EObjType              GetType                 () const;
+			void                  SetType                 (EObjType T);
+								  						  
+			virtual void          Tick                    (float DeltaTime);
+			virtual void          Draw                    (FPainter&, const I2DCoordMapper&);
+			virtual void          DrawSmall               (FPainter&, const I2DCoordMapper&, FSlateBrush& Brush) const;
+														  
+			virtual void          Notify                  (EMessage, void*);
 
 			bool                  IsOurPositionVisible    () const;
 			virtual IGameObject*  CreateExplosionFireball (EExplosionFireball, CGameObjectCollection&);
@@ -127,6 +138,7 @@ namespace Defcon
 			void                  MarkAsDead              ();
 			bool                  MarkedForDeath          () const;
 			virtual void          OnAboutToDie            ();
+			void                  SetDeathStyle           (EDeathStyle Style) { DeathStyle = Style; }
 
 			virtual float         GetCollisionForce       () const;
 			bool                  IsCollisionInjurious    () const;   
@@ -184,6 +196,9 @@ namespace Defcon
 			EObjType        ParentType              = EObjType::UNKNOWN;
 			EObjType        Type                    = EObjType::UNKNOWN;
 			EObjType        CreatorType             = EObjType::UNKNOWN;
+			EObjType        KillerType              = EObjType::UNKNOWN;
+			
+			EDeathStyle     DeathStyle              = EDeathStyle::Normal;
 
 			int32           Id                      = -1;
 

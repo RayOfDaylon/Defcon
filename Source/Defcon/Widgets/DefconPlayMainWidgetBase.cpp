@@ -60,7 +60,7 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 
 	// Load up the GameObjectResources global.
 
-	GGameObjectResources.SmartbombBrushPtr     = &SmartbombBrush;
+	GGameObjectResources.SmartbombShockwaveBrushPtr     = &SmartbombBrush;
 	GGameObjectResources.DebrisBrushRoundPtr   = &DebrisBrushRound;
 	GGameObjectResources.DebrisBrushSquarePtr  = &DebrisBrushSquare;
 

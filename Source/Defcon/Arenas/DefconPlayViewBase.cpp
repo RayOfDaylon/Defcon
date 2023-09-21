@@ -1863,12 +1863,9 @@ void UDefconPlayViewBase::DetonateSmartbomb()
 
 		auto SmartBombShockwave = new Defcon::CSmartbombShockwave;
 
-		SmartBombShockwave->Range.Set(MainAreaSize.X, MainAreaSize.Y);
+		SmartBombShockwave->Position = GetPlayerShip().Position;
 
-		SmartBombShockwave->MapperPtr = &GetMainAreaMapper();
-		SmartBombShockwave->Position  = GetPlayerShip().Position;
-		SmartBombShockwave->Targets   = &Enemies;
-		SmartBombShockwave->Debris    = &Debris;
+		SmartBombShockwave->InitSmartbombShockwave(CFPoint((float)MainAreaSize.X, MainAreaSize.Y), &GetMainAreaMapper(), &Enemies, &Debris);
 
 		Blasts.Add(SmartBombShockwave);
 	}

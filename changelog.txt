@@ -5,6 +5,11 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 20, 2023
 
 
+Pod intersection destroyed by smartbomb destroys 
+all involved swarmers and doubles explosion debris.
+If the intersection didn't exist, then the 
+pods explode normally and release swarmers.
+
 Added smart bomb radius factor preference to let 
 the reach of the smart bomb shockwave be customizable.
 
