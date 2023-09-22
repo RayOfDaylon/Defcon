@@ -187,12 +187,13 @@ void Defcon::CSmartbombShockwave::Tick(float DeltaTime)
 
 			if(TargetScreenPos.Distance(BombScreenPos) < Shockwave)
 			{
-				// Make debris pushed by shockwave.
-				TargetScreenPos.Sub(BombScreenPos);
-				TargetScreenPos.Normalize();
-				TargetScreenPos.y *= -1;
-				TargetScreenPos.Mul(SMARTBOMB_WAVEPUSH * (1.0f - T) + SMARTBOMB_WAVEPUSHMIN);
-				pObj->Orientation.Fwd += TargetScreenPos;
+				auto InertiaToImpart = TargetScreenPos - BombScreenPos;
+
+				InertiaToImpart.NormalizeSafe();
+
+				InertiaToImpart.y *= -1; // Flip from screen space to cartesian
+				InertiaToImpart.Mul(SMARTBOMB_WAVEPUSH * (1.0f - T) + SMARTBOMB_WAVEPUSHMIN);
+				pObj->Orientation.Fwd += InertiaToImpart;
 			}
 		}
 	});

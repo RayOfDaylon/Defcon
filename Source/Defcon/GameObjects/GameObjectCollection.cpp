@@ -64,8 +64,7 @@ void Defcon::CGameObjectCollection::Add(IGameObject* Obj)
 	check(Obj);
 	check(Obj->GetType() != EObjType::UNKNOWN);
 	check(Obj->Position.IsValid());
-	check(Obj->Orientation.Fwd.IsValid());
-	check(Obj->Orientation.Up.IsValid());
+	check(Obj->Orientation.IsValid());
 
 	if(First != nullptr)
 	{

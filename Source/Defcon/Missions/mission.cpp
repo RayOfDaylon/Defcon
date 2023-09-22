@@ -102,9 +102,11 @@ void Defcon::IMission::AddGameObject
 	const CFPoint&               Where, 
 	float                        Countdown, 
 	Defcon::EObjectCreationFlags Flags, 
-	const FMetadata*     Options
+	const FMetadata*             Options
 )
 {
+	check(Where.IsValid());
+
 	auto Task = new CCreateGameObjectTask;
 
 	Task->ObjType			= ObjType;

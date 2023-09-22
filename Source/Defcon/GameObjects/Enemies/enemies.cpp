@@ -49,9 +49,9 @@ Defcon::CEnemy::~CEnemy()
 
 void Defcon::CEnemy::Tick(float DeltaTime)
 {
-	CFPoint temp = Inertia;
+	CFPoint Temp = Inertia;
 	Super::Tick(DeltaTime);
-	Inertia = temp;
+	Inertia = Temp;
 }
 
 

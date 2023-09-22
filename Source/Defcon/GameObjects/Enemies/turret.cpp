@@ -156,6 +156,7 @@ void Defcon::CTurret::Explode(CGameObjectCollection& Debris)
 	for(int32 i = 0; i < 100; i++)
 	{
 		CFlak* pFlak = new CFlak;
+		Flak->SetCreatorType(GetType());
 
 		pFlak->ColorbaseYoung = EColor::LightYellow;
 		pFlak->ColorbaseOld	= cby;

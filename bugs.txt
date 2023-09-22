@@ -2,17 +2,22 @@ Bug list for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 21, 2023
+September 22, 2023
 
+
+FIXED: CFlak can have NaN orientation.fwd.
+   Turns out when a smartbomb detonated and the ship's position happened 
+to coincide with a debris piece, the shockwave push vector wound up 
+being NaN, corrupting the debris' orientation.fwd. Added CFPoint::NormalizeSafe
+to convert normalizations to zero.
+
+FIXED: A few places here and there where game object weren't init'ing 
+their members fully, leaving some of them NaN.
 
 FIXED: Still getting the "nonexistant enemy" problem in the Yllabian Dogfight mission. 
 Turns out the guppy positions became NaN because member Frequency was not initialized.
 Same for the hunter enemy. CFPoint::IsValid added which checks for NaN and is called 
 by the game object processor.
-
-CFlak can have NaN orientation.fwd. Need to have check catch it 
-so we can determine exactly why -- looks like some object from which it 
-copies its orientation has a Nan value.
 
 FIXED: Terrain is occluding player ship and humans. 
 We had this fixed but muffed it again somehow.

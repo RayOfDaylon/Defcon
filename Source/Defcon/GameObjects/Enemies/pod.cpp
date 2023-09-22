@@ -24,9 +24,6 @@
 
 
 Defcon::CPod::CPod()
-	:
-	OffsetY(0.0f),
-	Frequency(2.0f)
 {
 	ParentType = Type;
 	Type       = EObjType::POD;
@@ -42,6 +39,8 @@ Defcon::CPod::CPod()
 
 void Defcon::CPod::OnFinishedCreating(const FMetadata& Options)
 {
+	check(Position.IsValid());
+
 	Super::OnFinishedCreating(Options);
 
 	check(Options.Num() >= 2);
@@ -62,12 +61,15 @@ void Defcon::CPod::Tick(float DeltaTime)
 
 	CEnemy::Tick(DeltaTime);
 
+	check(Position.IsValid());
+	check(Orientation.IsValid());
+
 	Inertia = Position;
 
 	//UE_LOG(LogGame, Log, TEXT("%S: Pod is at %d, %d"), __FUNCTION__, (int32)Position.x, (int32)Position.y);
 
 	// todo: pods actually move vertically in a linear fashion and wraparound vertically.
-	Orientation.Fwd.y = 0.1f * sinf(Frequency * (OffsetY + Age)); 
+	Orientation.Fwd.y = 0.1f * sinf(Frequency * Age); 
 
 	// Cause radar blip to blink
 	const float T = PSIN(Age * PI * 2.0f);
@@ -76,9 +78,14 @@ void Defcon::CPod::Tick(float DeltaTime)
 
 	Position.MulAdd(Orientation.Fwd, Speed * DeltaTime);
 
+	check(Position.IsValid());
+	check(Orientation.IsValid());
+
 	//UE_LOG(LogGame, Log, TEXT("%S: Pod now at %d, %d"), __FUNCTION__, (int32)Position.x, (int32)Position.y);
 
 	Inertia = Position - Inertia;
+
+	check(Inertia.IsValid());
 }
 
 

@@ -33,6 +33,9 @@ Defcon::IGameObject::IGameObject()
 	:
 	RadarColor(MakeColorFromComponents(255,255,255))
 {
+	Position.Set(0.0f, 0.0f);
+	Inertia.Set(0.0f, 0.0f);
+	Velocity.Set(0.0f, 0.0f);
 	Orientation.Up.Set(0.0f, 1.0f);
 	Orientation.Fwd.Set(1.0f, 0.0f);
 	BboxRadius.Set(10, 10);
@@ -114,6 +117,7 @@ void Defcon::IGameObject::AddExplosionDebris(const FExplosionParams& Params, CGa
 	for(int32 i = 0; i < Params.NumParticles; i++)
 	{
 		auto Particle = new CFlak;
+		Particle->SetCreatorType(GetType());
 		
 		Particle->ColorbaseYoung = Params.YoungColor[BRAND ? 0 : 1];
 		Particle->ColorbaseOld   = Params.OldColor[BRAND ? 0 : 1];

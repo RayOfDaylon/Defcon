@@ -32,9 +32,8 @@ namespace Defcon
 
 		private:
 
-			float OffsetY;   // todo: this doesn't do anything?
-			float Frequency;
-			float Speed = 0.0f;
+			float Frequency   = 2.0f;
+			float Speed       = 0.0f;
 			int32 SmartbombID = -1;
 	};
 }

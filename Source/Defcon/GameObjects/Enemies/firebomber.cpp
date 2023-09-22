@@ -107,6 +107,7 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& Debris)
 		for(I = 0; I < 10; I++)
 		{
 			CFlak* Flak = new CFlak;
+			Flak->SetCreatorType(GetType());
 			Flak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
 			float Largest = FRANDRANGE(5, 11);
@@ -133,6 +134,7 @@ void Defcon::IFirebomber::Explode(CGameObjectCollection& Debris)
 			for(I = 0; I < 10; I++)
 			{
 				CFlak* Flak = new CFlak;
+				Flak->SetCreatorType(GetType());
 				Flak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
 				float Largest = FRAND * 6 + 5;

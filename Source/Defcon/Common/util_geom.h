@@ -61,7 +61,8 @@ struct IntRect
 class CFPoint
 {
 	public:
-		CFPoint () : x(0.0f), y(0.0f) {}
+		//CFPoint () : x(0.0f), y(0.0f) {}
+		CFPoint () : x(std::numeric_limits<float>::quiet_NaN()), y(std::numeric_limits<float>::quiet_NaN()) {}
 		CFPoint (float x2, float y2) : x(x2), y(y2) {}
 		CFPoint (int32 x2, int32 y2) : x((float)x2), y((float)y2) {}
 
@@ -96,7 +97,6 @@ class CFPoint
 
 		void   MulAdd      (const CFPoint& pt, float f)	            { x += pt.x * f; y += pt.y * f; }
 		void   MulAdd      (const CFPoint& pt, const CFPoint& off)	{ x += pt.x * off.x; y += pt.y * off.y; }
-		void   Normalize   ()                                       { Div(Length()); }
 		void   Lerp        (const CFPoint& pt, float t)             { x = LERP(x, pt.x, t); y = LERP(y, pt.y, t); }
 		void   Average     (const CFPoint& pt)                      { x = AVG(x, pt.x); y = AVG(y, pt.y); }
 
@@ -109,6 +109,8 @@ class CFPoint
 		//bool   IsZero      () const                                 { return (x == 0 && y == 0); }
 		//float  Ordinal     (float w) const                          { return y * w + x; }
 
+		void   Normalize     ()                                     { Div(Length()); check(IsValid()); }
+		void   NormalizeSafe ()                                     { Div(Length()); if(!IsValid()) { Set(0.0f, 0.0f); } } 
 
 		// Like angle(), but returns 0-360 values.
 		//float  PosAngle    () const                                 { const float a = Angle(); return (a >= 0.0f ? a : a + 360.0f); }
@@ -193,11 +195,13 @@ inline CFPoint operator / (const CFPoint& pt1, float f)            { CFPoint r(p
 
 
 // A bastardized 2D matrix to store 2D orientations.
-typedef struct
+struct Orient2D
 {
 	CFPoint	Fwd;
 	CFPoint	Up;
-} Orient2D;
+
+	bool IsValid() const { return (Fwd.IsValid() && Up.IsValid()); }
+};
 
 
 class CFRect
@@ -311,33 +315,3 @@ class CBezierSpline2D
 				);
 		}
 };
-
-
-#if 0
-
-typedef struct
-{
-	float x, y, z;
-} FVector_;
-
-
-// Floating-point vector class. Should be a template, ideally.
-class CFVector : public FVector_
-{
-public:
-	CFVector ()                             { x = y = z = 0; }
-	CFVector (const CFVector& v)            { *this = v; }
-	CFVector (const FVector_& v)            { x = v.x; y = v.y; z = v.z; }
-	CFVector (const FVector_* pv)           { x = pv->x; y = pv->y; z = pv->z; }
-	CFVector (float a, float b, float c)	{ x = a; y = b; z = c; }
-
-	virtual ~CFVector() {}
-
-	operator FVector_*       () { return this; }
-	operator const FVector_* () const { return this; }
-
-	void Set (float tx, float ty, float tz) { x = tx; y = ty; z = tz; }
-	void Mul (const float f)                { x *= f; y *= f; z *= f; }
-
-};
-#endif

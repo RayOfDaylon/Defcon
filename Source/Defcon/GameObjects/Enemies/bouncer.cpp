@@ -62,7 +62,7 @@ void Defcon::IBouncer::Tick(float DeltaTime)
 	Inertia = Position;
 
 	// Check if terrain hit.
-	WRAP(Position.x, 0, GArena->GetWidth());
+	Position.x = GArena->WrapX(Position.x);
 	const float h = GArena->GetTerrainElev(Position.x);
 
 	if(Position.y < h)
@@ -121,6 +121,7 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& Debris)
 		for(i = 0; i < 10; i++)
 		{
 			CFlak* Flak = new CFlak;
+			Flak->SetCreatorType(GetType());
 			Flak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
 			float largest = FRAND * 6 + 5;
@@ -133,7 +134,7 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& Debris)
 			angle += off + SFRAND * 0.05f;
 			Flak->Orientation.Fwd.Set(sinf(angle), cosf(angle));
 			
-			Flak->Orientation.Fwd *= (SFRAND*15+30) * (i+2);
+			Flak->Orientation.Fwd *= (SFRAND * 15 + 30) * (i + 2);
 			Flak->Orientation.Fwd += Inertia;
 
 			Debris.Add(Flak);
@@ -147,6 +148,7 @@ void Defcon::IBouncer::Explode(CGameObjectCollection& Debris)
 			for(i = 0; i < 10; i++)
 			{
 				CFlak* Flak = new CFlak;
+				Flak->SetCreatorType(GetType());
 				Flak->ColorbaseYoung = BRAND ? EColor::Gray : EColor::Yellow;
 
 				float largest = FRAND * 6 + 5;

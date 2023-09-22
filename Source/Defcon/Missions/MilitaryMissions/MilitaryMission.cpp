@@ -211,6 +211,8 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 				Options.Add(EMetadataKey::OrientationX, PodOrientationX); 
 				Options.Add(EMetadataKey::SpeedX, PodSpeedX); 
 
+				check(SpawnPoint.IsValid());
+
 				GArena->SpawnGameObject(EObjType::POD, EObjType::UNKNOWN, SpawnPoint, 0.0f, EObjectCreationFlags::StandardEnemy, &Options);	
 			}
 

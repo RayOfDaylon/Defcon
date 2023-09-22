@@ -120,6 +120,34 @@ void Defcon::CGhost::Tick(float DeltaTime)
 	Position.MulAdd(Orientation.Fwd, DeltaTime * 50.0f);
 	Inertia = Position - Inertia;
 
+	
+	// Update locations of our parts.
+
+	Position.x = GArena->WrapX(Position.x);
+
+	PartLocs[0] = Position;
+
+	const float F = (float)fmod(Age, AnimSpeed) / AnimSpeed;	//(float)Age / AnimSpeed;
+
+	// Place our parts in a circle around a central part.
+	const int32 N = NumParts - 1;
+
+	const float R = BboxRadius.x * 1.25f;
+
+	for(int32 I = 0; I < N; I++)
+	{
+		const float T = SpinDir * (float)(TWO_PI * (float)I / N + ((SpinAngle + PSIN(Age)/*FRAND * 0.1f*/) * TWO_PI));
+		CFPoint Pt2(cosf(T), sinf(T));
+		const float Radius = (float)(sin((F /*+ FRAND * 3*/) * PI) * R * Daylon::Lerp(PartRadii[I + 1], PSIN(Age * PartRadiiSpeed[I + 1])) /*+ 5.0f*/);
+
+		Pt2 *= Radius;
+		Pt2 += Position;
+		Pt2.x = GArena->WrapX(Pt2.x);
+
+		PartLocs[I + 1] = Pt2;
+	}
+
+
 	// See if we need to disperse (player ship got too close).
 
 	if(TargetPtr != nullptr && !MarkedForDeath())
@@ -175,33 +203,11 @@ void Defcon::CGhost::Draw(FPainter& Painter, const I2DCoordMapper& mapper)
 		return;
 	}
 
-	PartLocs[0] = Position;
-
-	const float F = (float)fmod(Age, AnimSpeed) / AnimSpeed;
-		//(float)Age / AnimSpeed;
-
-
-	// Draw the parts in a circle around a central part.
-	const int32 N = NumParts - 1;
-
-	const float R = BboxRadius.x * 1.25f;
-
-	for(int32 I = 0; I < N; I++)
-	{
-		const float T = SpinDir * (float)(TWO_PI * (float)I / N + ((SpinAngle + PSIN(Age)/*FRAND * 0.1f*/) * TWO_PI));
-		CFPoint Pt2(cosf(T), sinf(T));
-		const float Radius = (float)(sin((F /*+ FRAND * 3*/) * PI) * R * Daylon::Lerp(PartRadii[I + 1], PSIN(Age * PartRadiiSpeed[I + 1])) /*+ 5.0f*/);
-
-		Pt2 *= Radius;
-		Pt2 += Position;
-		PartLocs[I + 1] = Pt2;
-	}
-
 	for(int32 I = 0; I < NumParts; I++)
 	{
-		CFPoint pt;
-		mapper.To(PartLocs[I], pt);
-		DrawPart(Painter, pt);
+		CFPoint P;
+		mapper.To(PartLocs[I], P);
+		DrawPart(Painter, P);
 	}
 }
 
@@ -267,32 +273,32 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 
 	for(I = 0; I < N; I++)
 	{
-		CGlowingFlak* FlakPtr = new CGlowingFlak;
+		CGlowingFlak* Flak = new CGlowingFlak;
 
-		FlakPtr->ColorbaseYoung = ColorBase;
-		FlakPtr->LargestSize = MaxSize;
-		FlakPtr->bFade = bDieOff;
+		Flak->ColorbaseYoung = ColorBase;
+		Flak->LargestSize    = MaxSize;
+		Flak->bFade          = bDieOff;
 
-		FlakPtr->Position = Position;
-		FlakPtr->Orientation = Orientation;
+		Flak->Position       = Position;
+		Flak->Orientation    = Orientation;
 
 		CFPoint Direction;
 		Direction.SetRandomVector();
 
 		// Debris has at least the object's momentum.
-		FlakPtr->Orientation.Fwd = Inertia;
+		Flak->Orientation.Fwd = Inertia;
 
 		// Scale the momentum up a bit, otherwise 
 		// the explosion looks like it's standing still.
-		FlakPtr->Orientation.Fwd *= FRANDRANGE(30, 42) * 1.5f;
+		Flak->Orientation.Fwd *= FRANDRANGE(30, 42) * 1.5f;
 
 		// Make the particle have a velocity vector
 		// as if it were standing still.
 		const float Speed = FRANDRANGE(90, 270);
 
-		FlakPtr->Orientation.Fwd.MulAdd(Direction, Speed);
+		Flak->Orientation.Fwd.MulAdd(Direction, Speed);
 
-		Debris.Add(FlakPtr);
+		Debris.Add(Flak);
 	}
 
 	if(FRAND <= DEBRIS_DUAL_PROB)
@@ -313,26 +319,26 @@ void Defcon::CGhost::Explode(CGameObjectCollection& Debris)
 
 		for(I = 0; I < N; I++)
 		{
-			CGlowingFlak* FlakPtr = new CGlowingFlak;
+			CGlowingFlak* Flak = new CGlowingFlak;
 
-			FlakPtr->ColorbaseYoung = ColorBase;
-			FlakPtr->LargestSize = MaxSize;
-			FlakPtr->bFade = bDieOff;
+			Flak->ColorbaseYoung = ColorBase;
+			Flak->LargestSize    = MaxSize;
+			Flak->bFade          = bDieOff;
 
-			FlakPtr->Position = Position;
-			FlakPtr->Orientation = Orientation;
+			Flak->Position       = Position;
+			Flak->Orientation    = Orientation;
 
 			CFPoint Direction;
 			Direction.SetRandomVector();
 
-			FlakPtr->Orientation.Fwd = Inertia;
-			FlakPtr->Orientation.Fwd *= FRANDRANGE(30, 42) * 1.5f;
+			Flak->Orientation.Fwd = Inertia;
+			Flak->Orientation.Fwd *= FRANDRANGE(30, 42) * 1.5f;
 
 			const float Speed = FRANDRANGE(22, 67);
 
-			FlakPtr->Orientation.Fwd.MulAdd(Direction, Speed);
+			Flak->Orientation.Fwd.MulAdd(Direction, Speed);
 
-			Debris.Add(FlakPtr);
+			Debris.Add(Flak);
 		}
 	}
 
@@ -362,12 +368,13 @@ Defcon::CGhostPart::CGhostPart()
 	ParentType = Type;
 	Type       = EObjType::GHOSTPART;
 
-	PointValue = 0;
-	Orientation.Fwd.Set(1.0f, 0.0f);
-	RadarColor = C_WHITE;
-	AnimSpeed = FRANDRANGE(0.15f, 0.5f);
-	bCanBeInjured = false;
+	PointValue            = 0;
+	RadarColor            = C_WHITE;
+	AnimSpeed             = FRANDRANGE(0.15f, 0.5f);
+	bCanBeInjured         = false;
 	bIsCollisionInjurious = false;
+
+	Orientation.Fwd.Set(1.0f, 0.0f);
 
 	CreateSprite(Type);
 	const auto& Info = GGameObjectResources.Get(Type);

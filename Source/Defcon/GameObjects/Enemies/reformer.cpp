@@ -63,6 +63,29 @@ void Defcon::CReformer::Tick(float DeltaTime)
 
 	Position.MulAdd(Orientation.Fwd, DeltaTime * 50.0f);
 
+	Position.x = GArena->WrapX(Position.x);
+
+	PartLocations[0] = Position;
+
+	float F = (float)fmod(Age, AnimSpeed) / AnimSpeed;
+
+	// Place our parts in a circle around our central part.
+
+	const int32 N = NumParts - 1;
+
+	for(int32 I = 0; I < N; I++)
+	{
+		const float T = (float)(TWO_PI * I / N + (SpinAngle * TWO_PI));
+		CFPoint P(cosf(T), sinf(T));
+		const float R = (float)(sin(F * PI) * 5 + 10);
+		BboxRadius.Set(R, R);
+		P *= R;
+		P += Position;
+		P.x = GArena->WrapX(P.x);
+
+		PartLocations[I + 1] = P;
+	}
+
 	Inertia = Position - Inertia;
 }
 
@@ -100,24 +123,6 @@ void Defcon::CReformer::ConsiderFiringBullet(float DeltaTime)
 
 void Defcon::CReformer::Draw(FPainter& Painter, const I2DCoordMapper& Mapper)
 {
-	PartLocations[0] = Position;
-
-	float F = (float)fmod(Age, AnimSpeed) / AnimSpeed;
-
-	// Draw the parts in a circle around a central part.
-	const int32 N = NumParts - 1;
-
-	for(int32 I = 0; I < N; I++)
-	{
-		const float T = (float)(TWO_PI * I / N + (SpinAngle * TWO_PI));
-		CFPoint P(cosf(T), sinf(T));
-		const float R = (float)(sin(F * PI) * 5 + 10);
-		BboxRadius.Set(R, R);
-		P *= R;
-		P += Position;
-		PartLocations[I + 1] = P;
-	}
-
 	for(int32 I = 0; I < NumParts; I++)
 	{
 		CFPoint P;

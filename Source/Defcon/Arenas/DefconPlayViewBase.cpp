@@ -2004,6 +2004,8 @@ void UDefconPlayViewBase::SpawnGameObject
 	const Defcon::FMetadata*       Options
 )
 {
+	check(Where.IsValid());
+
 	const auto MaterializationLifetime = ENEMY_BIRTHDURATION;
 
 	if(Defcon::HasFlag(Flags, Defcon::EObjectCreationFlags::Materializes))

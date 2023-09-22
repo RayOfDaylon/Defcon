@@ -71,6 +71,8 @@ void Defcon::CEndMissionTask::Do()
 
 void Defcon::CCreateGameObjectTask::Do()
 {
+	check(Where.IsValid());
+
 	CEnemy* GameObj = InstantiateGameObject();
 
 	check(GameObj != nullptr);
@@ -84,6 +86,8 @@ void Defcon::CCreateGameObjectTask::Do()
 	GameObj->MapperPtr = &GArena->GetMainAreaMapper();
 	GameObj->Position  = Where;
 	GameObj->Orientation.Fwd.x = SBRAND;
+
+	check(GameObj->Orientation.IsValid());
 
 	GameObj->Init(CFPoint(GArena->GetWidth(),        GArena->GetHeight()), 
                   CFPoint(GArena->GetDisplayWidth(), GArena->GetHeight()));
