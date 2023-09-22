@@ -11,6 +11,7 @@ Human status readout consumes HumanCount messages directly
 instead of parent status widget doing it on its behalf.
 
 Bug fix for hidden enemies problem in Yllabian dogfights.
+Bug fix for terrain occluding player ship and humans.
 
 Added CFPoint::IsValid to help catch NaN errors.
 
