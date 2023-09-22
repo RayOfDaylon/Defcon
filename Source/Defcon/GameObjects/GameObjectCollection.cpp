@@ -63,6 +63,9 @@ void Defcon::CGameObjectCollection::Add(IGameObject* Obj)
 {
 	check(Obj);
 	check(Obj->GetType() != EObjType::UNKNOWN);
+	check(Obj->Position.IsValid());
+	check(Obj->Orientation.Fwd.IsValid());
+	check(Obj->Orientation.Up.IsValid());
 
 	if(First != nullptr)
 	{
@@ -244,6 +247,8 @@ void Defcon::CGameObjectCollection::Process(GameObjectProcessingParams& Params)
 		}
 		
 		Obj->Tick(Params.DeltaTime);
+
+		check(Obj->Position.IsValid());
 
 		Obj->Position.x = GArena->WrapX(Obj->Position.x);
 

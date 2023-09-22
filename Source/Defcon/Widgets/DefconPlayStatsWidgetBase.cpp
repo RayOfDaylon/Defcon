@@ -35,47 +35,7 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 	Style.BackgroundImage.Margin = FMargin(BorderWidth);
 	ShieldReadout->SetWidgetStyle(Style);
 
-	// Subscribe to human abduction count
-	{
-		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::AbductionCountChanged, 
-			[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
-			{
-				if(!This.IsValid())
-				{
-					return;
-				}
 
-				check(Payload != nullptr);
-
-				This.Get()->HumansReadout->UpdateReadout(*static_cast<TArray<bool>*>(Payload));
-			}
-		);
-		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
-	}
-
-	// Subscribe to smartbomb count
-	{
-		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::SmartbombCountChanged, 
-			[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
-			{
-				if(!This.IsValid())
-				{
-					return;
-				}
-
-				check(Payload != nullptr);
-
-				const int32 Amount = *static_cast<int32*>(Payload);
-
-				check(Amount >= 0);
-
-				const FString Str = FString::Printf(TEXT("%d"), Amount);
-
-				This.Get()->SmartbombReadout->SetText(FText::FromString(Str));
-			}
-		);
-		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
-	}
 
 	// Subscribe to player ship shield strength
 	{
@@ -145,11 +105,3 @@ int32 UDefconPlayStatsWidgetBase::NativePaint
 		bParentEnabled);
 }
 
-#if 0
-void UDefconPlayStatsWidgetBase::UpdateShieldReadout(float Amount)
-{
-	check(Amount >= 0.0f && Amount <= 1.0f);
-
-	ShieldReadout->SetPercent(Amount);
-}
-#endif

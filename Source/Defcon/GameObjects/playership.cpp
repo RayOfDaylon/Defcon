@@ -54,7 +54,7 @@ Defcon::CPlayerShip::CPlayerShip()
 	PickupBboxRadius = Info.Size * 0.4f;
 
 	SmartbombsLeft.Bind(EMessageEx::SmartbombCountChanged);
-	SmartbombsLeft.Set(SMARTBOMB_INITIAL);
+	SmartbombsLeft.Set(3);
 }
 
 
@@ -112,7 +112,7 @@ void Defcon::CPlayerShip::OnAboutToDie()
 
 void Defcon::CPlayerShip::AddSmartBombs(int32 Amount) 
 {
-	SmartbombsLeft.Set(SmartbombsLeft.Get() + Amount); 
+	SmartbombsLeft.Set(SmartbombsLeft.Get() + Amount, (Amount == 0)); 
 }
 
 

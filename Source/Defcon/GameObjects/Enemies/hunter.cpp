@@ -32,6 +32,7 @@ Defcon::CHunter::CHunter()
 	Brightness            = 1.0f;
 	TimeTargetWithinRange = 0.0f;
 	Amplitude             = FRANDRANGE(0.33f, 0.9f);
+	Frequency             = FRANDRANGE(6, 12);
 	
 	const float Speed = Daylon::FRandRange(HUNTER_SPEED) * (BRAND ? 1 : -1);
 

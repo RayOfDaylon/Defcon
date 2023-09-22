@@ -2,10 +2,21 @@ Bug list for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 17, 2023
+September 21, 2023
 
 
-Terrain is occluding player ship and humans. We had this fixed but muffed it again somehow.
+FIXED: Still getting the "nonexistant enemy" problem in the Yllabian Dogfight mission. 
+Turns out the guppy positions became NaN because member Frequency was not initialized.
+Same for the hunter enemy. CFPoint::IsValid added which checks for NaN and is called 
+by the game object processor.
+
+CFlak can have NaN orientation.fwd. Need to have check catch it 
+so we can determine exactly why -- looks like some object from which it 
+copies its orientation has a Nan value.
+
+FIXED: Terrain is occluding player ship and humans. 
+We had this fixed but muffed it again somehow.
+Needed to call CreateTerrain before InitMission.
 
 FIXED: Humans carried by player sometimes will get struck 
 by friendly fire, probably because the laser bolt 
@@ -67,22 +78,6 @@ rectangle grows to the wrong coordinates (maybe display space instead of window 
 
 FIXED: Spawning and then destroying enemies in training missions (using the debug controls) 
 would cause humans to all clump together at the x-origin in the first military mission.
-
-FIXED: Still getting the "nonexistant enemy" problem in the Yllabian Dogfight mission. 
-Both hidden and out-of-bounds enemy counts reported zero, so it's likely the 
-critical hostiles count is being overly incremented somehow. Happened during 
-a packaged build (Shipping) so no checks were triggered, sigh.
-   Cause still unknown, but am moving away from the "hostiles remaining" 
-concept in CMilitaryMission to improve target counts reliability.
-Added x-pos to the bounds check, but even if a swarmer or guppy could 
-defy it, in a few frames it would be corrected. So my guess is that 
-somehow the object is considered visible but isn't drawing, or the 
-hostiles count is simply wrong. With the latest changes, if the latter 
-is true, then entering the stargate will exit the mission because it 
-does an actual count. If it doesn't exit, then we know there are one 
-or more invisible or out-of-bound objects somewhere.
-   With the new way mission end is determined, this problem hasn't 
-occurred despite hours of play testing.
 
 FIXED: More framerate vs. time fixes.
 

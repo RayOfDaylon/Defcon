@@ -60,9 +60,9 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 
 	// Load up the GameObjectResources global.
 
-	GGameObjectResources.SmartbombShockwaveBrushPtr     = &SmartbombBrush;
-	GGameObjectResources.DebrisBrushRoundPtr   = &DebrisBrushRound;
-	GGameObjectResources.DebrisBrushSquarePtr  = &DebrisBrushSquare;
+	GGameObjectResources.SmartbombShockwaveBrushPtr  = &SmartbombBrush;
+	GGameObjectResources.DebrisBrushRoundPtr         = &DebrisBrushRound;
+	GGameObjectResources.DebrisBrushSquarePtr        = &DebrisBrushSquare;
 
 	// Our textures were 3x the arcade, but need to be 4.25x larger. So for now scale the widget sizes that much.
 	// Note: player ship is already okay. Once we have our 4K textures the factor should be 0.5f.

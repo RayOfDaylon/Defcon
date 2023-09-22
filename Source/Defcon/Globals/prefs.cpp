@@ -130,6 +130,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF( smartbomb_wavepush,          30.0f,    "px/frame",     Float,        5.0f,      100.0f,   "Debris near player is pushed at this speed by smartbomb shockwave"                         );
 	INITPREF( smartbomb_wavepushmin,       15.0f,    "px/frame",     Float,        5.0f,       50.0f,   "Debris is additionally pushed by smartbomb shockwave this fast regardless of location"     );
 	INITPREF( smartbomb_max_flashscreen,   15,       "frames",       Integer,      1,          50,      "How long a smartbomb shockwave is visible"                                                 );
+	INITPREF( SmartbombMaxNum,             15,       "",             Integer,      1,          15,      "Maximum number of smart bombs player ship can carry"                                       );
 	INITPREF( sound_active,                 1,       "",             Boolean,      0,           0,      "Enable sound effects (disable, e.g., if you want to run a music program while playing)"    );
 	INITPREF( SpacehumCollisionForce,       5,       "%",            Integer,      0,         100,      "Shield loss when colliding with spacehum"                                                  );
 	INITPREF( spacehum_value,             100,       "",             Integer,      0,        1000,      "Number of points earned for destroying a space hum"                                        );

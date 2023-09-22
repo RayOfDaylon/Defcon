@@ -185,9 +185,9 @@ void UDefconPlayViewBase::DeleteAllObjects()
 	Enemies.  DeleteAll(Defcon::kIncludingSprites);
 	Blasts.   DeleteAll(Defcon::kIncludingSprites);
 	Debris.   DeleteAll(Defcon::kIncludingSprites);
-	Objects.DeleteAll(Defcon::kIncludingSprites);
+	Objects.  DeleteAll(Defcon::kIncludingSprites);
 
-	ScheduledTasks.   DeleteAll();
+	ScheduledTasks.DeleteAll();
 }
 
 
@@ -230,6 +230,8 @@ void UDefconPlayViewBase::OnFinishActivating()
 		return;
 	}
 
+	
+
 
 	// Place humans.
 
@@ -254,18 +256,23 @@ void UDefconPlayViewBase::OnFinishActivating()
 	Defcon::GGameMatch->SetHumansPlaced();
 
 
+	// Install terrain -- must do this before mission is initialized.
+
+	AllowableTerrainSpan.Set(MainAreaSize.Y * 0.05f, MainAreaSize.Y * 0.45f);
+	CreateTerrain();
+
+
 	// Start the current mission.
+	// Causes player and human sprites to be installed.
 
 	Defcon::GGameMatch->InitMission();
 
 	AreHumansInMission = Defcon::GGameMatch->GetMission()->HumansInvolved();
 
-	AllowableTerrainSpan.Set(MainAreaSize.Y * 0.05f, MainAreaSize.Y * 0.45f);
-	CreateTerrain();
-
 	PlayAreaRadar->Init(MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
 
 	OnHumansChanged();
+
 
 	PlayAreaMain  -> SetSafeToStart(); // todo: may not be needed
 	PlayAreaRadar -> OnFinishActivating();
@@ -373,6 +380,8 @@ void UDefconPlayViewBase::InitPlayerShipForMission()
 	NumPlayerPassengers = 0;
 
 	PlayerShip.SetShieldStrength(1.0f, true);
+
+	PlayerShip.AddSmartBombs(0); // hack: get readout to size properly
 }
 
 

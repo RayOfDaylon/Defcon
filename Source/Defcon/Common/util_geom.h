@@ -68,6 +68,8 @@ class CFPoint
 		// This ctor causes FVector2D-only expressions to fail, don't know why
 		//CFPoint (const FVector2D& V) : x(V.X), y(V.Y) {}
 
+		bool IsValid() const { return !(isnan(x) || isnan(y)); }
+
 		CFPoint& operator = (const FVector2D& V) { Set(V.X, V.Y); return *this; }
 		
 		void  Set  (float a, float b) { x = a; y = b; }

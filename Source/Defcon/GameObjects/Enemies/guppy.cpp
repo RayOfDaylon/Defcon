@@ -43,6 +43,7 @@ Defcon::CGuppy::CGuppy()
 	Brightness            = 1.0f;
 	TimeTargetWithinRange = 0.0f;
 	Amplitude             = FRANDRANGE(0.25f, 0.4f);
+	Frequency             = FRANDRANGE(6, 12);
 	FiringCountdown       = 1.0f;
 
 	CreateSprite(Type);
@@ -135,9 +136,9 @@ void Defcon::CGuppy::Tick(float DeltaTime)
 					Orientation.Fwd.y = SGN(VerticalDelta) * 0.5f;
 					//if(Orientation.Fwd.y == 0)
 					//	Orientation.Fwd.y = SFRAND;
-					CFPoint pt;
-					GArena->ShortestDirection(Position, TargetPtr->Position, pt);
-					Orientation.Fwd.x = FRANDRANGE(0.33f, 0.58f) * SGN(pt.x);
+					CFPoint P;
+					GArena->ShortestDirection(Position, TargetPtr->Position, P);
+					Orientation.Fwd.x = FRANDRANGE(0.33f, 0.58f) * SGN(P.x);
 					Position.MulAdd(Orientation.Fwd, DeltaTime * Daylon::Average(GUPPY_SPEED));
 				}
 			}
@@ -190,8 +191,15 @@ void Defcon::CGuppy::Tick(float DeltaTime)
 			break;
 	} // switch(state)
 
-	// Constrain vertically.
-	Position.y = CLAMP(Position.y, 0, GArena->GetHeight());
+	// Wraparound vertically.
+	if(Position.y >= GArena->GetHeight())
+	{
+		Position.y -= GArena->GetHeight();
+	}
+	else if(Position.y < 0)
+	{
+		Position.y += GArena->GetHeight();
+	}
 
 	Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
 

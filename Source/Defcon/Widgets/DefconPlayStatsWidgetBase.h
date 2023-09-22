@@ -41,14 +41,14 @@ class DEFCON_API UDefconPlayStatsWidgetBase : public UDefconPlayWidgetBase
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> ShieldLabel;
 
-	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	TObjectPtr<UTextBlock> SmartbombReadout;
+	//UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	//TObjectPtr<UTextBlock> SmartbombReadout;
 
-	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	TObjectPtr<UWidget> AbductionAlert;
+	//UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	//TObjectPtr<UWidget> AbductionAlert;
 
-	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	TObjectPtr<UDefconHumansInfoBase> HumansReadout;
+	//UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	//TObjectPtr<UDefconHumansInfoBase> HumansReadout;
 
 
 	TArray<FLinearColor>    ShieldGradient;

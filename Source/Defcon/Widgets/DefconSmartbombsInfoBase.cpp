@@ -2,17 +2,17 @@
 // Copyright 2003-2023 Daylon Graphics Ltd. All Rights Reserved.
 
 
-#include "DefconHumansInfoBase.h"
+#include "DefconSmartbombsInfoBase.h"
 #include "Common/util_color.h"
 #include "Globals/MessageMediator.h"
+#include "Globals/prefs.h"
 #include "UMG/Public/Blueprint/WidgetTree.h"
 #include "UMG/Public/Components/Image.h"
 #include "UMG/Public/Components/HorizontalBox.h"
 #include "UMG/Public/Components/HorizontalBoxSlot.h"
-#include "Globals/prefs.h"
 
 
-void UDefconHumansInfoBase::NativeOnInitialized()
+void UDefconSmartbombsInfoBase::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
@@ -24,22 +24,22 @@ void UDefconHumansInfoBase::NativeOnInitialized()
 
 	Box->ClearChildren();
 
-	for(int32 Idx = 0; Idx < HUMANS_COUNT; Idx++)
+	for(int32 Idx = 0; Idx < SMARTBOMB_MAXNUM; Idx++)
 	{
 		auto Image = WidgetTree->ConstructWidget<UImage>();
 
 		auto BoxSlot = Box->AddChildToHorizontalBox(Image);
 
 		// This has no effect here (sigh).
-		//Image->SetDesiredSizeOverride(FVector2D(10));
+		Image->SetDesiredSizeOverride(FVector2D(10));
 
 		BoxSlot->SetPadding(FMargin(Idx == 0 ? 0 : 4, 0, 0, 0));
 	}
 
-	// Subscribe to human abduction count
+	// Subscribe to smartbomb count
 	{
-		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::AbductionCountChanged, 
-			[This = TWeakObjectPtr<UDefconHumansInfoBase>(this)](void* Payload)
+		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::SmartbombCountChanged, 
+			[This = TWeakObjectPtr<UDefconSmartbombsInfoBase>(this)](void* Payload)
 			{
 				if(!This.IsValid())
 				{
@@ -48,7 +48,13 @@ void UDefconHumansInfoBase::NativeOnInitialized()
 
 				check(Payload != nullptr);
 
-				This.Get()->UpdateReadout(*static_cast<TArray<bool>*>(Payload));
+				const int32 Amount = *static_cast<int32*>(Payload);
+
+				check(Amount >= 0);
+
+				const FString Str = FString::Printf(TEXT("%d"), Amount);
+
+				This.Get()->UpdateReadout(Amount);//SmartbombReadout->SetText(FText::FromString(Str));
 			}
 		);
 		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
@@ -56,12 +62,11 @@ void UDefconHumansInfoBase::NativeOnInitialized()
 }
 
 
-void UDefconHumansInfoBase::UpdateReadout(const TArray<bool>& AbductionStates)
+void UDefconSmartbombsInfoBase::UpdateReadout(int32 BombCount)
 {
 	// Called whenever a human's abduction status has changed.
 	// The length of the array indicates the number of surviving humans.
 
-	const int32 CurrentHumansCount = AbductionStates.Num();
 
 	// Our root child is a horizontal box, and in that, a set of fifteen small images.
 
@@ -69,17 +74,14 @@ void UDefconHumansInfoBase::UpdateReadout(const TArray<bool>& AbductionStates)
 
 	check(Box != nullptr);
 
-	// If we want to use more colors (e.g. yellow to indicate falling)
-	// then we need use an enum instead of bool for the abduction states.
-	const FLinearColor Colors[2] = { C_GREEN, C_RED };
 
-	for(int32 Idx = 0; Idx < HUMANS_COUNT; Idx++)
+	for(int32 Idx = 0; Idx < SMARTBOMB_MAXNUM; Idx++)
 	{
 		auto Image = Cast<UImage>(Box->GetChildAt(Idx));
 
 		check(Image != nullptr);
 
-		if(Idx >= CurrentHumansCount)
+		if(Idx >= BombCount)
 		{
 			Daylon::Hide(Image);
 			continue;
@@ -88,6 +90,6 @@ void UDefconHumansInfoBase::UpdateReadout(const TArray<bool>& AbductionStates)
 		Daylon::Show(Image);
 
 		Image->SetDesiredSizeOverride(FVector2D(10));
-		Image->SetBrushTintColor(FSlateColor(Colors[(int32)AbductionStates[Idx]]));
+		Image->SetBrushTintColor(C_LIGHT);
 	}
 }
