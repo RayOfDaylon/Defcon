@@ -2,6 +2,9 @@ Changelog for DaylonGraphicsLibrary UE plugin
 
 Last updated: September 22, 2023
 
+Broke out various classes and function categories to their own .h/.cpp files.
+DaylonUtils.h is retained as a "#include everything" convenience header.
+
 Made FHighScoreTable a template class so capacity and maxnamelength
 could be easily customized.
 
