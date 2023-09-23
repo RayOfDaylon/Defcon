@@ -2,8 +2,12 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 21, 2023
+September 22, 2023
 
+
+Rebased Defcon mediator class to use Daylon::TFastMessageMediator 
+to get a little performance boost (although negligible at this point 
+since we don't have many message IDs).
 
 Smartbomb readout uses graphic bar (arcade match) instead of digit.
 

@@ -406,57 +406,6 @@ void Daylon::FLoopedSound::Tick(float DeltaTime)
 
 // ------------------------------------------------------------------------------------------
 
-int32 Daylon::FHighScoreTable::GetLongestNameLength() const
-{
-	int32 Len = 0;
-
-	for(const auto& Entry : Entries)
-	{
-		Len = FMath::Max(Len, Entry.Name.Len());
-	}
-	return Len;
-}
-
-
-bool Daylon::FHighScoreTable::CanAdd(int32 Score) const 
-{
-	if(Entries.Num() < MaxEntries)
-	{
-		return true;
-	}
-
-	// We're full, but see if the score beats an existing entry.
-
-	for(const auto& Entry : Entries)
-	{
-		if(Score > Entry.Score)
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
-
-void Daylon::FHighScoreTable::Add(int32 Score, const FString& Name)
-{
-	if(!CanAdd(Score))
-	{
-		return;
-	}
-
-	Entries.Add(FHighScore(Score, Name));
-
-	Entries.Sort();
-	Algo::Reverse(Entries);
-
-	// Cull any entries past the max allowable.
-	while(Entries.Num() > MaxEntries)
-	{
-		Entries.Pop();
-	}
-}
 
 
 // ------------------------------------------------------------------------------------------

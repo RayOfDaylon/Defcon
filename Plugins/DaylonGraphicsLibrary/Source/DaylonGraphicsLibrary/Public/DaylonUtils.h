@@ -67,6 +67,8 @@ namespace Daylon
 	DAYLONGRAPHICSLIBRARY_API FVector2D     ComputeFiringSolution             (const FVector2D& LaunchP, float TorpedoSpeed, const FVector2D& TargetP, const FVector2D& TargetInertia);
 
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 	template<class WidgetT> static WidgetT* MakeWidget()
 	{
 		auto Widget = GetWidgetTree()->ConstructWidget<WidgetT>();
@@ -74,6 +76,7 @@ namespace Daylon
 		return Widget;
 	}
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	UENUM()
 	enum class EListNavigationDirection : int32
@@ -83,7 +86,7 @@ namespace Daylon
 		Forwards  =  1,
 	};
 
-
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	UENUM()
 	enum class ERotationDirection : int32
@@ -93,6 +96,7 @@ namespace Daylon
 		Clockwise        =  1,
 	};
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	template <typename T> void Order(T& A, T& B)
 	{
@@ -102,6 +106,7 @@ namespace Daylon
 		}
 	}
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	template <typename T> struct FRange
 	{
@@ -167,6 +172,7 @@ namespace Daylon
 		return (Range.Low() + Range.High()) / 2;
 	}
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	struct DAYLONGRAPHICSLIBRARY_API FLoopedSound
 	{
@@ -196,6 +202,7 @@ namespace Daylon
 			float TimeRemaining = 0.0f;
 	};
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	struct DAYLONGRAPHICSLIBRARY_API FScheduledTask
 	{
@@ -230,6 +237,7 @@ namespace Daylon
 		}
 	};
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	struct DAYLONGRAPHICSLIBRARY_API FDurationTask
 	{
@@ -272,12 +280,13 @@ namespace Daylon
 			float Elapsed = 0.0f;
 	};
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	// A type that acts like a given type except that when the value is modified,
-	// it invokes a delegate.
-	template <typename T>
-	class TBindableValue
+	template <typename T> class TBindableValue
 	{
+		// A type that acts like a given type except that when the value is modified,
+		// it invokes a delegate.
+
 		protected:
 
 			T                             Value;
@@ -312,7 +321,6 @@ namespace Daylon
 					Delegate(Value);
 				}
 			}
-
 
 
 			TBindableValue& operator = (const T& Val)
@@ -350,7 +358,7 @@ namespace Daylon
 	};
 
 
-	// --------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	/*
 		TMessageMediator (and helper types).
@@ -382,7 +390,9 @@ namespace Daylon
 		The Tenum template argument must be an enum class with at least one member called "Unknown".
 
 		For efficiency during message sending, the mediator maintains an array of
-		consumers for each message ID, finding the array using a TMap.
+		consumers for each message ID, finding the array using a TMap. An even faster 
+		mediator called TFastMediator uses a TArray. Would be nice to consolidate 
+		the two classes by abstracting the consumer storage.
 	*/
 
 
@@ -426,6 +436,11 @@ namespace Daylon
 
 	template <typename Tenum> class TMessageMediator
 	{
+		// Default message mediator class.
+		// Uses TMap to correlate messages to consumer arrays, which is slower
+		// than an array or even switch(), but allows enum values to be
+		// outside the enum ordinal count.
+
 		// No copying allowed.
 		TMessageMediator (const TMessageMediator&) = delete;
 		TMessageMediator& operator= (const TMessageMediator&) = delete;
@@ -503,7 +518,82 @@ namespace Daylon
 	};
 
 
-	template <typename Tval, typename Tenum> class TMessageableValue
+	template <typename Tenum> class TFastMessageMediator
+	{
+		// Fast version of TMessageMediator that requires enum type argument
+		// to have a Count value, and also that all other values range from 0 to Count - 1.
+
+		// No copying allowed.
+		TFastMessageMediator (const TFastMessageMediator&) = delete;
+		TFastMessageMediator& operator= (const TFastMessageMediator&) = delete;
+
+
+		public:
+
+			TFastMessageMediator() 
+			{
+				ConsumerArrays.SetNum((int32)Tenum::Count);
+			}
+
+
+			void Send(Tenum Message, void* Payload = nullptr) const
+			{
+				check(Message != Tenum::Unknown);
+				check(ConsumerArrays.IsValidIndex((int32)Message));
+
+				for(const auto& Consumer : ConsumerArrays[(int32)Message])
+				{
+					Consumer.MessageDelegate(Payload);
+				}
+			}
+
+
+			void RegisterConsumer(const FMessageConsumer<Tenum>& Consumer)
+			{
+				check(Consumer.IsValid());
+				check(ConsumerArrays.IsValidIndex((int32)Consumer.Message));
+
+				auto& Consumers = ConsumerArrays[(int32)Consumer.Message];
+
+				if(nullptr == Consumers.FindByPredicate([Consumer](const FMessageConsumer<Tenum>& Elem){ return (Elem.Object == Consumer.Object); }))
+				{
+					// Consumers exist for the message but not for the consumer's object, so add consumer to existing array.
+					Consumers.Add(Consumer);
+				}
+			}
+
+
+			void UnregisterConsumer(void* Object)
+			{
+				// Remove all delegates which a recipient object had registered.
+
+				// Called when object no longer needs to receive messages, or
+				// when the object is being deleted.
+
+				for(auto& Consumers : ConsumerArrays)
+				{
+					for(int32 Idx = Consumers.Num() - 1; Idx >= 0; Idx--)
+					{
+						if(Consumers[Idx].Object == Object)
+						{
+							Consumers.RemoveAtSwap(Idx);
+						}
+					}
+				}
+
+				// We don't expect to need unregistering of a particular delegate i.e. Object + Message.
+			}
+
+
+		protected:
+
+			// Instead of a TMap, we use a TArray to correlate messages directly with consumer arrays.
+			
+			TArray<TArray<FMessageConsumer<Tenum>>> ConsumerArrays;
+	};
+
+
+	template <typename Tval, typename Tmediator, typename Tenum> class TMessageableValue
 	{
 		// Use this template instead of a normal value type in order to 
 		// make it sendable to a message mediator.
@@ -511,10 +601,10 @@ namespace Daylon
 
 		protected:
 
-			Tval                     Value;
-			TMessageMediator<Tenum>* MessageMediator = nullptr;
-			Tenum                    Message         = Tenum::Unknown;
-			bool                     FirstTime       = true;
+			Tval        Value;
+			Tmediator*  MessageMediator = nullptr;
+			Tenum       Message         = Tenum::Unknown;
+			bool        FirstTime       = true;
 
 
 		public:
@@ -539,7 +629,7 @@ namespace Daylon
 			}
 
 
-			void Bind(TMessageMediator<Tenum>* InMessageMediator, Tenum InMessage)
+			void Bind(Tmediator* InMessageMediator, Tenum InMessage)
 			{
 				check(InMessageMediator != nullptr);
 				check(InMessage != Tenum::Unknown);
@@ -549,12 +639,12 @@ namespace Daylon
 			}
 	};
 
-	// --------------------------------------------------------------------------------------------------------
-	
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	struct DAYLONGRAPHICSLIBRARY_API FHighScore
 	{
-	
+		// A single entry in a high score table.
+		
 		FString Name;
 		int32   Score = 0;
 
@@ -587,24 +677,79 @@ namespace Daylon
 		}
 	};
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	struct DAYLONGRAPHICSLIBRARY_API FHighScoreTable
+	template<int32 MaxEntries, int32 MaxNameLength> struct THighScoreTable
 	{
-		int32 MaxEntries    = 10;
-		int32 MaxNameLength = 30; // Max. number of characters a name can have. Original Asteroids game used 3 chars.
+		// A simple high score table.
+		// MaxNameLength is the max. number of characters a name can have. Original Asteroids game used 3 chars.
 
 		TArray<FHighScore> Entries;
 
-		int32  GetLongestNameLength () const;
-		bool   CanAdd               (int32 Score) const;
-		void   Add                  (int32 Score, const FString& Name);
-		void   Clear                () { Entries.Empty(); }
+		void   Clear() 
+		{
+			Entries.Empty(); 
+		}
+
+
+		int32 GetMaxNameLength() const { return MaxNameLength; }
+
+
+		int32 GetLongestNameLength() const
+		{
+			int32 Len = 0;
+
+			for(const auto& Entry : Entries)
+			{
+				Len = FMath::Max(Len, Entry.Name.Len());
+			}
+			return Len;
+		}
+
+
+		bool CanAdd(int32 Score) const 
+		{
+			if(Entries.Num() < MaxEntries)
+			{
+				return true;
+			}
+
+			// We're full, but see if the score beats an existing entry.
+
+			for(const auto& Entry : Entries)
+			{
+				if(Score > Entry.Score)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+
+		void Add(int32 Score, const FString& Name)
+		{
+			if(!CanAdd(Score))
+			{
+				return;
+			}
+
+			Entries.Add(FHighScore(Score, Name));
+
+			Entries.Sort();
+			Algo::Reverse(Entries);
+
+			// Cull any entries past the max allowable.
+			while(Entries.Num() > MaxEntries)
+			{
+				Entries.Pop();
+			}
+		}
 	};
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-	// -------------------------------------------------------------------------------------------------------------------
 	// Slate-only 2D play object
 	// Warning: play objects combine views with models; if you need a view-model separation, prefer AActor and 
 	// arrange for a visuals-only class (e.g. SImage or your own custom UWidgets/SWidgets) to do rendering.
@@ -880,6 +1025,7 @@ namespace Daylon
 		return false;
 	}
 
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	// Mersenne Twister random number generator -- a C++ class MTRand
 	// Based on code by Makoto Matsumoto, Takuji Nishimura, and Shawn Cokus

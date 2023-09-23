@@ -1,6 +1,18 @@
 Changelog for DaylonGraphicsLibrary UE plugin
 
-Last updated: September 15, 2023
+Last updated: September 22, 2023
+
+Made FHighScoreTable a template class so capacity and maxnamelength
+could be easily customized.
+
+Added TFastMessageMediator template class that uses TArray instead 
+of TMap to directly find the consumer array that associates with 
+a particular message.
+
+TMessageableValue requires a template argument for the 
+mediator class.
+
+Fixed compile-time bug in TMessageMediator::UnregisterConsumer.
 
 Added SDaylonSprite::SetCurrentAge method to allow
 changing where the animation starts or continues from.

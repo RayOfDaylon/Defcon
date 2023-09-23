@@ -50,20 +50,21 @@ namespace Defcon
 		ShieldStrengthChanged,   // FShieldStrengthInfo*
 		SetTopMessage,           // FText*
 		NormalMessage,           // FNormalMessage*
-		ClearNormalMessages      // nullptr
+		ClearNormalMessages,     // nullptr
 		//PodIntersectionStarted   // FPodIntersectionInfo*
 		//TakenAboard,           // FTakenAboardInfo*  Carrier has taken human aboard
 		//CarrierKilled,         // ILiveGameObject*   Carrier has been destroyed
 		//Released,              // nullptr    Player ship has released human
 		//HumanKilled            // CHuman*   Human is about to die
 		//HumanTakenAboard       // CHuman*   Human has been taken aboard (redundant, use TakenAboard)
+		Count
 	};
 
 
 	typedef Daylon::FMessageConsumer<EMessageEx> FMessageConsumer;
 
 
-	class CMessageMediator : public Daylon::TMessageMediator<EMessageEx> 
+	class CMessageMediator : public Daylon::TFastMessageMediator<EMessageEx> 
 	{
 		CMessageMediator (const CMessageMediator&) = delete;
 		CMessageMediator& operator= (const CMessageMediator&) = delete;
@@ -85,13 +86,15 @@ namespace Defcon
 	extern CMessageMediator GMessageMediator;
 
 
-	template <typename Tval> class TMessageableValue : public Daylon::TMessageableValue<Tval, EMessageEx>
+	template <typename Tval> class TMessageableValue : public Daylon::TMessageableValue<Tval, CMessageMediator, EMessageEx>
 	{
+		typedef Daylon::TMessageableValue<Tval, CMessageMediator, EMessageEx> Super;
+
 		public:
 
 			void Bind(EMessageEx InMessage)
 			{
-				Daylon::TMessageableValue<Tval, EMessageEx>::Bind(&GMessageMediator, InMessage);
+				Super::Bind(&GMessageMediator, InMessage);
 			}
 	};
 }
