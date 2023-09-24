@@ -1,7 +1,9 @@
 // Copyright 2023 Daylon Graphics Ltd. All Rights Reserved.
 
 #include "SDaylonLineParticles.h"
-#include "DaylonUtils.h"
+#include "DaylonGeometry.h"
+#include "DaylonRNG.h"
+
 
 #define DEBUG_MODULE      0
 

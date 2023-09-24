@@ -3,7 +3,3 @@
 
 #include "DaylonUtils.h"
 
-
-DEFINE_LOG_CATEGORY(LogDaylon);
-
-

@@ -2,9 +2,8 @@
 
 #include "DaylonPlayObject2D.h"
 #include "DaylonWidgetUtils.h"
+#include "DaylonLogging.h"
 
-
-DECLARE_LOG_CATEGORY_EXTERN(LogDaylon, Log, All);
 
 
 TSharedPtr<Daylon::ImagePlayObject2D> Daylon::SpawnImagePlayObject2D(const FSlateBrush& Brush, float Radius)

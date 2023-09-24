@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Runtime/GeometryCore/Public/BoxTypes.h"
+//#include "Runtime/GeometryCore/Public/BoxTypes.h"
+//#include "UMG/Public/Components/Widget.h"
+//#include "UMG/Public/Components/Image.h"
+//#include "UMG/Public/Components/CanvasPanel.h"
+//#include "UMG/Public/Components/CanvasPanelSlot.h"
+#include "DaylonWidgetUtils.h"
+#include "DaylonGeometry.h"
 #include "SDaylonSprite.h"
-#include "UMG/Public/Components/Widget.h"
-#include "UMG/Public/Components/Image.h"
-#include "UMG/Public/Components/CanvasPanel.h"
-#include "UMG/Public/Components/CanvasPanelSlot.h"
 
 
 namespace Daylon

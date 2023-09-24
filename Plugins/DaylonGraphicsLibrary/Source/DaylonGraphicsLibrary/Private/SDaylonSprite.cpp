@@ -1,7 +1,8 @@
 // Copyright 2023 Daylon Graphics Ltd. All Rights Reserved.
 
 #include "SDaylonSprite.h"
-#include "DaylonUtils.h"
+#include "DaylonGeometry.h"
+#include "DaylonLogging.h"
 
 
 #define DEBUG_MODULE      0
@@ -354,7 +355,7 @@ float SDaylonPolyShield::GetSegmentHealth(int32 Index) const
 
 void SDaylonPolyShield::SetSegmentHealth(int32 Index, float Health)
 {
-	UE_LOG(LogDaylon, Log, TEXT("SetSegmentHealth: Index = %d"), Index);
+	// UE_LOG(LogDaylon, Log, TEXT("SetSegmentHealth: Index = %d"), Index);
 
 	if(!SegmentHealth.IsValidIndex(Index))
 	{

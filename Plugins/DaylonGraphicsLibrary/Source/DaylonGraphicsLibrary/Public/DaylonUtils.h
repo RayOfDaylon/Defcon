@@ -15,9 +15,6 @@
 #include "DaylonUtils.generated.h"
 
 
-DECLARE_LOG_CATEGORY_EXTERN(LogDaylon, Log, All);
-
-
 
 UCLASS()
 class DAYLONGRAPHICSLIBRARY_API UDaylonUtils : public UBlueprintFunctionLibrary

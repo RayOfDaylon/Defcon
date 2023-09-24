@@ -28,10 +28,8 @@ Defcon::CSmartbombShockwave::CSmartbombShockwave()
 {
 	ParentType = Type;
 	Type       = EObjType::SMARTBOMB;
-	
-	static int32 SmartbombShockwaveID = 100000;
 
-	SetID(SmartbombShockwaveID++);
+	SetID(GGameMatch->GetMission()->GetNextObjectID());
 
 	NameColor = TEXT("Color");
 	NameOs    = TEXT("Os");

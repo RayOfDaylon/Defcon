@@ -64,7 +64,7 @@ void Defcon::CEndMissionTask::Do()
 	GArena->PlayAreaMain ->SetTerrain(nullptr);
 	GArena->PlayAreaRadar->SetTerrain(nullptr);
 
-	Defcon::GGameMatch->MissionEnded();
+	GGameMatch->MissionEnded();
 }
 
 // --------------------------------------------------------
@@ -77,9 +77,9 @@ void Defcon::CCreateGameObjectTask::Do()
 
 	check(GameObj != nullptr);
 
-	static int32 ObjectID = 0;
+	//static int32 ObjectID = 0;
 
-	GameObj->SetID(ObjectID++);
+	GameObj->SetID(GGameMatch->GetMission()->GetNextObjectID());
 
 	GameObj->SetCreatorType(CreatorType);
 

@@ -92,6 +92,7 @@ namespace Defcon
 
 
 			EMissionID		GetID              () const { return ID; }
+			int32           GetNextObjectID    () const { return ++GameObjID; }
 			void			AddTask            (Daylon::IScheduledTask* p) { ScheduledTasks.Add(p); }
 			bool			IsRunning          () const { return (GArena != nullptr); }
 											   
@@ -107,6 +108,7 @@ namespace Defcon
 			FString                      IntroText;
 			EMissionID                   ID          = EMissionID::Undefined;
 			float                        Age         = 0.0f;
+			mutable int32                GameObjID   = 0;
 			bool                         IntroIsDone = false;
 	};
 
