@@ -75,12 +75,44 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 		);
 		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
 	}
+
+
+	// Subscribe to human states
+	{
+		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::AbductionCountChanged, 
+			[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
+			{
+				if(!This.IsValid())
+				{
+					return;
+				}
+
+				check(Payload != nullptr);
+
+				const TArray<bool>& AbductionStates = *static_cast<TArray<bool>*>(Payload);
+
+				This->FlashHumansLabel = AbductionStates.Contains(true);
+
+				if(This->FlashHumansLabel == false)
+				{
+					This->HumansLabel->SetRenderOpacity(1.0f);
+				}
+			}
+		);
+		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
+	}
+
 }
 
 
 void UDefconPlayStatsWidgetBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
 	Super::NativeTick(MyGeometry, DeltaTime);
+
+	if(FlashHumansLabel)
+	{
+		HumansLabel->SetRenderOpacity(PSIN(Age * TWO_PI * 2));
+	}
 }
 
 

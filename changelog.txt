@@ -5,6 +5,16 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 24, 2023
 
 
+Label of humans readout flashes when abductions are happening.
+
+"Abduction in progress" messages removed except for last human.
+
+Shield readout bar made thinner to match other readouts.
+
+Renamed DURATION_IMPORTANT_MESSAGE to MESSAGE_DURATION_IMPORTANT 
+and made it a preference. Added MESSAGE_DURATION preference 
+for normal messages.
+
 Pressing 'O' (not zero) will toggle double guns mode. 
 When active, pressing Space will fire two laser bolts 
 instead of one.

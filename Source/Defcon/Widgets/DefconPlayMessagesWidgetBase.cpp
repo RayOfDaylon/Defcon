@@ -4,6 +4,7 @@
 
 #include "DefconPlayMessagesWidgetBase.h"
 #include "Globals/MessageMediator.h"
+#include "Globals/prefs.h"
 
 
 #define DEBUG_MODULE      0
@@ -11,11 +12,6 @@
 #if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
 #endif
-
-
-
-
-constexpr float MessageLifetime = 1.5f;
 
 
 
@@ -106,7 +102,7 @@ void UDefconPlayMessagesWidgetBase::AddMessage(const FString& StrToAdd, float Du
 {
 	if(Duration == 0.0f)
 	{
-		Duration = MessageLifetime;
+		Duration = MESSAGE_DURATION;
 	}
 
 

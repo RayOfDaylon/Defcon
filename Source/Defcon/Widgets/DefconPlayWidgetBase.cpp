@@ -10,12 +10,16 @@ void UDefconPlayWidgetBase::NativeOnInitialized()
 	Super::NativeOnInitialized();
 
 	SetClipping(EWidgetClipping::ClipToBoundsAlways);
+
+	Age = 0.0f;
 }
 
 
 void UDefconPlayWidgetBase::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
 	Super::NativeTick(MyGeometry, DeltaTime);
+
+	Age += DeltaTime;
 }
 
 

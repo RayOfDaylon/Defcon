@@ -30,8 +30,7 @@ class DEFCON_API UDefconPlayWidgetBase : public UDefconUserWidgetBase
 		const FWidgetStyle&        InWidgetStyle,
 		bool                       bParentEnabled) const override;
 
-
-
+	float Age = 0.0f;
 };
 
 

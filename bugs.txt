@@ -5,10 +5,13 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 23, 2023
 
 
-After several messages appeared, the message log stopped 
+FIXED: After several messages appeared, the message log stopped 
 deleting them, just letting them be in a frozen pile.
 Adding more messages didn't "wake up" the log. 
-Intermittent, unable to repro on second playthru.
+    Happened because "smartbomb awarded" message was using 
+mediator.send instead of mediator.telluser and setting the 
+payload to &FString instead of a struct which included a 
+duration.
 
 Two spacehums at the end of a first mission 
 were stationary, merely vibrating in place.

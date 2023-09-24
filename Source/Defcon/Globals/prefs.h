@@ -96,6 +96,9 @@ namespace Defcon
 
 				menutext_uppercase,
 
+				MessageDuration,
+				MessageDurationImportant,
+
 				mine_damage,
 				mine_lifespan,
 
@@ -259,6 +262,8 @@ extern Defcon::CPrefs	GPrefs;
 #define LASER_MULTI_PROB             FPREFVAL(laser_multi_prob)
 #define LASER_SPEED                  RPREFVAL(LaserSpeed)
 #define MENUTEXT_UPPERCASE           BPREFVAL(menutext_uppercase)
+#define MESSAGE_DURATION             FPREFVAL(MessageDuration)
+#define MESSAGE_DURATION_IMPORTANT   FPREFVAL(MessageDurationImportant)
 #define MINE_DAMAGE                  IPREFVAL(mine_damage)
 #define MINE_LIFESPAN                FPREFVAL(mine_lifespan)
 #define MISSIONNAME_UPPERCASE        BPREFVAL(missionname_uppercase)

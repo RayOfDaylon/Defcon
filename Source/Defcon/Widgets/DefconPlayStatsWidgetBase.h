@@ -41,6 +41,9 @@ class DEFCON_API UDefconPlayStatsWidgetBase : public UDefconPlayWidgetBase
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> ShieldLabel;
 
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UTextBlock> HumansLabel;
+
 	//UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	//TObjectPtr<UTextBlock> SmartbombReadout;
 
@@ -52,6 +55,8 @@ class DEFCON_API UDefconPlayStatsWidgetBase : public UDefconPlayWidgetBase
 
 
 	TArray<FLinearColor>    ShieldGradient;
+
+	bool FlashHumansLabel = false;
 
 	//public:
 

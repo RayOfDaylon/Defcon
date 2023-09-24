@@ -36,7 +36,6 @@
 #define FADE_DURATION			     1.5f
 #define FADE_DURATION_NORMAL	     0.25f // Controls how long to stay in arena while we teleport to next mission
 #define PLAYERSHIP_VMARGIN          20.0f  // Keep player ship at least this far from top and bottom main widget edges
-#define DURATION_IMPORTANT_MESSAGE   4.0f
 
 
 UDefconPlayViewBase* GArena = nullptr;
@@ -1090,7 +1089,7 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 				if(MilitaryMission->LandersRemaining() == 1)
 				{
 					FString Str = TEXT("ALL LANDERS DESTROYED");
-					Defcon::GMessageMediator.TellUser(Str, DURATION_IMPORTANT_MESSAGE);
+					Defcon::GMessageMediator.TellUser(Str, MESSAGE_DURATION_IMPORTANT);
 				}
 			}
 		};
@@ -2120,7 +2119,6 @@ void UDefconPlayViewBase::OnHumansChanged()
 #undef FADE_DURATION	
 #undef FADE_DURATION_NORMAL
 #undef PLAYERSHIP_VMARGIN
-#undef DURATION_IMPORTANT_MESSAGE
 
 
 #if(DEBUG_MODULE == 1)

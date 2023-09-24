@@ -57,8 +57,8 @@ int32 Defcon::CGameMatch::AdvanceScore(int32 Amount)
 	{
 		PlayerShip->AddSmartBombs(SMARTBOMB_RESUPPLY);
 
-		FString Str = TEXT("SMART BOMB AWARDED");
-		GMessageMediator.Send(EMessageEx::NormalMessage, &Str);
+		const FString Str = TEXT("SMART BOMB AWARDED");
+		GMessageMediator.TellUser(Str);
 	}
 
 	return Score; 
