@@ -42,7 +42,6 @@ namespace Defcon
 				}
 
 
-			//float	m_fArenawidth;
 
 		protected:
 			// Where the weapon is mounted on the object, 

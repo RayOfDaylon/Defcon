@@ -41,7 +41,10 @@ Defcon::CPlayerShip::CPlayerShip()
 	bCanBeInjured = true;
 
 	LaserWeapon.MountOnto(*this, CFPoint(0,0));
-	LaserWeapon.SetEmissionPt(CFPoint(0, -8)); // todo: could improve this
+	LaserWeapon.SetEmissionPt(CFPoint(12, -6));
+
+	SecondaryLaserWeapon.MountOnto(*this, CFPoint(0,0));
+	SecondaryLaserWeapon.SetEmissionPt(CFPoint(0, -12));
 
 	SetShieldStrength(1.0f);
 
@@ -63,6 +66,8 @@ void Defcon::CPlayerShip::InitPlayerShip()
 	Drag      = PLAYER_DRAG;
 	MaxThrust = PLAYER_MAXTHRUST;
 	Mass      = PLAYER_MASS;
+
+	DeactivateDoubleGuns();
 }
 
 
@@ -216,17 +221,26 @@ void Defcon::CPlayerShip::FireLaserWeapon(CGameObjectCollection& goc)
 {
 	LaserWeapon.Fire(goc);
 
-	if(Velocity.y != 0 && FRAND <= LASER_MULTI_PROB)
+	if(AreDoubleGunsActive())
+	{
+		SecondaryLaserWeapon.Fire(goc);
+	}
+
+#if 0
+	//if(Velocity.y != 0 && FRAND <= LASER_MULTI_PROB)
 	{
 		// Fire extra bolts in the vthrust dir.
-		for(int32 i = 0; i < LASER_EXTRA_COUNT; i++)
+		for(int32 i = 0; i < 1/*LASER_EXTRA_COUNT*/; i++)
 		{
-			CFPoint Offset(0.0f, Velocity.y > 0 ? 1.0f : -1.0f);
+			//CFPoint Offset(0.0f, Velocity.y > 0 ? 1.0f : -1.0f);
 
-			if(BRAND)
+			// Use the second mount point.
+			//const CFPoint Offset(Orientation.Fwd.x * -10.0f, 5.0f);
+
+			/*if(BRAND)
 			{
 				Offset *= 2;
-			}
+			}*/
 
 			CFPoint Backup(Position);
 			Position += Offset;
@@ -234,6 +248,7 @@ void Defcon::CPlayerShip::FireLaserWeapon(CGameObjectCollection& goc)
 			Position = Backup;
 		}
 	}
+#endif
 }
 
 

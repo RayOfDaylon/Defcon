@@ -43,16 +43,20 @@ namespace Defcon
 			virtual void   ImpartForces            (float) override; // For the player ship, we need to customize vertical motion.
 			virtual bool   CanBeInjuredBySmartbomb (int32 BombID) const override { return false; }
 
-			void           FaceLeft           () { Orientation.Fwd.x = -1.0f; }
-			void           FaceRight          () { Orientation.Fwd.x = 1.0f; }
+			void           FaceLeft                () { Orientation.Fwd.x = -1.0f; }
+			void           FaceRight               () { Orientation.Fwd.x = 1.0f; }
+				           					       
+			bool           AcquireSmartBomb        ();
+			void           AddSmartBombs           (int32 Amount);
 				           
-			bool           AcquireSmartBomb   ();
-			void           AddSmartBombs      (int32 Amount);
-				           
-			void           FireLaserWeapon    (CGameObjectCollection&);
-			bool           EmbarkPassenger    (IGameObject*, CGameObjectCollection&);
-			bool           DebarkOnePassenger (CGameObjectCollection&);
-			const CFPoint& GetPickupRadiusBox () const { return PickupBboxRadius; }
+			void           FireLaserWeapon         (CGameObjectCollection&);
+			bool           AreDoubleGunsActive     () const { return DoubleGunsActive; }
+			void           ToggleDoubleGuns        () { DoubleGunsActive = !DoubleGunsActive; }
+			void           DeactivateDoubleGuns    () { DoubleGunsActive = false; }
+
+			bool           EmbarkPassenger         (IGameObject*, CGameObjectCollection&);
+			bool           DebarkOnePassenger      (CGameObjectCollection&);
+			const CFPoint& GetPickupRadiusBox      () const { return PickupBboxRadius; }
 
 
 			FSlateBrush     RadarBrush;
@@ -62,6 +66,9 @@ namespace Defcon
 
 			TMessageableValue<int32>  SmartbombsLeft;
 			CLaserWeapon              LaserWeapon;
+			CLaserWeapon              SecondaryLaserWeapon;
 			CFPoint                   PickupBboxRadius;
+			bool                      DoubleGunsActive = false;
+
 	};
 }

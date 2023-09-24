@@ -71,7 +71,8 @@ UENUM()
 enum class EDefconPawnWeaponEvent : uint8
 {
 	FireLaser,
-	DetonateSmartbomb
+	DetonateSmartbomb,
+	ToggleDoubleGuns
 };
 
 

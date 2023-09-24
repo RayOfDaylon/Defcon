@@ -21,6 +21,7 @@ namespace Defcon
 	struct FGameMatchStats
 	{
 		int32 ShotsFired                   = 0;
+		int32 DoubleShotsFired             = 0;
 		int32 SmartbombsDetonated          = 0;
 		int32 HostilesDestroyedBySmartbomb = 0;
 		int32 HostilesDestroyedByLaser     = 0;
@@ -32,6 +33,7 @@ namespace Defcon
 		void Reset()
 		{
 			ShotsFired                   = 0;
+			DoubleShotsFired             = 0;
 			SmartbombsDetonated          = 0;
 			HostilesDestroyedBySmartbomb = 0;
 			HostilesDestroyedByLaser     = 0;

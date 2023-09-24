@@ -367,8 +367,6 @@ void UDefconPlayViewBase::InitPlayerShipForMission()
 	PlayerShip.Position.Set(0.0f, ArenaSize.Y / 2);
 	PlayerShip.FaceRight();
 	
-	//PlayAreaMain->PlayerShipPtr = &PlayerShip;
-
 	// Sprite installation for player ship happens in DefconPlayMainWidgetBase
 	PlayerShip.SetIsAlive(true);
 
@@ -1323,15 +1321,22 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 			if(GetPlayerShip().IsAlive())
 			{
 				GetPlayerShip().FireLaserWeapon(Objects);
-				GDefconGameInstance->GetStats().ShotsFired++;
+
+				if(GetPlayerShip().AreDoubleGunsActive())
+				{
+					GDefconGameInstance->GetStats().DoubleShotsFired++;
+				}
+				else
+				{
+					GDefconGameInstance->GetStats().ShotsFired++;
+				}
 
 				if(true/*BRAND*/)
 					GAudio->OutputSound(Defcon::EAudioTrack::Laserfire);
 				else
 					GAudio->OutputSound(Defcon::EAudioTrack::Laserfire_alt);
 			}
-
-		break;
+			break;
 
 
 		case EDefconPawnWeaponEvent::DetonateSmartbomb: 
@@ -1350,8 +1355,17 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
 				}
 			}
+			break;
 
-		break;
+
+		case EDefconPawnWeaponEvent::ToggleDoubleGuns:
+			{
+				GetPlayerShip().ToggleDoubleGuns();
+				FString Str = FString::Printf(TEXT("DOUBLE GUNS %sACTIVATED"), GetPlayerShip().AreDoubleGunsActive() ? TEXT("") : TEXT("DE"));
+
+				Defcon::GMessageMediator.TellUser(Str);
+			}
+			break;
 	}
 }
 

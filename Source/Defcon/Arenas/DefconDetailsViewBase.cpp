@@ -41,7 +41,7 @@ void UDefconDetailsViewBase::OnFinishActivating()
 	Pages.Add(Page);
 
 		ADD_PAGE(PLAYER, 
-			"Your ship comes equipped with laser cannon\n"
+			"Your ship comes equipped with dual laser cannon\n"
 			"and a finite supply of smart bombs. Detonate a\n"
 			"bomb to destroy all nearby enemies.\n"
 			"\n"
@@ -124,8 +124,14 @@ void UDefconDetailsViewBase::OnFinishActivating()
 
 
 		ADD_PAGE(POD,		
-			"Pods float around harmlessly but when shot,\n"
-			"explode into swarmers.");
+			"Pods float around harmlessly but when destroyed,\n"
+			"explode into swarmers.\n"
+			"\n"
+			"If a mission has pods, it will start with a\n"
+			"countdown to a pod intersection. With practiced\n"
+			"timing, you can intercept it and detonate a\n"
+			"smart bomb to destroy all the pods and their\n"
+			"swarmers simultaneously.");
 
 
 		ADD_PAGE(SWARMER,		

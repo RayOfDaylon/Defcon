@@ -19,8 +19,10 @@ void Defcon::CLaserWeapon::Fire(CGameObjectCollection& ObjectCollection)
 	
 	Beam->SetCreatorType(Wielder->GetType());
 
-	CFPoint P(Wielder->Position);
-	P += m_emissionPt;
+	CFPoint EmissionPoint = m_emissionPt;
+	EmissionPoint.x *= SGN(Wielder->Orientation.Fwd.x);
+
+	CFPoint P = Wielder->Position + EmissionPoint;
 
 	Beam->InitLaserBeam(P, Wielder->Orientation, Wielder->MapperPtr);
 
@@ -31,8 +33,8 @@ void Defcon::CLaserWeapon::Fire(CGameObjectCollection& ObjectCollection)
 
 Defcon::CLaserbeam::CLaserbeam()
 {
-	ParentType = Type;
-	Type       = EObjType::LASERBEAM;
+	ParentType    = Type;
+	Type          = EObjType::LASERBEAM;
 
 	bInjurious    = true;
 	bCanBeInjured = false;
@@ -51,7 +53,7 @@ void Defcon::CLaserbeam::InitLaserBeam(const CFPoint& Where, const Orient2D& Aim
 	MapperPtr   = Mapper;
 	Position    = Where;
 	Orientation = Aim;
-	Position.MulAdd(Aim.Up, FRANDRANGE(-1.5f, 1.5f));
+	//Position.MulAdd(Aim.Up, FRANDRANGE(-1.5f, 1.5f));
 
 	StartX = Position.x;
 	EndX   = StartX;

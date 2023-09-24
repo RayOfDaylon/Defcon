@@ -148,7 +148,6 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	bool       bIsPaused            = false;
 	bool       bBulletTime          = false;
 
-
 	public:
 
 	void                                  OnMissionStarting        ();

@@ -66,6 +66,7 @@ class DEFCON_API UDefconGameOverViewBase : public UDefconViewBase
 	UGridPanel* Stats;
 
 	FName  StatItemShotsFired;
+	FName  StatItemDoubleShotsFired;
 	FName  StatItemSmartbombsDetonated;
 	FName  StatItemLaserKills;
 	FName  StatItemSmartbombKills;

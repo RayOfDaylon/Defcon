@@ -33,6 +33,7 @@ void UDefconGameOverViewBase::NativeOnInitialized()
 	Super::NativeOnInitialized();
 
 	StatItemShotsFired           = TEXT("ShotsFired");
+	StatItemDoubleShotsFired     = TEXT("DoubleShotsFired");
 	StatItemSmartbombsDetonated  = TEXT("SmartBombsDetonated");
 	StatItemLaserKills           = TEXT("LaserKills");
 	StatItemSmartbombKills       = TEXT("SmartbombKills");
@@ -96,6 +97,7 @@ void UDefconGameOverViewBase::OnFinishActivating()
 		}
 
 	SETSTAT(StatItemShotsFired,           GameStats.ShotsFired)
+	SETSTAT(StatItemDoubleShotsFired,     GameStats.DoubleShotsFired)
 	SETSTAT(StatItemSmartbombsDetonated,  GameStats.SmartbombsDetonated)
 	SETSTAT(StatItemLaserKills,           GameStats.HostilesDestroyedByLaser)
 	SETSTAT(StatItemSmartbombKills,       GameStats.HostilesDestroyedBySmartbomb)
@@ -166,6 +168,7 @@ void UDefconGameOverViewBase::NativeTick(const FGeometry& MyGeometry, float Delt
 		const TArray<FName> StatNames =
 		{
 			StatItemShotsFired,
+			StatItemDoubleShotsFired,
 			StatItemSmartbombsDetonated,
 			StatItemLaserKills,
 			StatItemSmartbombKills,
@@ -205,6 +208,7 @@ void UDefconGameOverViewBase::NativeTick(const FGeometry& MyGeometry, float Delt
 	for(auto Child : Children)
 	{
 		auto TextBlock = Cast<UTextBlock>(Child);
+
 		if(TextBlock == nullptr)
 		{
 			continue;

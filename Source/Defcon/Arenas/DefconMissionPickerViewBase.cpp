@@ -8,6 +8,7 @@
 #include "Missions/MilitaryMissions/MilitaryMission.h"
 #include "Globals/_sound.h"
 #include "UMG/Public/Components/CanvasPanel.h"
+#include "UMG/Public/Components/CanvasPanelSlot.h"
 #include "UMG/Public/Components/UniformGridSlot.h"
 #include "UMG/Public/Components/Border.h"
 //#include "UMG/Public/Blueprint/SlateBlueprintLibrary.h"
