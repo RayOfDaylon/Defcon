@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 12, 2023
+September 24, 2023
 
 Chapters:
 
@@ -329,3 +329,23 @@ happen to be used for game objects. But we should have two enums.
 Need to implement more missions to fill in the "undefined" slots 
 in the mission picker, and to fill out the gameplay.
 
+Ghosts and reformers should move faster as XP increases, instead 
+of just slowly drifting.
+
+Now that double-gun toggle is working, we need to make 
+double guns available only through powerup or XP awarding, 
+and add a status panel readout to show how much double-gun 
+power remains.
+
+May want to max out smart bombs at 15, since the status 
+readout can only show that many anyway.
+
+Interesting thought: make the player ship's cargo space 
+finite and have humans and smart bombs weigh the same 
+(or take the same room?). Either way, the more smart bombs 
+the ship has, the fewer humans it can carry and vice versa. 
+So if you had to rescue a human but were fully loaded, 
+you could detonate a smart bomb to make room.
+   Conversely, if you needed a smart bomb and came across 
+a powerup, but were carrying too many humans, you'd have 
+to put them down.

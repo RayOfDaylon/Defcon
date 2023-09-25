@@ -5,6 +5,19 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 24, 2023
 
 
+Restored smart bomb radius factor to 1.0.
+0.75 was feasible but it just didn't feel fun/cool enough sometimes.
+
+Moved CMaterializationTask from DefconPlayViewBase.cpp to materialization.h/.cpp.
+
+Moved player ship destruction types from DefconPlayViewBase.cpp to playership.h/.cpp.
+
+Moved Particle and ParticleGroups types to new file Common/ParticleGroup.h
+
+Moved HasFlag template function to Daylon namespace in util_core.h.
+
+Added IGameObject::MakeBullet method to abstract which bullet class a game object shoots.
+
 Label of humans readout flashes when abductions are happening.
 
 "Abduction in progress" messages removed except for last human.

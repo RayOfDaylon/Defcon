@@ -75,6 +75,17 @@ namespace Defcon
 			FMaterializationParams           Params;
 			TArray<FMaterializationParticle> Particles;
 	};
+
+
+	class CCreateMaterializationTask : public Daylon::IScheduledTask
+	{
+		Defcon::FMaterializationParams Params;
+
+		public:
+
+			void         InitMaterializationTask  (const Defcon::FMaterializationParams& InParams) { Params = InParams; }
+			virtual void Do                       () override;
+	};
 }
 
 

@@ -51,6 +51,12 @@ namespace Defcon
 				delay_before_attack,
 				delay_between_reattack,
 
+				DestroyedPlayerFlashDuration,      
+				DestroyedPlayerExplosionDuration,  
+				DestroyedPlayerBlankDuration,      
+				DestroyedPlayerParticleSpeed,      
+				DestroyedPlayerParticleMinLifetime,
+
 				dynamo_value,
 
 				enemy_birthdebrisdist,
@@ -121,6 +127,7 @@ namespace Defcon
 				player_maxthrust,
 				player_posmargin,
 				player_rebirth_delay,
+				PlayerShipImpactScale,
 				PodIntersectionWidth,
 				PodSpeed,
 				pod_value,
@@ -187,6 +194,7 @@ extern Defcon::CPrefs	GPrefs;
 #define PLAYER_MAXTHRUST            FPREFVAL(player_maxthrust)
 #define PLAYER_MASS                 FPREFVAL(player_mass)
 #define PLAYER_DRAG                 FPREFVAL(player_drag)
+#define PLAYERSHIP_IMPACT_SCALE     FPREFVAL(PlayerShipImpactScale)
 
 #define RADAR_IS_PLAYER_CENTRIC     BPREFVAL(RadarIsPlayerCentric)
 
@@ -216,8 +224,7 @@ extern Defcon::CPrefs	GPrefs;
 #define DELAY_BETWEEN_REATTACK      FPREFVAL(delay_between_reattack)
 
 
-#define ATTACK_INITIALDISTANCE      FPREFVAL(attack_initialdistance)
-
+#define ATTACK_INITIALDISTANCE       FPREFVAL(attack_initialdistance)
 #define ARENA_BOGDOWN                BPREFVAL(arena_bogdown)
 #define BAITER_PROB                  FPREFVAL(baiter_prob)
 #define BAITER_SPAWN_FREQUENCY       FPREFVAL(baiter_spawn_frequency)
@@ -287,3 +294,11 @@ extern Defcon::CPrefs	GPrefs;
 #define SWARMER_COLLISION_FORCE      FPREFVAL(SwarmerCollisionForce)
 #define SWARMERS_PER_POD             IPREFVAL(swarmers_per_pod)
 
+#define DESTROYED_PLAYER_FLASH_DURATION         FPREFVAL(DestroyedPlayerFlashDuration)
+#define DESTROYED_PLAYER_EXPLOSION_DURATION     FPREFVAL(DestroyedPlayerExplosionDuration)
+#define DESTROYED_PLAYER_BLANK_DURATION         FPREFVAL(DestroyedPlayerBlankDuration)
+#define DESTROYED_PLAYER_PARTICLE_SPEED         FPREFVAL(DestroyedPlayerParticleSpeed)
+#define DESTROYED_PLAYER_PARTICLE_MIN_LIFETIME  FPREFVAL(DestroyedPlayerParticleMinLifetime)
+
+#define DESTROYED_PLAYER_LIFETIME               DESTROYED_PLAYER_FLASH_DURATION + DESTROYED_PLAYER_EXPLOSION_DURATION
+#define DESTROYED_PLAYER_PARTICLE_MAX_LIFETIME  DESTROYED_PLAYER_EXPLOSION_DURATION

@@ -6,6 +6,7 @@
 
 #include "enemies.h"
 #include "Globals/prefs.h"
+#include "GameObjects/bullet.h"
 
 
 namespace Defcon
@@ -15,12 +16,13 @@ namespace Defcon
 		public:
 			CGuppy();
 
-			virtual void   Tick                   (float DeltaTime) override;
-			virtual bool   ExplosionHasFireball   () const override { return false; }
-			virtual void   Explode                (CGameObjectCollection&) override;
-			virtual float  GetExplosionMass       () const override;
-			virtual EColor GetExplosionColorBase  () const override;
-			virtual float  GetCollisionForce      () const override { return 0.01f * GUPPY_COLLISION_FORCE; }
+			virtual void      Tick                   (float DeltaTime) override;
+			virtual bool      ExplosionHasFireball   () const override { return false; }
+			virtual void      Explode                (CGameObjectCollection&) override;
+			virtual float     GetExplosionMass       () const override;
+			virtual EColor    GetExplosionColorBase  () const override;
+			virtual float     GetCollisionForce      () const override { return 0.01f * GUPPY_COLLISION_FORCE; }
+			virtual IBullet*  MakeBullet             () const override { return new CThinBullet; }
 
 
 		protected:

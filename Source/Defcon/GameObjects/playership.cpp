@@ -284,6 +284,135 @@ void Defcon::CPlayerShip::ImpartForces(float DeltaTime)
 	}
 }
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------
+/*
+constexpr float DESTROYED_PLAYER_FLASH_DURATION        = 1.5f;
+constexpr float DESTROYED_PLAYER_EXPLOSION_DURATION    = 2.0f;
+constexpr float DESTROYED_PLAYER_BLANK_DURATION        = 2.0f / 60.0f; // time to flash the fullscreen 50% opaque white
+constexpr float DESTROYED_PLAYER_LIFETIME              = DESTROYED_PLAYER_FLASH_DURATION + DESTROYED_PLAYER_EXPLOSION_DURATION;
+constexpr float DESTROYED_PLAYER_PARTICLE_SPEED        = 30.0f;
+constexpr float DESTROYED_PLAYER_PARTICLE_MIN_LIFETIME = 1.0f; 
+constexpr float DESTROYED_PLAYER_PARTICLE_MAX_LIFETIME = DESTROYED_PLAYER_EXPLOSION_DURATION;
+*/
+
+Defcon::CDestroyedPlayerShip::CDestroyedPlayerShip()
+{
+	Type          = Defcon::EObjType::DESTROYED_PLAYER;
+	CreatorType   = Defcon::EObjType::PLAYER;
+	Lifespan      = DESTROYED_PLAYER_LIFETIME;
+	bMortal       = true;
+	bCanBeInjured = false;
+	Age           = 0.0f;
+
+	CreateSprite(Defcon::EObjType::DESTROYED_PLAYER);
+}
+
+
+void Defcon::CDestroyedPlayerShip::InitDestroyedPlayer(const CFPoint& ShipP, const CFPoint& ShipS, float ParticleSpeed, float MinParticleLifetime, float MaxParticleLifetime)
+{
+	for(auto& ParticleGroup : ParticleGroups)
+	{
+		ParticleGroup.Init(ShipP, ShipS, ParticleSpeed, MinParticleLifetime, MaxParticleLifetime);
+	}
+}
+
+
+void Defcon::CDestroyedPlayerShip::Tick(float DeltaTime)
+{
+	Age += DeltaTime;
+
+	if(Age > DESTROYED_PLAYER_FLASH_DURATION)
+	{
+		// After the initial red-white flicker, stop showing the ship
+		//Sprite->Hide();
+		// Uninstall and reset the sprite; this will cause paint events to call Draw method.
+		if(Sprite)
+		{
+			UninstallSprite();
+			Sprite.Reset();
+
+			GAudio->OutputSound(Defcon::EAudioTrack::Ship_exploding2b);
+		}
+
+		// Move the particle groups.
+
+		for(int32 Index = 0; Index < NumParticleGroupsToUpdate; Index++)
+		{
+			auto& ParticleGroup = ParticleGroups[Index];
+			
+			ParticleGroup.Update(DeltaTime);
+		}
+
+		NumParticleGroupsToUpdate = FMath::Min(NumParticleGroupsToUpdate + 2, (int32)array_size(ParticleGroups));
+
+	}
+}
+
+
+void Defcon::CDestroyedPlayerShip::Draw(FPainter& Painter, const Defcon::I2DCoordMapper& CoordMapper)
+{
+	// Our sprite will autodraw for the first 0.5 seconds, after that
+	// we need to draw explosion debris.
+
+	if(Age <= DESTROYED_PLAYER_FLASH_DURATION)
+	{
+		return;
+	}
+
+	// Flash a few frames of increasingly transparent white.
+	if(Age < DESTROYED_PLAYER_FLASH_DURATION + DESTROYED_PLAYER_BLANK_DURATION)
+	{
+		// If we miss out on the fullscreen blank because of timing skips,
+		// we can always use a frame count flag to force it.
+		// It looks like the Xbox screen capture recording app can't see it, even though UE has a 60 fps frame rate.
+		// Could be that the sudden change in screen content is too short to let the recorder save an I-frame.
+
+		FLinearColor Color = C_WHITE;
+		Color.A = NORM_(Age, DESTROYED_PLAYER_FLASH_DURATION, DESTROYED_PLAYER_FLASH_DURATION + DESTROYED_PLAYER_BLANK_DURATION);
+		Color.A = CLAMP(Color.A, 0.0f, 1.0f);
+				
+		Painter.FillRect(0.0f, 0.0f, Painter.GetWidth(), Painter.GetHeight(), Color);
+
+		return;
+	}
+
+	// Draw something really funky here.
+	// It looks like 8-12 particles per clump, and 
+	// 12 x 5 = 60 clumps. The ones on the middle row 
+	// spread out thinly since they don't have a real vertical aspect.
+	// or 8 x 2 initially...
+	// It looks like there are several sets of 8 x 2 patterns, 
+	// composed of 2 x 2 pixel dots, some all lit, others having 
+	// only 3 lit, chosen randomly, or the individual pixel colors
+	// include black which is chosen sparingly.
+	// The multiple clumpsets make sense because it looks like each 
+	// set expands by simply inserting gaps between dots, 
+	// using two pixels across and down each frame.
+	// By superimposing other sets slightly offset, a rich 
+	// overall explosion can be produced.
+	// So the very first clump, all the dots are touching.
+	// On the next frame, the clump is twice as wide and tall
+	// with a 2 px gap between each dot in both x and y.
+	// The next frame, each dot has a 4 px gap, and so on.
+	// The top of the clump shifts down (or the bottom of it shifts up)
+	// depending on how the clump was positioned relative to the ship.
+
+	// So 16 dots by e.g. 5 clumpsets = 80 dots, although I think 
+	// there will be many more.
+
+	// As we place each set, we need to compute a vector from the 
+	// ship center to get the direction of each dot.
+
+	for(int32 Index = 0; Index < NumParticleGroupsToDraw; Index++)
+	{
+		auto& ParticleGroup = ParticleGroups[Index];
+			
+		ParticleGroup.Draw(Painter, CoordMapper);
+	}
+
+	NumParticleGroupsToDraw = FMath::Min(NumParticleGroupsToDraw + 2, (int32)array_size(ParticleGroups));
+}
+
 
 #if(DEBUG_MODULE == 1)
 #pragma optimize("", on)

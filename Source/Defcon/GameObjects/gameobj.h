@@ -5,13 +5,13 @@
 
 #include "CoreMinimal.h"
 #include "DaylonUtils.h"
-#include "GameObjects/obj_types.h"
+#include "obj_types.h"
 #include "Globals/prefs.h"
+#include "Globals/GameColors.h"
+#include "Globals/GameObjectResources.h"
 #include "Common/variant.h"
 #include "Common/util_geom.h"
 #include "Common/util_color.h"
-#include "Globals/GameColors.h"
-#include "Globals/GameObjectResources.h"
 
 
 struct FPainter;
@@ -20,6 +20,7 @@ struct FPainter;
 namespace Defcon
 {
 	class I2DCoordMapper;
+	class IBullet;
 
 	enum class EObjectCreationFlags : uint8
 	{
@@ -32,18 +33,6 @@ namespace Defcon
 		StandardEnemy = Materializes | IsMissionTarget,
 		CleanerEnemy  = Materializes | NotMissionTarget
 	};
-
-	/*
-	// todo: could be a template function supporting all mask-oriented enum classes
-	inline bool HasFlag(EObjectCreationFlags Flags, EObjectCreationFlags Which)
-	{
-		return(0 != ((int32)Flags & (int32)Which));
-	}*/
-
-	template<typename E> bool HasFlag(E Flags, E Which)
-	{
-		return(0 != ((int32)Flags & (int32)Which));
-	}
 
 	
 	enum class EDeathStyle : uint8
@@ -166,6 +155,8 @@ namespace Defcon
 			virtual void          UninstallSprite         ();
 
 			const FLinearColor&   GetRadarColor           () const;
+
+			virtual IBullet*      MakeBullet              () const;
 
 			int32                 GetID                   () const { return Id; }
 			void                  SetID                   (int32 N) { Id = N; }

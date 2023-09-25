@@ -4,6 +4,7 @@
 
 #include "materialization.h"
 #include "Main/mapper.h"
+#include "Globals/_sound.h"
 #include "Arenas/DefconPlayViewBase.h"
 
 
@@ -91,5 +92,18 @@ void Defcon::CMaterialization::Draw(FPainter& Painter, const I2DCoordMapper& Map
 }
 
 
+void Defcon::CCreateMaterializationTask::Do()
+{
+	auto Materialization = new CMaterialization();
+
+	Materialization->InitMaterialization(Params);
+
+	GArena->AddDebris(Materialization);
+
+	if(GArena->IsPointVisible(Params.P)) // todo: maybe check extents of materialization field i.e. if player gets even a partial glimpse
+	{
+		GAudio->OutputSound(EAudioTrack::Ship_materialize);
+	}
+}
 
 

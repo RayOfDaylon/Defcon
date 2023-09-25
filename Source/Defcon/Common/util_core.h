@@ -46,6 +46,15 @@ extern "C"
 
 namespace Daylon
 {
+	// Function that returns true if a bitwise enum value has a given flag.
+	// todo: move to plugin.
+
+	template<typename E> bool HasFlag(E Flags, E Which)
+	{
+		return(0 != ((int32)Flags & (int32)Which));
+	}
+
+
 	// A candidate for the plugin, but it'd be also nice to consolidate with FScheduledTask.
 	// IScheduledTask is when you prefer to subclass and the delegate is a virtual override.
 

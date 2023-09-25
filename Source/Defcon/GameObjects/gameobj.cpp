@@ -14,6 +14,7 @@
 #include "Globals/GameObjectResources.h"
 #include "GameObjects/bmpdisp.h"
 #include "GameObjects/flak.h"
+#include "GameObjects/bullet.h"
 #include "Main/mapper.h"
 #include "Arenas/DefconPlayViewBase.h"
 
@@ -291,6 +292,7 @@ void                 Defcon::IGameObject::SetAsMissionTarget(bool b)           {
 const FLinearColor&  Defcon::IGameObject::GetRadarColor() const                { return RadarColor; }
 Defcon::EColor       Defcon::IGameObject::GetExplosionColorBase() const        { return EColor::Gray; }
 bool                 Defcon::IGameObject::IsOurPositionVisible() const         { return GArena->IsPointVisible(Position); }
+Defcon::IBullet*     Defcon::IGameObject::MakeBullet() const                   { return new CBullet; }
 
 
 

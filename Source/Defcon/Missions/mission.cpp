@@ -112,7 +112,7 @@ void Defcon::IMission::AddGameObject
 	Task->ObjType			= ObjType;
 	Task->CreatorType       = CreatorType;
 	Task->Where				= Where;
-	Task->bMissionTarget	= HasFlag(Flags, EObjectCreationFlags::IsMissionTarget);
+	Task->bMissionTarget	= Daylon::HasFlag(Flags, EObjectCreationFlags::IsMissionTarget);
 	Task->Countdown         = Countdown; 
 	
 	if(Options != nullptr)

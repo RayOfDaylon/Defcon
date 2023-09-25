@@ -41,6 +41,13 @@ void Defcon::CPrefs::Construct()
 	INITPREF ( debris_smoke,                 0,       "",             Boolean,      0,           0,      "Show smoke effects when an object explodes"                                                );
 	INITPREF ( delay_before_attack,          3.0f,    "seconds",      Float,        0.1f,       10.0f,   "When mission starts or enemies run low, how much time before (more) enemies appear"        );
 	INITPREF ( delay_between_reattack,      10.0f,    "seconds",      Float,        5.0,        60.0f,   "When enemies plentiful, how much time before reinforcements arrive"                        );
+
+	INITPREF ( DestroyedPlayerFlashDuration,       1.5f,   "seconds",  Float,        0.0f,        1.0f,   "How long to flash the player ship before it explodes"                                      );
+	INITPREF ( DestroyedPlayerExplosionDuration,   2.0f,   "seconds",  Float,        0.2f,        3.0f,   "How long the player ship explosion takes"                                                  );
+	INITPREF ( DestroyedPlayerBlankDuration,       0.033f, "seconds",  Float,        0.0f,        0.2f,   "How long to blank the entire screen when the player ship explodes"                         );
+	INITPREF ( DestroyedPlayerParticleSpeed,      30.0f,   "px/sec",   Float,       10.0f,      100.0f,   "Speed of particles in player ship explosion"                                               );
+	INITPREF ( DestroyedPlayerParticleMinLifetime, 1.0f,   "seconds",  Float,        0.25f,       2.0f,   "Shortest lifetime possible for a player ship explosion particle"                           );     
+
 	INITPREF ( dynamo_value,               150,       "",             Integer,      0,        1000,      "Number of points earned for destroying a dynamo"                                           );
 	INITPREF ( enemies_canthurteachother,    1,       "",             Boolean,      0,           0,      "Enemies do not experience friendly fire"                                                   );
 	INITPREF ( enemies_minesdonthurt,        1,       "",             Boolean,      0,           0,      "Enemies are not damaged by mines"                                                          );
@@ -88,6 +95,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF ( player_maxthrust,             4.5f,    "",             Float,        0.1f,        5.0f,   "Maximum thrust force applicable to player ship"                                            );
 	INITPREF ( player_posmargin,           450.0f,    "px",           Integer,     50,         700,      "Minimum distance between player's ship and edge of screen"                                 );
 	INITPREF ( player_rebirth_delay,         2.0f,    "seconds",      Float,        0.1f,        5.0f,   "Delay between player destruction and materialization"                                      );
+	INITPREF ( PlayerShipImpactScale,        0.5f,    "%",            Float,        0.1f,        2.0f,   "How damage to player ship should be scaled up or down"                                     );
 	INITPREF ( pod_value,                 1000,       "",             Integer,      0,        1000,      "Number of points earned for destroying a pod"                                              );
 	INITPREF ( RadarIsPlayerCentric,         0,       "",             Boolean,      0,           0,      "Radar keeps player ship fixed, otherwise screen edges are fixed (arcade match)"            );
 	INITPREF ( reformer_value,             250,       "",             Integer,      0,        1000,      "Number of points earned for destroying a reformer"                                         );
@@ -98,7 +106,7 @@ void Defcon::CPrefs::Construct()
 	INITPREF ( smartbomb_value,          20000.0f,    "",             Integer,   1000,      100000,      "Number of points needed to earn extra smart bombs"                                         );
 	INITPREF ( smartbomb_resupply,           1,       "",             Integer,      1,          10,      "Number of smart bombs given when earned"                                                   );
 	INITPREF ( smartbomb_lifespan,           0.75f,   "seconds",      Float,        0.1f,        2.0f,   "How long a smartbomb shockwave persists"                                                   );
-	INITPREF ( SmartbombRadiusFactor,        0.75f,   "%",            Float,        0.5f,      1.0f,     "Percentage of screen width to use for smartbomb shockwave radius"                          );
+	INITPREF ( SmartbombRadiusFactor,        1.0f,    "%",            Float,        0.5f,      1.0f,     "Percentage of screen width to use for smartbomb shockwave radius"                          );
 	INITPREF ( smartbomb_wavepush,          30.0f,    "px/frame",     Float,        5.0f,      100.0f,   "Debris near player is pushed at this speed by smartbomb shockwave"                         );
 	INITPREF ( smartbomb_wavepushmin,       15.0f,    "px/frame",     Float,        5.0f,       50.0f,   "Debris is additionally pushed by smartbomb shockwave this fast regardless of location"     );
 	INITPREF ( smartbomb_max_flashscreen,   15,       "frames",       Integer,      1,          50,      "How long a smartbomb shockwave is visible"                                                 );

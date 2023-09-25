@@ -10,6 +10,7 @@
 #include "Globals/MessageMediator.h"
 #include "Common/Painter.h"
 #include "Common/util_geom.h"
+#include "Common/ParticleGroup.h"
 
 #include "GameObjects/gameobjlive.h"
 #include "GameObjects/laser.h"
@@ -70,5 +71,27 @@ namespace Defcon
 			CFPoint                   PickupBboxRadius;
 			bool                      DoubleGunsActive = false;
 
+	};
+
+
+	class CDestroyedPlayerShip : public Defcon::ILiveGameObject
+	{
+		private:
+
+			FParticleGroup    ParticleGroups[100];
+
+			// We can update and draw a subset of the particle groups every frame,
+			// to mimic the arcade game better.
+			int32             NumParticleGroupsToUpdate = 1;
+			int32             NumParticleGroupsToDraw = array_size(ParticleGroups);
+
+		public:
+
+			CDestroyedPlayerShip();
+
+			void InitDestroyedPlayer(const CFPoint& ShipP, const CFPoint& ShipS, float ParticleSpeed, float MinParticleLifetime, float MaxParticleLifetime);
+
+			virtual void  Tick  (float DeltaTime) override;
+			virtual void  Draw  (FPainter& Painter, const Defcon::I2DCoordMapper& CoordMapper) override;
 	};
 }

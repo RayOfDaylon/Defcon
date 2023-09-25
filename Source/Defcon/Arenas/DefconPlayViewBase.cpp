@@ -19,8 +19,7 @@
 #include "Globals/_sound.h"
 #include "Globals/prefs.h"
 #include "DaylonUtils.h"
-#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
-//#include "UMG/Public/Components/CanvasPanelSlot.h"
+//#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 
 
 #define DEBUG_MODULE      0
@@ -100,10 +99,10 @@ int32 UDefconPlayViewBase::NativePaint
 		InWidgetStyle,
 		bParentEnabled);
 
-/*	todo: for the new radar view edges, we need to draw them here
-	because at the bottom, they overlap a red divider which is outside the radar widget.
-	We'll need to draw six half-gray lines, three on the top and three on the bottom, 
-	looking like this:
+/*	
+	For the radar view edges, we need to draw them here	because at the bottom, 
+	they overlap a red divider which is outside the radar widget. We need to 
+	draw six half-gray lines, three on the top and three on the bottom, like this:
 
 	  _____________________
 	 |                     |
@@ -228,8 +227,6 @@ void UDefconPlayViewBase::OnFinishActivating()
 	{
 		return;
 	}
-
-	
 
 
 	// Place humans.
@@ -576,241 +573,6 @@ void UDefconPlayViewBase::ConcludeMission()
 	}
 }
 
-constexpr float DESTROYED_PLAYER_FLASH_DURATION        = 1.5f;
-constexpr float DESTROYED_PLAYER_EXPLOSION_DURATION    = 2.0f;
-constexpr float DESTROYED_PLAYER_BLANK_DURATION        = 2.0f / 60.0f; // time to flash the fullscreen 50% opaque white
-constexpr float DESTROYED_PLAYER_LIFETIME              = DESTROYED_PLAYER_FLASH_DURATION + DESTROYED_PLAYER_EXPLOSION_DURATION;
-constexpr float DESTROYED_PLAYER_PARTICLE_SPEED        = 30.0f;
-constexpr float DESTROYED_PLAYER_PARTICLE_MIN_LIFETIME = 1.0f; 
-constexpr float DESTROYED_PLAYER_PARTICLE_MAX_LIFETIME = DESTROYED_PLAYER_EXPLOSION_DURATION;
-
-
-struct Particle
-{
-	FLinearColor Color;
-	CFPoint      P;
-	CFPoint      Inertia;
-	float        S;
-	float        Age = 0.0f;
-	float        Lifetime = 0.0f;
-
-	void Update(float DeltaTime)
-	{
-		Age += DeltaTime;
-		P += Inertia * DeltaTime;
-	}
-
-	void Draw(FPainter& Painter, const Defcon::I2DCoordMapper& CoordMapper)
-	{
-		CFPoint pt;
-		CoordMapper.To(P, pt);
-		const float HalfS = S / 2;
-
-		Color.A = 1.0f - CLAMP(NORM_(Age, 0.0f, Lifetime), 0.0f, 1.0f);
-
-		Painter.FillRect(pt.x - HalfS, pt.y - HalfS, pt.x + HalfS, pt.y + HalfS, Color);
-	}
-};
-
-
-struct ParticleGroup
-{
-	Particle Particles[8][2];
-	CFPoint  P;
-
-
-	ParticleGroup()
-	{
-		for(int32 y = 0; y < 2; y++)
-		{
-			for(int32 x = 0; x < 8; x++)
-			{
-				Particles[x][y].Color = BRAND ? C_WHITE : C_YELLOW;
-				Particles[x][y].S = Daylon::FRandRange(3.0f, 9.0f);
-			}
-		}
-	}
-
-
-	void Init(const CFPoint& ShipP, const CFPoint& ShipHalfS, float ParticleSpeed, float MinParticleLifetime, float MaxParticleLifetime)
-	{
-		const CFPoint OriginShift((float)Daylon::FRandRange(-ShipHalfS.x * 1, ShipHalfS.x * 1), (float)Daylon::FRandRange(-ShipHalfS.y * 0.75, ShipHalfS.y * 0.75));
-		const auto Origin = ShipP + OriginShift;
-
-		for(int32 y = 0; y < 2; y++)
-		{
-			const float ty = y;
-
-			for(int32 x = 0; x < 8; x++)
-			{
-				const float tx = x / 7.0f;
-
-				Particles[x][y].Lifetime = Daylon::FRandRange(MinParticleLifetime, MaxParticleLifetime);
-				Particles[x][y].P        = Origin + CFPoint(LERP(-ShipHalfS.x, ShipHalfS.x, tx), LERP(-ShipHalfS.y, ShipHalfS.y, ty));
-				Particles[x][y].Inertia  = (Particles[x][y].P - ShipP) * ParticleSpeed;
-			}
-		}
-	}
-
-
-	void Update(float DeltaTime)
-	{
-		for(int32 y = 0; y < 2; y++)
-		{
-			for(int32 x = 0; x < 8; x++)
-			{
-				Particles[x][y].Update(DeltaTime);
-			}
-		}
-	}
-
-
-	void Draw(FPainter& Painter, const Defcon::I2DCoordMapper& CoordMapper)
-	{
-		for(int32 y = 0; y < 2; y++)
-		{
-			for(int32 x = 0; x < 8; x++)
-			{
-				Particles[x][y].Draw(Painter, CoordMapper);
-			}
-		}
-	}
-};
-
-
-class CDestroyedPlayerShip : public Defcon::ILiveGameObject
-{
-	private:
-
-		ParticleGroup     ParticleGroups[100];
-
-		// We can update and draw a subset of the particle groups every frame,
-		// to mimic the arcade game better.
-		int32             NumParticleGroupsToUpdate = 1;
-		int32             NumParticleGroupsToDraw = array_size(ParticleGroups);
-
-	public:
-
-		CDestroyedPlayerShip()
-		{
-			Type          = Defcon::EObjType::DESTROYED_PLAYER;
-			CreatorType   = Defcon::EObjType::PLAYER;
-			Lifespan      = DESTROYED_PLAYER_LIFETIME;
-			bMortal       = true;
-			bCanBeInjured = false;
-			Age           = 0.0f;
-
-			CreateSprite(Defcon::EObjType::DESTROYED_PLAYER);
-		}
-
-
-		void InitDestroyedPlayer(const CFPoint& ShipP, const CFPoint& ShipS, float ParticleSpeed, float MinParticleLifetime, float MaxParticleLifetime)
-		{
-			for(auto& ParticleGroup : ParticleGroups)
-			{
-				ParticleGroup.Init(ShipP, ShipS, ParticleSpeed, MinParticleLifetime, MaxParticleLifetime);
-			}
-		}
-
-
-		virtual void Tick(float DeltaTime) override
-		{
-			Age += DeltaTime;
-
-			if(Age > DESTROYED_PLAYER_FLASH_DURATION)
-			{
-				// After the initial red-white flicker, stop showing the ship
-				//Sprite->Hide();
-				// Uninstall and reset the sprite; this will cause paint events to call Draw method.
-				if(Sprite)
-				{
-					UninstallSprite();
-					Sprite.Reset();
-
-					GAudio->OutputSound(Defcon::EAudioTrack::Ship_exploding2b);
-				}
-
-				// Move the particle groups.
-
-				for(int32 Index = 0; Index < NumParticleGroupsToUpdate; Index++)
-				{
-					auto& ParticleGroup = ParticleGroups[Index];
-			
-					ParticleGroup.Update(DeltaTime);
-				}
-
-				NumParticleGroupsToUpdate = FMath::Min(NumParticleGroupsToUpdate + 2, (int32)array_size(ParticleGroups));
-
-			}
-		}
-
-
-		virtual void Draw(FPainter& Painter, const Defcon::I2DCoordMapper& CoordMapper)  override
-		{
-			// Our sprite will autodraw for the first 0.5 seconds, after that
-			// we need to draw explosion debris.
-
-			if(Age <= DESTROYED_PLAYER_FLASH_DURATION)
-			{
-				return;
-			}
-
-			// Flash a few frames of increasingly transparent white.
-			if(Age < DESTROYED_PLAYER_FLASH_DURATION + DESTROYED_PLAYER_BLANK_DURATION)
-			{
-				// If we miss out on the fullscreen blank because of timing skips,
-				// we can always use a frame count flag to force it.
-				// It looks like the Xbox screen capture recording app can't see it, even though UE has a 60 fps frame rate.
-				// Could be that the sudden change in screen content is too short to let the recorder save an I-frame.
-
-				FLinearColor Color = C_WHITE;
-				Color.A = NORM_(Age, DESTROYED_PLAYER_FLASH_DURATION, DESTROYED_PLAYER_FLASH_DURATION + DESTROYED_PLAYER_BLANK_DURATION);
-				Color.A = CLAMP(Color.A, 0.0f, 1.0f);
-				
-				Painter.FillRect(0.0f, 0.0f, Painter.GetWidth(), Painter.GetHeight(), Color);
-
-				return;
-			}
-
-			// Draw something really funky here.
-			// It looks like 8-12 particles per clump, and 
-			// 12 x 5 = 60 clumps. The ones on the middle row 
-			// spread out thinly since they don't have a real vertical aspect.
-			// or 8 x 2 initially...
-			// It looks like there are several sets of 8 x 2 patterns, 
-			// composed of 2 x 2 pixel dots, some all lit, others having 
-			// only 3 lit, chosen randomly, or the individual pixel colors
-			// include black which is chosen sparingly.
-			// The multiple clumpsets make sense because it looks like each 
-			// set expands by simply inserting gaps between dots, 
-			// using two pixels across and down each frame.
-			// By superimposing other sets slightly offset, a rich 
-			// overall explosion can be produced.
-			// So the very first clump, all the dots are touching.
-			// On the next frame, the clump is twice as wide and tall
-			// with a 2 px gap between each dot in both x and y.
-			// The next frame, each dot has a 4 px gap, and so on.
-			// The top of the clump shifts down (or the bottom of it shifts up)
-			// depending on how the clump was positioned relative to the ship.
-
-			// So 16 dots by e.g. 5 clumpsets = 80 dots, although I think 
-			// there will be many more.
-
-			// As we place each set, we need to compute a vector from the 
-			// ship center to get the direction of each dot.
-
-			for(int32 Index = 0; Index < NumParticleGroupsToDraw; Index++)
-			{
-				auto& ParticleGroup = ParticleGroups[Index];
-			
-				ParticleGroup.Draw(Painter, CoordMapper);
-			}
-
-			NumParticleGroupsToDraw = FMath::Min(NumParticleGroupsToDraw + 2, (int32)array_size(ParticleGroups));
-		}
-
-};
-
 
 void UDefconPlayViewBase::DestroyPlayerShip()
 {
@@ -824,7 +586,7 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 	// Start the player ship destruction sequence.
 	// We do this with a special game object.
 
-	auto DestroyedShip = new CDestroyedPlayerShip();
+	auto DestroyedShip = new Defcon::CDestroyedPlayerShip();
 
 	DestroyedShip->InitDestroyedPlayer(PlayerShip.Position, PlayerShip.BboxRadius, DESTROYED_PLAYER_PARTICLE_SPEED, DESTROYED_PLAYER_PARTICLE_MIN_LIFETIME, DESTROYED_PLAYER_PARTICLE_MAX_LIFETIME);
 
@@ -847,8 +609,6 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 	Enemies.ForEach([](Defcon::IGameObject* Obj){ static_cast<Defcon::CEnemy*>(Obj)->SetTarget(nullptr); });
 }
 
-// How much to water down the collision force of an object hitting the player ship.
-constexpr float PLAYERSHIP_IMPACT_SCALE = 0.5f;
 
 void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& objects)
 {
@@ -1360,8 +1120,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 		case EDefconPawnWeaponEvent::ToggleDoubleGuns:
 			{
 				GetPlayerShip().ToggleDoubleGuns();
-				FString Str = FString::Printf(TEXT("DOUBLE GUNS %sACTIVATED"), GetPlayerShip().AreDoubleGunsActive() ? TEXT("") : TEXT("DE"));
-
+				FString Str = FString::Printf(TEXT("DOUBLE LASER CANNONS %sACTIVATED"), GetPlayerShip().AreDoubleGunsActive() ? TEXT("") : TEXT("DE"));
 				Defcon::GMessageMediator.TellUser(Str);
 			}
 			break;
@@ -1468,18 +1227,9 @@ void UDefconPlayViewBase::LayMine(Defcon::IGameObject& Obj, const CFPoint& from,
 
 Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& Obj, const CFPoint& From, int32 SoundID, int32)
 {
-	Defcon::IBullet* Bullet;
+	Defcon::IBullet* Bullet = Obj.MakeBullet();
 
-	// todo: should use a virtual IGameObject method that returns the bullet object, we don't want to know about object types here.
-	if(Obj.GetType() == Defcon::EObjType::GUPPY)
-	{
-		Bullet = new Defcon::CThinBullet;
-	}
-	else
-	{
-		Bullet = new Defcon::CBullet;
-	}
-
+	check(Bullet != nullptr);
 		
 	Bullet->SetCreatorType(Obj.GetType());
 	Bullet->InstallSprite();
@@ -1894,33 +1644,6 @@ void UDefconPlayViewBase::DetonateSmartbomb()
 }
 
 
-namespace Defcon
-{
-	class CCreateMaterializationTask : public Daylon::IScheduledTask
-	{
-		Defcon::FMaterializationParams Params;
-
-		public:
-
-			void InitMaterializationTask(const Defcon::FMaterializationParams& InParams) { Params = InParams; }
-
-			virtual void Do() override
-			{
-				auto Materialization = new Defcon::CMaterialization();
-
-				Materialization->InitMaterialization(Params);
-
-				GArena->AddDebris(Materialization);
-
-				if(GArena->IsPointVisible(Params.P)) // todo: maybe check extents of materialization field i.e. if player gets even a partial glimpse
-				{
-					GAudio->OutputSound(EAudioTrack::Ship_materialize);
-				}
-			}
-	};
-}
-
-
 void UDefconPlayViewBase::SpecializeMaterialization(Defcon::FMaterializationParams& Params, Defcon::EObjType ObjectType)
 {
 	// We use a switch block because the enemy object doesn't exist (yet), so we can't 
@@ -2021,7 +1744,7 @@ void UDefconPlayViewBase::SpawnGameObject
 
 	const auto MaterializationLifetime = ENEMY_BIRTHDURATION;
 
-	if(Defcon::HasFlag(Flags, Defcon::EObjectCreationFlags::Materializes))
+	if(Daylon::HasFlag(Flags, Defcon::EObjectCreationFlags::Materializes))
 	{
 		Defcon::FMaterializationParams Params;
 
@@ -2067,7 +1790,7 @@ Defcon::CEnemy* UDefconPlayViewBase::SpawnGameObjectNow(Defcon::EObjType ObjType
 	Task->ObjType        = ObjType;
 	Task->CreatorType    = CreatorType;
 	Task->Where          = Where;
-	Task->bMissionTarget = Defcon::HasFlag(Flags, Defcon::EObjectCreationFlags::IsMissionTarget);
+	Task->bMissionTarget = Daylon::HasFlag(Flags, Defcon::EObjectCreationFlags::IsMissionTarget);
 	
 	Task->Do();
 
@@ -2077,6 +1800,8 @@ Defcon::CEnemy* UDefconPlayViewBase::SpawnGameObjectNow(Defcon::EObjType ObjType
 
 void UDefconPlayViewBase::OnSelectGameObjectToSpawn()
 {
+	// Debug tool, lets us spawn enemies on demand to test materialization, etc.
+
 	SpawnedGameObjectIndex = (SpawnedGameObjectIndex + 1) % array_size(SpawnedGameObjectTypes);
 
 	FString Str = FString::Printf(TEXT("Enemy type %s chosen"), *Defcon::GObjectTypeManager.GetName(SpawnedGameObjectTypes[SpawnedGameObjectIndex]));
