@@ -2,8 +2,14 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 24, 2023
+September 26, 2023
 
+
+Pressing 'I' toggles invincibility.
+Still need to implement.
+
+Added double guns and invincibility readouts to Status panel.
+Still need to get their values to drop over time.
 
 Restored smart bomb radius factor to 1.0.
 0.75 was feasible but it just didn't feel fun/cool enough sometimes.

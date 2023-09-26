@@ -376,6 +376,8 @@ void UDefconPlayViewBase::InitPlayerShipForMission()
 	PlayerShip.SetShieldStrength(1.0f, true);
 
 	PlayerShip.AddSmartBombs(0); // hack: get readout to size properly
+	PlayerShip.AddDoubleGunPower(0.0f);
+	PlayerShip.AddInvincibility(0.0f);
 }
 
 
@@ -1071,7 +1073,7 @@ void UDefconPlayViewBase::OnNavEvent(ENavigationKey Key)
 }
 
 
-void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool Active)
+void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool/* Active*/)
 {
 	switch(Event)
 	{
@@ -1124,6 +1126,14 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool A
 				Defcon::GMessageMediator.TellUser(Str);
 			}
 			break;
+
+
+		case EDefconPawnWeaponEvent::ToggleInvincibility:
+			{
+				GetPlayerShip().ToggleInvincibility();
+				FString Str = FString::Printf(TEXT("INVINCIBILITY %sACTIVATED"), GetPlayerShip().IsInvincibilityActive() ? TEXT("") : TEXT("DE"));
+				Defcon::GMessageMediator.TellUser(Str);
+			}
 	}
 }
 

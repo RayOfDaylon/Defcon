@@ -5,6 +5,7 @@
 
 #include "DefconPlayWidgetBase.h"
 #include "DefconHumansInfoBase.h"
+#include "Widgets/UDaylonProgressBar.h"
 #include "UMG/Public/Components/TextBlock.h"
 #include "UMG/Public/Components/ProgressBar.h"
 #include "DefconPlayStatsWidgetBase.generated.h"
@@ -44,23 +45,22 @@ class DEFCON_API UDefconPlayStatsWidgetBase : public UDefconPlayWidgetBase
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> HumansLabel;
 
-	//UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	//TObjectPtr<UTextBlock> SmartbombReadout;
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UDaylonProgressBar> DoubleGunsReadout;
 
-	//UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	//TObjectPtr<UWidget> AbductionAlert;
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UTextBlock> DoubleGunsLabel;
 
-	//UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	//TObjectPtr<UDefconHumansInfoBase> HumansReadout;
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UDaylonProgressBar> InvincibilityReadout;
+
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UTextBlock> InvincibilityLabel;
 
 
 	TArray<FLinearColor>    ShieldGradient;
 
 	bool FlashHumansLabel = false;
-
-	//public:
-
-	//void UpdateShieldReadout     (float Amount);
 };
 
 

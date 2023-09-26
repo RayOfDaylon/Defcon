@@ -42,11 +42,11 @@ void Defcon::CPrefs::Construct()
 	INITPREF ( delay_before_attack,          3.0f,    "seconds",      Float,        0.1f,       10.0f,   "When mission starts or enemies run low, how much time before (more) enemies appear"        );
 	INITPREF ( delay_between_reattack,      10.0f,    "seconds",      Float,        5.0,        60.0f,   "When enemies plentiful, how much time before reinforcements arrive"                        );
 
-	INITPREF ( DestroyedPlayerFlashDuration,       1.5f,   "seconds",  Float,        0.0f,        1.0f,   "How long to flash the player ship before it explodes"                                      );
-	INITPREF ( DestroyedPlayerExplosionDuration,   2.0f,   "seconds",  Float,        0.2f,        3.0f,   "How long the player ship explosion takes"                                                  );
-	INITPREF ( DestroyedPlayerBlankDuration,       0.033f, "seconds",  Float,        0.0f,        0.2f,   "How long to blank the entire screen when the player ship explodes"                         );
-	INITPREF ( DestroyedPlayerParticleSpeed,      30.0f,   "px/sec",   Float,       10.0f,      100.0f,   "Speed of particles in player ship explosion"                                               );
-	INITPREF ( DestroyedPlayerParticleMinLifetime, 1.0f,   "seconds",  Float,        0.25f,       2.0f,   "Shortest lifetime possible for a player ship explosion particle"                           );     
+	INITPREF ( DestroyedPlayerFlashDuration,       1.5f,   "seconds",  Float,       0.0f,        1.0f,   "How long to flash the player ship before it explodes"                                      );
+	INITPREF ( DestroyedPlayerExplosionDuration,   2.0f,   "seconds",  Float,       0.2f,        3.0f,   "How long the player ship explosion takes"                                                  );
+	INITPREF ( DestroyedPlayerBlankDuration,       0.033f, "seconds",  Float,       0.0f,        0.2f,   "How long to blank the entire screen when the player ship explodes"                         );
+	INITPREF ( DestroyedPlayerParticleSpeed,      30.0f,   "px/sec",   Float,      10.0f,      100.0f,   "Speed of particles in player ship explosion"                                               );
+	INITPREF ( DestroyedPlayerParticleMinLifetime, 1.0f,   "seconds",  Float,       0.25f,       2.0f,   "Shortest lifetime possible for a player ship explosion particle"                           );     
 
 	INITPREF ( dynamo_value,               150,       "",             Integer,      0,        1000,      "Number of points earned for destroying a dynamo"                                           );
 	INITPREF ( enemies_canthurteachother,    1,       "",             Boolean,      0,           0,      "Enemies do not experience friendly fire"                                                   );

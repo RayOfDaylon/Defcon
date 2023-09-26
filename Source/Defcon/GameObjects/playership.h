@@ -49,11 +49,17 @@ namespace Defcon
 				           					       
 			bool           AcquireSmartBomb        ();
 			void           AddSmartBombs           (int32 Amount);
-				           
+
 			void           FireLaserWeapon         (CGameObjectCollection&);
-			bool           AreDoubleGunsActive     () const { return DoubleGunsActive; }
-			void           ToggleDoubleGuns        () { DoubleGunsActive = !DoubleGunsActive; }
-			void           DeactivateDoubleGuns    () { DoubleGunsActive = false; }
+			bool           AreDoubleGunsActive     () const { return DoubleGunsActive.Get(); }
+			void           ToggleDoubleGuns        ();
+			void           DeactivateDoubleGuns    ();
+			void           AddDoubleGunPower       (float Amount);
+
+			bool           IsInvincibilityActive   () const { return InvincibilityActive.Get(); }
+			void           ToggleInvincibility     ();
+			void           DeactivateInvincibility ();
+			void           AddInvincibility        (float Amount);
 
 			bool           EmbarkPassenger         (IGameObject*, CGameObjectCollection&);
 			bool           DebarkOnePassenger      (CGameObjectCollection&);
@@ -66,16 +72,23 @@ namespace Defcon
 		private:
 
 			TMessageableValue<int32>  SmartbombsLeft;
+			TMessageableValue<bool>   DoubleGunsActive;
+			TMessageableValue<float>  DoubleGunsLeft;
+			TMessageableValue<bool>   InvincibilityActive;
+			TMessageableValue<float>  InvincibilityLeft;
 			CLaserWeapon              LaserWeapon;
 			CLaserWeapon              SecondaryLaserWeapon;
 			CFPoint                   PickupBboxRadius;
-			bool                      DoubleGunsActive = false;
-
 	};
+
 
 
 	class CDestroyedPlayerShip : public Defcon::ILiveGameObject
 	{
+		// Instead of having a "destroyed" or "being destroyed" state for CPlayerShip, 
+		// it's a little cleaner to just have a separate game object which we 
+		// instantiate when the player ship blows up.
+
 		private:
 
 			FParticleGroup    ParticleGroups[100];

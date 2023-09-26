@@ -72,7 +72,8 @@ enum class EDefconPawnWeaponEvent : uint8
 {
 	FireLaser,
 	DetonateSmartbomb,
-	ToggleDoubleGuns
+	ToggleDoubleGuns,
+	ToggleInvincibility
 };
 
 

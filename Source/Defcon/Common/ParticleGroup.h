@@ -45,7 +45,6 @@ namespace Defcon
 	struct FParticleGroup
 	{
 		FParticle Particles[8][2];
-		CFPoint  P;
 
 
 		FParticleGroup()
@@ -76,7 +75,7 @@ namespace Defcon
 
 					Particles[x][y].Lifetime = Daylon::FRandRange(MinParticleLifetime, MaxParticleLifetime);
 					Particles[x][y].P        = Origin + CFPoint(LERP(-ObjHalfS.x, ObjHalfS.x, tx), LERP(-ObjHalfS.y, ObjHalfS.y, ty));
-					Particles[x][y].Inertia  = (Particles[x][y].P - P) * ParticleSpeed;
+					Particles[x][y].Inertia  = (Particles[x][y].P - ObjP) * ParticleSpeed;
 				}
 			}
 		}

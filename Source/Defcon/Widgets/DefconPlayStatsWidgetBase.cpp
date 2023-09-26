@@ -102,6 +102,89 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
 	}
 
+
+	// Subscribe to double gun messages
+	{
+		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::DoubleGunsLevelChanged, 
+			[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
+			{
+				if(!This.IsValid())
+				{
+					return;
+				}
+
+				check(Payload != nullptr);
+
+				const auto Level = *static_cast<float*>(Payload);
+
+				This->DoubleGunsReadout->SetPercent(Level);
+			}
+		);
+		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
+	}
+
+	{
+		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::DoubleGunsActivated, 
+			[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
+			{
+				if(!This.IsValid())
+				{
+					return;
+				}
+
+				check(Payload != nullptr);
+
+				const auto Active = *static_cast<bool*>(Payload);
+
+				const float Os = Active ? 1.0f : 0.25f;
+				This->DoubleGunsLabel->SetRenderOpacity(Os);
+				This->DoubleGunsReadout->SetRenderOpacity(Os);
+			}
+		);
+		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
+	}
+
+
+	// Subscribe to invincibility level messages
+	{
+		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::InvincibilityLevelChanged, 
+			[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
+			{
+				if(!This.IsValid())
+				{
+					return;
+				}
+
+				check(Payload != nullptr);
+
+				const auto Level = *static_cast<float*>(Payload);
+
+				This->InvincibilityReadout->SetPercent(Level);
+			}
+		);
+		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
+	}
+
+	{
+		Defcon::FMessageConsumer MessageConsumer(this, Defcon::EMessageEx::InvincibilityActivated, 
+			[This = TWeakObjectPtr<UDefconPlayStatsWidgetBase>(this)](void* Payload)
+			{
+				if(!This.IsValid())
+				{
+					return;
+				}
+
+				check(Payload != nullptr);
+
+				const auto Active = *static_cast<bool*>(Payload);
+
+				const float Os = Active ? 1.0f : 0.25f;
+				This->InvincibilityLabel->SetRenderOpacity(Os);
+				This->InvincibilityReadout->SetRenderOpacity(Os);
+			}
+		);
+		Defcon::GMessageMediator.RegisterConsumer(MessageConsumer);
+	}
 }
 
 

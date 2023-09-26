@@ -44,19 +44,23 @@ namespace Defcon
 	{
 		// Message                Payload type
 
-		Unknown = 0,             // nullptr
-		AbductionCountChanged,   // TArray<bool>*
-		SmartbombCountChanged,   // int32*
-		ShieldStrengthChanged,   // FShieldStrengthInfo*
-		SetTopMessage,           // FText*
-		NormalMessage,           // FNormalMessage*
-		ClearNormalMessages,     // nullptr
-		//PodIntersectionStarted   // FPodIntersectionInfo*
-		//TakenAboard,           // FTakenAboardInfo*  Carrier has taken human aboard
-		//CarrierKilled,         // ILiveGameObject*   Carrier has been destroyed
-		//Released,              // nullptr    Player ship has released human
-		//HumanKilled            // CHuman*   Human is about to die
-		//HumanTakenAboard       // CHuman*   Human has been taken aboard (redundant, use TakenAboard)
+		Unknown = 0,                // nullptr
+		AbductionCountChanged,      // TArray<bool>*
+		SmartbombCountChanged,      // int32*
+		ShieldStrengthChanged,      // FShieldStrengthInfo*
+		SetTopMessage,              // FText*
+		NormalMessage,              // FNormalMessage*
+		ClearNormalMessages,        // nullptr
+		DoubleGunsLevelChanged,     // float*
+		DoubleGunsActivated,        // bool*
+		InvincibilityLevelChanged,  // float*
+		InvincibilityActivated,     // float*
+		//PodIntersectionStarted    // FPodIntersectionInfo*
+		//TakenAboard,              // FTakenAboardInfo*  Carrier has taken human aboard
+		//CarrierKilled,            // ILiveGameObject*   Carrier has been destroyed
+		//Released,                 // nullptr    Player ship has released human
+		//HumanKilled               // CHuman*   Human is about to die
+		//HumanTakenAboard          // CHuman*   Human has been taken aboard (redundant, use TakenAboard)
 		Count
 	};
 

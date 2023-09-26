@@ -23,7 +23,7 @@
 
 
 
-#define DEBUG_MODULE      0
+#define DEBUG_MODULE      1
 
 #if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
@@ -58,6 +58,18 @@ Defcon::CPlayerShip::CPlayerShip()
 
 	SmartbombsLeft.Bind(EMessageEx::SmartbombCountChanged);
 	SmartbombsLeft.Set(3);
+
+	DoubleGunsActive.Bind(EMessageEx::DoubleGunsActivated);
+	DoubleGunsActive.Set(false);
+
+	DoubleGunsLeft.Bind(EMessageEx::DoubleGunsLevelChanged);
+	DoubleGunsLeft.Set(1.0f);
+
+	InvincibilityLeft.Bind(EMessageEx::InvincibilityLevelChanged);
+	InvincibilityLeft.Set(1.0f);
+
+	InvincibilityActive.Bind(EMessageEx::InvincibilityActivated);
+	InvincibilityActive.Set(false);
 }
 
 
@@ -68,6 +80,7 @@ void Defcon::CPlayerShip::InitPlayerShip()
 	Mass      = PLAYER_MASS;
 
 	DeactivateDoubleGuns();
+	DeactivateInvincibility();
 }
 
 
@@ -112,6 +125,42 @@ void Defcon::CPlayerShip::OnAboutToDie()
 			pObj->Notify(EMessage::CarrierKilled, this);
 		}
 	});
+}
+
+
+void Defcon::CPlayerShip::ToggleDoubleGuns() 
+{
+	DoubleGunsActive.Set(!DoubleGunsActive.Get()); 
+}
+
+
+void Defcon::CPlayerShip::DeactivateDoubleGuns() 
+{
+	DoubleGunsActive.Set(false); 
+}
+
+
+void Defcon::CPlayerShip::AddDoubleGunPower(float Amount)
+{
+	DoubleGunsLeft.Set(DoubleGunsLeft.Get() + Amount, (Amount == 0.0f));
+}
+
+
+void Defcon::CPlayerShip::ToggleInvincibility() 
+{
+	InvincibilityActive.Set(!InvincibilityActive.Get()); 
+}
+
+
+void Defcon::CPlayerShip::DeactivateInvincibility() 
+{
+	InvincibilityActive.Set(false);
+}
+
+
+void Defcon::CPlayerShip::AddInvincibility(float Amount)
+{
+	InvincibilityLeft.Set(InvincibilityLeft.Get() + Amount, (Amount == 0.0f));
 }
 
 
@@ -225,30 +274,6 @@ void Defcon::CPlayerShip::FireLaserWeapon(CGameObjectCollection& goc)
 	{
 		SecondaryLaserWeapon.Fire(goc);
 	}
-
-#if 0
-	//if(Velocity.y != 0 && FRAND <= LASER_MULTI_PROB)
-	{
-		// Fire extra bolts in the vthrust dir.
-		for(int32 i = 0; i < 1/*LASER_EXTRA_COUNT*/; i++)
-		{
-			//CFPoint Offset(0.0f, Velocity.y > 0 ? 1.0f : -1.0f);
-
-			// Use the second mount point.
-			//const CFPoint Offset(Orientation.Fwd.x * -10.0f, 5.0f);
-
-			/*if(BRAND)
-			{
-				Offset *= 2;
-			}*/
-
-			CFPoint Backup(Position);
-			Position += Offset;
-			LaserWeapon.Fire(goc);
-			Position = Backup;
-		}
-	}
-#endif
 }
 
 
@@ -285,15 +310,6 @@ void Defcon::CPlayerShip::ImpartForces(float DeltaTime)
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
-/*
-constexpr float DESTROYED_PLAYER_FLASH_DURATION        = 1.5f;
-constexpr float DESTROYED_PLAYER_EXPLOSION_DURATION    = 2.0f;
-constexpr float DESTROYED_PLAYER_BLANK_DURATION        = 2.0f / 60.0f; // time to flash the fullscreen 50% opaque white
-constexpr float DESTROYED_PLAYER_LIFETIME              = DESTROYED_PLAYER_FLASH_DURATION + DESTROYED_PLAYER_EXPLOSION_DURATION;
-constexpr float DESTROYED_PLAYER_PARTICLE_SPEED        = 30.0f;
-constexpr float DESTROYED_PLAYER_PARTICLE_MIN_LIFETIME = 1.0f; 
-constexpr float DESTROYED_PLAYER_PARTICLE_MAX_LIFETIME = DESTROYED_PLAYER_EXPLOSION_DURATION;
-*/
 
 Defcon::CDestroyedPlayerShip::CDestroyedPlayerShip()
 {
@@ -344,7 +360,6 @@ void Defcon::CDestroyedPlayerShip::Tick(float DeltaTime)
 		}
 
 		NumParticleGroupsToUpdate = FMath::Min(NumParticleGroupsToUpdate + 2, (int32)array_size(ParticleGroups));
-
 	}
 }
 
