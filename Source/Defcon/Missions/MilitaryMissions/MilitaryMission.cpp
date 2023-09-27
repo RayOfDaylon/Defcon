@@ -192,7 +192,7 @@ void Defcon::CMilitaryMission::UpdateWaves(const CFPoint& Where)
 					GArena->GetHeight() * Daylon::FRandRange(SpawnAltitudeRange));
 
 				// Pick a x-velocity for the pod.
-				const float PodSpeedX = Daylon::FRandRange(POD_SPEED);
+				const float PodSpeedX = Daylon::FRandRange(POD_SPEED); // todo: favor higher speeds as XP increases.
 
 				// Alternate between moving right and left, otherwise all the pods might wind up
 				// moving in the same direction which would lower the difficulty.

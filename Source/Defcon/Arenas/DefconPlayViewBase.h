@@ -169,6 +169,7 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	float                                 Xdistance                (float WorldX1, float WorldX2) const;
 	float                                 HorzDistance             (const CFPoint& WorldPosA, const CFPoint& WorldPosB) const { return Xdistance(WorldPosA.x, WorldPosB.x); }
 	float                                 WrapX                    (float WorldX) const;
+	float                                 WrapY                    (float WorldY) const;
 	bool                                  IsPointVisible           (const CFPoint& WorldPos) const;
 						                  					       
 	float                                 GetWidth                 () const { return ArenaWidth; }

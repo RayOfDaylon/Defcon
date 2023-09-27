@@ -24,18 +24,24 @@
 Defcon::CSpacehum::CSpacehum()
 {
 	ParentType = Type;
-	Type = EObjType::SPACEHUM;
-	PointValue = SPACEHUM_VALUE;
-	Orientation.Fwd.Set(1.0f, 0.0f);
-	RadarColor = C_LIGHT;
+	Type       = EObjType::SPACEHUM;
 
-	AnimSpeed = FRAND * 0.05f + 0.15f;
-	bCanBeInjured = true;
+	PointValue            = SPACEHUM_VALUE;
+	RadarColor            = C_LIGHT;
+	AnimSpeed             = FRAND * 0.05f + 0.15f;
+	bCanBeInjured         = true;
 	bIsCollisionInjurious = true;
-	Brightness = FRANDRANGE(0.9f, 1.0f);
+	Brightness            = FRANDRANGE(0.9f, 1.0f);
 
-	Speed = (float)GGameMatch->GetScore() / 250;
-	Speed *= FRANDRANGE(0.9f, 1.33f);
+	//Speed = (float)GGameMatch->GetScore() / 250; // todo: might want a speed range instead, in later missions the speed is really quite something.
+
+	float XP = GGameMatch->GetScore();
+	XP = NORM_(XP, 0, 50000) * FRANDRANGE(0.9f, 1.33f);  	// Give each spacehum a slightly different speed.
+	XP = CLAMP(XP, 0.0f, 1.0f);
+
+	Speed = Daylon::Lerp(SPACEHUM_SPEED, XP);
+	
+	Orientation.Fwd.Set(1.0f, 0.0f);
 
 	CreateSprite(Type);
 	const auto& SpriteInfo = GGameObjectResources.Get(Type);

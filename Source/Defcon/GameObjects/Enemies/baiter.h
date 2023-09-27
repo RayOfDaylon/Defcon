@@ -22,9 +22,10 @@ namespace Defcon
 
 
 		private:
-			bool  bPreferTargetUnderside;
-			float FireWeaponCountdown = 0.0f;
 
+			float FireWeaponCountdown = 0.0f;
+			bool  bPreferTargetUnderside;
+			bool  WrapsAroundVertically;
 	};
 }
 

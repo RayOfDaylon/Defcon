@@ -39,6 +39,7 @@ Defcon::CBaiter::CBaiter()
 	bIsCollisionInjurious  = true;
 	bPreferTargetUnderside = BRAND;
 	FireWeaponCountdown    = FRANDRANGE(0.75f, 2.0f);
+	WrapsAroundVertically  = BRAND;
 
 	CreateSprite(Type);
 	BboxRadius = GGameObjectResources.Get(Type).Size;
@@ -73,9 +74,13 @@ void Defcon::CBaiter::Tick(float DeltaTime)
 	Drag = d;
 	Mass = m;
 
+	if(WrapsAroundVertically)
+	{
+		Position.y = GArena->WrapY(Position.y);
+	}
+
 
 	Inertia = Position;
-
 	
 	{
 		// Thrust in a way that will take us towards the player. 

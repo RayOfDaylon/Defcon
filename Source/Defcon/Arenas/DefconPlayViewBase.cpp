@@ -1242,6 +1242,17 @@ float UDefconPlayViewBase::WrapX(float WorldX) const
 }
 
 
+float UDefconPlayViewBase::WrapY(float WorldY) const
+{
+	const auto H = GetHeight();
+
+	if(WorldY > H) return WorldY - H;
+	if(WorldY < 0) return WorldY + H;
+
+	return WorldY;
+}
+
+
 void UDefconPlayViewBase::LayMine(Defcon::IGameObject& Obj, const CFPoint& from, int32, int32)
 {
 	auto Mine = new Defcon::CMine;

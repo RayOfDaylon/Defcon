@@ -32,11 +32,12 @@ mediator.send instead of mediator.telluser and setting the
 payload to &FString instead of a struct which included a 
 duration.
 
-Two spacehums at the end of a first mission 
+FIXED: Two spacehums at the end of a first mission 
 were stationary, merely vibrating in place.
 No matter how low the XP is when a spachum is spawned, 
 it should have some hunting speed.
-
+    Spacehums now have their own ranged prefval
+which is sampled better based on XP.
 
 FIXED: CFlak can have NaN orientation.fwd.
    Turns out when a smartbomb detonated and the ship's position happened 

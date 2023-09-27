@@ -143,6 +143,7 @@ void Defcon::CPrefs::Construct()
 	INITPREFR ( MunchieSpawnCountdown,      2.0f,       5.0f,  "sec",      "Time for a phred to spawn a munchie"                          );
 	INITPREFR ( PodIntersectionWidth,       0.2f,       0.8f,  "%",        "Pod intersection width (percentage of visible screen width)"  );
 	INITPREFR ( PodSpeed,                  50,        400,     "px/sec",   "Pod travel speed");
+	INITPREFR ( SpacehumSpeed,             50,        700,     "px/sec",   "Spacehum travel speed");
 
 #undef INITPREFR
 }

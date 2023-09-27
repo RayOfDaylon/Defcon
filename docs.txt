@@ -260,6 +260,9 @@ collection, etc.
 
 Future Work
 -------------------------------------------------------------------------------------
+Note: to find stuff not mentioned here, do a search for the word "todo" 
+in the source code.
+
 Some declarations are outside the Defcon namespace when they shouldn't be.
 
 Pod intersection is being worked on, hope to have it in soon.

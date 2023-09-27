@@ -29,6 +29,7 @@ namespace Defcon
 			float	     SquakTime;
 			EAudioTrack  AudioTrack;
 			bool	     bPreferTargetUnderside;
+			bool         WrapsAroundVertically;
 	};
 
 

@@ -34,6 +34,7 @@ Defcon::IMunchie::IMunchie()
 	bPreferTargetUnderside  = BRAND;
 	Brightness              = FRANDRANGE(0.4f, 0.5f);
 	SquakTime               = 0.0f;
+	WrapsAroundVertically   = BRAND;
 }
 
 
@@ -62,6 +63,10 @@ void Defcon::IMunchie::Tick(float DeltaTime)
 	orgpos -= Position;
 	Sprite->FlipHorizontal = (orgpos.x > 0);
 
+	if(WrapsAroundVertically)
+	{
+		Position.y = GArena->WrapY(Position.y);
+	}
 
 	// Thrust in a way that will take us towards the player. 
 	// Only thrust vertically if we are not within range.

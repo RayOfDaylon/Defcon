@@ -152,8 +152,9 @@ namespace Defcon
 				smartbomb_wavepushmin,
 
 				sound_active,
-				SpacehumCollisionForce,
 				stars_count,
+				SpacehumCollisionForce,
+				SpacehumSpeed,
 				spacehum_value,
 				swarmer_value,
 				SwarmerCollisionForce,
@@ -291,6 +292,7 @@ extern Defcon::CPrefs	GPrefs;
 #define REFORMERPART_VALUE           IPREFVAL(reformerpart_value) 
 #define SCORETIPS_SHOWENEMYPOINTS    BPREFVAL(scoretips_showenemypoints)
 #define SOUND_ACTIVE                 BPREFVAL(sound_active)
+#define SPACEHUM_SPEED               RPREFVAL(SpacehumSpeed)
 #define SPACEHUM_VALUE               IPREFVAL(spacehum_value)
 #define SPACEHUM_COLLISION_FORCE     FPREFVAL(SpacehumCollisionForce)
 #define STARS_COUNT                  IPREFVAL(stars_count)
