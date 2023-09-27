@@ -32,18 +32,17 @@ Defcon::CGhost::CGhost()
 	ParentType = Type;
 	Type       = EObjType::GHOST;
 
-	PointValue = GHOST_VALUE;
-	Orientation.Fwd.Set(1.0f, 0.0f);
-	RadarColor = MakeColorFromComponents(192, 192, 192);
-
-	AnimSpeed     = FRANDRANGE(0.5f, 1.0f);
-	
+	PointValue         = GHOST_VALUE;
+	RadarColor         = MakeColorFromComponents(192, 192, 192);
+	AnimSpeed          = FRANDRANGE(0.5f, 1.0f);
 	NumParts           = IRAND(4) + 4;
 	SpinVelocity       = FRANDRANGE(-1.0f, 1.0f);
 	SpinAngle          = FRAND;
 	SpinDir            = BRAND ? 1: -1;
 	DispersalCountdown = 0.0f;
 	FiringCountdown    = FRANDRANGE(2.0f, 4.0f);
+
+	Orientation.Fwd.Set(1.0f, 0.0f);
 
 	for(int32 I = 1; I < NumParts; I++)
 	{
@@ -55,11 +54,39 @@ Defcon::CGhost::CGhost()
 
 	const auto& Info = GGameObjectResources.Get(EObjType::GHOSTPART);
 	BboxRadius = Info.Size * 0.5f; // seems too small, yet... here we are
+
+	DeterminePartLocations();
 }
 
 
 Defcon::CGhost::~CGhost()
 {
+}
+
+
+void Defcon::CGhost::DeterminePartLocations()
+{
+	PartLocs[0] = Position;
+
+	const float F = (float)fmod(Age, AnimSpeed) / AnimSpeed;	//(float)Age / AnimSpeed;
+
+	// Place our parts in a circle around a central part.
+	const int32 N = NumParts - 1;
+
+	const float R = BboxRadius.x * 1.25f;
+
+	for(int32 I = 0; I < N; I++)
+	{
+		const float T = SpinDir * (float)(TWO_PI * (float)I / N + ((SpinAngle + PSIN(Age)/*FRAND * 0.1f*/) * TWO_PI));
+		CFPoint Pt2(cosf(T), sinf(T));
+		const float Radius = (float)(sin((F /*+ FRAND * 3*/) * PI) * R * Daylon::Lerp(PartRadii[I + 1], PSIN(Age * PartRadiiSpeed[I + 1])) /*+ 5.0f*/);
+
+		Pt2 *= Radius;
+		Pt2 += Position;
+		Pt2.x = GArena->WrapX(Pt2.x);
+
+		PartLocs[I + 1] = Pt2;
+	}
 }
 
 
@@ -125,27 +152,7 @@ void Defcon::CGhost::Tick(float DeltaTime)
 
 	Position.x = GArena->WrapX(Position.x);
 
-	PartLocs[0] = Position;
-
-	const float F = (float)fmod(Age, AnimSpeed) / AnimSpeed;	//(float)Age / AnimSpeed;
-
-	// Place our parts in a circle around a central part.
-	const int32 N = NumParts - 1;
-
-	const float R = BboxRadius.x * 1.25f;
-
-	for(int32 I = 0; I < N; I++)
-	{
-		const float T = SpinDir * (float)(TWO_PI * (float)I / N + ((SpinAngle + PSIN(Age)/*FRAND * 0.1f*/) * TWO_PI));
-		CFPoint Pt2(cosf(T), sinf(T));
-		const float Radius = (float)(sin((F /*+ FRAND * 3*/) * PI) * R * Daylon::Lerp(PartRadii[I + 1], PSIN(Age * PartRadiiSpeed[I + 1])) /*+ 5.0f*/);
-
-		Pt2 *= Radius;
-		Pt2 += Position;
-		Pt2.x = GArena->WrapX(Pt2.x);
-
-		PartLocs[I + 1] = Pt2;
-	}
+	DeterminePartLocations();
 
 
 	// See if we need to disperse (player ship got too close).

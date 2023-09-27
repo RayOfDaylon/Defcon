@@ -241,7 +241,19 @@ void Defcon::CPlayerShip::Tick(float DeltaTime)
 	}
 
 	// Make the ship appear redder as its shields weaken.
-	Sprite->SetTint(MakeBlendedColor(C_RED, C_WHITE, Strength));
+	auto Tint = MakeBlendedColor(C_RED, C_WHITE, Strength);
+
+#if 0
+	// Brighten the ship if it's invincible.
+	// Nope, tinting can't be used to do that (sigh).
+	if(!CanBeInjured())
+	{
+		Tint *= 2.0f;
+	}
+
+	Sprite->SetTint(Tint);
+#endif
+	
 
 	// Reduce the double guns if they're active.
 

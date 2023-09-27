@@ -39,11 +39,38 @@ Defcon::CReformer::CReformer()
 
 	BboxRadius.Set(10, 10); // todo: why so explicit?
 	Orientation.Fwd.Set(1.0f, 0.0f);
+
+	DeterminePartLocations();
 }
 
 
 Defcon::CReformer::~CReformer()
 {
+}
+
+
+void Defcon::CReformer::DeterminePartLocations()
+{
+	PartLocations[0] = Position;
+
+	float F = (float)fmod(Age, AnimSpeed) / AnimSpeed;
+
+	// Place our parts in a circle around our central part.
+
+	const int32 N = NumParts - 1;
+
+	for(int32 I = 0; I < N; I++)
+	{
+		const float T = (float)(TWO_PI * I / N + (SpinAngle * TWO_PI));
+		CFPoint P(cosf(T), sinf(T));
+		const float R = (float)(sin(F * PI) * 5 + 10);
+		BboxRadius.Set(R, R);
+		P *= R;
+		P += Position;
+		P.x = GArena->WrapX(P.x);
+
+		PartLocations[I + 1] = P;
+	}
 }
 
 
@@ -65,26 +92,7 @@ void Defcon::CReformer::Tick(float DeltaTime)
 
 	Position.x = GArena->WrapX(Position.x);
 
-	PartLocations[0] = Position;
-
-	float F = (float)fmod(Age, AnimSpeed) / AnimSpeed;
-
-	// Place our parts in a circle around our central part.
-
-	const int32 N = NumParts - 1;
-
-	for(int32 I = 0; I < N; I++)
-	{
-		const float T = (float)(TWO_PI * I / N + (SpinAngle * TWO_PI));
-		CFPoint P(cosf(T), sinf(T));
-		const float R = (float)(sin(F * PI) * 5 + 10);
-		BboxRadius.Set(R, R);
-		P *= R;
-		P += Position;
-		P.x = GArena->WrapX(P.x);
-
-		PartLocations[I + 1] = P;
-	}
+	DeterminePartLocations();
 
 	Inertia = Position - Inertia;
 }

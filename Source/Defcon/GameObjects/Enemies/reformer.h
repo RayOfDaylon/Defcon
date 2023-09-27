@@ -36,7 +36,8 @@ namespace Defcon
 
 		protected:
 
-			void ConsiderFiringBullet  (float DeltaTime);
+			void ConsiderFiringBullet   (float DeltaTime);
+			void DeterminePartLocations ();
 
 
 		private:

@@ -1768,7 +1768,7 @@ void UDefconPlayViewBase::SpawnGameObject
 	const Defcon::FMetadata*       Options
 )
 {
-	check(Where.IsValid());
+  	check(Where.IsValid());
 
 	const auto MaterializationLifetime = ENEMY_BIRTHDURATION;
 

@@ -29,8 +29,9 @@ namespace Defcon
 
 		protected:
 
-			virtual void DrawPart              (FPainter&, const CFPoint&);
-			void         ConsiderFiringBullet  (float DeltaTime);
+			virtual void DrawPart                (FPainter&, const CFPoint&);
+			void         ConsiderFiringBullet    (float DeltaTime);
+			void         DeterminePartLocations  ();
 
 
 			CFPoint	              PartLocs[10];

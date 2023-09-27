@@ -2,8 +2,15 @@ Bug list for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 26, 2023
+September 27, 2023
 
+
+S/B FIXED: Ghosts and reformers could fail a NaN check in 
+when spawning parts in their AboutToDie methods, because 
+the part locations were initialized only in Tick and in 
+rare cases, the object could get destroyed before ticking 
+even once. So the locations determination is made in a 
+method and also called by the ctor.
 
 FIXED: The readouts in the Stats panel don't line up in their 
 vertical column because we're using padding after each 
