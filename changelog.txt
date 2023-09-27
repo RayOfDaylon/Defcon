@@ -2,8 +2,10 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 26, 2023
+September 27, 2023
 
+
+Added invincibility toggle key to Help screen.
 
 Invincibility implemented.
 

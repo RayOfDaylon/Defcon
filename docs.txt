@@ -265,8 +265,6 @@ in the source code.
 
 Some declarations are outside the Defcon namespace when they shouldn't be.
 
-Pod intersection is being worked on, hope to have it in soon.
-
 Might switch radar background to use a horizontally stretched texture 
 instead of a material, since the interlace effect is static. Although 
 it probably saves texture sampling to have the shader compute the effect.
@@ -292,7 +290,7 @@ Secondary explosion texture atlas is used randomly, but should be
 used based on object type or mass since it's more "oomph" than 
 the original explosion texture.
 
-GameObject::m_inertia is computed by each game object class, when it should be 
+GameObject::Inertia is computed by each game object class, when it should be 
 possible to compute it in a game object collection processing loop.
 
 Powerups. Different possibilities for how/when they would appear e.g. 
@@ -300,7 +298,7 @@ emitted by the stargate, by a factory on the ground, or dropped
 by enemies when they're destroyed, etc. Smart bombs would be 
 powerups, along with shields, dual guns, invincibility.
 
-Some textures still need remastering e.g. humans, dynamos, mines.
+Some textures still need remastering e.g. dynamos, mines.
 
 Would be kind of neat to have humans run away from landers when 
 they get within a certain range. Not that they'd escape; it would 
