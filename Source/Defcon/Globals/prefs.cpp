@@ -95,6 +95,8 @@ void Defcon::CPrefs::Construct()
 	INITPREF ( player_maxthrust,             4.5f,    "",             Float,        0.1f,        5.0f,   "Maximum thrust force applicable to player ship"                                            );
 	INITPREF ( player_posmargin,           450.0f,    "px",           Integer,     50,         700,      "Minimum distance between player's ship and edge of screen"                                 );
 	INITPREF ( player_rebirth_delay,         2.0f,    "seconds",      Float,        0.1f,        5.0f,   "Delay between player destruction and materialization"                                      );
+	INITPREF ( PlayerDoubleGunsLoss,         0.02f,   "%/sec",        Float,        0.01f,       0.2f,   "Rate at which player ship double gun availability diminishes"                              );
+	INITPREF ( PlayerInvincibilityLoss,      0.02f,   "%/sec",        Float,        0.01f,       0.2f,   "Rate at which player ship invincibility diminishes"                                        );
 	INITPREF ( PlayerShipImpactScale,        0.5f,    "%",            Float,        0.1f,        2.0f,   "How damage to player ship should be scaled up or down"                                     );
 	INITPREF ( pod_value,                 1000,       "",             Integer,      0,        1000,      "Number of points earned for destroying a pod"                                              );
 	INITPREF ( RadarIsPlayerCentric,         0,       "",             Boolean,      0,           0,      "Radar keeps player ship fixed, otherwise screen edges are fixed (arcade match)"            );

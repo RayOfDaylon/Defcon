@@ -2,7 +2,7 @@ Documentation for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 24, 2023
+September 26, 2023
 
 Chapters:
 
@@ -349,3 +349,33 @@ you could detonate a smart bomb to make room.
    Conversely, if you needed a smart bomb and came across 
 a powerup, but were carrying too many humans, you'd have 
 to put them down.
+
+The dual laser and invincibility mechanics are still up for grabs.
+We could follow Halo and treat invincibility as an overshield, 
+and instead of depleting it over time, do so whenever the player 
+ship gets hit or collides with something. The downside is that 
+if invincibility gets depleted too quickly that way, then the 
+player can miss out on some interesting gameplay. With a time 
+limit e.g. one can plow through massive hordes of spacehums etc. 
+If hit-dropping invincibility is cranked way up to allow that, 
+then it may make the game too easy.
+   Similarly, we could deplete dual cannons only when they're 
+used, instead of over time (this is how they work in Stellar Mayhem).
+   Might be worth (like Stellar Mayhem) to have some indicator 
+on the player ship to show when invincibility is active. It can 
+be awkward glancing at the status panel. Another thought was to -- 
+when the toggle is pressed to activate, the seconds of power 
+remaining are included in the "invincibility activated" message.
+If we do mod the player ship, easiest thing might be to just 
+increase its brightness, and maybe flash it when the invincibility
+has five seconds or less time left. In the arcade game, of course, 
+the Inviso feature also cloaked the ship, making it dead obvious.
+Cloaking that way would be an arcade match (and look cool) but 
+may prove too difficult for most players. Not that one can't 
+keep firing the cannons to determine position, but still.
+
+
+
+
+
+

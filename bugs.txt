@@ -5,16 +5,17 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 26, 2023
 
 
-The readouts in the Stats panel don't line up in their 
+FIXED: The readouts in the Stats panel don't line up in their 
 vertical column because we're using padding after each 
 text label, when we should be using a Grid container.
 No matter how I tweak the padding, it keeps shifting.
 
 FIXED: Accidentally broke the player ship explosion.
 
-UMG progress bar widget has a color rendering bug.
+FIXED: UMG progress bar widget has a color rendering bug.
 Will fix by making my own widget. This will also 
-handle the border width issue better.
+handle the border width issue better, assuming we 
+keep using a border around the shield readout.
 
 FIXED: After several messages appeared, the message log stopped 
 deleting them, just letting them be in a frozen pile.

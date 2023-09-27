@@ -28,13 +28,13 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 		}
 	}
 
-	
+#if 0	
 	// Scale shield readout progress bar's border width to match display DPI
 	const float BorderWidth = 0.1f * GetPaintSpaceGeometry().Scale;
 	auto Style = ShieldReadout->GetWidgetStyle();
 	Style.BackgroundImage.Margin = FMargin(BorderWidth);
 	ShieldReadout->SetWidgetStyle(Style);
-
+#endif
 
 
 	// Subscribe to player ship shield strength
@@ -66,9 +66,11 @@ void UDefconPlayStatsWidgetBase::NativeOnInitialized()
 				Readout->SetPercent(StrengthInfo.Value);
 
 				const auto& Color = This->ShieldGradient[ROUND(Val * This->ShieldGradient.Num() - 1)];
+#if 0
 				auto Style = Readout->GetWidgetStyle();
 				Style.BackgroundImage.TintColor = FSlateColor(Color);
 				Readout->SetWidgetStyle(Style);
+#endif
 				Readout->SetFillColorAndOpacity(Color);
 				This->ShieldLabel->SetColorAndOpacity(Color);
 			}

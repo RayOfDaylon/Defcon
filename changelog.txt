@@ -5,6 +5,14 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 26, 2023
 
 
+Invincibility implemented.
+
+Dual cannon energy and invincibility reduce over time
+(but not renewable yet. Use sparingly to avoid getting 
+creamed in the later missions).
+
+Renamed 'double guns' to 'dual cannon' in the Status panel.
+
 Pressing 'I' toggles invincibility.
 Still need to implement.
 

@@ -616,10 +616,12 @@ void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& object
 {
 	auto& PlayerShip = GetPlayerShip();
 
-	if(!PlayerShip.IsAlive() || !PlayerShip.CanBeInjured())
+	if(!PlayerShip.IsAlive())
 	{
 		return;
 	}
+
+	const bool PlayerShipVulnerable = (PlayerShip.CanBeInjured() && !Defcon::GGameMatch->GetGodMode());
 
 	CFRect bbox;
 	CFPoint injurePt;
@@ -644,7 +646,7 @@ void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& object
 
 				GDefconGameInstance->GetStats().PlayerHits++;
 
-				const bool bPlayerKilled = !Defcon::GGameMatch->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce() * PLAYERSHIP_IMPACT_SCALE);
+				const bool bPlayerKilled = PlayerShipVulnerable && PlayerShip.RegisterImpact(pObj->GetCollisionForce() * PLAYERSHIP_IMPACT_SCALE);
 
 				if(bPlayerKilled)
 				{
@@ -675,10 +677,12 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 	auto& PlayerShip = GetPlayerShip();
 
 
-	if(!PlayerShip.IsAlive() || !PlayerShip.CanBeInjured())
+	if(!PlayerShip.IsAlive())
 	{
 		return;
 	}
+
+	const bool PlayerShipVulnerable = (PlayerShip.CanBeInjured() && !Defcon::GGameMatch->GetGodMode());
 
 	CFRect rObj, rPlayer(PlayerShip.Position);
 	rPlayer.Inflate(PlayerShip.BboxRadius);
@@ -696,7 +700,7 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 			{
 				GDefconGameInstance->GetStats().PlayerCollisions++;
 
-				const bool bPlayerKilled = !Defcon::GGameMatch->GetGodMode() && PlayerShip.RegisterImpact(pObj->GetCollisionForce() * PLAYERSHIP_IMPACT_SCALE);
+				const bool bPlayerKilled = PlayerShipVulnerable && PlayerShip.RegisterImpact(pObj->GetCollisionForce() * PLAYERSHIP_IMPACT_SCALE);
 
 				if(bPlayerKilled)
 				{
@@ -1083,7 +1087,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool/*
 			{
 				GetPlayerShip().FireLaserWeapon(Objects);
 
-				if(GetPlayerShip().AreDoubleGunsActive())
+				if(GetPlayerShip().AreDoubleGunsAvailable())
 				{
 					GDefconGameInstance->GetStats().DoubleShotsFired++;
 				}
@@ -1110,8 +1114,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool/*
 				}
 				else
 				{
-					FString Str = TEXT("SMARTBOMB ORDNANCE DEPLETED");
-					Defcon::GMessageMediator.TellUser(Str);
+					Defcon::GMessageMediator.TellUser(TEXT("SMARTBOMB ORDNANCE DEPLETED"), MESSAGE_DURATION_IMPORTANT);
 
 					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
 				}
@@ -1121,19 +1124,34 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool/*
 
 		case EDefconPawnWeaponEvent::ToggleDoubleGuns:
 			{
-				GetPlayerShip().ToggleDoubleGuns();
-				FString Str = FString::Printf(TEXT("DOUBLE LASER CANNONS %sACTIVATED"), GetPlayerShip().AreDoubleGunsActive() ? TEXT("") : TEXT("DE"));
+				const bool Useable = GetPlayerShip().ToggleDoubleGuns();
+
+				FString Str = FString::Printf(TEXT("DUAL LASER CANNON %sACTIVATED"), GetPlayerShip().AreDoubleGunsActive() ? TEXT("") : TEXT("DE"));
 				Defcon::GMessageMediator.TellUser(Str);
+
+				if(GetPlayerShip().AreDoubleGunsActive() && !Useable)
+				{
+					Defcon::GMessageMediator.TellUser(TEXT("DUAL LASER CANNON ENERGY DEPLETED"), MESSAGE_DURATION_IMPORTANT);
+					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
+				}
 			}
 			break;
 
 
 		case EDefconPawnWeaponEvent::ToggleInvincibility:
 			{
-				GetPlayerShip().ToggleInvincibility();
+				const bool Useable = GetPlayerShip().ToggleInvincibility();
+
 				FString Str = FString::Printf(TEXT("INVINCIBILITY %sACTIVATED"), GetPlayerShip().IsInvincibilityActive() ? TEXT("") : TEXT("DE"));
 				Defcon::GMessageMediator.TellUser(Str);
+
+				if(GetPlayerShip().IsInvincibilityActive() && !Useable)
+				{
+					Defcon::GMessageMediator.TellUser(TEXT("INVINCIBILITY DEPLETED"), MESSAGE_DURATION_IMPORTANT);
+					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
+				}
 			}
+			break;
 	}
 }
 

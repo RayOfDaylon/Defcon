@@ -128,9 +128,10 @@ void Defcon::CPlayerShip::OnAboutToDie()
 }
 
 
-void Defcon::CPlayerShip::ToggleDoubleGuns() 
+bool Defcon::CPlayerShip::ToggleDoubleGuns() 
 {
-	DoubleGunsActive.Set(!DoubleGunsActive.Get()); 
+	DoubleGunsActive.Set(!DoubleGunsActive.Get());
+	return (DoubleGunsLeft.Get() > 0.0f);
 }
 
 
@@ -146,9 +147,10 @@ void Defcon::CPlayerShip::AddDoubleGunPower(float Amount)
 }
 
 
-void Defcon::CPlayerShip::ToggleInvincibility() 
+bool Defcon::CPlayerShip::ToggleInvincibility() 
 {
 	InvincibilityActive.Set(!InvincibilityActive.Get()); 
+	return (InvincibilityLeft.Get() > 0.0f);
 }
 
 
@@ -240,6 +242,38 @@ void Defcon::CPlayerShip::Tick(float DeltaTime)
 
 	// Make the ship appear redder as its shields weaken.
 	Sprite->SetTint(MakeBlendedColor(C_RED, C_WHITE, Strength));
+
+	// Reduce the double guns if they're active.
+
+	if(AreDoubleGunsActive())
+	{
+		auto OldAmt = DoubleGunsLeft.Get();
+
+		const auto NewAmt = FMath::Max(0.0f, OldAmt - DeltaTime * PLAYER_DOUBLEGUNS_LOSS);
+
+		DoubleGunsLeft.Set(NewAmt);
+
+		if(NewAmt == 0.0f && OldAmt > 0.0f) // could also say if(NewAmt == Amt), if PLAYER_DOUBLEGUNS_LOSS is always nonzero.
+		{
+			GMessageMediator.TellUser(TEXT("DUAL LASER CANNON ENERGY DEPLETED"), MESSAGE_DURATION_IMPORTANT);
+		}
+	}
+
+	// Reduce the invincibility if it's active.
+
+	if(IsInvincibilityActive())
+	{
+		auto OldAmt = InvincibilityLeft.Get();
+
+		const auto NewAmt = FMath::Max(0.0f, OldAmt - DeltaTime * PLAYER_INVINCIBILITY_LOSS);
+
+		InvincibilityLeft.Set(NewAmt);
+
+		if(NewAmt == 0.0f && OldAmt > 0.0f) // could also say if(NewAmt == Amt), if PLAYER_INVINCIBILITY_LOSS is always nonzero.
+		{
+			GMessageMediator.TellUser(TEXT("INVINCIBILITY DEPLETED"), MESSAGE_DURATION_IMPORTANT);
+		}
+	}
 }
 
 
@@ -270,7 +304,7 @@ void Defcon::CPlayerShip::FireLaserWeapon(CGameObjectCollection& goc)
 {
 	LaserWeapon.Fire(goc);
 
-	if(AreDoubleGunsActive())
+	if(AreDoubleGunsAvailable())
 	{
 		SecondaryLaserWeapon.Fire(goc);
 	}

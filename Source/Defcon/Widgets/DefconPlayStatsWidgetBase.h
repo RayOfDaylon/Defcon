@@ -7,7 +7,7 @@
 #include "DefconHumansInfoBase.h"
 #include "Widgets/UDaylonProgressBar.h"
 #include "UMG/Public/Components/TextBlock.h"
-#include "UMG/Public/Components/ProgressBar.h"
+//#include "UMG/Public/Components/ProgressBar.h"
 #include "DefconPlayStatsWidgetBase.generated.h"
 
 
@@ -37,7 +37,7 @@ class DEFCON_API UDefconPlayStatsWidgetBase : public UDefconPlayWidgetBase
 
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	TObjectPtr<UProgressBar> ShieldReadout;
+	TObjectPtr<UDaylonProgressBar> ShieldReadout;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> ShieldLabel;

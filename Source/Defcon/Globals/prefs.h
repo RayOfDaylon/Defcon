@@ -127,6 +127,8 @@ namespace Defcon
 				player_maxthrust,
 				player_posmargin,
 				player_rebirth_delay,
+				PlayerDoubleGunsLoss,
+				PlayerInvincibilityLoss,
 				PlayerShipImpactScale,
 				PodIntersectionWidth,
 				PodSpeed,
@@ -194,6 +196,8 @@ extern Defcon::CPrefs	GPrefs;
 #define PLAYER_MAXTHRUST            FPREFVAL(player_maxthrust)
 #define PLAYER_MASS                 FPREFVAL(player_mass)
 #define PLAYER_DRAG                 FPREFVAL(player_drag)
+#define PLAYER_DOUBLEGUNS_LOSS      FPREFVAL(PlayerDoubleGunsLoss)
+#define PLAYER_INVINCIBILITY_LOSS   FPREFVAL(PlayerInvincibilityLoss)
 #define PLAYERSHIP_IMPACT_SCALE     FPREFVAL(PlayerShipImpactScale)
 
 #define RADAR_IS_PLAYER_CENTRIC     BPREFVAL(RadarIsPlayerCentric)

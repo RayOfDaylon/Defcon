@@ -43,6 +43,7 @@ namespace Defcon
 			virtual void   SetIsAlive              (bool b) override;
 			virtual void   ImpartForces            (float) override; // For the player ship, we need to customize vertical motion.
 			virtual bool   CanBeInjuredBySmartbomb (int32 BombID) const override { return false; }
+			virtual bool   CanBeInjured            () const override { return !(IsInvincibilityActive() && InvincibilityLeft.Get() > 0.0f); }
 
 			void           FaceLeft                () { Orientation.Fwd.x = -1.0f; }
 			void           FaceRight               () { Orientation.Fwd.x = 1.0f; }
@@ -52,12 +53,13 @@ namespace Defcon
 
 			void           FireLaserWeapon         (CGameObjectCollection&);
 			bool           AreDoubleGunsActive     () const { return DoubleGunsActive.Get(); }
-			void           ToggleDoubleGuns        ();
+			bool           AreDoubleGunsAvailable  () const { return (AreDoubleGunsActive() && DoubleGunsLeft.Get() > 0.0f); }
+			bool           ToggleDoubleGuns        ();
 			void           DeactivateDoubleGuns    ();
 			void           AddDoubleGunPower       (float Amount);
 
 			bool           IsInvincibilityActive   () const { return InvincibilityActive.Get(); }
-			void           ToggleInvincibility     ();
+			bool           ToggleInvincibility     ();
 			void           DeactivateInvincibility ();
 			void           AddInvincibility        (float Amount);
 

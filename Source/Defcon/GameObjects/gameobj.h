@@ -134,7 +134,7 @@ namespace Defcon
 			bool                  IsCollisionInjurious    () const;   
 			void                  SetCollisionInjurious   (bool b = true);
 			bool                  IsInjurious             () const;
-			bool                  CanBeInjured            () const;
+			virtual bool          CanBeInjured            () const;
 			virtual bool          CanBeInjuredBySmartbomb (int32 BombID) const { return true; }
 			virtual void          GetInjurePt             (CFPoint&) const;
 			virtual bool          TestInjury              (const CFRect&) const;
