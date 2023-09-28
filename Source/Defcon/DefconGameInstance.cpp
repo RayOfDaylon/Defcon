@@ -223,7 +223,7 @@ void UDefconGameInstance::OnToggleGodMode()
 
 	Defcon::GGameMatch->SetGodMode(!Defcon::GGameMatch->GetGodMode());
 
-	Defcon::GMessageMediator.TellUser(FString::Printf(TEXT("God mode %s"), Defcon::GGameMatch->GetGodMode() ? TEXT("ON") : TEXT("OFF")));
+	Defcon::GMessageMediator.TellUser(FString::Printf(TEXT("God mode %s"), Defcon::GGameMatch->GetGodMode() ? TEXT("ON") : TEXT("OFF")), 0.0f, Defcon::EDisplayMessage::GodModeChanged);
 }
 
 
@@ -256,7 +256,7 @@ void UDefconGameInstance::OnIncrementXp()
 	//Score += 5000;
 
 	const FString Str = FString::Printf(TEXT("XP increased to %d"), Defcon::GGameMatch->GetScore());
-	Defcon::GMessageMediator.TellUser(Str, 1.0f);
+	Defcon::GMessageMediator.TellUser(Str, 1.0f, Defcon::EDisplayMessage::XpChanged);
 }
 
 
@@ -272,7 +272,7 @@ void UDefconGameInstance::OnDecrementXp()
 	Defcon::GGameMatch->AdjustScore(-5000);
 
 	const FString Str = FString::Printf(TEXT("XP decreased to %d"), Defcon::GGameMatch->GetScore());
-	Defcon::GMessageMediator.TellUser(Str, 1.0f);
+	Defcon::GMessageMediator.TellUser(Str, 1.0f, Defcon::EDisplayMessage::XpChanged);
 }
 
 #undef GET_PLAYVIEW

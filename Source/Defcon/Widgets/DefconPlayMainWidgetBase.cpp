@@ -112,7 +112,7 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 
 #undef ADD_ATLAS
 
-	Messages->IsPaused = [](){ return GArena->IsPaused(); };
+	Messages->IsPaused = [](){ return (GArena != nullptr && GArena->IsPaused()); };
 
 	Messages->Clear();
 
@@ -543,7 +543,7 @@ void UDefconPlayMainWidgetBase::OnToggleShowBoundingBoxes()
 	bShowBoundingBoxes = !bShowBoundingBoxes;
 
 	const FString Str = FString::Printf(TEXT("Bounding boxes %s"), bShowBoundingBoxes ? TEXT("ON") : TEXT("OFF"));
-	Defcon::GMessageMediator.TellUser(Str);
+	Defcon::GMessageMediator.TellUser(Str, 0.0f, Defcon::EDisplayMessage::BboxModeChanged);
 }
 
 

@@ -823,17 +823,19 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 			OnHumansChanged();
 
 			FString Str;
+			Defcon::EDisplayMessage MessageKind = Defcon::EDisplayMessage::None;
 
 			if(NumHumansNow > 0)
 			{
 				Str = FString::Printf(TEXT("HUMANS REMAINING: %d"), NumHumansNow);
+				MessageKind = Defcon::EDisplayMessage::HumansRemainingChanged;
 			}
 			else
 			{
 				Str = TEXT("ALL HUMANS ABDUCTED OR KILLED");
 			}
 
-			Defcon::GMessageMediator.TellUser(Str, 3.0f);
+			Defcon::GMessageMediator.TellUser(Str, 3.0f, MessageKind);
 
 		}
 	}
@@ -971,7 +973,7 @@ void UDefconPlayViewBase::OnBulletTimePressed()
 	bBulletTime = !bBulletTime;
 
 	FString Str = (bBulletTime ? TEXT("BULLET TIME ON") : TEXT("BULLET TIME OFF"));
-	Defcon::GMessageMediator.TellUser(Str);
+	Defcon::GMessageMediator.TellUser(Str, 0.0f, Defcon::EDisplayMessage::BulletTimeChanged);
 }
 
 
@@ -1114,7 +1116,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool/*
 				}
 				else
 				{
-					Defcon::GMessageMediator.TellUser(TEXT("SMARTBOMB ORDNANCE DEPLETED"), MESSAGE_DURATION_IMPORTANT);
+					Defcon::GMessageMediator.TellUser(TEXT("SMARTBOMB ORDNANCE DEPLETED"), MESSAGE_DURATION_IMPORTANT, Defcon::EDisplayMessage::SmartbombOrdnanceCountChanged);
 
 					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
 				}
@@ -1127,11 +1129,11 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool/*
 				const bool Useable = GetPlayerShip().ToggleDoubleGuns();
 
 				FString Str = FString::Printf(TEXT("DUAL LASER CANNON %sACTIVATED"), GetPlayerShip().AreDoubleGunsActive() ? TEXT("") : TEXT("DE"));
-				Defcon::GMessageMediator.TellUser(Str);
+				Defcon::GMessageMediator.TellUser(Str, 0.0f, Defcon::EDisplayMessage::DualCannonsChanged);
 
 				if(GetPlayerShip().AreDoubleGunsActive() && !Useable)
 				{
-					Defcon::GMessageMediator.TellUser(TEXT("DUAL LASER CANNON ENERGY DEPLETED"), MESSAGE_DURATION_IMPORTANT);
+					Defcon::GMessageMediator.TellUser(TEXT("DUAL LASER CANNON ENERGY DEPLETED"), MESSAGE_DURATION_IMPORTANT, Defcon::EDisplayMessage::DualCannonsLevelChanged);
 					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
 				}
 			}
@@ -1143,11 +1145,11 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool/*
 				const bool Useable = GetPlayerShip().ToggleInvincibility();
 
 				FString Str = FString::Printf(TEXT("INVINCIBILITY %sACTIVATED"), GetPlayerShip().IsInvincibilityActive() ? TEXT("") : TEXT("DE"));
-				Defcon::GMessageMediator.TellUser(Str);
+				Defcon::GMessageMediator.TellUser(Str, 0.0f, Defcon::EDisplayMessage::InvincibilityChanged);
 
 				if(GetPlayerShip().IsInvincibilityActive() && !Useable)
 				{
-					Defcon::GMessageMediator.TellUser(TEXT("INVINCIBILITY DEPLETED"), MESSAGE_DURATION_IMPORTANT);
+					Defcon::GMessageMediator.TellUser(TEXT("INVINCIBILITY DEPLETED"), MESSAGE_DURATION_IMPORTANT, Defcon::EDisplayMessage::InvincibilityLevelChanged);
 					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
 				}
 			}
@@ -1845,7 +1847,7 @@ void UDefconPlayViewBase::OnSelectGameObjectToSpawn()
 
 	FString Str = FString::Printf(TEXT("Enemy type %s chosen"), *Defcon::GObjectTypeManager.GetName(SpawnedGameObjectTypes[SpawnedGameObjectIndex]));
 
-	Defcon::GMessageMediator.TellUser(Str, 0.25f);
+	Defcon::GMessageMediator.TellUser(Str, 0.25f, Defcon::EDisplayMessage::CurrentDebugEnemyChanged);
 }
 
 

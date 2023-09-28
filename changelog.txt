@@ -5,6 +5,8 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 27, 2023
 
 
+Messages system no longer retains redundant messages.
+
 Player ship appears brighter when invincible.
 
 Added invincibility toggle key to Help screen.

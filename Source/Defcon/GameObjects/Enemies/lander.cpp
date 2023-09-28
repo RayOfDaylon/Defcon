@@ -310,8 +310,12 @@ void Defcon::CLander::Tick(float DeltaTime)
 					// Tell user only about the last human being abducted, otherwise the message log can pile up. 
 					if(GGameMatch->GetHumans().Count() == 1)
 					{
-						const FString Str = /*GGameMatch->GetHumans().Count() > 1 ? TEXT("ABDUCTION IN PROGRESS") :*/ TEXT("LAST HUMAN ABDUCTED -- MISSION FAILURE IMMINENT");
-						GMessageMediator.TellUser(Str, MESSAGE_DURATION_IMPORTANT);
+						const FString Str = TEXT("LAST HUMAN ABDUCTED -- MISSION FAILURE IMMINENT");
+						GMessageMediator.TellUser(Str, MESSAGE_DURATION_IMPORTANT, EDisplayMessage::HumanBeingAbducted);
+					}
+					else
+					{
+						GMessageMediator.TellUser(TEXT("ABDUCTION IN PROGRESS"), MESSAGE_DURATION_IMPORTANT, EDisplayMessage::HumanBeingAbducted);
 					}
 
 					GAudio->OutputSound(EAudioTrack::Human_abducted);

@@ -28,12 +28,6 @@ namespace Defcon
 		CHuman*          Human;
 	};*/
 
-	struct FNormalMessage
-	{
-		FString Text;
-		float   Duration;
-	};
-
 	/*struct FPodIntersectionInfo
 	{
 		float Time;
@@ -68,6 +62,33 @@ namespace Defcon
 	typedef Daylon::FMessageConsumer<EMessageEx> FMessageConsumer;
 
 
+	enum class EDisplayMessage
+	{
+		None,
+		GodModeChanged,
+		XpChanged,
+		BboxModeChanged,
+		HumanBeingAbducted,
+		HumansRemainingChanged,
+		BulletTimeChanged,
+		DualCannonsChanged,
+		DualCannonsLevelChanged,
+		InvincibilityChanged,
+		InvincibilityLevelChanged,
+		CurrentDebugEnemyChanged,
+		SmartbombOrdnanceCountChanged,
+		TargetsRemainingChanged
+	};
+
+
+	struct FNormalMessage
+	{
+		FString         Text;
+		float           Duration;
+		EDisplayMessage Type;
+	};
+
+
 	class CMessageMediator : public Daylon::TFastMessageMediator<EMessageEx> 
 	{
 		CMessageMediator (const CMessageMediator&) = delete;
@@ -79,9 +100,9 @@ namespace Defcon
 
 			// Convenience message encoders/abstractors.
 
-			void TellUser(const FString& Str, float Duration = 0.0f) const
+			void TellUser(const FString& Str, float Duration = 0.0f, EDisplayMessage Kind = EDisplayMessage::None) const
 			{
-				FNormalMessage Msg = { Str, Duration };
+				FNormalMessage Msg = { Str, Duration, Kind };
 				Send(EMessageEx::NormalMessage, &Msg);
 			}
 	};

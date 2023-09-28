@@ -264,8 +264,11 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UDefconPlayerShipDebugWidgetBase> PlayerShipDebug;
 
+	//UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	//TObjectPtr<UDefconPlayMessagesWidgetBase> Messages;
+
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	TObjectPtr<UDefconPlayMessagesWidgetBase> Messages;
+	TObjectPtr<UDefconDisplayMessagesBase> Messages;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> TopMessage;

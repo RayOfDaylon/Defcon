@@ -273,7 +273,7 @@ void Defcon::CPlayerShip::Tick(float DeltaTime)
 
 		if(NewAmt == 0.0f && OldAmt > 0.0f) // could also say if(NewAmt == Amt), if PLAYER_DOUBLEGUNS_LOSS is always nonzero.
 		{
-			GMessageMediator.TellUser(TEXT("DUAL LASER CANNON ENERGY DEPLETED"), MESSAGE_DURATION_IMPORTANT);
+			GMessageMediator.TellUser(TEXT("DUAL LASER CANNON ENERGY DEPLETED"), MESSAGE_DURATION_IMPORTANT, EDisplayMessage::DualCannonsLevelChanged);
 		}
 	}
 
@@ -289,7 +289,7 @@ void Defcon::CPlayerShip::Tick(float DeltaTime)
 
 		if(NewAmt == 0.0f && OldAmt > 0.0f) // could also say if(NewAmt == Amt), if PLAYER_INVINCIBILITY_LOSS is always nonzero.
 		{
-			GMessageMediator.TellUser(TEXT("INVINCIBILITY DEPLETED"), MESSAGE_DURATION_IMPORTANT);
+			GMessageMediator.TellUser(TEXT("INVINCIBILITY DEPLETED"), MESSAGE_DURATION_IMPORTANT, EDisplayMessage::InvincibilityLevelChanged);
 
 			if(Sprite)
 			{
