@@ -16,6 +16,8 @@ namespace Defcon
 
 	class CBitmapDisplayer : public IGameObject
 	{
+		typedef IGameObject Super;
+
 		public:
 			CBitmapDisplayer();
 			virtual ~CBitmapDisplayer();

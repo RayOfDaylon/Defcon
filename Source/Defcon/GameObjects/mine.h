@@ -19,6 +19,8 @@ namespace Defcon
 	{
 		// Stationary collision hazards laid by bombers.
 
+		typedef IGameObject Super;
+
 		public:
 			CMine();
 

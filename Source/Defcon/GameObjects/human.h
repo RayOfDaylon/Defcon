@@ -16,8 +16,10 @@
 
 namespace Defcon
 {
-	class CHuman : public ILiveGameObject
+	class CHuman : public IGameObject// ILiveGameObject
 	{
+		typedef IGameObject Super;
+
 		public:
 			CHuman();
 			virtual ~CHuman();

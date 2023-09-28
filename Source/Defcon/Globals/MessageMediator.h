@@ -14,8 +14,8 @@ namespace Defcon
 
 	struct FShieldStrengthInfo 
 	{
-		class ILiveGameObject* Object; 
-		float                  Value; 
+		class IGameObject* Object; 
+		float              Value; 
 
 		bool operator == (const FShieldStrengthInfo& Rhs) const { return (Object == Rhs.Object && Value == Rhs.Value); }
 		bool operator != (const FShieldStrengthInfo& Rhs) const { return !(*this == Rhs); }

@@ -2,8 +2,11 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 27, 2023
+September 28, 2023
 
+
+Invincibility powerups spawn at random intervals 
+in random locations.
 
 Messages system no longer retains redundant messages.
 

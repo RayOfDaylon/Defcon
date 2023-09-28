@@ -116,7 +116,7 @@ void Defcon::CLaserbeam::Tick(float DeltaTime)
 
 	Sprite->SetTint(Colors[ColorIdx]);
 
-	Age += DeltaTime;
+	Super::Tick(DeltaTime);
 }
 
 

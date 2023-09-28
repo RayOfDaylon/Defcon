@@ -43,7 +43,7 @@ void Defcon::CMaterialization::InitMaterialization(const FMaterializationParams&
 
 void Defcon::CMaterialization::Tick(float DeltaTime)
 {
-	Age += DeltaTime;
+	Super::Tick(DeltaTime);
 
 	const float T = Age / Params.Lifetime;
 

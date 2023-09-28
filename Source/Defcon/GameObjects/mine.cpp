@@ -34,7 +34,7 @@ Defcon::CMine::CMine()
 
 void Defcon::CMine::Tick(float DeltaTime)
 {
-	Age += DeltaTime;
+	Super::Tick(DeltaTime);
 
 	// todo: might be cool to have a mine explode if it dies
 }

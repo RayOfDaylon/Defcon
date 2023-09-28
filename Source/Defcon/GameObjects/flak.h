@@ -21,6 +21,8 @@ namespace Defcon
 		// A flak object is just a piece of debris used in explosions. 
 		// It has a random appearance per instance.
 
+		typedef IGameObject Super;
+
 		public:
 			CFlak();
 			virtual ~CFlak();

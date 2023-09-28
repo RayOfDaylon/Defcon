@@ -60,6 +60,8 @@ namespace Defcon
 
 	class CMaterialization : public IGameObject
 	{
+		typedef IGameObject Super;
+
 		public:
 			CMaterialization();
 			virtual ~CMaterialization() {}

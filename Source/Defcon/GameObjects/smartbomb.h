@@ -18,6 +18,8 @@ namespace Defcon
 {
 	class CSmartbombShockwave : public IGameObject
 	{
+		typedef IGameObject Super;
+
 		public:
 			CSmartbombShockwave();
 

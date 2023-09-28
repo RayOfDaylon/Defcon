@@ -139,7 +139,7 @@ void Defcon::CSmartbombShockwave::Tick(float DeltaTime)
 		return;
 	}
 
-	Age += DeltaTime;
+	Super::Tick(DeltaTime);
 
 	const auto T         = FMath::Min(1.0f, Age / SMARTBOMB_LIFESPAN);
 	const auto Radius    = Range * T;

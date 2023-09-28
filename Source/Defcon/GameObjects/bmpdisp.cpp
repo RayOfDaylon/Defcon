@@ -32,6 +32,7 @@ Defcon::CBitmapDisplayer::~CBitmapDisplayer()
 
 void Defcon::CBitmapDisplayer::Tick(float DeltaTime)
 {
-	Age += DeltaTime;
+	Super::Tick(DeltaTime);
+
 	Position.MulAdd(Orientation.Fwd, DeltaTime);
 }

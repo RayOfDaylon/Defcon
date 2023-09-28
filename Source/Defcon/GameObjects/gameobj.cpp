@@ -110,6 +110,8 @@ void Defcon::IGameObject::DrawSmall(FPainter& Painter, const I2DCoordMapper& Coo
 void Defcon::IGameObject::Tick(float DeltaTime)
 {
 	// Default motion behavior for an object.
+
+	Age += DeltaTime;
 }
 
 

@@ -85,11 +85,13 @@ namespace Defcon
 
 
 
-	class CDestroyedPlayerShip : public Defcon::ILiveGameObject
+	class CDestroyedPlayerShip : public IGameObject//ILiveGameObject
 	{
 		// Instead of having a "destroyed" or "being destroyed" state for CPlayerShip, 
 		// it's a little cleaner to just have a separate game object which we 
 		// instantiate when the player ship blows up.
+
+		typedef IGameObject Super;
 
 		private:
 

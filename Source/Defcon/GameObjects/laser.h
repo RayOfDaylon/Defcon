@@ -39,6 +39,8 @@ namespace Defcon
 	{
 		// The beams that the player ship fires.
 
+		typedef IGameObject Super;
+
 		public:
 
 			CLaserbeam();

@@ -39,7 +39,7 @@ Defcon::ILiveGameObject::ILiveGameObject()
 }
 
 
-bool Defcon::ILiveGameObject::RegisterImpact(float Force)
+bool Defcon::IGameObject/*ILiveGameObject*/::RegisterImpact(float Force)
 {
 	// Lower shields by <f>, and return true if shields go below zero.
 
@@ -53,7 +53,7 @@ bool Defcon::ILiveGameObject::RegisterImpact(float Force)
 }
 
 
-void Defcon::ILiveGameObject::SetShieldStrength(float Strength, bool Force)	
+void Defcon::IGameObject/*ILiveGameObject*/::SetShieldStrength(float Strength, bool Force)	
 {
 	//ShieldStrength = Strength; 
 	ShieldStrength.Set({ this, Strength }, Force);
@@ -63,7 +63,7 @@ void Defcon::ILiveGameObject::SetShieldStrength(float Strength, bool Force)
 
 void Defcon::ILiveGameObject::Tick(float DeltaTime)
 {
-	Age += DeltaTime;
+	Super::Tick(DeltaTime);
 
 	Inertia = Position;
 

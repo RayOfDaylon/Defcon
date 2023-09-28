@@ -8,7 +8,6 @@
 
 #include "Common/Painter.h"
 #include "Common/util_geom.h"
-#include "Globals/MessageMediator.h"
 #include "DaylonUtils.h"
 
 #include "gameobj.h"
@@ -58,9 +57,9 @@ namespace Defcon
 			virtual void       ImpartForces          (float);
 			const CFPoint&     GetThrustVector       () const { return ThrustVector; }
 
-			virtual float      GetShieldStrength     () const    { return ShieldStrength.Get().Value; }
-			virtual void       SetShieldStrength     (float f, bool Force = false);
-			virtual bool       RegisterImpact        (float f);
+			//virtual float      GetShieldStrength     () const    { return ShieldStrength.Get().Value; }
+			//virtual void       SetShieldStrength     (float f, bool Force = false);
+			//virtual bool       RegisterImpact        (float f);
 
 			enum ENavControl { Up, Down, Fwd, Back, Count };
 
@@ -77,7 +76,6 @@ namespace Defcon
 
 
 		private:
-			TMessageableValue<FShieldStrengthInfo>    ShieldStrength;
 			bool                                      bAlive = true;
 	};
 

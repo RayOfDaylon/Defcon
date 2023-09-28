@@ -267,7 +267,10 @@ void UDefconDisplayMessagesBase::AddMessage(const FString& Str, float Duration, 
 
 	TextBlock->SetFont             (Font);
 	TextBlock->SetColorAndOpacity  (Color);
-	TextBlock->SetText             (FText::FromString(Str));
+	
+	const FString StrFinal = Str.Replace(TEXT("--"), TEXT("\x2014"), ESearchCase::CaseSensitive);
+
+	TextBlock->SetText(FText::FromString(StrFinal)); 
 
 	check(IsValid());
 }

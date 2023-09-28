@@ -47,7 +47,8 @@ void UDefconPlayRadarWidgetBase::Init
 	int32                          ArenaWidth, 
 	Defcon::CArenaCoordMapper*     InArenaCoordMapperPtr, 
 	Defcon::CGameObjectCollection* ObjectsPtr, 
-	Defcon::CGameObjectCollection* EnemiesPtr
+	Defcon::CGameObjectCollection* EnemiesPtr,
+	Defcon::CGameObjectCollection* PowerupsPtr
 )
 {
 	ArenaCoordMapperPtr = InArenaCoordMapperPtr;
@@ -61,8 +62,9 @@ void UDefconPlayRadarWidgetBase::Init
 	CoordMapper.RadarSize.Set((float)S.X, (float)S.Y);
 	CoordMapper.Init((int32)MainSize.X, (int32)MainSize.Y, ArenaWidth);
 
-	Objects = ObjectsPtr;
-	Enemies = EnemiesPtr;
+	Objects  = ObjectsPtr;
+	Enemies  = EnemiesPtr;
+	Powerups = PowerupsPtr;
 }
 
 
@@ -162,8 +164,9 @@ int32 UDefconPlayRadarWidgetBase::NativePaint
 
 	// Draw the arena objects. 
 
-	DrawObjects(Objects, Painter);
-	DrawObjects(Enemies, Painter);
+	DrawObjects(Objects,  Painter);
+	DrawObjects(Enemies,  Painter);
+	DrawObjects(Powerups, Painter);
 
 
 	// If we have humans, draw them too.

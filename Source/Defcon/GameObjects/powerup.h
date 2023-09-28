@@ -22,15 +22,12 @@ namespace Defcon
 
 		public:
 			IPowerup();
-			//virtual void Tick         (float DeltaTime) override;
-			//virtual void DrawSmall    (FPainter& PaintArgs, const I2DCoordMapper& CoordMapper, FSlateBrush& Brush) const override {}
-			//virtual void GetInjurePt  (CFPoint&) const override;
-			//virtual bool TestInjury   (const CFRect&) const override;
+			virtual void Tick         (float DeltaTime) override;
 			virtual void SetSpeed     (float f) { Speed = f; }
 
-
 		protected:
-			float		    Speed;
+			float		    Speed = 0.0f; // todo: not sure if we'll need this
+			//FLinearColor    BaseRadarColor;
 	};
 
 

@@ -115,6 +115,8 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	UWidget* Fader;
 
+	float                          TimeUntilNextPowerup;
+
 	Daylon::FRange<float>          AllowableTerrainSpan;
 
 	Defcon::CTerrain*              Terrain;

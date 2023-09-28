@@ -5,6 +5,9 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 27, 2023
 
 
+Strange... warped over to an abduction but was nowhere near 
+at the right altitude.
+
 S/B FIXED: Ghosts and reformers could fail a NaN check in 
 when spawning parts in their AboutToDie methods, because 
 the part locations were initialized only in Tick and in 

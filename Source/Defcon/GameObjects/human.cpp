@@ -140,7 +140,7 @@ void Defcon::CHuman::Notify(EMessage msg, void* pObj)
 			break;
 	}
 
-	ILiveGameObject::Notify(msg, pObj);
+	Super/*ILiveGameObject*/::Notify(msg, pObj);
 }
 
 
@@ -148,7 +148,7 @@ void Defcon::CHuman::Tick(float DeltaTime)
 {
 	// Humans walk around mostly horizontally.
 
-	Age += DeltaTime;
+	Super::Tick(DeltaTime);
 
 	if(IsBeingCarried())
 	{

@@ -9,6 +9,7 @@
 #include "Globals/prefs.h"
 #include "Globals/GameColors.h"
 #include "Globals/GameObjectResources.h"
+#include "Globals/MessageMediator.h"
 #include "Common/variant.h"
 #include "Common/util_geom.h"
 #include "Common/util_color.h"
@@ -130,6 +131,11 @@ namespace Defcon
 			virtual void          OnAboutToDie            ();
 			void                  SetDeathStyle           (EDeathStyle Style) { DeathStyle = Style; }
 
+			virtual bool          RegisterImpact          (float f);
+			virtual float         GetShieldStrength       () const    { return ShieldStrength.Get().Value; }
+			virtual void          SetShieldStrength       (float f, bool Force = false);
+
+
 			virtual float         GetCollisionForce       () const;
 			bool                  IsCollisionInjurious    () const;   
 			void                  SetCollisionInjurious   (bool b = true);
@@ -192,6 +198,8 @@ namespace Defcon
 			int32           KillerID                = -1;
 			
 			EDeathStyle     DeathStyle              = EDeathStyle::Normal;
+			
+			TMessageableValue<FShieldStrengthInfo>    ShieldStrength;
 
 			int32           Id                      = -1;
 

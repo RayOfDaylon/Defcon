@@ -30,9 +30,9 @@ void Defcon::CBeacon::Tick(float DeltaTime)
 
 	// Oscillate between yellow and brown.
 
-	Age += DeltaTime;
+	Super::Tick(DeltaTime);
 
-	LerpColor(C_YELLOW, C_BROWN, PSIN(Age * PI * 2), RadarColor);
+	RadarColor.A = PSIN(Age * TWO_PI);
 }
 
 

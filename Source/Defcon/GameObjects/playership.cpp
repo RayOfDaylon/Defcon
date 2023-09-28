@@ -174,7 +174,9 @@ void Defcon::CPlayerShip::DeactivateInvincibility()
 
 void Defcon::CPlayerShip::AddInvincibility(float Amount)
 {
-	InvincibilityLeft.Set(InvincibilityLeft.Get() + Amount, (Amount == 0.0f));
+	const float NewAmt = FMath::Min(1.0f, InvincibilityLeft.Get() + Amount);
+
+	InvincibilityLeft.Set(NewAmt, (Amount == 0.0f));
 
 	if(Sprite)
 	{
@@ -392,7 +394,7 @@ void Defcon::CDestroyedPlayerShip::InitDestroyedPlayer(const CFPoint& ShipP, con
 
 void Defcon::CDestroyedPlayerShip::Tick(float DeltaTime)
 {
-	Age += DeltaTime;
+	Super::Tick(DeltaTime);
 
 	if(Age > DESTROYED_PLAYER_FLASH_DURATION)
 	{

@@ -8,6 +8,7 @@
 #include "GameObjects/human.h"
 #include "GameObjects/Enemies/enemies.h"
 #include "GameObjects/flak.h"
+#include "GameObjects/powerup.h"
 #include "GameObjects/bullet.h"
 #include "GameObjects/smartbomb.h"
 #include "GameObjects/mine.h"
@@ -38,12 +39,6 @@
 
 
 UDefconPlayViewBase* GArena = nullptr;
-
-
-
-//float GameTime() { check(GArena != nullptr); return UKismetSystemLibrary::GetGameTimeInSeconds(GArena); }
-
-
 
 
 void UDefconPlayViewBase::NativeOnInitialized()
@@ -162,6 +157,8 @@ void UDefconPlayViewBase::OnMissionStarting()
 {
 	check(PlayAreaMain != nullptr);
 
+	TimeUntilNextPowerup = FRANDRANGE(10.0f, 30.0f);
+
 	PlayAreaMain->OnMissionStarting();
 }
 
@@ -184,6 +181,7 @@ void UDefconPlayViewBase::DeleteAllObjects()
 	Blasts.   DeleteAll(Defcon::kIncludingSprites);
 	Debris.   DeleteAll(Defcon::kIncludingSprites);
 	Objects.  DeleteAll(Defcon::kIncludingSprites);
+	Powerups. DeleteAll(Defcon::kIncludingSprites);
 
 	ScheduledTasks.DeleteAll();
 }
@@ -265,7 +263,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	AreHumansInMission = Defcon::GGameMatch->GetMission()->HumansInvolved();
 
-	PlayAreaRadar->Init(MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies);
+	PlayAreaRadar->Init(MainAreaSize, (int32)ArenaWidth, &MainAreaMapper, &Objects, &Enemies, &Powerups);
 
 	OnHumansChanged();
 
@@ -672,7 +670,7 @@ void UDefconPlayViewBase::CheckIfPlayerHit(Defcon::CGameObjectCollection& object
 
 void UDefconPlayViewBase::CheckPlayerCollided()
 {
-	// See if the player collided with an enemy.
+	// See if the player collided with an enemy or powerup.
 
 	auto& PlayerShip = GetPlayerShip();
 
@@ -687,6 +685,31 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 	CFRect rObj, rPlayer(PlayerShip.Position);
 	rPlayer.Inflate(PlayerShip.BboxRadius);
 	
+
+	Powerups.ForEach([&](Defcon::IGameObject* Obj)
+		{
+			rObj.Set(Obj->Position);
+			rObj.Inflate(Obj->BboxRadius);
+
+			if(rObj.Intersect(rPlayer))
+			{
+				//GDefconGameInstance->GetStats().PlayerCollisions++;  // track powerup grabs?
+
+				// todo: play gulp sound
+				//ShieldBonk(&PlayerShip, pObj->GetCollisionForce());
+
+				// Apply powerup.
+				if(Obj->GetType() == Defcon::EObjType::POWERUP_INVINCIBILITY)
+				{
+					GetPlayerShip().AddInvincibility(0.2f);
+				}
+
+				DestroyObject(Obj, false);
+			}			
+		});
+
+
+		// todo: use ForEachUntil.
 	Defcon::IGameObject* pObj = Enemies.GetFirst();
 
 	while(pObj != nullptr)
@@ -758,6 +781,32 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 	ScheduledTasks.Process(DeltaTime);
 
+	// todo: currently there's nothing stopping the player from loitering in a mission
+	// at its end and just collecting powerups for as long as he's willing to wait.
+	// We need to furnish powerups in a finite fashion (like Descent), or when 
+	// certain tasks are achieved.
+
+	if(Defcon::GGameMatch->GetMission()->IsMilitary() && Powerups.Count() == 0)
+	{
+		TimeUntilNextPowerup -= DeltaTime;
+
+		if(TimeUntilNextPowerup <= 0.0f)
+		{
+			TimeUntilNextPowerup = FRANDRANGE(10.0f, 20.0f);
+
+			// For now, spawn invincibility powerups.
+
+			auto Powerup = new Defcon::CInvincibilityPowerup;
+
+			Powerup->InstallSprite();
+
+			Powerup->Position = CFPoint(FRANDRANGE(0.0f, GetWidth() - 1), FRANDRANGE(0.25f, 0.75f) * GetHeight());
+
+			Powerups.Add(Powerup);
+
+			Defcon::GMessageMediator.TellUser(TEXT("INVINCIBILITY POWERUP AVAILABLE"));
+		}
+	}
 
 	if(ARENA_BOGDOWN && Debris.Count() >= 500)
 	{
@@ -808,8 +857,9 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	GOP.DeltaTime	                   = DeltaTime;
 	GOP.MapperPtr                      = &MainAreaMapper;
 
-	Blasts.Process(GOP);
-	Debris.Process(GOP);
+	Blasts  .Process(GOP);
+	Debris  .Process(GOP);
+	Powerups.Process(GOP);
 
 
 	if(HumansInvolved)
@@ -1521,9 +1571,9 @@ void UDefconPlayViewBase::CheckIfObjectsGotHit(Defcon::CGameObjectCollection& Ob
 				// Object has been hit! Ow!!!
 
 				// todo: generalize code so that all objects have a RegisterImpact() method.
-				// Can't use dynamic_cast, force all objects to be static castable to ILiveGameObject.
+				// Can't use dynamic_cast, force all objects to be static castable to IGameObject.
 
-				auto LiveObject = static_cast<Defcon::ILiveGameObject*>(Obj2);
+				auto LiveObject = Obj2;// static_cast<Defcon::IGameObject/*Defcon::ILiveGameObject*/*>(Obj2);
 
 				if(LiveObject != nullptr)
 				{
