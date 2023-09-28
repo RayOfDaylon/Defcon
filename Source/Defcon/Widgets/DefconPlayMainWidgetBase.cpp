@@ -75,6 +75,7 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 
 	ADD_ATLAS(STARGATE,         StargateAtlas           );
 	ADD_ATLAS(DESTROYED_PLAYER, DestroyedPlayerAtlas    );
+	ADD_ATLAS(INVINCIBLE_PLAYER, InvinciblePlayerAtlas  );
 	ADD_ATLAS(BULLET_ROUND,     BulletAtlas             );
 	ADD_ATLAS(BULLET_THIN,      ThinBulletAtlas         );
 	ADD_ATLAS(FIREBALL,         FireballAtlas           );

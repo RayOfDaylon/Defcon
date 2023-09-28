@@ -14,6 +14,7 @@ namespace Defcon
 
 		PLAYER = 0,
 		DESTROYED_PLAYER,
+		INVINCIBLE_PLAYER,
 		HUMAN,		
 
 		// Training objects

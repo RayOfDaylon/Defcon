@@ -150,19 +150,36 @@ void Defcon::CPlayerShip::AddDoubleGunPower(float Amount)
 bool Defcon::CPlayerShip::ToggleInvincibility() 
 {
 	InvincibilityActive.Set(!InvincibilityActive.Get()); 
-	return (InvincibilityLeft.Get() > 0.0f);
+	const bool Ret = (InvincibilityLeft.Get() > 0.0f);
+
+	if(Sprite)
+	{
+		Sprite->SetAtlas(GGameObjectResources.Get(Ret && InvincibilityActive.Get() ? EObjType::INVINCIBLE_PLAYER : EObjType::PLAYER).Atlas->Atlas);
+	}
+
+	return Ret;
 }
 
 
 void Defcon::CPlayerShip::DeactivateInvincibility() 
 {
 	InvincibilityActive.Set(false);
+
+	if(Sprite)
+	{
+		Sprite->SetAtlas(GGameObjectResources.Get(EObjType::PLAYER).Atlas->Atlas);
+	}
 }
 
 
 void Defcon::CPlayerShip::AddInvincibility(float Amount)
 {
 	InvincibilityLeft.Set(InvincibilityLeft.Get() + Amount, (Amount == 0.0f));
+
+	if(Sprite)
+	{
+		Sprite->SetAtlas(GGameObjectResources.Get(InvincibilityLeft.Get() > 0.0f && InvincibilityActive.Get() ? EObjType::INVINCIBLE_PLAYER : EObjType::PLAYER).Atlas->Atlas);
+	}
 }
 
 
@@ -226,10 +243,6 @@ void Defcon::CPlayerShip::Tick(float DeltaTime)
 {
 	ILiveGameObject::Tick(DeltaTime);
 
-	if(Sprite)
-	{
-		Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
-	}
 
 	// Slowly regenerate shields.
 
@@ -240,19 +253,12 @@ void Defcon::CPlayerShip::Tick(float DeltaTime)
 		SetShieldStrength(FMath::Min(1.0f, Strength + DeltaTime / 20));
 	}
 
-	// Make the ship appear redder as its shields weaken.
-	auto Tint = MakeBlendedColor(C_RED, C_WHITE, Strength);
 
-#if 0
-	// Brighten the ship if it's invincible.
-	// Nope, tinting can't be used to do that (sigh).
-	if(!CanBeInjured())
+	if(Sprite)
 	{
-		Tint *= 2.0f;
+		Sprite->SetTint(MakeBlendedColor(C_RED, C_WHITE, Strength)); // Make the ship appear redder as its shields weaken.
+		Sprite->FlipHorizontal = (Orientation.Fwd.x < 0);
 	}
-
-	Sprite->SetTint(Tint);
-#endif
 	
 
 	// Reduce the double guns if they're active.
@@ -284,6 +290,11 @@ void Defcon::CPlayerShip::Tick(float DeltaTime)
 		if(NewAmt == 0.0f && OldAmt > 0.0f) // could also say if(NewAmt == Amt), if PLAYER_INVINCIBILITY_LOSS is always nonzero.
 		{
 			GMessageMediator.TellUser(TEXT("INVINCIBILITY DEPLETED"), MESSAGE_DURATION_IMPORTANT);
+
+			if(Sprite)
+			{
+				Sprite->SetAtlas(GGameObjectResources.Get(EObjType::PLAYER).Atlas->Atlas);
+			}
 		}
 	}
 }

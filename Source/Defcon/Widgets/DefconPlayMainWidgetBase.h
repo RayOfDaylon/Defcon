@@ -158,6 +158,9 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 	TObjectPtr<UDaylonSpriteWidgetAtlas> DestroyedPlayerAtlas;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
+	TObjectPtr<UDaylonSpriteWidgetAtlas> InvinciblePlayerAtlas;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
 	TObjectPtr<UDaylonSpriteWidgetAtlas> BeaconAtlas;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
