@@ -5,6 +5,13 @@ Repository: https://github.com/RayOfDaylon/Defcon
 September 28, 2023
 
 
+Normal sound output is done via message mediator instead of GAudio global.
+
+Added shield and double laser cannon powerups.
+
+Powerups spawn at a minimum distance from player (the screen width) 
+up to half the arena width.
+
 Invincibility powerups spawn at random intervals 
 in random locations.
 
@@ -23,7 +30,6 @@ creamed in the later missions).
 Renamed 'double guns' to 'dual cannon' in the Status panel.
 
 Pressing 'I' toggles invincibility.
-Still need to implement.
 
 Added double guns and invincibility readouts to Status panel.
 Still need to get their values to drop over time.

@@ -105,7 +105,7 @@ void Defcon::CFlightTrainingMission::CheckTargetCollided(float DeltaTime)
 		
 			if(rPlayer.Intersect(rBeacon))
 			{
-				GAudio->OutputSound(EAudioTrack::Gulp);
+				GMessageMediator.PlaySound(EAudioTrack::Gulp);
 				Obj->UninstallSprite();
 				GArena->GetObjects().Delete(Obj);
 				NumTargetsRemaining--;

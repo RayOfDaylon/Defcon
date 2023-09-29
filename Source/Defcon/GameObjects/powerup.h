@@ -27,7 +27,6 @@ namespace Defcon
 
 		protected:
 			float		    Speed = 0.0f; // todo: not sure if we'll need this
-			//FLinearColor    BaseRadarColor;
 	};
 
 

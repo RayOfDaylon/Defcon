@@ -318,7 +318,7 @@ void Defcon::CLander::Tick(float DeltaTime)
 						GMessageMediator.TellUser(TEXT("ABDUCTION IN PROGRESS"), MESSAGE_DURATION_IMPORTANT, EDisplayMessage::HumanBeingAbducted);
 					}
 
-					GAudio->OutputSound(EAudioTrack::Human_abducted);
+					GMessageMediator.PlaySound(EAudioTrack::Human_abducted);
 				}
 			}
 		}

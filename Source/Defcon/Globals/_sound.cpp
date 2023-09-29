@@ -9,12 +9,13 @@
 #include "_sound.h"
 
 #include "prefs.h"
+#include "MessageMediator.h"
 #include "Common/util_core.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "DefconUtils.h"
 
 
-Defcon::CAudioManager* GAudio = nullptr;
+Defcon::CAudioManager* Defcon::GAudio = nullptr;
 
 
 
@@ -30,6 +31,16 @@ Defcon::CAudioManager::CAudioManager(UObject* InWorldContextObject)
 		OutputDebugString("\n*** ERROR: Sound objects not created\n");
 #endif
 	}
+
+	FMessageConsumer MessageConsumer(this, EMessageEx::PlaySound, [this](void* Payload)
+	{
+		check(Payload != nullptr);
+
+		const auto& Params = *static_cast<FPlaySoundMessage*>(Payload);
+		OutputSound(Params.Track, Params.Volume);
+	});
+
+	GMessageMediator.RegisterConsumer(MessageConsumer);
 }
 
 

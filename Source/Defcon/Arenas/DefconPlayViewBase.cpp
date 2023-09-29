@@ -211,7 +211,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	Daylon::Hide(Fader);
 
-	ShipThrustSoundLoop = GAudio->CreateLoopedSound(Defcon::EAudioTrack::Playership_thrust);
+	ShipThrustSoundLoop = Defcon::GAudio->CreateLoopedSound(Defcon::EAudioTrack::Playership_thrust);
 	WasShipUnderThrust = false;
 
 	InitCoordMappers();
@@ -275,7 +275,7 @@ void UDefconPlayViewBase::OnFinishActivating()
 
 	GetPlayerShip().EnableInput();
 
-	GAudio->OutputSound(Defcon::EAudioTrack::Wave_start);
+	Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Wave_start);
 }
 
 
@@ -599,7 +599,7 @@ void UDefconPlayViewBase::DestroyPlayerShip()
 
 	Objects.Add(DestroyedShip);
 
-	GAudio->OutputSound(Defcon::EAudioTrack::Player_dying);
+	Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Player_dying);
 
 	PlayerShip.OnAboutToDie();
 
@@ -686,30 +686,133 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 	rPlayer.Inflate(PlayerShip.BboxRadius);
 	
 
-	Powerups.ForEach([&](Defcon::IGameObject* Obj)
+	Powerups.ForEachUntil([&](Defcon::IGameObject* Obj)
+	{
+		rObj.Set(Obj->Position);
+		rObj.Inflate(Obj->BboxRadius);
+
+		if(rObj.Intersect(rPlayer))
+		{
+			//GDefconGameInstance->GetStats().PlayerCollisions++;  // track powerup grabs?
+
+			bool TookPowerup = false;
+
+			// Apply powerup. todo: use polymorphism to avoid switch 
+			switch(Obj->GetType())
+			{
+				case Defcon::EObjType::POWERUP_INVINCIBILITY:
+				{
+					float OldAmt = GetPlayerShip().GetInvincibility();
+
+					if(OldAmt == 1.0f)
+					{
+						Defcon::GMessageMediator.TellUser(TEXT("INVINCIBILITY ALREADY AT MAXIMUM"), 0.0f, Defcon::EDisplayMessage::InvincibilityLevelChanged);
+					}
+					else
+					{
+						float NewAmt = FMath::Min(1.0f, OldAmt + 0.25f);
+						
+						GetPlayerShip().AddInvincibility(NewAmt - OldAmt);
+						auto Str = FString::Printf(TEXT("SHIELDS INCREASED TO %d PERCENT"), ROUND(NewAmt * 100.0f));
+						Defcon::GMessageMediator.TellUser(Str, 0.0f, Defcon::EDisplayMessage::InvincibilityLevelChanged);
+
+						TookPowerup = true;
+					}
+					break;
+				}
+
+				case Defcon::EObjType::POWERUP_SHIELDS:
+				{
+					float Amt = GetPlayerShip().GetShieldStrength();
+
+					if(Amt == 1.0f)
+					{
+						Defcon::GMessageMediator.TellUser(TEXT("SHIELDS ALREADY AT MAXIMUM"), 0.0f, Defcon::EDisplayMessage::ShieldLevelChanged);
+					}
+					else
+					{
+						Amt = FMath::Min(1.0f, Amt + 0.25f);
+						GetPlayerShip().SetShieldStrength(Amt);
+						auto Str = FString::Printf(TEXT("SHIELDS INCREASED TO %d PERCENT"), ROUND(Amt * 100.0f));
+						Defcon::GMessageMediator.TellUser(Str, 0.0f, Defcon::EDisplayMessage::ShieldLevelChanged);
+
+						TookPowerup = true;
+					}
+					break;
+				}
+
+
+				case Defcon::EObjType::POWERUP_DUALCANNON:
+				{	
+					float OldAmt = GetPlayerShip().GetDoubleGunPower();
+
+					if(OldAmt == 1.0f)
+					{
+						Defcon::GMessageMediator.TellUser(TEXT("DUAL LASER CANNON ENERGY ALREADY AT MAXIMUM"), 0.0f, Defcon::EDisplayMessage::DualCannonsLevelChanged);
+					}
+					else
+					{
+						float NewAmt = FMath::Min(1.0f, OldAmt + 0.25f);
+						
+						GetPlayerShip().AddDoubleGunPower(NewAmt - OldAmt);
+						auto Str = FString::Printf(TEXT("DUAL LASER CANNON ENERGY INCREASED TO %d PERCENT"), ROUND(NewAmt * 100.0f));
+						Defcon::GMessageMediator.TellUser(Str, 0.0f, Defcon::EDisplayMessage::DualCannonsLevelChanged);
+
+						TookPowerup = true;
+					}
+					break;
+				}
+			}
+
+			if(TookPowerup)
+			{
+				DestroyObject(Obj, false);
+				Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Gulp);
+				return false;
+			}
+		}
+		return true;
+	});
+
+
+	Enemies.ForEachUntil([&](Defcon::IGameObject* Obj)
+	{
+		if(Obj->IsCollisionInjurious())
 		{
 			rObj.Set(Obj->Position);
 			rObj.Inflate(Obj->BboxRadius);
 
 			if(rObj.Intersect(rPlayer))
 			{
-				//GDefconGameInstance->GetStats().PlayerCollisions++;  // track powerup grabs?
+				GDefconGameInstance->GetStats().PlayerCollisions++;
 
-				// todo: play gulp sound
-				//ShieldBonk(&PlayerShip, pObj->GetCollisionForce());
+				const bool bPlayerKilled = PlayerShipVulnerable && PlayerShip.RegisterImpact(Obj->GetCollisionForce() * PLAYERSHIP_IMPACT_SCALE);
 
-				// Apply powerup.
-				if(Obj->GetType() == Defcon::EObjType::POWERUP_INVINCIBILITY)
+				if(bPlayerKilled)
 				{
-					GetPlayerShip().AddInvincibility(0.2f);
+					DestroyPlayerShip();
+				}
+				else
+				{
+					ShieldBonk(&PlayerShip, Obj->GetCollisionForce());
 				}
 
-				DestroyObject(Obj, false);
-			}			
-		});
+				// Process collision outcome for object.
+				if(Obj->CanBeInjured())
+				{
+					DestroyObject(Obj, !bPlayerKilled);
+				}
 
+				if(bPlayerKilled)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	});
 
-		// todo: use ForEachUntil.
+#if 0
 	Defcon::IGameObject* pObj = Enemies.GetFirst();
 
 	while(pObj != nullptr)
@@ -748,6 +851,7 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 		}
 		pObj = pObj->GetNext();
 	}
+#endif
 }
 
 
@@ -781,30 +885,92 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 	ScheduledTasks.Process(DeltaTime);
 
+	// Occasionally spawn powerups.
+
 	// todo: currently there's nothing stopping the player from loitering in a mission
 	// at its end and just collecting powerups for as long as he's willing to wait.
 	// We need to furnish powerups in a finite fashion (like Descent), or when 
 	// certain tasks are achieved.
 
-	if(Defcon::GGameMatch->GetMission()->IsMilitary() && Powerups.Count() == 0)
+	// Mission becomes nullptr at end of game, so check for that.
+	const auto Mission = Defcon::GGameMatch->GetMission();
+
+	if(Mission != nullptr && Mission->IsMilitary() /*&& Powerups.Count() == 0*/)
 	{
 		TimeUntilNextPowerup -= DeltaTime;
 
 		if(TimeUntilNextPowerup <= 0.0f)
 		{
-			TimeUntilNextPowerup = FRANDRANGE(10.0f, 20.0f);
+			TimeUntilNextPowerup = FRANDRANGE(5.0f, 10.0f);
 
-			// For now, spawn invincibility powerups.
+			auto CalcPowerupPosition = [&]()
+			{
+				// Place powerup not too close to the player.
 
-			auto Powerup = new Defcon::CInvincibilityPowerup;
+				CFPoint P;
+
+				CFPoint ScreenPlayerP;
+				MainAreaMapper.To(GetPlayerShip().Position, ScreenPlayerP);
+
+				while(true)
+				{
+					const float Xdistance = FRANDRANGE(MainAreaSize.X, ArenaWidth / 2);
+
+					auto ScreenP = ScreenPlayerP;
+					ScreenP.x += Xdistance * SBRAND;
+					ScreenP.y = FRANDRANGE(0.25f, 0.75f) * GetHeight();
+
+					MainAreaMapper.From(ScreenP, P);
+					check(P.x >= 0.0f && P.x < ArenaWidth);
+
+					// Keep new powerup from being too close to other powerups.
+
+					bool Okay = true;
+
+					Powerups.ForEachUntil([&](Defcon::IGameObject* Obj)
+					{
+						CFPoint SD;
+
+						if(ShortestDirection(P, Obj->Position, SD) < 64.0f)
+						{
+							Okay = false;
+						}
+						return Okay;
+					});
+
+					if(Okay)
+					{
+						break;
+					}
+				}
+
+				return P;
+			};
+
+			Defcon::IPowerup* Powerup = nullptr;
+
+			// todo: use powerup object factory
+			switch(IRAND(3))
+			{
+				case 0:
+					Powerup = new Defcon::CInvincibilityPowerup;
+					Defcon::GMessageMediator.TellUser(TEXT("INVINCIBILITY POWERUP AVAILABLE"));
+					break;
+
+				case 1:
+					Powerup = new Defcon::CShieldPowerup;
+					Defcon::GMessageMediator.TellUser(TEXT("SHIELD POWERUP AVAILABLE"));
+					break;
+
+				case 2:
+					Powerup = new Defcon::CDoubleGunsPowerup;
+					Defcon::GMessageMediator.TellUser(TEXT("DUAL LASER CANNON ENERGY POWERUP AVAILABLE"));
+					break;
+			}
 
 			Powerup->InstallSprite();
-
-			Powerup->Position = CFPoint(FRANDRANGE(0.0f, GetWidth() - 1), FRANDRANGE(0.25f, 0.75f) * GetHeight());
-
+			Powerup->Position = CalcPowerupPosition();
 			Powerups.Add(Powerup);
-
-			Defcon::GMessageMediator.TellUser(TEXT("INVINCIBILITY POWERUP AVAILABLE"));
 		}
 	}
 
@@ -838,9 +1004,8 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	// Move and draw everyone.
 
 
-	const auto Mission = Defcon::GGameMatch->GetMission();
+	//const auto Mission = Defcon::GGameMatch->GetMission();
 
-	// Mission becomes nullptr at end of game, so check for that.
 	
 	const bool HumansInvolved = Mission != nullptr ? Mission->HumansInvolved() : false;
 
@@ -1149,9 +1314,9 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool/*
 				}
 
 				if(true/*BRAND*/)
-					GAudio->OutputSound(Defcon::EAudioTrack::Laserfire);
+					Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Laserfire);
 				else
-					GAudio->OutputSound(Defcon::EAudioTrack::Laserfire_alt);
+					Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Laserfire_alt);
 			}
 			break;
 
@@ -1168,7 +1333,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool/*
 				{
 					Defcon::GMessageMediator.TellUser(TEXT("SMARTBOMB ORDNANCE DEPLETED"), MESSAGE_DURATION_IMPORTANT, Defcon::EDisplayMessage::SmartbombOrdnanceCountChanged);
 
-					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
+					Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Invalid_selection);
 				}
 			}
 			break;
@@ -1184,7 +1349,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool/*
 				if(GetPlayerShip().AreDoubleGunsActive() && !Useable)
 				{
 					Defcon::GMessageMediator.TellUser(TEXT("DUAL LASER CANNON ENERGY DEPLETED"), MESSAGE_DURATION_IMPORTANT, Defcon::EDisplayMessage::DualCannonsLevelChanged);
-					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
+					Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Invalid_selection);
 				}
 			}
 			break;
@@ -1200,7 +1365,7 @@ void UDefconPlayViewBase::OnPawnWeaponEvent(EDefconPawnWeaponEvent Event, bool/*
 				if(GetPlayerShip().IsInvincibilityActive() && !Useable)
 				{
 					Defcon::GMessageMediator.TellUser(TEXT("INVINCIBILITY DEPLETED"), MESSAGE_DURATION_IMPORTANT, Defcon::EDisplayMessage::InvincibilityLevelChanged);
-					GAudio->OutputSound(Defcon::EAudioTrack::Invalid_selection);
+					Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Invalid_selection);
 				}
 			}
 			break;
@@ -1386,7 +1551,7 @@ Defcon::IBullet* UDefconPlayViewBase::FireBullet(Defcon::IGameObject& Obj, const
 	// but that would deny interesting friendly fire.
 	Bullet->Position = From + Bullet->Orientation.Fwd * (2 * FMath::Max(Obj.BboxRadius.x, Obj.BboxRadius.y));
 
-	GAudio->OutputSound((Defcon::EAudioTrack)(SoundID - 1 + (int32)Defcon::EAudioTrack::Bullet));
+	Defcon::GMessageMediator.PlaySound((Defcon::EAudioTrack)(SoundID - 1 + (int32)Defcon::EAudioTrack::Bullet));
 
 	Objects.Add(Bullet);
 
@@ -1493,7 +1658,7 @@ void UDefconPlayViewBase::DestroyObject(Defcon::IGameObject* pObj, bool bExplode
 			Track = Defcon::EAudioTrack::Ship_exploding_small;
 		}
 
-		GAudio->OutputSound(Track);
+		Defcon::GMessageMediator.PlaySound(Track);
 	}
 }
 
@@ -1679,7 +1844,7 @@ void UDefconPlayViewBase::ShieldBonk(Defcon::IGameObject* pObj, float fForce)
 
 	m_fRadarFritzed = FMath::Max(1.5f, fForce * 10);//MAX_RADARFRITZ;
 
-	GAudio->OutputSound(Defcon::EAudioTrack::Shieldbonk);
+	Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Shieldbonk);
 }
 
 
@@ -1722,7 +1887,7 @@ void UDefconPlayViewBase::DetonateSmartbomb()
 	{
 		GDefconGameInstance->GetStats().SmartbombsDetonated++;
 
-		GAudio->OutputSound(Defcon::EAudioTrack::Smartbomb);
+		Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Smartbomb);
 
 		auto SmartBombShockwave = new Defcon::CSmartbombShockwave;
 

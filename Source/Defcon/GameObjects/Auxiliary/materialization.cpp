@@ -102,7 +102,7 @@ void Defcon::CCreateMaterializationTask::Do()
 
 	if(GArena->IsPointVisible(Params.P)) // todo: maybe check extents of materialization field i.e. if player gets even a partial glimpse
 	{
-		GAudio->OutputSound(EAudioTrack::Ship_materialize);
+		GMessageMediator.PlaySound(EAudioTrack::Ship_materialize);
 	}
 }
 

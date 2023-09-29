@@ -57,11 +57,13 @@ namespace Defcon
 			bool           ToggleDoubleGuns        ();
 			void           DeactivateDoubleGuns    ();
 			void           AddDoubleGunPower       (float Amount);
+			float          GetDoubleGunPower       () const { return DoubleGunsLeft.Get(); }
 
 			bool           IsInvincibilityActive   () const { return InvincibilityActive.Get(); }
 			bool           ToggleInvincibility     ();
 			void           DeactivateInvincibility ();
 			void           AddInvincibility        (float Amount);
+			float          GetInvincibility        () const { return InvincibilityLeft.Get(); }
 
 			bool           EmbarkPassenger         (IGameObject*, CGameObjectCollection&);
 			bool           DebarkOnePassenger      (CGameObjectCollection&);

@@ -250,6 +250,12 @@ class DEFCON_API UDefconPlayMainWidgetBase : public UDefconPlayWidgetBase
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
 	TObjectPtr<UDaylonSpriteWidgetAtlas> PowerupInvincibilityAtlas;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
+	TObjectPtr<UDaylonSpriteWidgetAtlas> PowerupShieldAtlas;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)
+	TObjectPtr<UDaylonSpriteWidgetAtlas> PowerupDualCannonAtlas;
 	
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Textures)

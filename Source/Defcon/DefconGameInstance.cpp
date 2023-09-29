@@ -37,12 +37,12 @@ void UDefconGameInstance::Init()
 
 	GPrefs.Init(FString(TEXT("prefs.txt")));
 
-	GAudio = new Defcon::CAudioManager(this);
+	Defcon::GAudio = new Defcon::CAudioManager(this);
 
 
 #define ADD_AUDIO_TRACK(_track, _asset)	\
-	GAudio->AddTrack(_track, _asset);	\
-	GAudio->OutputSound(_track, 0.01f); // Force sound to preload.
+	Defcon::GAudio->AddTrack(_track, _asset);	\
+	Defcon::GMessageMediator.PlaySound(_track, 0.01f); // Force sound to preload.
 
 	ADD_AUDIO_TRACK(Defcon::EAudioTrack::Focus_changed,         FocusChangedSound);
 	ADD_AUDIO_TRACK(Defcon::EAudioTrack::Invalid_selection,     InvalidSelectionSound);
@@ -96,7 +96,7 @@ void UDefconGameInstance::Shutdown()
 	UE_LOG(LogGame, Log, TEXT("%S"), __FUNCTION__);
 
 	SAFE_DELETE(Defcon::GGameMatch);
-	SAFE_DELETE(GAudio);
+	SAFE_DELETE(Defcon::GAudio);
 
 	Super::Shutdown();
 }
@@ -104,7 +104,7 @@ void UDefconGameInstance::Shutdown()
 
 bool UDefconGameInstance::IsLive() const 
 {
-	return (GAudio != nullptr); 
+	return (Defcon::GAudio != nullptr); 
 }
 
 

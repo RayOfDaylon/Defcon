@@ -60,7 +60,7 @@ class DEFCON_API UDefconViewBase : public UUserWidget
 	UFUNCTION(BlueprintCallable, Category=Defcon)
 	void TransitionToArena(EDefconArena Arena);
 	
-	// todo: move these audio properties into the audio manager and add their enums, and call GAudio->OutputSound to play them.
+	// todo: move these audio properties into the audio manager and add their enums, and call GMessageMediator.PlaySound to play them.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Audio")
 	TObjectPtr<USoundBase> FocusChangedSound;
 

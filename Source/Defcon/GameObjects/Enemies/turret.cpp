@@ -116,7 +116,7 @@ void Defcon::CTurret::Tick(float DeltaTime)
 			/*&& SGN(Orientation.Fwd.x) == SGN(dir.x)*/)
 		{
 			GArena->FireBullet(*this, Position, 1, 1);
-			//GAudio->OutputSound(Defcon::swarmer);
+			//GMessageMediator.PlaySound(Defcon::swarmer);
 		}
 	}
 

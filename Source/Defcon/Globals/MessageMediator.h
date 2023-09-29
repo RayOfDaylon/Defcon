@@ -5,7 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "DaylonUtils.h"
-
+#include "_sound.h"
 
 
 namespace Defcon
@@ -39,6 +39,7 @@ namespace Defcon
 		// Message                Payload type
 
 		Unknown = 0,                // nullptr
+		PlaySound,                  // EAudioTrack*
 		AbductionCountChanged,      // TArray<bool>*
 		SmartbombCountChanged,      // int32*
 		ShieldStrengthChanged,      // FShieldStrengthInfo*
@@ -75,9 +76,17 @@ namespace Defcon
 		DualCannonsLevelChanged,
 		InvincibilityChanged,
 		InvincibilityLevelChanged,
+		ShieldLevelChanged,
 		CurrentDebugEnemyChanged,
 		SmartbombOrdnanceCountChanged,
 		TargetsRemainingChanged
+	};
+
+
+	struct FPlaySoundMessage
+	{
+		EAudioTrack Track;
+		float       Volume = 1.0f;
 	};
 
 
@@ -99,6 +108,12 @@ namespace Defcon
 			CMessageMediator() {}
 
 			// Convenience message encoders/abstractors.
+
+			void PlaySound(EAudioTrack Track, float Volume = 1.0f)
+			{
+				FPlaySoundMessage Msg = { Track, Volume };
+				Send(EMessageEx::PlaySound, &Msg);
+			}
 
 			void TellUser(const FString& Str, float Duration = 0.0f, EDisplayMessage Kind = EDisplayMessage::None) const
 			{

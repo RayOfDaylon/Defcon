@@ -40,6 +40,9 @@ Defcon::IGameObject::IGameObject()
 	Orientation.Up.Set(0.0f, 1.0f);
 	Orientation.Fwd.Set(1.0f, 0.0f);
 	BboxRadius.Set(10, 10);
+
+	ShieldStrength.Bind(EMessageEx::ShieldStrengthChanged);
+	SetShieldStrength(1.0f);
 }
 
 
@@ -69,6 +72,27 @@ void Defcon::IGameObject::CreateSprite(EObjType Kind)
 	Sprite->SetAtlas(AtlasInfo.Atlas->Atlas);
 	Sprite->SetSize(AtlasInfo.Size);
 	Sprite->UpdateWidgetSize();
+}
+
+
+bool Defcon::IGameObject::RegisterImpact(float Force)
+{
+	// Lower shields by <f>, and return true if shields go below zero.
+
+  	auto NewStrength = GetShieldStrength() - Force;
+	//ShieldStrength -= Force;
+
+	const bool b = (NewStrength < 0.0f);
+	SetShieldStrength(FMath::Max(0.0f, NewStrength));
+	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *GObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
+	return b;
+}
+
+
+void Defcon::IGameObject::SetShieldStrength(float Strength, bool Force)	
+{
+	ShieldStrength.Set({ this, Strength }, Force);
+	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *GObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
 }
 
 

@@ -79,6 +79,7 @@ namespace Defcon
 			
 			bool IsSoundPlaying() const;
 	};
+
+	extern CAudioManager*	GAudio;  // todo: retire when mediator handles AudioManager public API
 }
 
-extern Defcon::CAudioManager*	GAudio;

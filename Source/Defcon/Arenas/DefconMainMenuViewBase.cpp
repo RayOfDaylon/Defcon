@@ -89,7 +89,7 @@ void UDefconMainMenuViewBase::UpdateMenuReadout()
 
 void UDefconMainMenuViewBase::NavigateMenu(Daylon::EListNavigationDirection Direction)
 {
-	GAudio->OutputSound(Defcon::EAudioTrack::Focus_changed);
+	Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Focus_changed);
 
 	CurrentItem += (int32)Direction;
 	

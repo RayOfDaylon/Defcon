@@ -129,7 +129,7 @@ void Defcon::CSwarmer::Tick(float DeltaTime)
 
 			if(SoundCountdown <= 0.0f)
 			{
-				GAudio->OutputSound(EAudioTrack::Swarmer);
+				GMessageMediator.PlaySound(EAudioTrack::Swarmer);
 				SoundCountdown = Daylon::FRandRange(SWARMER_SOUND_COUNTDOWN_MIN, SWARMER_SOUND_COUNTDOWN_MAX);
 			}
 

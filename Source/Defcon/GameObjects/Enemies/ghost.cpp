@@ -197,7 +197,7 @@ void Defcon::CGhost::Tick(float DeltaTime)
 			Position   = NewPos;
 			Position.x = GArena->WrapX(Position.x);
 		
-			GAudio->OutputSound(EAudioTrack::Ghostflight);
+			GMessageMediator.PlaySound(EAudioTrack::Ghostflight);
 		}
 	}
 }

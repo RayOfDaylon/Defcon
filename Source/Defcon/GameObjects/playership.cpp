@@ -406,7 +406,7 @@ void Defcon::CDestroyedPlayerShip::Tick(float DeltaTime)
 			UninstallSprite();
 			Sprite.Reset();
 
-			GAudio->OutputSound(Defcon::EAudioTrack::Ship_exploding2b);
+			GMessageMediator.PlaySound(Defcon::EAudioTrack::Ship_exploding2b);
 		}
 
 		// Move the particle groups.

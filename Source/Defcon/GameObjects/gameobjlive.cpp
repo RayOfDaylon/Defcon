@@ -29,35 +29,10 @@ Defcon::ILiveGameObject::ILiveGameObject()
 	Drag                    = 0.1f;
 	bCanMove                = true;
 
-	ShieldStrength.Bind(EMessageEx::ShieldStrengthChanged);
-	SetShieldStrength(1.0f);
-
 	for(int32 i = 0; i < array_size(NavControls); i++)
 	{
 		NavControls[i].bActive = false;
 	}
-}
-
-
-bool Defcon::IGameObject/*ILiveGameObject*/::RegisterImpact(float Force)
-{
-	// Lower shields by <f>, and return true if shields go below zero.
-
-  	auto NewStrength = GetShieldStrength() - Force;
-	//ShieldStrength -= Force;
-
-	const bool b = (NewStrength < 0.0f);
-	SetShieldStrength(FMath::Max(0.0f, NewStrength));
-	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *GObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
-	return b;
-}
-
-
-void Defcon::IGameObject/*ILiveGameObject*/::SetShieldStrength(float Strength, bool Force)	
-{
-	//ShieldStrength = Strength; 
-	ShieldStrength.Set({ this, Strength }, Force);
-	//UE_LOG(LogGame, Log, TEXT("%S: %s shields now at %d%%"), __FUNCTION__, *GObjectTypeManager.GetName(Type), ROUND(ShieldStrength * 100));
 }
 
 

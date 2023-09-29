@@ -105,7 +105,10 @@ void UDefconPlayMainWidgetBase::NativeOnInitialized()
 	ADD_ATLAS(REFORMERPART,     ReformerPartAtlas       );
 	ADD_ATLAS(LASERBEAM,        LaserbeamAtlas          );
 
+	ADD_ATLAS(POWERUP_SHIELDS,       PowerupShieldAtlas        );
 	ADD_ATLAS(POWERUP_INVINCIBILITY, PowerupInvincibilityAtlas );
+	ADD_ATLAS(POWERUP_DUALCANNON,    PowerupDualCannonAtlas    );
+
 
 	check(PlayerShipExhaustAtlas);	
 	PlayerShipExhaustAtlas->Atlas.InitCache();
