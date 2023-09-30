@@ -85,7 +85,8 @@ class DEFCON_API UDefconPlayViewBase : public UDefconViewBase
 
 	void         UpdateGameObjects          (float DeltaTime);
 	void         ConcludeMission            ();
-										    
+	void         SpawnPowerup               ();
+
 	void         InitCoordMappers           ();
 	void         InitPlayerShipForMission   ();
 	void         KeepPlayerShipInView       (float DeltaTime);

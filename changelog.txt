@@ -2,8 +2,14 @@ Change log for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 28, 2023
+September 29, 2023
 
+
+Made shield powerup texture animate better.
+
+Replaced switch statements regarding powerup creation/application with IPowerup methods.
+
+Moved "future work" section of docs.txt to plan.txt.
 
 Normal sound output is done via message mediator instead of GAudio global.
 

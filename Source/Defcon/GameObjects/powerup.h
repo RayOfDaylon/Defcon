@@ -8,6 +8,7 @@
 #include "Common/util_geom.h"
 #include "GameObjects/gameobjlive.h"
 #include "GameObjects/obj_types.h"
+#include "GameObjects/playership.h"
 
 /*
 	Powerups are non-hostile objects that, when collided with by the player ship, 
@@ -24,6 +25,11 @@ namespace Defcon
 			IPowerup();
 			virtual void Tick         (float DeltaTime) override;
 			virtual void SetSpeed     (float f) { Speed = f; }
+			virtual bool Apply        (CPlayerShip& PlayerShip) = 0;
+
+			virtual FString DescribeSubject() const = 0;
+
+			static IPowerup* Make(EObjType Kind);
 
 		protected:
 			float		    Speed = 0.0f; // todo: not sure if we'll need this
@@ -39,6 +45,9 @@ namespace Defcon
 		public:
 			CShieldPowerup();
 
+			virtual bool    Apply            (CPlayerShip& PlayerShip) override;
+			virtual FString DescribeSubject  () const override { return TEXT("SHIELD"); }
+
 	};
 
 
@@ -52,6 +61,8 @@ namespace Defcon
 		public:
 			CDoubleGunsPowerup();
 
+			virtual bool    Apply            (CPlayerShip& PlayerShip) override;
+			virtual FString DescribeSubject  () const override { return TEXT("DUAL LASER CANNON ENERGY"); }
 	}; 
 
 
@@ -66,5 +77,7 @@ namespace Defcon
 		public:
 			CInvincibilityPowerup();
 
+			virtual bool    Apply            (CPlayerShip& PlayerShip) override;
+			virtual FString DescribeSubject  () const override { return TEXT("INVINCIBILITY"); }
 	}; 
 }

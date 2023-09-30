@@ -2,15 +2,17 @@ Bug list for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 28, 2023
+September 29, 2023
 
+
+FIXED: Acquiring invincibility powerup would report shields being increased.
 
 FIXED: Broke ILiveGameObject by forgetting to move shield setup code from its ctor
 to IGameObject's.
 
 
 Strange... warped over to an abduction but was nowhere near 
-at the right altitude.
+at the right altitude. Intermittent.
 
 S/B FIXED: Ghosts and reformers could fail a NaN check in 
 when spawning parts in their AboutToDie methods, because 

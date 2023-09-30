@@ -695,76 +695,9 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 		{
 			//GDefconGameInstance->GetStats().PlayerCollisions++;  // track powerup grabs?
 
-			bool TookPowerup = false;
-
 			// Apply powerup. todo: use polymorphism to avoid switch 
-			switch(Obj->GetType())
-			{
-				case Defcon::EObjType::POWERUP_INVINCIBILITY:
-				{
-					float OldAmt = GetPlayerShip().GetInvincibility();
 
-					if(OldAmt == 1.0f)
-					{
-						Defcon::GMessageMediator.TellUser(TEXT("INVINCIBILITY ALREADY AT MAXIMUM"), 0.0f, Defcon::EDisplayMessage::InvincibilityLevelChanged);
-					}
-					else
-					{
-						float NewAmt = FMath::Min(1.0f, OldAmt + 0.25f);
-						
-						GetPlayerShip().AddInvincibility(NewAmt - OldAmt);
-						auto Str = FString::Printf(TEXT("SHIELDS INCREASED TO %d PERCENT"), ROUND(NewAmt * 100.0f));
-						Defcon::GMessageMediator.TellUser(Str, 0.0f, Defcon::EDisplayMessage::InvincibilityLevelChanged);
-
-						TookPowerup = true;
-					}
-					break;
-				}
-
-				case Defcon::EObjType::POWERUP_SHIELDS:
-				{
-					float Amt = GetPlayerShip().GetShieldStrength();
-
-					if(Amt == 1.0f)
-					{
-						Defcon::GMessageMediator.TellUser(TEXT("SHIELDS ALREADY AT MAXIMUM"), 0.0f, Defcon::EDisplayMessage::ShieldLevelChanged);
-					}
-					else
-					{
-						Amt = FMath::Min(1.0f, Amt + 0.25f);
-						GetPlayerShip().SetShieldStrength(Amt);
-						auto Str = FString::Printf(TEXT("SHIELDS INCREASED TO %d PERCENT"), ROUND(Amt * 100.0f));
-						Defcon::GMessageMediator.TellUser(Str, 0.0f, Defcon::EDisplayMessage::ShieldLevelChanged);
-
-						TookPowerup = true;
-					}
-					break;
-				}
-
-
-				case Defcon::EObjType::POWERUP_DUALCANNON:
-				{	
-					float OldAmt = GetPlayerShip().GetDoubleGunPower();
-
-					if(OldAmt == 1.0f)
-					{
-						Defcon::GMessageMediator.TellUser(TEXT("DUAL LASER CANNON ENERGY ALREADY AT MAXIMUM"), 0.0f, Defcon::EDisplayMessage::DualCannonsLevelChanged);
-					}
-					else
-					{
-						float NewAmt = FMath::Min(1.0f, OldAmt + 0.25f);
-						
-						GetPlayerShip().AddDoubleGunPower(NewAmt - OldAmt);
-						auto Str = FString::Printf(TEXT("DUAL LASER CANNON ENERGY INCREASED TO %d PERCENT"), ROUND(NewAmt * 100.0f));
-						Defcon::GMessageMediator.TellUser(Str, 0.0f, Defcon::EDisplayMessage::DualCannonsLevelChanged);
-
-						TookPowerup = true;
-					}
-					break;
-				}
-			}
-
-			if(TookPowerup)
+			if(static_cast<Defcon::IPowerup*>(Obj)->Apply(GetPlayerShip()))
 			{
 				DestroyObject(Obj, false);
 				Defcon::GMessageMediator.PlaySound(Defcon::EAudioTrack::Gulp);
@@ -811,47 +744,6 @@ void UDefconPlayViewBase::CheckPlayerCollided()
 		}
 		return true;
 	});
-
-#if 0
-	Defcon::IGameObject* pObj = Enemies.GetFirst();
-
-	while(pObj != nullptr)
-	{
-		if(pObj->IsCollisionInjurious())
-		{
-			rObj.Set(pObj->Position);
-			rObj.Inflate(pObj->BboxRadius);
-
-			if(rObj.Intersect(rPlayer))
-			{
-				GDefconGameInstance->GetStats().PlayerCollisions++;
-
-				const bool bPlayerKilled = PlayerShipVulnerable && PlayerShip.RegisterImpact(pObj->GetCollisionForce() * PLAYERSHIP_IMPACT_SCALE);
-
-				if(bPlayerKilled)
-				{
-					DestroyPlayerShip();
-				}
-				else
-				{
-					ShieldBonk(&PlayerShip, pObj->GetCollisionForce());
-				}
-
-				// Process collision outcome for object.
-				if(pObj->CanBeInjured())
-				{
-					DestroyObject(pObj, !bPlayerKilled);
-				}
-
-				if(bPlayerKilled)
-				{
-					break;
-				}
-			}			
-		}
-		pObj = pObj->GetNext();
-	}
-#endif
 }
 
 
@@ -873,6 +765,68 @@ const Defcon::CPlayerShip& UDefconPlayViewBase::GetPlayerShip() const
 }
 
 
+void UDefconPlayViewBase::SpawnPowerup()
+{
+	auto CalcPowerupPosition = [&]()
+	{
+		// Place powerup not too close to the player.
+
+		CFPoint P;
+
+		CFPoint ScreenPlayerP;
+		MainAreaMapper.To(GetPlayerShip().Position, ScreenPlayerP);
+
+		while(true)
+		{
+			const float Xdistance = FRANDRANGE(MainAreaSize.X, ArenaWidth / 2);
+
+			auto ScreenP = ScreenPlayerP;
+			ScreenP.x += Xdistance * SBRAND;
+			ScreenP.y = FRANDRANGE(0.25f, 0.75f) * GetHeight();
+
+			MainAreaMapper.From(ScreenP, P);
+			check(P.x >= 0.0f && P.x < ArenaWidth);
+
+			// Keep new powerup from being too close to other powerups.
+
+			bool Okay = true;
+
+			Powerups.ForEachUntil([&](Defcon::IGameObject* Obj)
+			{
+				CFPoint SD;
+
+				if(ShortestDirection(P, Obj->Position, SD) < 64.0f)
+				{
+					Okay = false;
+				}
+				return Okay;
+			});
+
+			if(Okay)
+			{
+				break;
+			}
+		}
+
+		return P;
+	};
+
+	const Defcon::EObjType PowerupKinds[] = 
+	{ 
+		Defcon::EObjType::POWERUP_DUALCANNON, 
+		Defcon::EObjType::POWERUP_INVINCIBILITY, 
+		Defcon::EObjType::POWERUP_SHIELDS 
+	};
+
+	Defcon::IPowerup* Powerup = Defcon::IPowerup::Make(PowerupKinds[IRAND(3)]);
+	Defcon::GMessageMediator.TellUser(FString::Printf(TEXT("%s POWERUP AVAILABLE"), *Powerup->DescribeSubject()));
+
+	Powerup->InstallSprite();
+	Powerup->Position = CalcPowerupPosition();
+	Powerups.Add(Powerup);
+}
+
+
 void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 {
 	if(!bArenaClosing)
@@ -887,92 +841,27 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 
 	// Occasionally spawn powerups.
 
+
+	// Mission becomes nullptr at end of game, so check for that.
+	const auto Mission = Defcon::GGameMatch->GetMission();
+
+	// Occasionally spawn a powerup.
 	// todo: currently there's nothing stopping the player from loitering in a mission
 	// at its end and just collecting powerups for as long as he's willing to wait.
 	// We need to furnish powerups in a finite fashion (like Descent), or when 
 	// certain tasks are achieved.
 
-	// Mission becomes nullptr at end of game, so check for that.
-	const auto Mission = Defcon::GGameMatch->GetMission();
-
-	if(Mission != nullptr && Mission->IsMilitary() /*&& Powerups.Count() == 0*/)
+	if(Mission != nullptr && Mission->IsMilitary())
 	{
 		TimeUntilNextPowerup -= DeltaTime;
 
 		if(TimeUntilNextPowerup <= 0.0f)
 		{
 			TimeUntilNextPowerup = FRANDRANGE(5.0f, 10.0f);
-
-			auto CalcPowerupPosition = [&]()
-			{
-				// Place powerup not too close to the player.
-
-				CFPoint P;
-
-				CFPoint ScreenPlayerP;
-				MainAreaMapper.To(GetPlayerShip().Position, ScreenPlayerP);
-
-				while(true)
-				{
-					const float Xdistance = FRANDRANGE(MainAreaSize.X, ArenaWidth / 2);
-
-					auto ScreenP = ScreenPlayerP;
-					ScreenP.x += Xdistance * SBRAND;
-					ScreenP.y = FRANDRANGE(0.25f, 0.75f) * GetHeight();
-
-					MainAreaMapper.From(ScreenP, P);
-					check(P.x >= 0.0f && P.x < ArenaWidth);
-
-					// Keep new powerup from being too close to other powerups.
-
-					bool Okay = true;
-
-					Powerups.ForEachUntil([&](Defcon::IGameObject* Obj)
-					{
-						CFPoint SD;
-
-						if(ShortestDirection(P, Obj->Position, SD) < 64.0f)
-						{
-							Okay = false;
-						}
-						return Okay;
-					});
-
-					if(Okay)
-					{
-						break;
-					}
-				}
-
-				return P;
-			};
-
-			Defcon::IPowerup* Powerup = nullptr;
-
-			// todo: use powerup object factory
-			switch(IRAND(3))
-			{
-				case 0:
-					Powerup = new Defcon::CInvincibilityPowerup;
-					Defcon::GMessageMediator.TellUser(TEXT("INVINCIBILITY POWERUP AVAILABLE"));
-					break;
-
-				case 1:
-					Powerup = new Defcon::CShieldPowerup;
-					Defcon::GMessageMediator.TellUser(TEXT("SHIELD POWERUP AVAILABLE"));
-					break;
-
-				case 2:
-					Powerup = new Defcon::CDoubleGunsPowerup;
-					Defcon::GMessageMediator.TellUser(TEXT("DUAL LASER CANNON ENERGY POWERUP AVAILABLE"));
-					break;
-			}
-
-			Powerup->InstallSprite();
-			Powerup->Position = CalcPowerupPosition();
-			Powerups.Add(Powerup);
+			SpawnPowerup();
 		}
 	}
+
 
 	if(ARENA_BOGDOWN && Debris.Count() >= 500)
 	{
@@ -1001,12 +890,9 @@ void UDefconPlayViewBase::UpdateGameObjects(float DeltaTime)
 	CheckPlayerCollided();
 	CheckIfPlayerHit(Objects);
 
+
 	// Move and draw everyone.
 
-
-	//const auto Mission = Defcon::GGameMatch->GetMission();
-
-	
 	const bool HumansInvolved = Mission != nullptr ? Mission->HumansInvolved() : false;
 
 	// ------------------------------------------------------
