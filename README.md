@@ -17,6 +17,8 @@ The game differs from Stargate in these ways:
 - Game can be made to start at any level  
 - Sprite textures remastered for 4K displays  
 - Player ship is shielded; shields slowly auto-regen after taking damage  
+- Player ship has invincibility mode, appears brighter when mode toggled on  
+- Player ship has togglable dual cannon mode  
 - Landers leave orbit after successfully abducting humans instead of becoming mutants  
 - No score tracking/display; acquired points are used internally as XP  
 - Extra enemy types: hunters, ghosts, bouncers, reformers, and weak firebombers  
@@ -25,6 +27,7 @@ The game differs from Stargate in these ways:
 - Planet is wider  
 - Terrain is not as irregular  
 - Display aspect ratio is wider  
+- Powerups for shields, dual cannon, and invincibility  
 - Messages/alerts show using Descent-style scrolling message log
 
 The game was ported from my older Windows GDI version written in 2004.
