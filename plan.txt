@@ -2,7 +2,7 @@ PLAN file (future work) for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 29, 2023
+October 4, 2023
 
 
 
@@ -120,4 +120,29 @@ the Inviso feature also cloaked the ship, making it dead obvious.
 Cloaking that way would be an arcade match (and look cool) but 
 may prove too difficult for most players. Not that one can't 
 keep firing the cannons to determine position, but still.
+   After playing several times, the periodic-spawn works pretty 
+well for powerups. Another option would be to award powers at
+the end of each mission, maybe weighted by a time bonus 
+or time + humans remaining, like a combination of Galaga 
+and Missile Command. We could even repurpose the display 
+of the remaining humans in the post-wave screen to that end.
+
+Localization: intentionally skipped for now, using FString 
+instead of FText in many places. I always save this for last 
+because the specific text content changes during development.
+As for languages, probably just the common European ones 
+e.g. French, German, Spanish. The version of the Serpentine 
+font used by the game doesn't support codepoints beyond that 
+anyway, but it's enough to demonstrate localization.
+   The most annoying thing of course is variadic text 
+where we can't just reference a static FText from a 
+string table; it has to be combined with the variable part 
+and maybe take locale into account. But fortunately afaik 
+we don't show any fractional numbers with decimal points 
+and the min/sec timestamp in the pod intersection message can be 
+universal.
+
+
+
+
 
