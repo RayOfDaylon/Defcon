@@ -1,6 +1,14 @@
 Changelog for DaylonGraphicsLibrary UE plugin
 
-Last updated: September 22, 2023
+Last updated: October 9, 2023
+
+Fixed bug where DoesLineSegmentIntersectCircle returned false incorrectly.
+This was e.g. causing the player ship in Stellar Mayhem to remain alive 
+or fail to explode asteroids even though it was inside them.
+
+Enabled Unity build.
+
+Moved LogDaylon decl/impl to DaylonLogging.h/.cpp.
 
 Broke out various classes and function categories to their own .h/.cpp files.
 DaylonUtils.h is retained as a "#include everything" convenience header.

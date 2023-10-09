@@ -2,7 +2,7 @@ Documentation for DaylonGraphicsLibrary plug-in for Unreal Engine
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/SpaceRox (inside Plugins folder)
-September 12, 2023
+October 9, 2023
 
 
 
@@ -72,6 +72,8 @@ RandomPtWithinBox       Given an FBox2d, returns an FVector2D that is a random
 
 GetWidgetDirectionVector    Returns the unit direction vector for a widget's rotation.
                             The rotation is encoded in the widget's render transform.
+
+DoesPointIntersectCircle            Returns true if a point lies inside a circle.
 
 DoesLineSegmentIntersectCircle      Returns true if a line intersects a circle.
 

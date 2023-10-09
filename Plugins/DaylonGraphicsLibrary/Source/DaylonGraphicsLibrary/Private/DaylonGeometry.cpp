@@ -5,6 +5,13 @@
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Runtime/GeometryCore/Public/Intersection/IntrTriangle2Triangle2.h"
 
+// Set to 1 to enable debugging
+#define DEBUG_MODULE                1
+
+#if(DEBUG_MODULE == 1)
+#pragma optimize("", off)
+#endif
+
 
 const double Daylon::Epsilon = 1e-14;
 
@@ -101,16 +108,32 @@ bool Daylon::DoTrianglesIntersect(const FVector2D TriA[3], const FVector2D TriB[
 }
 
 
+bool Daylon::DoesPointIntersectCircle(const FVector2D& P, const FVector2D& CP, double R)
+{
+	return (FVector2D::Distance(P, CP) < R);
+}
+
+
 bool Daylon::DoesLineSegmentIntersectCircle(const FVector2D& P1, const FVector2D& P2, const FVector2D& CP, double R)
 {
 	// Test if a line intersects a circle.
-	// p1 and p2 are the line endpoints.
-	// cp is the circle center.
-	// r is the circle radius.
+	// Intersection is considered false only if both line endpoints are outside circle and 
+	// no point on the line is inside the circle.
+ 
+	// P1, P2 --> Line segment endpoints.
+	// CP     --> Circle center.
+	// R      --> Circle radius.
+
+	if(DoesPointIntersectCircle(P1, CP, R) || DoesPointIntersectCircle(P2, CP, R))
+	{
+		return true;
+	}
+
+	// This code checks when the line segment endpoints lie outside the circle.
 
 	if(P1 == P2)
 	{
-		return (FVector2D::Distance(P1, CP) < R);
+		return false;
 	}
 
 	const auto x0 = CP.X;
@@ -119,10 +142,10 @@ bool Daylon::DoesLineSegmentIntersectCircle(const FVector2D& P1, const FVector2D
 	const auto y1 = P1.Y;
 	const auto x2 = P2.X;
 	const auto y2 = P2.Y;
-	const auto A = y2 - y1;
-	const auto B = x1 - x2;
-	const auto C = x2 * y1 - x1 * y2;
-	const auto a = Square(A) + Square(B);
+	const auto A  = y2 - y1;
+	const auto B  = x1 - x2;
+	const auto C  = x2 * y1 - x1 * y2;
+	const auto a  = Square(A) + Square(B);
 
 	double b, c;
 
@@ -192,7 +215,10 @@ bool Daylon::DoesLineSegmentIntersectCircle(const FVector2D& P1, const FVector2D
 		{
 			x = (-b + d) / (2 * a);
 			y = fx(x);
-			if (within(x, y)) return true;
+			if (within(x, y)) 
+			{
+				return true;
+			}
 			x = (-b - d) / (2 * a);
 			y = fx(x);
 			res = (within(x, y));
@@ -201,7 +227,10 @@ bool Daylon::DoesLineSegmentIntersectCircle(const FVector2D& P1, const FVector2D
 		{
 			y = (-b + d) / (2 * a);
 			x = fy(y);
-			if (within(x, y)) return true;
+			if (within(x, y)) 
+			{
+				return true;
+			}
 			y = (-b - d) / (2 * a);
 			x = fy(y);
 			res = (within(x, y));
@@ -261,3 +290,8 @@ float Daylon::Normalize(float N, float Min, float Max)
 }
 
 
+#if(DEBUG_MODULE == 1)
+#pragma optimize("", on)
+#endif
+
+#undef DEBUG_MODULE

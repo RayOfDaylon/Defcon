@@ -20,6 +20,7 @@ namespace Daylon
 	DAYLONGRAPHICSLIBRARY_API float         WrapAngle                         (float Angle);
 	DAYLONGRAPHICSLIBRARY_API float         Normalize                         (float N, float Min, float Max);
 
+	DAYLONGRAPHICSLIBRARY_API bool          DoesPointIntersectCircle          (const FVector2D& P, const FVector2D& CP, double R);
 	DAYLONGRAPHICSLIBRARY_API bool          DoesLineSegmentIntersectCircle    (const FVector2D& P1, const FVector2D& P2, const FVector2D& CP, double R);
 	DAYLONGRAPHICSLIBRARY_API bool          DoesLineSegmentIntersectTriangle  (const FVector2D& P1, const FVector2D& P2, const FVector2D Triangle[3]);
 	DAYLONGRAPHICSLIBRARY_API bool          DoTrianglesIntersect              (const FVector2D TriA[3], const FVector2D TriB[3]);
