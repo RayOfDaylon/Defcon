@@ -2,8 +2,11 @@ Bug list for Defense Condition game project
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/Defcon
-September 29, 2023
+October 10, 2023
 
+
+FIXED: Audio manager dtor forgot to unregister itself from message mediator; 
+would cause crash on second PIE session startup.
 
 FIXED: Acquiring invincibility powerup would report shields being increased.
 

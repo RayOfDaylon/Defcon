@@ -46,6 +46,8 @@ Defcon::CAudioManager::CAudioManager(UObject* InWorldContextObject)
 
 Defcon::CAudioManager::~CAudioManager()
 {
+	GMessageMediator.UnregisterConsumer(this);
+
     DestroySoundObjects();
 }
 

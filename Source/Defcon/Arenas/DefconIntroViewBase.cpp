@@ -6,6 +6,7 @@
 #include "DaylonUtils.h"
 #include "Common/util_math.h"
 #include "Runtime/Core/Public/Misc/FileHelper.h"
+#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 
 
 #define DEBUG_MODULE      0
@@ -460,6 +461,12 @@ void UDefconIntroViewBase::NativeTick(const FGeometry& MyGeometry, float DeltaTi
 void UDefconIntroViewBase::OnEnterPressed()
 {
 	TransitionToArena(EDefconArena::MainMenu);
+}
+
+
+void UDefconIntroViewBase::OnEscPressed()
+{
+	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
 }
 
 

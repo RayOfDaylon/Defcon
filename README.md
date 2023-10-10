@@ -8,7 +8,8 @@ Example Videos
 
 Version 1.0: https://youtu.be/WTqya41q9xM  
 August 27/2023 update (some graphic fixes): https://youtu.be/R1Yolp0zzRE  
-September 4 update (bullet time demo): https://youtu.be/vfbQqxPOeWY
+September 4 update (bullet time demo): https://youtu.be/vfbQqxPOeWY  
+October 10 update (pod intersection, powerups, etc.): https://www.youtube.com/watch?v=ARkXh5LaiEU
 
 The game differs from Stargate in these ways:
 - Each level is its own campaign mission and not a repeat wave  

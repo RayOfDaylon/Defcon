@@ -23,7 +23,8 @@ class DEFCON_API UDefconIntroViewBase : public UDefconViewBase
 	virtual void NativeOnInitialized  () override;
 	virtual void NativeTick           (const FGeometry& MyGeometry, float DeltaTime) override;
 
-	virtual void OnEnterPressed() override;
+	virtual void OnEnterPressed () override;
+	virtual void OnEscPressed   () override;
 
 
 	TSharedPtr<SDaylonLerpedLines> TitleWidget;
