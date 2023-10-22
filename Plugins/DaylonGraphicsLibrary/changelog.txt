@@ -1,6 +1,9 @@
 Changelog for DaylonGraphicsLibrary UE plugin
 
-Last updated: October 9, 2023
+Last updated: October 12, 2023
+
+Moved elastic collision function from SpaceRox to plugin
+under the ComputeCollisionInertia function.
 
 Fixed bug where DoesLineSegmentIntersectCircle returned false incorrectly.
 This was e.g. causing the player ship in Stellar Mayhem to remain alive 

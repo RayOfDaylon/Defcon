@@ -27,4 +27,5 @@ namespace Daylon
 	DAYLONGRAPHICSLIBRARY_API bool          DoCirclesIntersect                (const FVector2D& C1, float R1, const FVector2D& C2, float R2);
 	DAYLONGRAPHICSLIBRARY_API FVector2D     RandomPtWithinBox                 (const FBox2d& Box);
 	DAYLONGRAPHICSLIBRARY_API FVector2D     ComputeFiringSolution             (const FVector2D& LaunchP, float TorpedoSpeed, const FVector2D& TargetP, const FVector2D& TargetInertia);
+	DAYLONGRAPHICSLIBRARY_API void          ComputeCollisionInertia           (float Mass1, float Mass2, float Restitution,	const FVector2D& P1, const FVector2D& P2, FVector2D& Inertia1, FVector2D& Inertia2);
 }

@@ -4,9 +4,11 @@
 #include "DaylonRNG.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Runtime/GeometryCore/Public/Intersection/IntrTriangle2Triangle2.h"
+#include "Runtime/GeometryCore/Public/MathUtil.h"
+
 
 // Set to 1 to enable debugging
-#define DEBUG_MODULE                1
+#define DEBUG_MODULE                0
 
 #if(DEBUG_MODULE == 1)
 #pragma optimize("", off)
@@ -287,6 +289,66 @@ float Daylon::Normalize(float N, float Min, float Max)
 	check(Min != Max);
 
 	return (N - Min) / (Max - Min);
+}
+
+
+void Daylon::ComputeCollisionInertia
+(
+	float            Mass1, 
+	float            Mass2, 
+	float            Restitution,
+	const FVector2D& P1,
+	const FVector2D& P2,
+	FVector2D&       Inertia1,
+	FVector2D&       Inertia2
+)
+{
+	// Based on collision code courtesy of Thomas Smid from https://www.plasmaphysics.org.uk/programs/coll2d_cpp.htm
+
+	check(Mass1 > 0.0f && Mass2 > 0.0f);
+	check(Restitution >= 0.0f && Restitution <= 1.0f);
+	
+	auto            MassRatio    = Mass2 / Mass1;
+	FVector2D       DeltaPos     = P2 - P1;
+	const FVector2D DeltaInertia = Inertia2 - Inertia1; 
+
+
+	// Return old inertias if masses are not approaching
+
+	if((DeltaInertia.X * DeltaPos.X + DeltaInertia.Y * DeltaPos.Y) >= 0) 
+	{
+		return;
+	}
+
+
+	// Following statements avoid a zero divide
+  
+	const float F = TMathUtilConstants<float>::Epsilon * fabs(DeltaPos.Y);                            
+
+	if ( fabs(DeltaPos.X) < F ) 
+	{  
+		DeltaPos.X = F;
+
+		if(DeltaPos.X < 0)
+		{
+			DeltaPos.X *= -1;
+		}
+	} 
+
+	// Update inertias
+
+	const auto RatioDeltaAxes = DeltaPos.Y / DeltaPos.X;
+	const auto Dvx2           = -2 * (DeltaInertia.X + RatioDeltaAxes * DeltaInertia.Y) / ((1 + RatioDeltaAxes * RatioDeltaAxes) * (1 + MassRatio));
+
+	Inertia2 += FVector2D(Dvx2, Dvx2 * RatioDeltaAxes);
+	Inertia1 -= FVector2D(Dvx2 * MassRatio, Dvx2 * RatioDeltaAxes * MassRatio);
+
+	// Velocity correction for inelastic collisions
+	const auto TotalMass = Mass1 + Mass2;
+	const FVector2D InertiaOfTotalMass = (Inertia1 * Mass1 + Inertia2 * Mass2) / TotalMass;
+	
+	Inertia1 = (Inertia1 - InertiaOfTotalMass) * Restitution + InertiaOfTotalMass;
+	Inertia2 = (Inertia2 - InertiaOfTotalMass) * Restitution + InertiaOfTotalMass;
 }
 
 

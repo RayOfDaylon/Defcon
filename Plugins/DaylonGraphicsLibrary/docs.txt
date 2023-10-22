@@ -2,7 +2,7 @@ Documentation for DaylonGraphicsLibrary plug-in for Unreal Engine
 
 Author(s): Ray Gardener (support@daylongraphics.com)
 Repository: https://github.com/RayOfDaylon/SpaceRox (inside Plugins folder)
-October 9, 2023
+October 12, 2023
 
 
 
@@ -82,6 +82,10 @@ DoesLineSegmentIntersectTriangle    Returns true if a line intersects a triangle
 DoTrianglesIntersect                Returns true if two triangles intersect.
 
 DoCirclesIntersect                  Returns true if two circles overlap.
+
+ComputeCollisionInertia             Given the position and inertia of two masses, updates their inertias
+                                    if the masses were colliding. Should only call after determining that 
+                                    the objects intersect.
 
 EListNavigationDirection      Enum constants for list navigation.
 

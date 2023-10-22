@@ -5,4 +5,7 @@ Any copying, particularly for commercial use, must constitute a unique work
 not directly based on the original, or permission must be obtained from 
 Daylon Graphics Ltd.
 
+The DaylonGraphicsLibrary plugin is under its own licence; please refer 
+to its licence.txt file for details.
+
 Defcon project materials copyright 2003-2023 Daylon Graphics Ltd.
